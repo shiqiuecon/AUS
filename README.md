@@ -2,7 +2,7 @@
 
 Course presentations by Shi Qiu.
 
-ECO351 narrated lessons are at [ECO351/](https://shiqiuecon.github.io/AUS/ECO351/): 26 classroom lectures and four supplementary decks, preserving the classroom graphs, equations, and raw Stata output. The course index links each self-contained HTML lesson. Transcripts, speed controls, automatic advancement, and offline downloads are included. Unreleased Quiz 3 and Quiz 4 recap pages are withheld; assessments and instructor files are not published.
+ECO351 narrated lessons are at [ECO351/](https://shiqiuecon.github.io/AUS/ECO351/?v=eco351-econometrics-v2): 26 classroom lectures and four supplementary decks, preserving the classroom graphs, equations, and raw Stata output. Expanded explanations focus on the course applications, interpretation, and causal assumptions. Locally generated narration is paired with a synchronized paragraph transcript; select a paragraph to replay its explanation. The course index links each tested lesson using its content revision. Speed controls, automatic advancement, and offline downloads are included. Unreleased Quiz 3 and Quiz 4 recap pages are withheld; assessments and instructor files are not published.
 
 ```text
 AUS/
