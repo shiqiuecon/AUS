@@ -8502,7 +8502,7 @@ z
   $('next').addEventListener('click',next); $('previous').addEventListener('click',previous);
   $('restart').addEventListener('click',()=>{goTo(0);void play();});
   $('speed').addEventListener('change',()=>{if(playing)elapsed=readTime();speed=Number($('speed').value);audio.playbackRate=speed;startTime=performance.now();startElapsed=elapsed;});
-  $('slide-picker').addEventListener('change',()=>{pause();goTo(Number($('slide-picker').value));$('options').open=false;});
+  $('slide-picker').addEventListener('change',()=>{const target=Number($('slide-picker').value);pause();goTo(target);$('options').open=false;});
   $('include-supplement').addEventListener('change',()=>{pause();rebuild();goTo(index);});
   $('narration-enabled').addEventListener('change',()=>{pause();narration=$('narration-enabled').checked;updateStatus();});
   $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{pause('Full screen is unavailable in this preview. Open the HTML in a browser window.');}});
