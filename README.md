@@ -2,6 +2,8 @@
 
 Course presentations by Shi Qiu.
 
+ECO351 narrated lessons are at [ECO351/](https://shiqiuecon.github.io/AUS/ECO351/): 26 classroom lectures and four supplementary decks, preserving the classroom graphs, equations, and raw Stata output. The course index links each self-contained HTML lesson. Transcripts, speed controls, automatic advancement, and offline downloads are included. Unreleased Quiz 3 and Quiz 4 recap pages are withheld; assessments and instructor files are not published.
+
 ```text
 AUS/
 ├── index.html
@@ -31,7 +33,7 @@ The lesson pages preserve the refined classroom slides as vector graphics with L
 
 This repository and its GitHub Pages website are public. Anyone can view or copy the published materials.
 
-GitHub Pages publishes **main → /(root)**. The root page links to the QBA201 course index, which links to each available lecture. `.nojekyll` preserves folder names containing underscores.
+GitHub Pages publishes **main → /(root)**. The root page links to the QBA201 and ECO351 course indexes, which link to their available lectures. `.nojekyll` preserves folder names containing underscores.
 
 All HTML pages request `noindex, nofollow`. This does not restrict access. The lesson requires one click on **Start narrated lesson** to enable sound, then advances automatically and stops at the end.
 
