@@ -27,7 +27,7 @@ AUS/
 
 The QBA201 index links all 13 lecture decks covering Lectures 1–25. Each lecture folder holds a self-contained presentation with its narration, equations, and charts embedded. Combined lecture numbers follow the classroom decks. Add future narrated lectures in separate folders under `QBA201/` and add their links to the course index.
 
-Click **Start narrated lesson** once to enable audio. Each slide has a separate recorded explanation. Playback advances after the narration and stops at the end. Pause, change speed, jump to a slide, or read its transcript at any time. The recordings use the synthetic English macOS Samantha voice. Playing them does not call an audio-generation API.
+Click **Start narrated lesson** once to enable audio. Each slide has a separate recorded explanation. Playback advances after the narration and stops at the end. Pause, change speed, jump to a slide, or read its transcript at any time. The QBA201 recordings use a locally generated synthetic voice with expanded business explanations. The side script follows each spoken paragraph; select a paragraph to replay it. Playing the lessons does not call an audio-generation API.
 
 The lesson pages preserve the refined classroom slides as vector graphics with LaTeX equations. On small screens, use **Zoom** and pan to enlarge slide content. Lectures 18–19 additionally include interactive confidence-interval illustrations. Each HTML file can also be downloaded and opened offline.
 
