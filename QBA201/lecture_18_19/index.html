@@ -38,9 +38,17 @@ dialog{border:0;border-top:5px solid var(--gold);border-radius:8px;padding:32px;
  .script-panel,#welcome,#transcript-dialog{display:none!important}
 }
 </style>
-<style id="course-download-style">.downloads-bar{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:8px 18px;padding:0 24px 12px;font:13px Arial,sans-serif;color:#17365d}.downloads-bar a{color:#17365d;text-underline-offset:3px;line-height:1.6}.downloads-bar .pdf-download{font-weight:bold}.offline-copy [data-offline-zip]{display:none!important}@media(max-width:600px){.downloads-bar{justify-content:flex-start;padding:2px 14px 10px;font-size:12px;gap:7px 16px}}@media print{.downloads-bar{display:none!important}}</style></head>
+<style id="course-download-style">.downloads-bar{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:8px 18px;padding:0 24px 12px;font:13px Arial,sans-serif;color:#17365d}.downloads-bar a{color:#17365d;text-underline-offset:3px;line-height:1.6}.downloads-bar .pdf-download{font-weight:bold}.offline-copy [data-offline-zip]{display:none!important}@media(max-width:600px){.downloads-bar{justify-content:flex-start;padding:2px 14px 10px;font-size:12px;gap:7px 16px}}@media print{.downloads-bar{display:none!important}}</style><style id="qba-point-highlights-style">.qba-highlight-surface{position:relative;display:block;width:100%;flex-shrink:0}
+.qba-highlight-surface>.slide-image{width:100%!important;min-width:0!important;display:block}
+.stage.zoomed .qba-highlight-surface{width:calc(100% * var(--zoom));max-width:none}
+.qba-point-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.qba-point-overlay rect{fill:#d6a84b;fill-opacity:.16;stroke:#b17d1d;stroke-width:1.5;stroke-opacity:.9;vector-effect:non-scaling-stroke}
+.qba-point-current{outline:2px solid #b17d1d;outline-offset:3px;background-color:#d6a84b1a!important}
+@media(max-width:900px),(max-height:560px){.stage.zoomed .qba-highlight-surface{min-width:720px}}
+@media print{.qba-point-overlay{display:none!important}.qba-point-current{outline:none!important;background-color:transparent!important}.qba-highlight-surface{width:100%!important;min-width:0!important}}
+</style></head>
 <body>
-  <header class="app-header"><span><a href="../?v=downloads-b2b3ab21afa5">QBA201</a> <span class="header-divider">/</span> Lectures 18–19</span><span>Shi Qiu · Fall 2026</span></header><nav id="course-downloads" class="downloads-bar" aria-label="Download lecture materials"><a class="pdf-download" data-download-pdf href="QBA201_lecture_18_19_Slides.pdf?v=9fce363a9b9a" download="QBA201_lecture_18_19_Slides.pdf">Download slides PDF</a><a data-offline-zip href="QBA201_lecture_18_19_Offline.zip" download="QBA201_lecture_18_19_Offline.zip">Offline lesson (ZIP)</a><a data-download-catalog href="../downloads/?v=downloads-b2b3ab21afa5">All course downloads</a></nav>
+  <header class="app-header"><span><a href="../?v=e21f16136149">QBA201</a> <span class="header-divider">/</span> Lectures 18–19</span><span>Shi Qiu · Fall 2026</span></header><nav id="course-downloads" class="downloads-bar" aria-label="Download lecture materials"><a class="pdf-download" data-download-pdf href="QBA201_lecture_18_19_Slides.pdf?v=9fce363a9b9a" download="QBA201_lecture_18_19_Slides.pdf">Download slides PDF</a><a data-offline-zip href="QBA201_lecture_18_19_Offline.zip?v=48afea959441" download="QBA201_lecture_18_19_Offline.zip">Offline lesson (ZIP)</a><a data-download-catalog href="../downloads/?v=e21f16136149">All course downloads</a></nav>
   <div class="lesson-layout" id="lesson-layout"><main id="stage" class="stage" aria-label="Estimation and confidence intervals presentation">
     <section class="slide cover" data-title="Estimation and confidence intervals" data-duration="14000" aria-labelledby="title-1">
       <div class="cover-content"><p class="course-line">Quantitative Business Analysis</p><h1 id="title-1">Estimation and<br>confidence intervals</h1><p class="cover-description">Point estimates, uncertainty, and a calculation you can interpret</p><p class="cover-credit">Lectures 18–19 · Shi Qiu</p></div>
@@ -8593,5 +8601,52 @@ z
   show(true);update();setInterval(update,120);
 })();
 </script>
-</body>
+<script id="qba-point-highlights-runtime">/* QBA201 slide-point following: positions in the matching PDF, times in actual audio. */
+(()=>{
+ 'use strict';
+ if(!window.QBADeck||window.QBAPoints)return;
+ const deck=window.QBADeck,meta=deck.metadata(),image=document.getElementById('slide-image');
+ let enabled=true,last='',active=[],currentSlide=-1,svg=null;
+ try{enabled=localStorage.getItem('qba201-highlight-points')!=='false';}catch{}
+ if(image){
+  const surface=document.createElement('div');surface.className='qba-highlight-surface';image.before(surface);surface.append(image);
+  svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('qba-point-overlay');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');svg.setAttribute('preserveAspectRatio','none');surface.append(svg);
+ }
+ const label=document.createElement('label');label.className='check checkbox-label';
+ const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='point-highlights-enabled';toggle.checked=enabled;
+ label.append(toggle,document.createTextNode('Highlight current point'));
+ const options=document.querySelector('#options .options-panel');if(options)options.append(label);
+ function clearNative(){document.querySelectorAll('.qba-point-current').forEach(n=>n.classList.remove('qba-point-current'));}
+ function update(force=false){
+  const s=deck.getState(),elapsed=typeof s.elapsedSeconds==='number'?s.elapsedSeconds:s.elapsed;
+  currentSlide=s.index;
+  if(!image){
+   const signature=[enabled,s.index,s.step,!!s.playing||elapsed>0].join(':');if(!force&&signature===last)return;last=signature;clearNative();active=[];
+   if(enabled&&(s.playing||elapsed>0)){
+    const slide=document.querySelector('section.slide:not([hidden])');
+    if(slide){
+     // The native confidence-interval lesson leaves its first teaching block visible at step zero.
+     const initial={1:':scope > .definition-list > .definition:first-child',2:':scope > .comparison > div:first-child',3:':scope > .property-row:not([data-step])',4:':scope > .balanced > div:first-child',5:'.critical-table',6:':scope > .formula-center',7:':scope > .statement-row:not([data-step])',8:':scope > .calculation-row:not([data-step])',9:':scope > blockquote',12:':scope > .formula-space:not([data-step])',13:':scope > .lead',14:':scope > .math:not([data-step])',15:':scope > .math:not([data-step])'};
+     const nodes=[...slide.querySelectorAll('[data-step]')].filter(n=>Number(n.dataset.step)===s.step&&n.namespaceURI==='http://www.w3.org/1999/xhtml'&&!n.classList.contains('control-step'));
+     if(s.step===0&&initial[s.index])nodes.push(...slide.querySelectorAll(initial[s.index]));
+     nodes.filter(n=>!nodes.some(p=>p!==n&&p.contains(n))).forEach((n,i)=>{n.classList.add('qba-point-current');active.push(i);});
+    }
+   }return;
+  }
+  const h=meta[s.index]?.highlights;
+  let event=-1;if(enabled&&h&&(s.playing||elapsed>0))for(let i=0;i<h.events.length;i++){const e=h.events[i];if(elapsed>=e.start&&elapsed<e.end)event=i;}
+  const signature=[enabled,s.index,event].join(':');if(!force&&signature===last)return;last=signature;svg.replaceChildren();active=[];
+  if(!h||event<0){svg.style.display='none';return;}
+  svg.style.display='';svg.setAttribute('viewBox',`0 0 ${h.page[0]} ${h.page[1]}`);active=h.events[event].points.slice();
+  for(const i of active){
+   const p=h.points[i],r=p.rect,pad=2.2,rect=document.createElementNS(svg.namespaceURI,'rect');
+   const x=Math.max(.5,r[0]-pad),y=Math.max(.5,r[1]-pad),right=Math.min(h.page[0]-.5,r[2]+pad),bottom=Math.min(h.page[1]-.5,r[3]+pad);
+   rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',right-x);rect.setAttribute('height',bottom-y);rect.setAttribute('rx','2');rect.dataset.point=String(i);svg.append(rect);
+  }
+ }
+ toggle.onchange=()=>{enabled=toggle.checked;try{localStorage.setItem('qba201-highlight-points',String(enabled));}catch{}update(true);};
+ window.QBAPoints=Object.freeze({getState:()=>({enabled,native:!image,slide:currentSlide,active:active.slice()}),metadata:()=>meta.map(s=>s.highlights||null),refresh:()=>update(true)});
+ update();setInterval(update,80);
+})();
+</script></body>
 </html>
