@@ -1,0 +1,32 @@
+{
+  "lessons": {
+    "01": 23,
+    "11": 23
+  },
+  "practice_questions": 42,
+  "audio_generated": false,
+  "transcripts_approved": false,
+  "planned_teaching_meetings": 14,
+  "files": {
+    "assets/app.mjs": "c3daaf90d197d1e9c8450c34954ea122ae29714bec7f216e7c98bd3bdf9346b0",
+    "assets/common.mjs": "ab6e2933878885d76b3fa3b56fc80c80c94994f978649e6105db3c6e3cd97bc9",
+    "assets/course-data.js": "dd91bc61a81c51e83363b33d35e0107b82f709b50b66287302b51b0844f9b958",
+    "assets/graphs.mjs": "fa66498a05638115f10fa17e0807231ca15693f9155b91ac01ab47491a07bcc7",
+    "assets/practice.mjs": "3bbec7d5bbfe4a946f80cf7979e4fdd27e43325916b141ebdd830e4e727adfb0",
+    "assets/style.css": "1705b1a29c9c9ae96f2a9cd39ac34bc2a213c1729a99f6a6ef35dcb02c71fec4",
+    "course-map.html": "21009a34908ac859c00e7f9bdcef63f2137d2484f77ea6aa4d4c201097f9594d",
+    "downloads/meeting_01.do": "7aa8d8a3d9ee879f36fce2284fb37f9550e25630d46c68c925099cfdedc6b862",
+    "downloads/meeting_01_output.txt": "6eb57234fd8dfad7337a84d44a496fde0602ce6e244f97f0b064ba36f47efc03",
+    "downloads/meeting_01_transcript.md": "aade142851d77e7cfd39fd3263adb3c6ec65cbde16e2f75d360c812c99da6507",
+    "downloads/meeting_11.do": "c3c471346dbf02224b043a9bc4615ff5dd2f6e533d66635cfa6f9950d7e94bd7",
+    "downloads/meeting_11_output.txt": "e16976ef86dabf007a777bd5634b2c87b00fa532172b0c47a526286a18c699d5",
+    "downloads/meeting_11_transcript.md": "84ae88a7893dbc1d664b68a8ca52668c928cc04b18d52972f7e68cf6da47e4e2",
+    "downloads/schools.csv": "4e6f95cb52f45bc7817be94ebf77abfea5f6951d6992b80480ca15602244067f",
+    "downloads/traffic.csv": "fa753c6bddce8fe9f5e8cda2d78b7d0e2cdacb2c2163ba911fb302b7c4ee460d",
+    "index.html": "79c0dbc3b92c4ee3b5b82e45ee8f2c124f981c8066a7acdbd3571712905bba8f",
+    "practice.html": "a4f8f28835904478f5ea8249389c9f4ee578fbce03b5dc0ecd30c4aa292661b3",
+    "sources.html": "db169dcc9c6da5503343d08c1fec44287ac7b2c814930124c70d8f2582277fb6",
+    "transcript_01.html": "7173574c49597e7b5eaaefa561fc96a57a931aaf23870c12c272ba032955eaac",
+    "transcript_11.html": "1aae5108cc2bb0bf871838db967e87f73c028d97521a397c31c793b623cea55f"
+  }
+}

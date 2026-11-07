@@ -1,0 +1,333 @@
+Actual StataMP output; machine-specific log header/footer omitted.
+
+. use "data/traffic.dta", clear
+
+. describe
+
+Contains data from data/traffic.dta
+ Observations:           108                  
+    Variables:            48                  15 Nov 2024 01:36
+----------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------
+year            int     %9.0g                 1981 to 1989
+totacc          float   %9.0g                 statewide total accidents
+fatacc          int     %9.0g                 statewide fatal accidents
+injacc          int     %9.0g                 statewide injury accidents
+pdoacc          int     %9.0g                 property damage only accidents
+ntotacc         float   %9.0g                 noninterstate total acc.
+nfatacc         int     %9.0g                 noninterstate fatal acc.
+ninjacc         int     %9.0g                 noninterstate injur acc.
+npdoacc         int     %9.0g                 noninterstate property acc.
+rtotacc         int     %9.0g                 tot. acc. on rural 65 mph roads
+rfatacc         byte    %9.0g                 fat. acc. on rural 65 mph roads
+rinjacc         int     %9.0g                 inj. acc. on rural 65 mph roads
+rpdoacc         int     %9.0g                 prp. acc. on rural 65 mph roads
+ushigh          int     %9.0g                 acc. on U.S. highways
+cntyrds         int     %9.0g                 acc. on county roads
+strtes          int     %9.0g                 acc. on state routes
+t               int     %9.0g                 time trend
+tsq             int     %9.0g                 t^2
+unem            float   %9.0g                 state unemployment rate
+spdlaw          byte    %9.0g                 =1 after 65 mph in effect
+beltlaw         byte    %9.0g                 =1 after seatbelt law
+wkends          byte    %9.0g                 # weekends in month
+feb             byte    %9.0g                 =1 if month is Feb.
+mar             byte    %9.0g                 
+apr             byte    %9.0g                 
+may             byte    %9.0g                 
+jun             byte    %9.0g                 
+jul             byte    %9.0g                 
+aug             byte    %9.0g                 
+sep             byte    %9.0g                 
+oct             byte    %9.0g                 
+nov             byte    %9.0g                 
+dec             byte    %9.0g                 
+ltotacc         float   %9.0g                 log(totacc)
+lfatacc         float   %9.0g                 log(fatacc)
+prcfat          float   %9.0g                 100*(fatacc/totacc)
+prcrfat         float   %9.0g                 100*(rfatacc/rtotacc)
+lrtotacc        float   %9.0g                 log(rtotacc)
+lrfatacc        float   %9.0g                 log(rfatacc)
+lntotacc        float   %9.0g                 log(ntotacc)
+lnfatacc        float   %9.0g                 log(nfatacc)
+prcnfat         float   %9.0g                 100*(nfatacc/ntotacc)
+lushigh         float   %9.0g                 log(ushigh)
+lcntyrds        float   %9.0g                 log(cntyrds)
+lstrtes         float   %9.0g                 log(strtes)
+spdt            int     %9.0g                 spdlaw*t
+beltt           int     %9.0g                 beltlaw*t
+prcfat_1        float   %9.0g                 prcfat[_n-1]
+----------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. summarize
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |        108        1985    2.594026       1981       1989
+      totacc |        108    42831.26    4608.328      32699      52971
+      fatacc |        108    377.9352    48.54678        266        500
+      injacc |        108    17861.48    1963.107      13268      21741
+      pdoacc |        108    24591.84    2773.219      19162      31425
+-------------+---------------------------------------------------------
+     ntotacc |        108    39522.97    3797.032      30759      47874
+     nfatacc |        108    335.3056    41.12971        237        434
+     ninjacc |        108    16578.78    1695.411      12492      19963
+     npdoacc |        108    22608.89    2252.886      18030      28338
+     rtotacc |        108    324.8241    82.20715        181        555
+-------------+---------------------------------------------------------
+     rfatacc |        108       13.25     5.37235          3         31
+     rinjacc |        108     146.213    41.33317         71        261
+     rpdoacc |        108    165.3611    39.44983         90        267
+      ushigh |        108    1200.546    139.7589        914       1523
+     cntyrds |        108    6641.472     505.426       5334       7805
+-------------+---------------------------------------------------------
+      strtes |        108    3640.602    313.7662       2826       4447
+           t |        108        54.5    31.32092          1        108
+         tsq |        108    3942.167    3523.893          1      11664
+        unem |        108    7.200926    1.790134        4.3       11.9
+      spdlaw |        108    .2962963    .4587521          0          1
+-------------+---------------------------------------------------------
+     beltlaw |        108    .4444444    .4992206          0          1
+      wkends |        108    13.07407    1.011187         12         15
+         feb |        108    .0833333    .2776739          0          1
+         mar |        108    .0833333    .2776739          0          1
+         apr |        108    .0833333    .2776739          0          1
+-------------+---------------------------------------------------------
+         may |        108    .0833333    .2776739          0          1
+         jun |        108    .0833333    .2776739          0          1
+         jul |        108    .0833333    .2776739          0          1
+         aug |        108    .0833333    .2776739          0          1
+         sep |        108    .0833333    .2776739          0          1
+-------------+---------------------------------------------------------
+         oct |        108    .0833333    .2776739          0          1
+         nov |        108    .0833333    .2776739          0          1
+         dec |        108    .0833333    .2776739          0          1
+     ltotacc |        108    10.65923     .108427    10.3951    10.8775
+     lfatacc |        108    5.926467    .1296591   5.583496   6.214608
+-------------+---------------------------------------------------------
+      prcfat |        108    .8856363    .0997777   .7016841   1.216828
+     prcrfat |        108    4.061432    1.228408   1.020408   8.287292
+    lrtotacc |        108    5.752455    .2486492   5.198497   6.318968
+    lrfatacc |        108     2.49936    .4258485   1.098612   3.433987
+    lntotacc |        108    10.58002    .0968368   10.33394   10.77633
+-------------+---------------------------------------------------------
+    lnfatacc |        108    5.807501    .1239746    5.46806   6.073044
+     prcnfat |        108    .8512274    .0970851   .6729805    1.18172
+     lushigh |        108     7.08378    .1170272   6.817831   7.328437
+    lcntyrds |        108    8.798209    .0763761   8.581857    8.96252
+     lstrtes |        108    8.196217    .0863759   7.946618   8.399985
+-------------+---------------------------------------------------------
+        spdt |        108    27.40741    42.73392          0        108
+       beltt |        108    37.55556    43.19253          0        108
+    prcfat_1 |        107    .8861006      .10013   .7016841   1.216828
+
+. * Date is reconstructed from the documented Jan 1981-Dec 1989 order.
+. * Check the archived trend, year, and eleven month indicators against that order.
+. assert _N == 108
+
+. generate month_id=ym(1981,1)+_n-1
+
+. format month_id %tm
+
+. assert year == year(dofm(month_id))
+
+. assert t == _n
+
+. generate byte month=month(dofm(month_id))
+
+. local m=2
+
+. foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.     assert `flag' == (month==`m')
+  3.     local ++m
+  4. }
+
+. tsset month_id
+
+Time variable: month_id, 1981m1 to 1989m12
+        Delta: 1 month
+
+. generate double logacc=ln(totacc) if totacc>0 & !missing(totacc)
+
+. assert !missing(logacc,unem,spdlaw,beltlaw,wkends)
+
+. generate trend=_n
+
+. * BEGIN conventional
+. regress logacc trend i.month unem spdlaw beltlaw wkends
+
+      Source |       SS           df       MS      Number of obs   =       108
+-------------+----------------------------------   F(16, 91)       =     57.61
+       Model |  1.14490873        16  .071556796   Prob > F        =    0.0000
+    Residual |  .113028314        91  .001242069   R-squared       =    0.9101
+-------------+----------------------------------   Adj R-squared   =    0.8943
+       Total |  1.25793704       107  .011756421   Root MSE        =    .03524
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0002579     4.27   0.000     .0005889    .0016133
+             |
+       month |
+          2  |  -.0338346   .0177683    -1.90   0.060    -.0691291    .0014599
+          3  |    .076953   .0167941     4.58   0.000     .0435936    .1103123
+          4  |   .0104562   .0170469     0.61   0.541    -.0234053    .0443178
+          5  |   .0237075   .0169389     1.40   0.165    -.0099395    .0573546
+          6  |   .0219334   .0172149     1.27   0.206    -.0122619    .0561288
+          7  |   .0499292   .0167036     2.99   0.004     .0167496    .0831088
+          8  |   .0559523   .0168173     3.33   0.001     .0225468    .0893578
+          9  |   .0420694   .0172819     2.43   0.017     .0077411    .0763977
+         10  |    .081717   .0169554     4.82   0.000     .0480372    .1153968
+         11  |   .0768721   .0172455     4.46   0.000     .0426161    .1111282
+         12  |   .0990862   .0170705     5.80   0.000     .0651778    .1329947
+             |
+        unem |  -.0212173   .0033974    -6.25   0.000    -.0279659   -.0144688
+      spdlaw |  -.0537593   .0126036    -4.27   0.000    -.0787948   -.0287238
+     beltlaw |   .0954526    .014235     6.71   0.000     .0671765    .1237288
+      wkends |   .0033333   .0037761     0.88   0.380    -.0041675    .0108342
+       _cons |   10.63986   .0630859   168.66   0.000     10.51455    10.76518
+------------------------------------------------------------------------------
+
+. * END conventional
+. estimates store conventional
+
+. scalar b_ols=_b[beltlaw]
+
+. scalar se_ols=_se[beltlaw]
+
+. predict double residual, residuals
+
+. * BEGIN robust
+. regress logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
+
+Linear regression                               Number of obs     =        108
+                                                F(16, 91)         =      51.37
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9101
+                                                Root MSE          =     .03524
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0002676     4.12   0.000     .0005696    .0016326
+             |
+       month |
+          2  |  -.0338346    .021402    -1.58   0.117    -.0763471    .0086779
+          3  |    .076953   .0215727     3.57   0.001     .0341013    .1198046
+          4  |   .0104562   .0189763     0.55   0.583    -.0272378    .0481503
+          5  |   .0237075    .018758     1.26   0.210    -.0135529    .0609679
+          6  |   .0219334   .0200891     1.09   0.278    -.0179711    .0618379
+          7  |   .0499292   .0198585     2.51   0.014     .0104827    .0893756
+          8  |   .0559523   .0193811     2.89   0.005     .0174541    .0944505
+          9  |   .0420694   .0186208     2.26   0.026     .0050814    .0790574
+         10  |    .081717   .0211651     3.86   0.000     .0396752    .1237588
+         11  |   .0768721   .0199737     3.85   0.000     .0371969    .1165474
+         12  |   .0990862    .021658     4.58   0.000     .0560653    .1421072
+             |
+        unem |  -.0212173   .0038238    -5.55   0.000    -.0288128   -.0136218
+      spdlaw |  -.0537593   .0120059    -4.48   0.000    -.0776076    -.029911
+     beltlaw |   .0954526   .0123682     7.72   0.000     .0708847    .1200206
+      wkends |   .0033333   .0039443     0.85   0.400    -.0045016    .0111682
+       _cons |   10.63986   .0681238   156.18   0.000     10.50454    10.77518
+------------------------------------------------------------------------------
+
+. * END robust
+. scalar se_robust=_se[beltlaw]
+
+. assert abs(_b[beltlaw]-b_ols)<1e-10
+
+. * BEGIN hac
+. newey logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
+
+Regression with Newey–West standard errors      Number of obs     =        108
+Maximum lag = 4                                 F( 16,        91) =      37.42
+                                                Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0003897     2.83   0.006      .000327    .0018752
+             |
+       month |
+          2  |  -.0338346   .0168283    -2.01   0.047    -.0672619   -.0004073
+          3  |    .076953   .0183367     4.20   0.000     .0405293    .1133766
+          4  |   .0104562   .0176927     0.59   0.556    -.0246882    .0456006
+          5  |   .0237075    .018769     1.26   0.210    -.0135748    .0609899
+          6  |   .0219334   .0200354     1.09   0.277    -.0178644    .0617313
+          7  |   .0499292   .0200711     2.49   0.015     .0100605    .0897979
+          8  |   .0559523   .0194475     2.88   0.005     .0173223    .0945823
+          9  |   .0420694   .0187812     2.24   0.028     .0047629    .0793759
+         10  |    .081717    .021099     3.87   0.000     .0398064    .1236276
+         11  |   .0768721   .0210425     3.65   0.000     .0350737    .1186705
+         12  |   .0990862   .0241168     4.11   0.000     .0511812    .1469913
+             |
+        unem |  -.0212173   .0051302    -4.14   0.000    -.0314079   -.0110268
+      spdlaw |  -.0537593   .0170449    -3.15   0.002    -.0876169   -.0199018
+     beltlaw |   .0954526   .0188985     5.05   0.000     .0579131    .1329922
+      wkends |   .0033333   .0028746     1.16   0.249    -.0023768    .0090434
+       _cons |   10.63986   .0635823   167.34   0.000     10.51356    10.76616
+------------------------------------------------------------------------------
+
+. * END hac
+. scalar se_hac=_se[beltlaw]
+
+. assert abs(_b[beltlaw]-b_ols)<1e-10
+
+. * BEGIN exact_change
+. nlcom 100*(exp(_b[beltlaw])-1)
+
+       _nl_1: 100*(exp(_b[beltlaw])-1)
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       _nl_1 |   10.01567    2.07913     4.82   0.000     5.940653    14.09069
+------------------------------------------------------------------------------
+
+. * END exact_change
+. * BEGIN bg
+. estimates restore conventional
+(results conventional are active now)
+
+. estat bgodfrey, lags(1 4)
+
+Breusch–Godfrey LM test for autocorrelation
+---------------------------------------------------------------------------
+    lags(p)  |          chi2               df                 Prob > chi2
+-------------+-------------------------------------------------------------
+       1     |         13.010               1                   0.0003
+       4     |         16.907               4                   0.0020
+---------------------------------------------------------------------------
+                        H0: no serial correlation
+
+. * END bg
+. generate lag_residual=L.residual
+(1 missing value generated)
+
+. * Export the numeric Stata date; the downloadable do-file reapplies %tm.
+. format month_id %9.0g
+
+. export delimited month_id month year totacc logacc residual lag_residual trend unem spdlaw beltlaw
+>  wkends using "output/traffic.csv", replace
+file output/traffic.csv saved
+
+. file open stats using "output/traffic_stats.csv", write replace
+
+. file write stats "method,coefficient,se" _n
+
+. file write stats "Conventional," (b_ols) "," (se_ols) _n
+
+. file write stats "Robust," (b_ols) "," (se_robust) _n
+
+. file write stats "HAC_4," (b_ols) "," (se_hac) _n
+
+. file close stats
+
+. display "ECO603_MEETING_11_COMPLETE"
+ECO603_MEETING_11_COMPLETE
+

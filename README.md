@@ -2,6 +2,8 @@
 
 Course presentations by Shi Qiu.
 
+ECO603 is being rebuilt for Spring 2027 at [ECO603/](https://shiqiuecon.github.io/AUS/ECO603/). This draft review edition retains the previous topic coverage and plans 180-minute weekly meetings. It currently contains full scripts and interactive slides for Meetings 01 and 11, 42 formative practice questions, and a proposed course map. Other meetings remain outlines. Actual Stata output and reproducible CSV/do-file examples are included. Narration will be produced only after the relevant transcripts receive explicit instructor approval; no ECO603 audio is included.
+
 ECO351 narrated lessons are at [ECO351/](https://shiqiuecon.github.io/AUS/ECO351/?v=eco351-econometrics-v2): 26 classroom lectures and four supplementary decks, preserving the classroom graphs, equations, and raw Stata output. Expanded explanations focus on the course applications, interpretation, and causal assumptions. Locally generated narration is paired with a synchronized paragraph transcript; select a paragraph to replay its explanation. The course index links each tested lesson using its content revision. Speed controls, automatic advancement, and offline downloads are included. Unreleased Quiz 3 and Quiz 4 recap pages are withheld; assessments and instructor files are not published.
 
 ```text
@@ -33,8 +35,8 @@ The lesson pages preserve the refined classroom slides as vector graphics with L
 
 This repository and its GitHub Pages website are public. Anyone can view or copy the published materials.
 
-GitHub Pages publishes **main → /(root)**. The root page links to the QBA201 and ECO351 course indexes, which link to their available lectures. `.nojekyll` preserves folder names containing underscores.
+GitHub Pages publishes **main → /(root)**. The root page links to the QBA201, ECO351 and ECO603 course indexes, which link to their available lectures. `.nojekyll` preserves folder names containing underscores.
 
 All HTML pages request `noindex, nofollow`. This does not restrict access. The lesson requires one click on **Start narrated lesson** to enable sound, then advances automatically and stops at the end.
 
-Only narrated teaching materials belong here. Assessment papers, answer keys, and the surrounding course authoring folders are not part of this repository.
+Public teaching materials belong here. ECO603 transcript review editions may precede narration. Formative practice may include worked solutions; original assessment papers, instructor answer keys, student records, and private authoring folders are not part of this repository.
