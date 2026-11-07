@@ -1,0 +1,77 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN conventional
+. regress score str el
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =    155.01
+       Model |  64864.3011         2  32432.1506   Prob > F        =    0.0000
+    Residual |  87245.2925       417  209.221325   R-squared       =    0.4264
+-------------+----------------------------------   Adj R-squared   =    0.4237
+       Total |  152109.594       419  363.030056   Root MSE        =    14.464
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .3802783    -2.90   0.004    -1.848797   -.3537945
+          el |  -.6497768   .0393425   -16.52   0.000    -.7271112   -.5724423
+       _cons |   686.0322   7.411312    92.57   0.000     671.4641    700.6004
+------------------------------------------------------------------------------
+
+. * END conventional
+. record conventional str
+
+. * BEGIN robust
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END robust
+. record robust str
+
+. * BEGIN policy
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
+------------------------------------------------------------------------------
+
+. * END policy
+. * BEGIN practical_null
+. test str=-1
+
+ ( 1)  str = -1
+
+       F(  1,   417) =    0.05
+            Prob > F =    0.8151
+
+. * END practical_null
+. 
+. postclose results
+
+. use "output/meeting_04_estimates.dta", clear
+
+. export delimited using "output/meeting_04_estimates.csv", replace
+(file output/meeting_04_estimates.csv not found)
+file output/meeting_04_estimates.csv saved
+
+. display "ECO603_MEETING_04_COMPLETE"
+ECO603_MEETING_04_COMPLETE
+

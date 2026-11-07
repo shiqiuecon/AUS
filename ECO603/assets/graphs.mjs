@@ -1,4 +1,5 @@
-import {data,escapeHTML as e} from './common.mjs?v=ab6e29338788';
+import {dagSVG} from './dag.mjs?v=50e65922206d';
+import {data,escapeHTML as e} from './common.mjs?v=f31c2011ad1e';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
 const X=(v,lo,hi)=>85+(v-lo)/(hi-lo)*765;
@@ -61,8 +62,8 @@ function dag(step){
 function counterfactual(step){
  let s=node(295,25,310,'One target district','Same population, two policy states');
  s+=arrow(365,108,245,185)+arrow(535,108,660,185);
- s+=node(70,200,330,'Ratio of 20','Potential score: Yᵢ(20)')+node(500,200,330,'Ratio of 22','Potential score: Yᵢ(22)');
- if(step>0)s+=text(450,330,'Policy difference: Yᵢ(20) − Yᵢ(22)',28);
+ s+=node(70,200,330,'Ratio of 20','Potential score under ratio 20')+node(500,200,330,'Ratio of 22','Potential score under ratio 22');
+ if(step>0)s+=text(450,330,'Score under 20 minus score under 22',28);
  if(step>1)s+=text(450,382,'Only one state is observed for a district in this period.',21,'middle',gold);
  return svg(s,'Two potential outcomes for the same district. Only one staffing state can be observed.');
 }
@@ -98,7 +99,7 @@ function arsim(rho){
  let s=axes(1,100,-lim,lim,[1,50,100],[-lim,0,lim],'Simulated month','Illustrative error');
  s+=line(85,Y(0,-lim,lim),850,Y(0,-lim,lim),rule,1,'4 4');
  s+=`<polyline points="${a.map((v,i)=>`${X(i+1,1,100)},${Y(v,-lim,lim)}`).join(' ')}" stroke="${teal}" stroke-width="2.5" fill="none"/>`;
- s+=text(835,30,`uₜ = ${rho.toFixed(2)}uₜ₋₁ + εₜ · fixed innovations · 300-period burn-in`,18,'end');
+ s+=text(835,30,`Persistence ${rho.toFixed(2)} · fixed innovations · 300-period burn-in`,18,'end');
  return svg(s,'Illustrative AR(1) simulation with fixed innovation draws, not estimated traffic residuals.');
 }
 function hac(L){
@@ -107,7 +108,7 @@ function hac(L){
    const w=k<=L?1-k/(L+1):0;
    if(w>0)s+=`<rect x="${X(k,0,12)-16}" y="${Y(w,0,1.05)}" width="32" height="${345-Y(w,0,1.05)}" fill="${k===0?ink:teal}"/>`;
  }
- s+=text(835,30,`L = ${L} · wₖ = 1 − k/(L+1), k ≤ L`,20,'end');
+ s+=text(835,30,`Maximum lag ${L} · later covariances receive less weight`,20,'end');
  return svg(s,'Illustrative Bartlett weights in a Newey–West lag window. This is not a recalculation of the covariance matrix.');
 }
 function intervals(){
@@ -125,8 +126,10 @@ function intervals(){
  s+=text(835,32,'Same OLS coefficient; different uncertainty estimates',20,'end');
  return svg(s,'Three coefficient intervals based on actual Stata standard errors; all point estimates agree. Intervals use plus or minus 1.96 standard errors.');
 }
-export const graphKinds=new Set(['schools','fit','residual','adjustment','dag','counterfactual','traffic','serial','lagplot','arsim','hac','intervals']);
-export function graph(kind,step,value,progress=1){
+export const graphKinds=new Set(['causal','chart','schools','fit','residual','adjustment','dag','counterfactual','traffic','serial','lagplot','arsim','hac','intervals']);
+export function graph(kind,step,value,progress=1,spec={}){
+ if(kind==='causal')return dagSVG(data.dags[spec.id],step,typeof value==='object'?value:{});
+ if(kind==='chart'){const scenario=spec?.scenario;if(graphKinds.has(scenario)&&scenario!=='chart')return graph(scenario,step,value,progress);return extendedChart(scenario,step,value,progress);}
  if(['schools','fit','residual','adjustment'].includes(kind))return schoolplot({mode:kind,step,value,progress});
  if(kind==='dag')return dag(step);
  if(kind==='counterfactual')return counterfactual(step);
@@ -137,4 +140,106 @@ export function graph(kind,step,value,progress=1){
  if(kind==='intervals')return intervals();
  return '';
 }
-export const captions={schools:'California school districts · 420 observed districts',fit:'Rotate around the mean point. The loss uses all 420 observed districts.',residual:'Vertical distance from the observed score to the fitted line · actual district data',adjustment:'Adjusted line fixes English-learner share at its sample mean. Both fits use the same 420 districts.',dag:'Arrows show the proposed explanation. The scatterplot alone does not establish it.',counterfactual:'Conceptual policy comparison · no numerical effect is assumed',traffic:'Historical California traffic data · monthly observations',serial:'Residuals from the actual log-accident regression · 108 months',lagplot:'Actual residual pairs · one initial observation lost to lagging',arsim:'Illustrative simulation · fixed innovations · vertical range adapts to the selected persistence',hac:'Declining lag weights only. The slider does not recalculate the Stata standard errors.',intervals:'Actual Stata estimates and SEs · approximate intervals = b ± 1.96 × SE. Exact software intervals are in the output.'};
+export const captions={causal:'Assumed causal structure · dashed boxes: unobserved · gold boxes: conditioned on',schools:'California school districts · 420 observed districts',fit:'Rotate around the mean point. The loss uses all 420 observed districts.',residual:'Vertical distance from the observed score to the fitted line · actual district data',adjustment:'Adjusted line fixes English-learner share at its sample mean. Both fits use the same 420 districts.',dag:'Arrows show the proposed explanation. The scatterplot alone does not establish it.',counterfactual:'Conceptual policy comparison · no numerical effect is assumed',traffic:'Historical California traffic data · monthly observations',serial:'Residuals from the actual log-accident regression · 108 months',lagplot:'Actual residual pairs · one initial observation lost to lagging',arsim:'Illustrative simulation · fixed innovations · vertical range adapts to the selected persistence',hac:'Declining lag weights only. The slider does not recalculate the Stata standard errors.',intervals:'Actual Stata estimates and SEs · approximate intervals = b ± 1.96 × SE. Exact software intervals are in the output.'};
+
+const ticks=(lo,hi,n=5)=>Array.from({length:n},(_,i)=>Number((lo+(hi-lo)*i/(n-1)).toPrecision(3)));
+const extent=values=>{let a=Math.min(...values),b=Math.max(...values),p=(b-a)*.08||1;return[a-p,b+p];};
+const pathLine=(points,color=ink,width=3,dash='')=>`<path d="${points.map((p,i)=>`${i?'L':'M'}${p[0]},${p[1]}`).join(' ')}" fill="none" stroke="${color}" stroke-width="${width}" ${dash?`stroke-dasharray="${dash}"`:''}/>`;
+function scatter(rows,xkey,ykey,slope,label,{step=2,progress=1,intercept=null,xlabel=xkey,ylabel=ykey}={}){
+ const [xl,xh]=extent(rows.map(r=>r[xkey])),[yl,yh]=extent(rows.map(r=>r[ykey]));
+ let s=axes(xl,xh,yl,yh,ticks(xl,xh),ticks(yl,yh),xlabel,ylabel);
+ for(const r of rows.slice(0,Math.ceil(rows.length*progress)))s+=circle(X(r[xkey],xl,xh),Y(r[ykey],yl,yh),3,teal,.5);
+ if(step>0&&slope!==null){const a=intercept??average(rows,ykey)-slope*average(rows,xkey);s+=line(X(xl,xl,xh),Y(a+slope*xl,yl,yh),X(xh,xl,xh),Y(a+slope*xh,yl,yh),ink,3);}
+ s+=text(840,29,label,18,'end');
+ return {s,xl,xh,yl,yh};
+}
+export const scenarioCaptions={
+ ovb:'Observed school data. The control moves an illustrative slope between the two fitted endpoints; intermediate slopes are not new regressions.',
+ fwl:'Actual residuals after removing English-learner share and income from both variables. The slope matches the full regression.',
+ test:'Actual staffing estimate and robust SE. The reference curve is a large-sample normal approximation, not the distribution of district outcomes.',
+ retail:'401 observed positive-price and positive-income records. Lines use the actual level and quadratic regressions; no geographic sampling claim is made.',
+ sampling:'Actual Stata Monte Carlo estimates: 300 repetitions at each sample size. The data-generating staffing coefficient is 1; the omitted-variable target is 1.5.',
+ interaction:'Actual group-specific fitted lines at the overall sample mean of income. High language share means at least 10 percent English learners.',
+ lagbars:'Actual monthly unemployment coefficients from the finite distributed-lag regression. Cumulative means the sum through the selected lag.',
+ lp:'Constructed quarterly process; actual local-projection estimates with approximate pointwise 95% intervals. The dashed path is the known response.',
+ panel:'Observed state fatality rates, 1982–1988. The control selects a state; pale paths show the remaining states.',
+ did:'Constructed two-group, two-period example. Dashed treatment counterfactual uses the untreated group’s three-point change.',
+ ivfirst:'Actual 1995 state price and tax data. The first stage describes relevance; it cannot establish the exclusion restriction.',
+ binary:'Actual fitted LPM, probit and logit predictions from the same 2,380 applications. Payment-to-income is a fraction; these are descriptive fits.'
+};
+export const chartControls={ovb:['Contribution of omitted factor',0,1,.05,1],test:['Hypothesised staffing slope',-3,1,.05,0],sampling:['Sample size (100 or 1,000)',0,1,1,0],panel:['Selected state',0,47,1,0],lp:['Response horizon (quarters)',0,8,1,4],binary:['Payment-to-income ratio',0,1.5,.01,.4]};
+function extendedChart(scenario,step,value,progress){
+ const ds=data.datasets,est=data.estimates;
+ if(scenario==='ovb'){
+  const b=est['02'].short.b+(1-Number(value))*(est['02'].long.b-est['02'].short.b);
+  const r=scatter(ds.fwl,'str','score',b,`Short ${est['02'].short.b.toFixed(2)} · adjusted ${est['02'].long.b.toFixed(2)}`,{step,progress,xlabel:'Students per teacher',ylabel:'Test score (points)'});
+  return svg(r.s,'School scatterplot and illustrative slope movement between short and adjusted regression endpoints.');
+ }
+ if(scenario==='fwl')return svg(scatter(ds.fwl,'rx','ry',est['03'].full.b,'Both variables adjusted for language share and income',{step,progress,intercept:0,xlabel:'Staffing residual (students per teacher)',ylabel:'Score residual (points)'}).s,'Actual residual-on-residual plot and the full-model staffing slope.');
+ if(scenario==='test'){
+  const b=est['04'].robust.b,se=est['04'].robust.se;let s=axes(-3.1,1.1,0,1.05,[-3,-2,-1,0,1],[0,.5,1],'Staffing slope (score points per student/teacher)','Relative density');
+  s+=pathLine(Array.from({length:150},(_,i)=>{const x=-3.1+i*4.2/149;return[X(x,-3.1,1.1),Y(Math.exp(-.5*((x-b)/se)**2),0,1.05)];}),teal);
+  const h=Number(value);s+=line(X(h,-3.1,1.1),55,X(h,-3.1,1.1),345,gold,3,'7 5');
+  if(step>0)s+=line(X(b-1.96*se,-3.1,1.1),320,X(b+1.96*se,-3.1,1.1),320,ink,5);
+  s+=text(840,29,`Estimate ${b.toFixed(3)} · SE ${se.toFixed(3)} · t = ${((b-h)/se).toFixed(2)}`,19,'end');return svg(s,'Approximate sampling-density illustration, actual robust interval and chosen null value.');
+ }
+ if(scenario==='retail'){
+  const r=scatter(ds.retail,'inc10','sprice',est['05'].levels.b,'Navy: linear · Gold: quadratic',{step,progress,xlabel:'Local income (ten-thousand-dollar units)',ylabel:'Retail price (dollars)'});
+  if(step>1){const b=est['05'].linear.b,c=est['05'].squared.b,a=average(ds.retail,'sprice')-b*average(ds.retail,'inc10')-c*ds.retail.reduce((s,d)=>s+d.inc10**2,0)/ds.retail.length;
+   r.s+=pathLine(Array.from({length:100},(_,i)=>{const x=r.xl+(r.xh-r.xl)*i/99;return[X(x,r.xl,r.xh),Y(a+b*x+c*x*x,r.yl,r.yh)];}),gold);}
+  return svg(r.s,'Observed retail prices and local income with fitted level and quadratic relationships.');
+ }
+ if(scenario==='sampling'){
+  const n=Number(value)<.5?100:1000,rs=ds.sampling.filter(r=>r.n===n),lo=.4,hi=2.1,bins=34;
+  let s=axes(lo,hi,0,150,[.5,1,1.5,2],[0,50,100,150],'Estimated coefficient','Repetitions');
+  for(const [field,c] of [['b_short',gold],['b_adjusted',teal]]){
+   const counts=Array(bins).fill(0);for(const r of rs){const j=Math.floor((r[field]-lo)/(hi-lo)*bins);if(j>=0&&j<bins)counts[j]++;}
+   counts.forEach((v,j)=>{const x=lo+j*(hi-lo)/bins;s+=`<rect x="${X(x,lo,hi)}" y="${Y(v,0,150)}" width="${765/bins-1}" height="${345-Y(v,0,150)}" fill="${c}" opacity=".65"/>`;});
+  }
+  for(const [x,c] of [[1,teal],[1.5,gold]])s+=line(X(x,lo,hi),55,X(x,lo,hi),345,c,2,'6 5');
+  s+=text(840,29,`n = ${n} · Teal: controlled · Gold: omitted factor`,20,'end');return svg(s,'Monte Carlo distributions at the selected sample size, centred on different population targets.');
+ }
+ if(scenario==='interaction'){
+  const rs=ds.interaction,meanIncome=average(rs,'income'),a=est['07'].base.b+est['07'].income.b*meanIncome,b=est['07'].low.b,c=est['07'].intercept_difference.b,d=est['07'].difference.b;
+  let s=axes(14,26,610,710,[14,18,22,26],[620,650,680,710],'Students per teacher','Fitted score at mean income');
+  s+=line(X(14,14,26),Y(a+b*14,610,710),X(26,14,26),Y(a+b*26,610,710),teal,3);
+  if(step>0)s+=line(X(14,14,26),Y(a+c+(b+d)*14,610,710),X(26,14,26),Y(a+c+(b+d)*26,610,710),gold,3);
+  s+=text(840,29,`Teal: lower share (${b.toFixed(2)}) · Gold: higher share (${(b+d).toFixed(2)})`,19,'end');return svg(s,'Actual interaction-model fitted group slopes with income fixed at the same sample mean.');
+ }
+ if(scenario==='lagbars'){
+  const vals=['impact','lag1','lag2'].map(k=>est['10'][k].b);let s=axes(-.5,2.5,-.03,.01,[0,1,2],[-.03,-.02,-.01,0,.01],'Unemployment lag (months)','Log-accident coefficient');
+  vals.forEach((v,i)=>{const y=Y(Math.max(0,v),-.03,.01),h=Math.abs(Y(v,-.03,.01)-Y(0,-.03,.01));s+=`<rect x="${X(i,-.5,2.5)-55}" y="${y}" width="110" height="${h}" fill="${i===0?ink:teal}"/>`;});
+  if(step>0)s+=pathLine(vals.map((_,i)=>[X(i,-.5,2.5),Y(vals.slice(0,i+1).reduce((a,b)=>a+b,0),-.03,.01)]),gold);
+  s+=text(840,29,`Gold: cumulative coefficient · total ${vals.reduce((a,b)=>a+b,0).toFixed(4)}`,20,'end');return svg(s,'Actual impact and lag coefficients and their cumulative sum.');
+ }
+ if(scenario==='lp'){
+  const rows=ds.lp;let s=axes(0,8,-.5,1.1,[0,2,4,6,8],[-.4,0,.4,.8],'Horizon (quarters)','Response per unit shock');
+  s+=line(85,Y(0,-.5,1.1),850,Y(0,-.5,1.1),rule,2);
+  if(step>0)for(const r of rows){const x=X(r.horizon,0,8);s+=line(x,Y(r.coefficient-1.96*r.se,-.5,1.1),x,Y(r.coefficient+1.96*r.se,-.5,1.1),teal,2);}
+  s+=pathLine(rows.map(r=>[X(r.horizon,0,8),Y(r.coefficient,-.5,1.1)]),teal);
+  if(step>1)s+=pathLine(rows.map(r=>[X(r.horizon,0,8),Y(.8*.6**r.horizon,-.5,1.1)]),gold,3,'8 5');
+  const r=rows[Math.max(0,Math.min(8,Math.round(Number(value))))];s+=circle(X(r.horizon,0,8),Y(r.coefficient,-.5,1.1),7,ink,1)+text(840,29,`h = ${r.horizon} · estimate ${r.coefficient.toFixed(3)} · truth ${(.8*.6**r.horizon).toFixed(3)}`,19,'end');
+  return svg(s,'Estimated and known quarterly responses. Some finite-sample estimates can have the opposite sign from the true response.');
+ }
+ if(scenario==='panel'){
+  const rs=ds.panel,states=[...new Set(rs.map(r=>r.state))],chosen=states[Math.max(0,Math.min(states.length-1,Math.round(Number(value))))];let s=axes(1982,1988,0,5,[1982,1984,1986,1988],[0,1,2,3,4,5],'Year','Fatalities per 10,000 residents');
+  for(const st of states){const group=rs.filter(r=>r.state===st);s+=pathLine(group.map(r=>[X(r.year,1982,1988),Y(r.fatality,0,5)]),st===chosen?teal:'#d7e1e7',st===chosen?4:1);}
+  s+=text(840,29,`Selected state: ${chosen} · within-state changes differ from between-state levels`,18,'end');return svg(s,'Actual seven-year state trajectories with one state highlighted.');
+ }
+ if(scenario==='did'){
+  let s=axes(0,1,6,16,[0,1],[6,8,10,12,14,16],'Period (0: before, 1: after)','Outcome (constructed units)');
+  s+=line(X(0,0,1),Y(8,6,16),X(1,0,1),Y(11,6,16),teal,4);
+  s+=circle(X(0,0,1),Y(10,6,16),6,ink,1);
+  if(step>0)s+=line(X(0,0,1),Y(10,6,16),X(1,0,1),Y(14,6,16),ink,4);
+  if(step>1)s+=line(X(0,0,1),Y(10,6,16),X(1,0,1),Y(13,6,16),gold,3,'8 5')+line(825,Y(13,6,16),825,Y(14,6,16),gold,5);
+  s+=text(840,29,'Navy: treated · Teal: untreated · Gold: parallel-trend counterfactual',18,'end');return svg(s,'Constructed difference-in-differences example: treatment change four, comparison change three, difference one.');
+ }
+ if(scenario==='ivfirst')return svg(scatter(ds.iv,'salestax','logp',est['14'].first.b,'First-stage slope: '+est['14'].first.b.toFixed(4),{step,progress,xlabel:'Sales-tax component (real cents per pack)',ylabel:'Log real cigarette price'}).s,'Actual state first-stage relationship between the proposed tax instrument and cigarette price.');
+ if(scenario==='binary'){
+  const rs=ds.binary;let s=axes(0,1.5,-.1,1.05,[0,.3,.6,.9,1.2,1.5],[0,.25,.5,.75,1],'Payment-to-income ratio (fraction)','Fitted probability of denial');
+  for(const [field,c] of [['lpm',gold],['probit',teal],...(step>0?[['logit',ink]]:[])])s+=pathLine(rs.map(r=>[X(r.pir,0,1.5),Y(r[field],-.1,1.05)]),c,3);
+  const r=rs[Math.max(0,Math.min(150,Math.round(Number(value)*100)))];s+=line(X(r.pir,0,1.5),55,X(r.pir,0,1.5),345,rule,2,'6 5');
+  s+=text(840,29,`At ${r.pir.toFixed(2)}: LPM ${r.lpm.toFixed(3)} · Probit ${r.probit.toFixed(3)} · Logit ${r.logit.toFixed(3)}`,18,'end');return svg(s,'Actual probability curves. Gold LPM can leave the zero-to-one range; probit and logit remain bounded.');
+ }
+ return '';
+}

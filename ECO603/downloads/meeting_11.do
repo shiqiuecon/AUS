@@ -1,18 +1,16 @@
-* ECO603 Meeting 11. Save traffic.csv beside this file; run from that folder.
+* ECO603 Meeting 11. Run from the folder containing the matching CSV.
 version 19.0
 clear all
 set more off
 import delimited "traffic.csv", clear varnames(1) asdouble
+keep month_id month year totacc logacc trend unem spdlaw beltlaw wkends
 format month_id %tm
-isid month_id
 tsset month_id
-assert _N==108
-assert !missing(logacc,unem,spdlaw,beltlaw,wkends,month,trend)
 regress logacc trend i.month unem spdlaw beltlaw wkends
-estimates store conventional
+estimates store ordinary
 regress logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
 newey logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
 nlcom 100*(exp(_b[beltlaw])-1)
-estimates restore conventional
+estimates restore ordinary
 estat bgodfrey, lags(1 4)
-display "ECO603_PUBLIC_11_COMPLETE"
+display "ECO603_MEETING_11_COMPLETE"

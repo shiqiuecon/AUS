@@ -1,0 +1,107 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN levels
+. regress sprice inc10, vce(robust)
+
+Linear regression                               Number of obs     =        401
+                                                F(1, 399)         =       8.28
+                                                Prob > F          =     0.0042
+                                                R-squared         =     0.0182
+                                                Root MSE          =     .08809
+
+------------------------------------------------------------------------------
+             |               Robust
+      sprice | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       inc10 |   .0090733   .0031523     2.88   0.004     .0028761    .0152705
+       _cons |   1.002219   .0157154    63.77   0.000     .9713236    1.033114
+------------------------------------------------------------------------------
+
+. * END levels
+. record levels inc10
+
+. * BEGIN logs
+. regress lp li, vce(robust)
+
+Linear regression                               Number of obs     =        401
+                                                F(1, 399)         =       6.67
+                                                Prob > F          =     0.0101
+                                                R-squared         =     0.0159
+                                                Root MSE          =     .08426
+
+------------------------------------------------------------------------------
+             |               Robust
+          lp | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          li |   .0374749   .0145083     2.58   0.010     .0089527    .0659971
+       _cons |  -.3613775   .1559216    -2.32   0.021     -.667908   -.0548471
+------------------------------------------------------------------------------
+
+. * END logs
+. record logs li
+
+. * BEGIN quadratic
+. regress sprice c.inc10##c.inc10, vce(robust)
+
+Linear regression                               Number of obs     =        401
+                                                F(2, 398)         =       4.55
+                                                Prob > F          =     0.0111
+                                                R-squared         =     0.0182
+                                                Root MSE          =     .08821
+
+---------------------------------------------------------------------------------
+                |               Robust
+         sprice | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+          inc10 |   .0091573   .0103187     0.89   0.375    -.0111286    .0294432
+                |
+c.inc10#c.inc10 |  -7.86e-06   .0008332    -0.01   0.992    -.0016458    .0016301
+                |
+          _cons |   1.002011   .0304353    32.92   0.000     .9421772    1.061845
+---------------------------------------------------------------------------------
+
+. * END quadratic
+. record linear inc10
+
+. record squared c.inc10#c.inc10
+
+. * BEGIN slope
+. margins, dydx(inc10) at(inc10=(2 4 6))
+
+Conditional marginal effects                               Number of obs = 401
+Model VCE: Robust
+
+Expression: Linear prediction, predict()
+dy/dx wrt:  inc10
+1._at: inc10 = 2
+2._at: inc10 = 4
+3._at: inc10 = 6
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+inc10        |
+         _at |
+          1  |   .0091259   .0071961     1.27   0.205    -.0050213    .0232731
+          2  |   .0090945    .004394     2.07   0.039      .000456    .0177329
+          3  |    .009063   .0030074     3.01   0.003     .0031507    .0149754
+------------------------------------------------------------------------------
+
+. * END slope
+. export delimited sprice income inc10 lp li using "output/meeting_05_data.csv", replace
+(file output/meeting_05_data.csv not found)
+file output/meeting_05_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_05_estimates.dta", clear
+
+. export delimited using "output/meeting_05_estimates.csv", replace
+(file output/meeting_05_estimates.csv not found)
+file output/meeting_05_estimates.csv saved
+
+. display "ECO603_MEETING_05_COMPLETE"
+ECO603_MEETING_05_COMPLETE
+

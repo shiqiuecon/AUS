@@ -1,39 +1,5 @@
-Actual StataMP output; machine-specific log header/footer omitted.
+Actual StataMP numerical output. Log header and machine paths omitted.
 
-. use "data/caschool.dta", clear
-
-. rename testscr score
-
-. rename el_pct el
-
-. label variable score "Test score (points)"
-
-. label variable str "Students per teacher"
-
-. label variable el "English learners (percentage points)"
-
-. assert _N == 420
-
-. assert !missing(score,str,el)
-
-. describe score str el
-
-Variable      Storage   Display    Value
-    name         type    format    label      Variable label
-----------------------------------------------------------------------------------------------------
-score           float   %9.0g                 Test score (points)
-str             float   %9.0g                 Students per teacher
-el              float   %9.0g                 English learners (percentage points)
-
-. summarize score str el
-
-    Variable |        Obs        Mean    Std. dev.       Min        Max
--------------+---------------------------------------------------------
-       score |        420    654.1565    19.05335     605.55     706.75
-         str |        420    19.64043    1.891812         14       25.8
-          el |        420    15.76816    18.28593          0   85.53972
-
-. * BEGIN simple
 . regress score str, vce(robust)
 
 Linear regression                               Number of obs     =        420

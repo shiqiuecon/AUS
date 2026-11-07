@@ -1,16 +1,4 @@
-# Meeting 01: Economic questions and data
-
-Draft for review. No narration.
-
-## Teaching plan
-
-- 0–10 minutes: Recall and prediction
-- 10–55 minutes: Question and comparison
-- 55–65 minutes: Break
-- 65–110 minutes: Model and evidence
-- 110–120 minutes: Break
-- 120–165 minutes: Stata and practice
-- 165–180 minutes: Transfer and exit check
+# 01. Economic questions and data
 
 ## 01. Do smaller classes improve learning?
 
@@ -22,11 +10,9 @@ We will start with school districts in California. A school district is a local 
 
 Each dot in the graph represents one district. If districts with fewer students per teacher also have higher scores, the two measures have an association: they vary together in the observed data. Our task is to find out how much this comparison can tell the ministry. First predict the pattern in the dots. Then select Next step to show the fitted line, a straight line chosen to summarise that pattern. A line's slope tells us how much its height changes when we move one unit to the right.
 
-**Attempt:** Do you expect the line to slope upward or downward? Name one other district characteristic that could help explain the pattern.
+**Practice:** Do you expect the line to slope upward or downward? Name one other district characteristic that could help explain the pattern.
 
-**Solution:** A downward slope is plausible: districts with more students per teacher may have lower scores. Family resources could also matter. For example, districts serving richer families may have both more teachers and higher scores. The graph lets us check the observed pattern; it does not yet isolate the effect of hiring teachers.
-
-**Teaching note:** 0–10: individual prediction, pair discussion, reveal points before line. No prior econometrics knowledge required.
+**Explanation:** A downward slope is plausible: districts with more students per teacher may have lower scores. Family resources could also matter. For example, districts serving richer families may have both more teachers and higher scores. The graph lets us check the observed pattern; it does not yet isolate the effect of hiring teachers.
 
 ## 02. Which question are we answering?
 
@@ -38,7 +24,11 @@ A useful prediction does not always answer the causal question. For example, ave
 
 The outcome is the measure we want to explain or predict, here a test score. Throughout the course, a variable means a characteristic that can take different values, such as income, staffing or test score. Before choosing a statistical method, state what you want to learn about those variables. For this study, the description is a starting point. The final goal is to learn what hiring teachers would do to learning, and whether that gain would justify the cost.
 
-**Teaching note:** 10–55, first block: require students to rewrite one question in all three forms.
+Description: how do observed districts differ?
+
+Prediction: how well can we forecast a new outcome?
+
+Causation: what changes when the policy changes?
 
 ## 03. Define the observation before the equation
 
@@ -46,23 +36,37 @@ One observation is one district; define the variables and their units.
 
 Before writing an equation, decide what one row in the dataset represents. This is the unit of observation. Here it is a school district. We have 420 observations, so we write n=420, where n is the number of observations. We do not have one observation for every student or every classroom.
 
-Let i identify a district. Write Yᵢ for its average test score, measured in score points, and Xᵢ for its student–teacher ratio. Y is the outcome: the variable we want to explain. X is an explanatory variable, also called a regressor: a variable used to explain differences in the outcome. The subscript i simply tells us which district's values we are using.
+Let i identify a district. Write \(Y_i\) for its average test score, measured in score points, and \(X_i\) for its student–teacher ratio. Y is the outcome: the variable we want to explain. X is an explanatory variable, also called a regressor: a variable used to explain differences in the outcome. The subscript i simply tells us which district's values we are using.
 
 The population is the full set of units we want to understand; the sample is the set we observe. Our 420 districts form the observed sample, and we must decide which wider population, if any, they represent. This dataset is a cross section because it compares different districts for one study period. A time series follows a unit over time. A panel follows the same identifiable units repeatedly, such as these districts each year. These different structures will give us different comparisons later in the course.
 
-**Attempt:** Would ten years of the same 420 districts form a panel? Would ten different districts observed each year necessarily do so?
+\(i\): school district
 
-**Solution:** The first is a panel if district identities are tracked. The second may be repeated cross sections; the calendar alone does not create within-unit observations.
+\(Y_i\): average score, in points
+
+\(X_i\): students per teacher
+
+\(n=420\) districts
+
+**Practice:** Would ten years of the same 420 districts form a panel? Would ten different districts observed each year necessarily do so?
+
+**Explanation:** The first is a panel if district identities are tracked. The second may be repeated cross sections; the calendar alone does not create within-unit observations.
 
 ## 04. The comparison we want is partly missing
 
 A policy effect compares potential outcomes under two staffing choices.
 
-Now use this notation to state the ministry's comparison more precisely. Let Yᵢ(20) mean district i's score if its ratio were 20 students per teacher. Let Yᵢ(22) mean its score if the ratio were 22. These are potential outcomes: outcomes under specified policy conditions. The difference Yᵢ(20)−Yᵢ(22) is the policy effect for that district. We have named the comparison, but we have not yet measured it.
+Now use this notation to state the ministry's comparison more precisely. Let \(Y_i(20)\) mean district i's score if its ratio were 20 students per teacher. Let \(Y_i(22)\) mean its score if the ratio were 22. These are potential outcomes: outcomes under specified policy conditions. The difference \(Y_i(20)\)−\(Y_i(22)\) is the policy effect for that district. We have named the comparison, but we have not yet measured it.
 
 In the study period, the district operates at one ratio. Its score under the other ratio is a counterfactual: what would have happened under a condition we did not observe. A second district can help us estimate that missing outcome, but only if it provides a suitable comparison. If it also differs in family resources or student needs, the score difference may reflect more than staffing.
 
 A research design is a plan for making this comparison credible. For example, random assignment would allocate an offer of extra teachers by chance, rather than according to a school's expected performance. With enough units, this tends to balance other characteristics between the groups. These are observational data: we observe staffing choices rather than assigning them. We therefore need to understand how those choices were made before interpreting district differences as policy effects.
+
+\(Y_i(20)\): score if this district had a ratio of 20
+
+\(Y_i(22)\): score if the same district had a ratio of 22
+
+Policy effect: \(Y_i(20)-Y_i(22)\)
 
 ## 05. Read the data before fitting a line
 
@@ -74,11 +78,61 @@ Look at the dots before showing the line. Do districts with higher ratios genera
 
 The range of the data also limits what we can learn. The observed ratios run from about 14 to 26. Using a line from these data to predict scores at a ratio of two would be extrapolation: extending a relationship beyond the values we have observed. A prediction inside the observed range still needs care, but a prediction far outside it requires an especially strong argument. Keep that range in mind as we discuss a realistic change from 22 to 20.
 
-**Attempt:** Districts at about the same student–teacher ratio have different scores. Does this prevent a line from describing their average pattern?
+**Practice:** Districts at about the same student–teacher ratio have different scores. Does this prevent a line from describing their average pattern?
 
-**Solution:** No. A line can summarise the average pattern even when individual districts lie above and below it. Those differences tell us that staffing alone does not fully explain scores.
+**Explanation:** No. A line can summarise the average pattern even when individual districts lie above and below it. Those differences tell us that staffing alone does not fully explain scores.
 
-## 06. Why the observed groups might differ
+## 06. Use a DAG to make the causal story visible
+
+Begin with assumptions about arrows before choosing controls.
+
+A directed acyclic graph, abbreviated DAG, represents an assumed causal structure. A node is a variable, and an arrow from one node to another says that the first can directly affect the second in the model. Directed means that each arrow has a direction. Acyclic means that following arrowheads cannot bring us back to the starting node. Feedback across dates can still be represented by giving each dated variable its own node.
+
+Here X is the student–teacher ratio, Y is a score and C is prior district background. The direct staffing-to-score arrow is the effect route of interest. The two arrows out of background give another reason why staffing and scores can move together. The diagram does not attach an effect size to any arrow. It makes the economic explanation explicit so that we can discuss whether it is credible and what information we need.
+
+A path is a sequence of connected nodes. A directed causal path follows the arrowheads from the proposed cause to the outcome. An alternative path connects the same nodes without being such a directed route. A control is a variable held fixed in a comparison, an operation called conditioning. We will trace the routes next, rather than treating every observed association as a policy effect.
+
+\(Z\): English-learner share, in percent
+
+Possible confounder: related to staffing and scores
+
+\(X\leftarrow Z\rightarrow Y\): an alternative explanation
+
+## 07. A common cause creates a backdoor comparison
+
+Compare districts with similar prior background.
+
+In this diagram, C affects both staffing X and score Y. The route X back to C and then forward to Y is a backdoor path: it begins with an arrow pointing into X. It can mix the staffing relationship with background differences. C is a confounder because it is a common cause of the two variables in this proposed model.
+
+Conditioning on C means comparing at fixed values of C. For this simple fork, doing so blocks the backdoor route while leaving the directed X-to-Y route. Use the checkbox to see the change. A variable on a path is a noncollider when the two arrows along that path do not both point into it. Conditioning on a noncollider blocks that path.
+
+The graph tells us which adjustment would address this particular story. A causal estimate also needs the graph to omit no relevant common cause, a well-defined intervention, a suitable model and enough comparable observations across staffing values. Holding one measured variable fixed does not by itself establish all of these conditions.
+
+Population: \(Y_i=\beta_0+\beta_1X_i+u_i\)
+
+\(\beta_0\): intercept; \(\beta_1\): slope; \(u_i\): error
+
+Assumption: \(E(u_i\mid X_i)=0\)
+
+Fitted: \(\widehat Y_i=b_0+b_1X_i\); residual: \(e_i=Y_i-\widehat Y_i\)
+
+## 08. A shared consequence behaves differently
+
+Conditioning can open a route that was blocked.
+
+Now consider the law-and-order example. Suppose punishment policy P and age A are separate causes of criminal time C, with no common cause connecting P and A in the proposed graph. Criminal time is a collider on their connecting path: both path arrows point into it. Without conditioning on that collider or its descendants, this path is blocked.
+
+If we compare only people with the same criminal time, information about policy can change what we infer about age. Conditioning has opened the collider path. A descendant is a variable reached by following arrows away from a node. Case inclusion S is a descendant of criminal time here, so selecting on it can also open the path. Try each checkbox separately.
+
+The blocked-path rule is conditional on the causal graph and its usual probability assumptions. An open path permits dependence; it does not guarantee a nonzero correlation, because different effects can cancel. The point is that adding a control can create an unwanted association. We need to ask how a variable enters the causal process, rather than assuming every extra control is helpful.
+
+\(\Delta X=\text{new ratio}-\text{old ratio}\)
+
+\(22\rightarrow20\) gives \(\Delta X=-2\)
+
+Fitted change: \(b_1\Delta X\approx+4.56\) score points
+
+## 09. Why the observed groups might differ
 
 A confounder is another factor related to both staffing and scores.
 
@@ -88,33 +142,81 @@ Suppose language composition is related both to staffing decisions and to measur
 
 The arrows express this proposed explanation. An arrow from Z to X says language composition may influence staffing; an arrow from Z to Y says it may influence scores. Together, X←Z→Y gives an alternative route linking X and Y. To control for Z means to account for observed differences in Z when comparing ratios and scores. This motivates our next model: compare districts at the same measured language composition, while recognising that other differences may remain.
 
-## 07. Make the first regression model explicit
+Z: English-learner share, measured in percent
+
+Possible confounder: related to both X and Y
+
+X ← Z → Y: another explanation for the observed association
+
+## 10. Law and order: identify the conviction comparison
+
+A useful adjustment closes every drawn backdoor route.
+
+Let conviction probability C be the explanatory variable and criminal time Y the outcome. Enforcement intensity E influences both conviction and arrest probability A, while arrest also affects criminal time. Unobserved background U affects enforcement, arrest and criminal time. These arrows adapt the law-and-order model from the earlier ECO603 lectures.
+
+Before changing a control, trace every route from conviction to criminal time that starts by moving backward to enforcement. One runs through arrest. Another runs backward again to background and then forward to the outcome. Conditioning on enforcement blocks these routes at the same observed variable. The direct conviction-to-criminal-time route remains open.
+
+Use the checkbox to compare the diagram before and after adjustment. Under this stated graph, enforcement is an adjustment set: a collection of variables used to close the relevant backdoor paths. Whether the real application satisfies this graph remains an economic question. The exercise teaches how to translate a specific causal story into a defensible comparison.
+
+Target: \(\text{conviction probability}\rightarrow\text{criminal time}\)
+
+Ask which variable closes every backdoor route.
+
+## 11. Changing the target can change the required controls
+
+The arrest comparison still has an unobserved route.
+
+Keep the same model but make arrest probability the explanatory variable. Enforcement is already held fixed in this diagram. That closes the enforcement-based routes, yet unobserved background still affects both arrest and criminal time directly. The arrest-to-background-to-outcome backdoor remains open.
+
+This is why a control set is tied to a target comparison. A variable that was sufficient for the conviction question need not be sufficient for the arrest question. The dashed background box also reminds us that naming a necessary control does not make it observed. We may need another design or better measurements rather than another command in the same dataset.
+
+Compare the two diagrams and explain the remaining route in words. We will use the same habit with school staffing, traffic laws, panel comparisons and instruments: specify the proposed cause, trace the alternatives, and state which assumptions or data close them. A regression coefficient is useful only when its comparison is clear.
+
+\(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
+
+\(b_0=\overline Y-b_1\overline X\)
+
+Without regressor variation, the slope cannot be separately estimated.
+
+## 12. Make the first regression model explicit
 
 Define the regression equation, its coefficients and the error term.
 
-We have identified the variables and a reason the comparison may be difficult. Regression gives us a way to describe the relationship using an equation. A regression model relates an outcome to one or more explanatory variables and an error term. Begin with Yᵢ=β₀+β₁Xᵢ+uᵢ. A coefficient is a number describing the model relationship; β₀ and β₁ are the population coefficients here. β₀ is the intercept, the line's height when X is zero. β₁ is the slope, the change in that height for one more student per teacher.
+We have identified the variables and a reason the comparison may be difficult. Regression gives us a way to describe the relationship using an equation. A regression model relates an outcome to one or more explanatory variables and an error term. Begin with \(Y_i\)=\(\beta_0\)+\(\beta_1\)\(X_i\)+\(u_i\). A coefficient is a number describing the model relationship; \(\beta_0\) and \(\beta_1\) are the population coefficients here. \(\beta_0\) is the intercept, the line's height when X is zero. \(\beta_1\) is the slope, the change in that height for one more student per teacher.
 
-The error term uᵢ contains the part of the outcome outside the included linear relationship. It may include family background, student needs and other factors we have not measured. To interpret the line as the average score at each X, we add E(uᵢ|Xᵢ)=0. Read this as: among districts with a given ratio, the average error is zero. E means an average over the population, and the vertical bar means 'given'. This is called a zero conditional mean assumption. Writing the equation alone does not make the assumption true.
+The error term \(u_i\) contains the part of the outcome outside the included linear relationship. It may include family background, student needs and other factors we have not measured. To interpret the line as the average score at each X, we add E(\(u_i\)|\(X_i\))=0. Read this as: among districts with a given ratio, the average error is zero. E means an average over the population, and the vertical bar means 'given'. This is called a zero conditional mean assumption. Writing the equation alone does not make the assumption true.
 
-In the sample we estimate coefficients b₀ and b₁. Their values give the fitted score Ŷᵢ=b₀+b₁Xᵢ; the hat over Y means a fitted value. The residual eᵢ=Yᵢ−Ŷᵢ is the observed score minus that fit. We can calculate a residual, but we cannot directly observe the population error. This distinction will help us understand both how the line is chosen and what its assumptions do.
+In the sample we estimate coefficients \(b_0\) and \(b_1\). Their values give the fitted score \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\); the hat over Y means a fitted value. The residual \(e_i\)=\(Y_i\)−\(\widehat Y_i\) is the observed score minus that fit. We can calculate a residual, but we cannot directly observe the population error. This distinction will help us understand both how the line is chosen and what its assumptions do.
 
-## 08. A slope is a change with units
+\(Y_i\) = \(\beta_0\) + \(\beta_1\)\(X_i\) + \(u_i\): population model
+
+\(\beta_0\): intercept; \(\beta_1\): slope; \(u_i\): error term
+
+E(\(u_i\) | \(X_i\)) = 0: average error is zero at each X
+
+\(\widehat Y_i\) = \(b_0\) + \(b_1\)\(X_i\); residual \(e_i\) = \(Y_i\) − \(\widehat Y_i\)
+
+## 13. A slope is a change with units
 
 A fitted change equals the slope times the change in the regressor.
 
-The slope now lets us translate a proposed staffing change into a fitted score difference. Use ΔX to mean the new ratio minus the old ratio. The Greek letter Δ, read 'delta', means a change. Along a straight line, the fitted score change is b₁ΔX.
+The slope now lets us translate a proposed staffing change into a fitted score difference. Use \(\Delta X\) to mean the new ratio minus the old ratio. The Greek letter Δ, read 'delta', means a change. Along a straight line, the fitted score change is \(b_1\)\(\Delta X\).
 
-In the simple regression, which includes one explanatory variable, the estimated slope is -2.280 score points per additional student per teacher. Reducing the ratio from 22 to 20 gives ΔX=20−22=−2. Multiplying a negative slope by this negative change gives a positive fitted difference: about 4.56 score points. We are moving left and up along the fitted line.
+In the simple regression, which includes one explanatory variable, the estimated slope is -2.280 score points per additional student per teacher. Reducing the ratio from 22 to 20 gives \(\Delta X\)=20−22=−2. Multiplying a negative slope by this negative change gives a positive fitted difference: about 4.56 score points. We are moving left and up along the fitted line.
 
 Check the units as well as the sign. The result is in district score points, not percentages, and it compares two values on the line. Whether a staffing policy would cause this gain is the research-design question we discussed earlier. For now, make sure you can translate the proposed change correctly. After the break, we will examine how the data determine the line itself.
 
-**Attempt:** Use the same slope to calculate the fitted score change when the ratio rises from 20 to 23.
+\(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
 
-**Solution:** The change in the ratio is +3. The fitted score change is 3×(−2.279808), about −6.84 score points. Moving right along the downward-sloping line lowers its fitted score.
+\(b_1\): staffing slope at fixed \(Z\)
 
-**Teaching note:** End first 45-minute block. Take the 55–65 minute break after this page.
+The graph fixes language share at its sample average.
 
-## 09. Choose a line by its errors
+**Practice:** Use the same slope to calculate the fitted score change when the ratio rises from 20 to 23.
+
+**Explanation:** The change in the ratio is +3. The fitted score change is 3×(−2.279808), about −6.84 score points. Moving right along the downward-sloping line lowers its fitted score.
+
+## 14. Choose a line by its errors
 
 OLS chooses the line with the smallest sum of squared residuals.
 
@@ -124,9 +226,7 @@ The sum of squared residuals is the loss we are trying to minimise. The graph ca
 
 Move the slope control to compare candidate lines. Each line passes through the sample mean point: the average ratio and average score. The displayed loss uses all 420 districts. Try a flat line, then a steep downward line, and find where the loss is smallest. This exercise shows how OLS chooses its coefficients. Next we will follow one district's residual to see exactly what enters that calculation.
 
-**Teaching note:** 65–110: begin model block. Have students locate the SSE minimum before revealing the OLS slope.
-
-## 10. Follow one residual
+## 15. Follow one residual
 
 For one district, compare the observed score with the score on the line.
 
@@ -134,43 +234,55 @@ Choose one district with the graph control. Its dot is the observed score. To fi
 
 Predict its sign before revealing the segment. A dot above the line has a positive residual because the observed score is higher than the fit. A dot below the line has a negative residual. For example, an observed score of 670 and a fitted score of 665 give a residual of +5 points. Its squared contribution to the OLS loss is 25 squared score points. These numbers illustrate the calculation; the plotted district uses its actual data.
 
-Now choose another district and repeat the steps. The same rule applies to every dot, and OLS adds all the squared contributions. This connects the graph to the formula eᵢ=Yᵢ−Ŷᵢ. It also shows why a residual is a prediction difference for one observation, rather than the effect of changing staffing. We can now ask how all the observations combine to determine the slope.
+Now choose another district and repeat the steps. The same rule applies to every dot, and OLS adds all the squared contributions. This connects the graph to the formula \(e_i\)=\(Y_i\)−\(\widehat Y_i\). It also shows why a residual is a prediction difference for one observation, rather than the effect of changing staffing. We can now ask how all the observations combine to determine the slope.
 
-## 11. Calculate the OLS slope from the data
+## 16. Calculate the OLS slope from the data
 
 Compare each variable with its average, then combine the deviations.
 
-To combine the observations, first compare each variable with its sample average. Write X̄ for the average ratio and Ȳ for the average score; the bar means 'sample average'. The expression Xᵢ−X̄ is a deviation from the mean: how far district i's ratio lies above or below the average. Define the score deviation in the same way.
+To combine the observations, first compare each variable with its sample average. Write \(\overline X\) for the average ratio and \(\overline Y\) for the average score; the bar means 'sample average'. The expression \(X_i\)−\(\overline X\) is a deviation from the mean: how far district i's ratio lies above or below the average. Define the score deviation in the same way.
 
-The slope formula adds the cross-products (Xᵢ−X̄)(Yᵢ−Ȳ) and divides by the sum of squared ratio deviations. A cross-product here is simply the product of the two deviations. A district above the average ratio but below the average score contributes a negative product. If such combinations dominate, the fitted slope is negative. The symbol Σ means to add across all districts.
+The slope formula adds the cross-products (\(X_i\)−\(\overline X\))(\(Y_i\)−\(\overline Y\)) and divides by the sum of squared ratio deviations. A cross-product here is simply the product of the two deviations. A district above the average ratio but below the average score contributes a negative product. If such combinations dominate, the fitted slope is negative. The symbol \(\sum\) means to add across all districts.
 
-The denominator measures the variation available in X. If every district had the same ratio, it would be zero: we would have no comparison from which to estimate a slope. When it is positive, the ratio of these two sums gives b₁. Then b₀=Ȳ−b₁X̄ chooses the intercept so the line passes through the sample mean point. The next small example lets us check these steps without using software.
+The denominator measures the variation available in X. If every district had the same ratio, it would be zero: we would have no comparison from which to estimate a slope. When it is positive, the ratio of these two sums gives \(b_1\). Then \(b_0\)=\(\overline Y\)−\(b_1\)\(\overline X\) chooses the intercept so the line passes through the sample mean point. The next small example lets us check these steps without using software.
 
-## 12. A small calculation you can finish
+\(b_1\) = \(\sum\)(\(X_i\)−\(\overline X\))(\(Y_i\)−\(\overline Y\)) / \(\sum\)(\(X_i\)−\(\overline X\))²
+
+\(b_0\) = \(\overline Y\) − \(b_1\)\(\overline X\)
+
+No regressor variation ⇒ no separately estimated slope
+
+## 17. A small calculation you can finish
 
 Use three constructed districts to see the formula work.
 
 Use three constructed districts with ratios 18, 20 and 22 and scores 680, 670 and 650. These are teaching numbers, not three selected observations from the actual dataset. We know how to fit a line from the previous slide, so work through each sum before revealing the answer.
 
-The average ratio is 20 and the average score is 666⅔. Ratio deviations are therefore −2, 0 and +2. Multiply each by its corresponding score deviation and add: the numerator is −60. Square and add the ratio deviations: the denominator is 8. This gives b₁=−60/8=−7.5, and b₀=666⅔−(−7.5×20)=816⅔. The intercept follows from the formula; it does not describe a realistic district with no students per teacher.
+The average ratio is 20 and the average score is 666⅔. Ratio deviations are therefore −2, 0 and +2. Multiply each by its corresponding score deviation and add: the numerator is −60. Square and add the ratio deviations: the denominator is 8. This gives \(b_1\)=−60/8=−7.5, and \(b_0\)=666⅔−(−7.5×20)=816⅔. The intercept follows from the formula; it does not describe a realistic district with no students per teacher.
 
 Insert each ratio into this fitted equation and subtract its fitted score from the observed score. Check that the residuals sum to zero. This is a property of OLS when the model includes an intercept. It checks the calculation, but it does not test the population assumption that the error averages to zero at each X. Having checked the method, we can return to the real districts and add the language-composition variable.
 
-**Attempt:** Find the slope, intercept, fitted scores and residuals for X=(18,20,22) and Y=(680,670,650).
+**Practice:** Find the slope, intercept, fitted scores and residuals for X=(18,20,22) and Y=(680,670,650).
 
-**Solution:** b₁=−7.5 and b₀=816⅔. Fitted scores are 681⅔, 666⅔ and 651⅔. Residuals are −1⅔, +3⅓ and −1⅔, which sum to zero. Small differences from rounding are acceptable.
+**Explanation:** \(b_1\)=−7.5 and \(b_0\)=816⅔. Fitted scores are 681⅔, 666⅔ and 651⅔. Residuals are −1⅔, +3⅓ and −1⅔, which sum to zero. Small differences from rounding are acceptable.
 
-## 13. Holding an observed factor fixed
+## 18. Holding an observed factor fixed
 
 Multiple regression compares ratios and scores at a fixed value of another variable.
 
-Our first line used only the staffing ratio. We now add Zᵢ, the percentage of English learners, to the model. This is multiple regression: a regression with more than one explanatory variable. Its fitted equation is Ŷᵢ=b₀+b₁Xᵢ+b₂Zᵢ. The new coefficient b₂ gives the fitted score difference for one percentage-point increase in Z, keeping X fixed.
+Our first line used only the staffing ratio. We now add Zᵢ, the percentage of English learners, to the model. This is multiple regression: a regression with more than one explanatory variable. Its fitted equation is \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\)+\(b_2\)Zᵢ. The new coefficient \(b_2\) gives the fitted score difference for one percentage-point increase in Z, keeping X fixed.
 
-The staffing coefficient b₁ now answers a more specific descriptive question. How do fitted scores differ with the ratio when we compare districts at the same Z? This is what 'holding Z fixed' means in this equation. The word adjusted refers to this accounting for Z. We are changing the comparison, rather than physically changing a district's students or teachers.
+The staffing coefficient \(b_1\) now answers a more specific descriptive question. How do fitted scores differ with the ratio when we compare districts at the same Z? This is what 'holding Z fixed' means in this equation. The word adjusted refers to this accounting for Z. We are changing the comparison, rather than physically changing a district's students or teachers.
 
 Select Next step to compare the simple and adjusted lines. For the adjusted line we hold Z at its sample average. Both lines use the same 420 districts, so any change in their slopes comes from adding Z, not from comparing different samples. Notice whether the line becomes steeper or flatter. The next slide translates that change into the staffing comparison we used earlier.
 
-## 14. Explain why the estimated slope changed
+\(\widehat Y_i\) = \(b_0\) + \(b_1\)\(X_i\) + \(b_2\)Zᵢ
+
+\(b_1\): staffing slope when Z is held fixed
+
+The graph fixes Z at its sample average
+
+## 19. Explain why the estimated slope changed
 
 Adding Z changes the fitted comparison from about +4.56 to +2.20 score points.
 
@@ -180,13 +292,11 @@ Why might accounting for Z change the slope? If districts at different ratios al
 
 The second number is not automatically the causal gain from hiring teachers. Family resources and staffing responses to students' needs could still affect the comparison. The useful conclusion at this stage is more specific: one measured district characteristic changes the estimated staffing relationship substantially. Write the two comparisons in words. After the break, we will run the commands and read the numerical evidence behind the graph.
 
-**Attempt:** Report the two fitted score differences for 22 → 20 students per teacher. Explain why they need not be the same.
+**Practice:** Report the two fitted score differences for 22 → 20 students per teacher. Explain why they need not be the same.
 
-**Solution:** The simple model gives about +4.56 points. The adjusted model gives about +2.20 points while holding English-learner share fixed. The first comparison also reflects observed differences in language composition across districts; the second accounts for those differences within its stated model.
+**Explanation:** The simple model gives about +4.56 points. The adjusted model gives about +2.20 points while holding English-learner share fixed. The first comparison also reflects observed differences in language composition across districts; the second accounts for those differences within its stated model.
 
-**Teaching note:** End model block. Break at 110–120 minutes.
-
-## 15. Inspect variables before running the model
+## 20. Inspect variables before running the model
 
 Check the data, then use a saved do-file to reproduce the estimates.
 
@@ -196,9 +306,13 @@ The do-file names the outcome score, the ratio str and the English-learner share
 
 The regress command fits the model. Its option vce(robust) requests heteroskedasticity-robust standard errors. A standard error, abbreviated SE, estimates the standard deviation of a coefficient across comparable samples: the scale of variation in that estimate. Heteroskedasticity means the spread of the model errors differs across observations. This option allows for that unequal spread when estimating uncertainty. Its justification assumes that district errors are not related across districts and uses a large-sample approximation: reasoning about how the method behaves as the number of observations increases. It leaves the OLS coefficients unchanged. The next output shows the slope and its SE side by side.
 
-**Teaching note:** 120–165: Stata and practice. Students run commands, rather than only watch a demonstration.
+describe: check names and labels
 
-## 16. Read a genuine Stata result
+summarize: check counts, averages and spread
+
+regress score str, vce(robust): fit the line with robust SEs
+
+## 21. Read a genuine Stata result
 
 Read the coefficient, SE, test and interval in a real Stata table.
 
@@ -220,7 +334,7 @@ The last two columns give a 95% confidence interval for the population coefficie
 ------------------------------------------------------------------------------
 ```
 
-## 17. Calculate the policy-sized fitted difference
+## 22. Calculate the policy-sized fitted difference
 
 lincom translates a slope into the particular comparison we want.
 
@@ -240,7 +354,7 @@ Before interpreting that interval, check the comparison. A positive two in the c
 ------------------------------------------------------------------------------
 ```
 
-## 18. Read the adjusted regression
+## 23. Read the adjusted regression
 
 Read both coefficients with their units and the stated comparison.
 
@@ -263,7 +377,7 @@ Both coefficients describe fitted district relationships. They do not describe t
 ------------------------------------------------------------------------------
 ```
 
-## 19. Attempt the adjusted policy contrast
+## 24. Attempt the adjusted policy contrast
 
 Keep the arithmetic and the interpretation together.
 
@@ -273,9 +387,9 @@ The fitted difference is about +2.20 score points. Stata reports an SE of about 
 
 Now add an interpretation. The adjusted model compares districts at the same measured language composition, but it may still leave out other relevant differences. For example, districts might hire teachers in response to earlier low scores, while that earlier difficulty also affects current scores. To use the fitted difference as a policy effect, we would need a design that deals with this explanation. We have therefore learned both what the calculation says and what further evidence a recommendation would require.
 
-**Attempt:** Calculate the adjusted fitted difference for 22 → 20 students per teacher. State its units, what is held fixed and one remaining concern.
+**Practice:** Calculate the adjusted fitted difference for 22 → 20 students per teacher. State its units, what is held fixed and one remaining concern.
 
-**Solution:** (−2)×(−1.101296) is about +2.20 score points, holding English-learner share fixed. Other district differences, or teachers being recruited in response to earlier learning difficulties, may still affect the comparison.
+**Explanation:** (−2)×(−1.101296) is about +2.20 score points, holding English-learner share fixed. Other district differences, or teachers being recruited in response to earlier learning difficulties, may still affect the comparison.
 
 ```text
 . lincom -2*str
@@ -287,7 +401,7 @@ Now add an interpretation. The adjusted model compares districts at the same mea
 ------------------------------------------------------------------------------
 ```
 
-## 20. Would the result apply in a new setting?
+## 25. Would the result apply in a new setting?
 
 Check credibility in the original setting and relevance to the new one.
 
@@ -297,11 +411,11 @@ External validity asks whether the result applies to the population and policy w
 
 Use these checks to propose a local study. Specify which schools we would study, what staffing change we would evaluate and how we would measure learning. Then explain what comparison could tell us what would have happened without the change. A concrete plan is more useful than assuming a precise effect from elsewhere must apply locally. This brings us back to the ministry's decision rather than leaving the analysis at a regression table.
 
-**Attempt:** Propose a local staffing study. Name the schools or districts, policy change, learning measure, comparison and main concern.
+**Practice:** Propose a local staffing study. Name the schools or districts, policy change, learning measure, comparison and main concern.
 
-**Solution:** For example, study school-level learning gains after a funded reduction in the staffing ratio. Compare funded schools with schools whose lack of funding gives a credible estimate of what would otherwise have happened. If struggling schools are selected for funding, the comparison must address their different expected progress.
+**Explanation:** For example, study school-level learning gains after a funded reduction in the staffing ratio. Compare funded schools with schools whose lack of funding gives a credible estimate of what would otherwise have happened. If struggling schools are selected for funding, the comparison must address their different expected progress.
 
-## 21. Diagnose the claim
+## 26. Diagnose the claim
 
 A test of the slope and a credible policy comparison answer different questions.
 
@@ -311,13 +425,11 @@ The diagram makes the remaining issue concrete. If language composition, family 
 
 Rewrite the recommendation using the evidence we have. Name the fitted comparison and give its units, then state the specific reason it may differ from a staffing effect. This is stronger than simply writing 'association is not causation': it shows that you understand the mechanism behind the concern. The final task is to decide what evidence would address it.
 
-**Attempt:** Rewrite: 'Significant slope proves that smaller classes cause higher scores.'
+**Practice:** Rewrite: 'Significant slope proves that smaller classes cause higher scores.'
 
-**Solution:** Districts with lower student–teacher ratios have higher fitted scores in these data. A causal staffing effect would require a defensible comparison addressing factors such as family resources and staffing responses to student needs.
+**Explanation:** Districts with lower student–teacher ratios have higher fitted scores in these data. A causal staffing effect would require a defensible comparison addressing factors such as family resources and staffing responses to student needs.
 
-**Teaching note:** 165–180: individual transfer, explanation and exit check across the final three pages.
-
-## 22. What would convince you next?
+## 27. What would convince you next?
 
 Choose new data or a new comparison to address a specific concern.
 
@@ -327,11 +439,51 @@ If that choice is the main concern, a staffing offer allocated by chance could p
 
 Choose an improvement by asking which concern it addresses. Better measurement can help us account for a relevant district difference. More districts can improve precision. A credible assignment rule can help identify a policy effect. These improvements may work together, but they do different jobs. Keeping those jobs separate will guide our model choices throughout the course.
 
-**Attempt:** Compare adding more districts with allocating a staffing offer by chance. What can each improve?
+**Practice:** Compare adding more districts with allocating a staffing offer by chance. What can each improve?
 
-**Solution:** More districts can improve precision if the sampling conditions are suitable. Chance allocation can support a causal comparison by making the offer unrelated to other factors before the policy. We must still check whether the offer was implemented and whether the groups were affected by other differences.
+**Explanation:** More districts can improve precision if the sampling conditions are suitable. Chance allocation can support a causal comparison by making the offer unrelated to other factors before the policy. We must still check whether the offer was implemented and whether the groups were affected by other differences.
 
-## 23. Exit check: explain one result carefully
+## 28. DAG practice: conviction and arrest
+
+Trace the routes before choosing a control.
+
+In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
+
+## 29. DAG practice: conviction and arrest: explanation
+
+Explain what conditioning changes in this stated graph.
+
+For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route.
+
+For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
+
+For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route. For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
+
+## 30. School staffing: reproduce and explain
+
+Reproduce the evidence, then explain its economic meaning.
+
+Open schools.csv and run meeting_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
+
+Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
+
+**Practice:** Open schools.csv and run meeting_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
+
+## 31. School staffing: reproduce and explain: explanation
+
+A reproducible result needs both a calculation and an interpretation.
+
+The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change.
+
+A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
+
+The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change. A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
+
+## 32. Exit check: explain one result carefully
 
 Connect the observation, fitted difference, adjustment and policy question.
 
@@ -341,7 +493,7 @@ Compare answers with a partner. A small rounding difference is an arithmetic det
 
 The next meeting develops this point through omitted-variable bias. An omitted variable is a relevant factor left out of the regression. Bias means that the average estimate across repeated samples differs from the population value we want. If a left-out factor affects scores and is related to staffing, it can systematically distort the staffing estimate. We have already seen the motivation in the two fitted lines; next we will work out the reasoning more fully.
 
-**Attempt:** Write the four-sentence report described here.
+**Practice:** Write the four-sentence report described here.
 
-**Solution:** One observation is a school district, and staffing is measured as students per teacher. A reduction of two students per teacher gives about +4.56 fitted score points in the simple model. The difference is about +2.20 points after holding English-learner share fixed. Other district differences or staffing responses to learning needs could still prevent either number from measuring the causal gain from hiring teachers.
+**Explanation:** One observation is a school district, and staffing is measured as students per teacher. A reduction of two students per teacher gives about +4.56 fitted score points in the simple model. The difference is about +2.20 points after holding English-learner share fixed. Other district differences or staffing responses to learning needs could still prevent either number from measuring the causal gain from hiring teachers.
 

@@ -1,0 +1,182 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN dynamic
+. newey logacc L.logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
+
+Regression with Newey–West standard errors      Number of obs     =        107
+Maximum lag = 4                                 F( 17,        89) =      87.90
+                                                Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      logacc |
+         L1. |   .3326578   .1071252     3.11   0.003     .1198023    .5455133
+             |
+       trend |   .0008893   .0002853     3.12   0.002     .0003223    .0014562
+             |
+       month |
+          2  |   .0146527   .0239401     0.61   0.542    -.0329158    .0622212
+          3  |   .1430085   .0223102     6.41   0.000     .0986787    .1873384
+          4  |    .038098    .017672     2.16   0.034      .002984     .073212
+          5  |    .072244   .0204505     3.53   0.001     .0316094    .1128787
+          6  |    .062745   .0200754     3.13   0.002     .0228557    .1026344
+          7  |   .0893948   .0204455     4.37   0.000     .0487701    .1300196
+          8  |   .0938234   .0183948     5.10   0.000     .0572734    .1303733
+          9  |   .0761947    .017798     4.28   0.000     .0408305     .111559
+         10  |   .1188968   .0206093     5.77   0.000     .0779465    .1598471
+         11  |   .0991803   .0200293     4.95   0.000     .0593825    .1389781
+         12  |   .1255027   .0242489     5.18   0.000     .0773206    .1736849
+             |
+        unem |  -.0125834   .0044189    -2.85   0.005    -.0213638   -.0038031
+      spdlaw |  -.0414191   .0141509    -2.93   0.004    -.0695366   -.0133016
+     beltlaw |   .0652123   .0154671     4.22   0.000     .0344794    .0959452
+      wkends |   .0032099    .002814     1.14   0.257    -.0023815    .0088014
+       _cons |   7.018421   1.156725     6.07   0.000     4.720033    9.316809
+------------------------------------------------------------------------------
+
+. * END dynamic
+. record dynamic L.logacc
+
+. record law beltlaw
+
+. * BEGIN prais
+. prais logacc trend i.month unem spdlaw beltlaw wkends
+
+Iteration 0:  rho = 0.0000
+Iteration 1:  rho = 0.3553
+Iteration 2:  rho = 0.3819
+Iteration 3:  rho = 0.3855
+Iteration 4:  rho = 0.3860
+Iteration 5:  rho = 0.3861
+Iteration 6:  rho = 0.3861
+Iteration 7:  rho = 0.3861
+Iteration 8:  rho = 0.3861
+
+Prais–Winsten AR(1) regression with iterated estimates
+
+      Source |       SS           df       MS      Number of obs   =       108
+-------------+----------------------------------   F(16, 91)       =    640.24
+       Model |  10.9813963        16  .686337271   Prob > F        =    0.0000
+    Residual |  .097552142        91  .001072002   R-squared       =    0.9912
+-------------+----------------------------------   Adj R-squared   =    0.9896
+       Total |  11.0789485       107  .103541575   Root MSE        =    .03274
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0009183    .000368     2.50   0.014     .0001874    .0016493
+             |
+       month |
+          2  |  -.0298558   .0139349    -2.14   0.035    -.0575357   -.0021759
+          3  |   .0815099    .015585     5.23   0.000     .0505523    .1124675
+          4  |   .0161941   .0167108     0.97   0.335        -.017    .0493881
+          5  |   .0286477   .0170886     1.68   0.097    -.0052966    .0625921
+          6  |   .0275122   .0171963     1.60   0.113    -.0066461    .0616706
+          7  |    .054312   .0167468     3.24   0.002     .0210466    .0875774
+          8  |   .0612811   .0169516     3.62   0.000     .0276088    .0949535
+          9  |   .0487127   .0173537     2.81   0.006     .0142417    .0831836
+         10  |    .088227   .0168678     5.23   0.000     .0547211    .1217328
+         11  |   .0849744   .0163305     5.20   0.000     .0525358     .117413
+         12  |   .1094368   .0143486     7.63   0.000      .080935    .1379385
+             |
+        unem |   -.019975   .0047144    -4.24   0.000    -.0293397   -.0106104
+      spdlaw |   -.045256   .0179614    -2.52   0.013     -.080934   -.0095779
+     beltlaw |   .1008944   .0201055     5.02   0.000     .0609572    .1408315
+      wkends |   .0042874   .0028062     1.53   0.130    -.0012867    .0098615
+       _cons |   10.61796   .0628171   169.03   0.000     10.49318    10.74274
+-------------+----------------------------------------------------------------
+         rho |   .3861376
+------------------------------------------------------------------------------
+Durbin–Watson statistic (original)    = 1.200475
+Durbin–Watson statistic (transformed) = 2.028900
+
+. * END prais
+. record prais beltlaw
+
+. * A controlled quarterly simulation, not estimated inflation data.
+. clear
+
+. set seed 6031212
+
+. set obs 440
+Number of observations (_N) was 0, now 440.
+
+. generate quarter=tq(1960q1)+_n-1
+
+. format quarter %tq
+
+. tsset quarter
+
+Time variable: quarter, 1960q1 to 2069q4
+        Delta: 1 quarter
+
+. generate double shock=rnormal()
+
+. generate double inflation=0
+
+. forvalues i=2/440 {
+  2.     quietly replace inflation=.6*inflation[_n-1]+.8*shock+rnormal() in `i'
+  3. }
+
+. keep in 201/440
+(200 observations deleted)
+
+. tsset quarter
+
+Time variable: quarter, 2010q1 to 2069q4
+        Delta: 1 quarter
+
+. tempname lp
+
+. postfile `lp' horizon coefficient se using "output/meeting_12_lp.dta", replace
+(file output/meeting_12_lp.dta not found)
+
+. forvalues h=0/8 {
+  2.     quietly newey F`h'.inflation shock L.inflation, lag(8)
+  3.     post `lp' (`h') (_b[shock]) (_se[shock])
+  4. }
+
+. postclose `lp'
+
+. * BEGIN projection
+. newey F4.inflation shock L.inflation, lag(8)
+
+Regression with Newey–West standard errors      Number of obs     =        235
+Maximum lag = 8                                 F(  2,       232) =       2.50
+                                                Prob > F          =     0.0842
+
+------------------------------------------------------------------------------
+             |             Newey–West
+F4.inflation | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       shock |    -.17841   .1013114    -1.76   0.080    -.3780179    .0211979
+             |
+   inflation |
+         L1. |   .0652363   .0710399     0.92   0.359    -.0747295    .2052021
+             |
+       _cons |  -.2784281   .1669179    -1.67   0.097    -.6072968    .0504406
+------------------------------------------------------------------------------
+
+. * END projection
+. record horizon4 shock
+
+. use "output/meeting_12_lp.dta", clear
+
+. export delimited using "output/meeting_12_lp.csv", replace
+(file output/meeting_12_lp.csv not found)
+file output/meeting_12_lp.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_12_estimates.dta", clear
+
+. export delimited using "output/meeting_12_estimates.csv", replace
+(file output/meeting_12_estimates.csv not found)
+file output/meeting_12_estimates.csv saved
+
+. display "ECO603_MEETING_12_COMPLETE"
+ECO603_MEETING_12_COMPLETE
+

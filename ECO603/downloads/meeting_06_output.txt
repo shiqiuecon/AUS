@@ -1,0 +1,127 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN short
+. regress y x, vce(robust)
+
+Linear regression                               Number of obs     =      4,000
+                                                F(1, 3998)        =   11775.50
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7514
+                                                Root MSE          =     1.2294
+
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   1.516317   .0139733   108.51   0.000     1.488921    1.543712
+       _cons |   .9947365   .0194616    51.11   0.000     .9565808    1.032892
+------------------------------------------------------------------------------
+
+. * END short
+. record biased x
+
+. * BEGIN controlled
+. regress y x ability, vce(robust)
+
+Linear regression                               Number of obs     =      4,000
+                                                F(2, 3997)        =   10761.78
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8390
+                                                Root MSE          =     .98934
+
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   .9976925   .0159362    62.61   0.000     .9664487    1.028936
+     ability |   1.031297   .0224454    45.95   0.000     .9872913    1.075302
+       _cons |   .9881499   .0156569    63.11   0.000     .9574537    1.018846
+------------------------------------------------------------------------------
+
+. * END controlled
+. record controlled x
+
+. generate double clean_y=1+x+rnormal()
+
+. generate double noisy_x=x+sqrt(2)*rnormal()
+
+. * BEGIN measurement
+. regress clean_y noisy_x, vce(robust)
+
+Linear regression                               Number of obs     =      4,000
+                                                F(1, 3998)        =    2103.91
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.3458
+                                                Root MSE          =     1.4013
+
+------------------------------------------------------------------------------
+             |               Robust
+     clean_y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     noisy_x |   .5177554   .0112879    45.87   0.000     .4956249    .5398859
+       _cons |   1.045476   .0221565    47.19   0.000     1.002037    1.088915
+------------------------------------------------------------------------------
+
+. * END measurement
+. record measurement noisy_x
+
+. preserve
+
+. capture program drop mcdraw
+
+. program define mcdraw, rclass
+  1.     syntax, N(integer)
+  2.     clear
+  3.     set obs `n'
+  4.     generate double a=rnormal()
+  5.     generate double x=a+rnormal()
+  6.     generate double y=1+x+a+rnormal()
+  7.     quietly regress y x
+  8.     return scalar short=_b[x]
+  9.     quietly regress y x a
+ 10.     return scalar adjusted=_b[x]
+ 11. end
+
+. simulate b_short=r(short) b_adjusted=r(adjusted), reps(300) seed(6030610) nodots: mcdraw, n(100)
+
+      Command: mcdraw, n(100)
+      b_short: r(short)
+   b_adjusted: r(adjusted)
+
+
+. generate n=100
+
+. tempfile small
+
+. save `small'
+file /var/folders/77/1vjhzbsn76q82b04p34nzxjm0000gn/T//St62962.000002 saved as .dta format
+
+. simulate b_short=r(short) b_adjusted=r(adjusted), reps(300) seed(6030611) nodots: mcdraw, n(1000)
+
+      Command: mcdraw, n(1000)
+      b_short: r(short)
+   b_adjusted: r(adjusted)
+
+
+. generate n=1000
+
+. append using `small'
+
+. export delimited using "output/meeting_06_simulation.csv", replace
+(file output/meeting_06_simulation.csv not found)
+file output/meeting_06_simulation.csv saved
+
+. restore
+
+. 
+. postclose results
+
+. use "output/meeting_06_estimates.dta", clear
+
+. export delimited using "output/meeting_06_estimates.csv", replace
+(file output/meeting_06_estimates.csv not found)
+file output/meeting_06_estimates.csv saved
+
+. display "ECO603_MEETING_06_COMPLETE"
+ECO603_MEETING_06_COMPLETE
+
