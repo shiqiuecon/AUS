@@ -92,11 +92,9 @@ Here X is the student–teacher ratio, Y is a score and C is prior district back
 
 A path is a sequence of connected nodes. A directed causal path follows the arrowheads from the proposed cause to the outcome. An alternative path connects the same nodes without being such a directed route. A control is a variable held fixed in a comparison, an operation called conditioning. We will trace the routes next, rather than treating every observed association as a policy effect.
 
-\(Z\): English-learner share, in percent
+\(X\): staffing; \(Y\): scores; \(C\): prior background
 
-Possible confounder: related to staffing and scores
-
-\(X\leftarrow Z\rightarrow Y\): an alternative explanation
+Arrows state a causal model; the regression supplies numerical estimates.
 
 ## 07. A common cause creates a backdoor comparison
 
@@ -108,13 +106,9 @@ Conditioning on C means comparing at fixed values of C. For this simple fork, do
 
 The graph tells us which adjustment would address this particular story. A causal estimate also needs the graph to omit no relevant common cause, a well-defined intervention, a suitable model and enough comparable observations across staffing values. Holding one measured variable fixed does not by itself establish all of these conditions.
 
-Population: \(Y_i=\beta_0+\beta_1X_i+u_i\)
+Backdoor route: \(X\leftarrow C\rightarrow Y\)
 
-\(\beta_0\): intercept; \(\beta_1\): slope; \(u_i\): error
-
-Assumption: \(E(u_i\mid X_i)=0\)
-
-Fitted: \(\widehat Y_i=b_0+b_1X_i\); residual: \(e_i=Y_i-\widehat Y_i\)
+Compare at fixed \(C\); preserve \(X\rightarrow Y\)
 
 ## 08. A shared consequence behaves differently
 
@@ -126,11 +120,9 @@ If we compare only people with the same criminal time, information about policy 
 
 The blocked-path rule is conditional on the causal graph and its usual probability assumptions. An open path permits dependence; it does not guarantee a nonzero correlation, because different effects can cancel. The point is that adding a control can create an unwanted association. We need to ask how a variable enters the causal process, rather than assuming every extra control is helpful.
 
-\(\Delta X=\text{new ratio}-\text{old ratio}\)
+Collider: \(P\rightarrow C\leftarrow A\)
 
-\(22\rightarrow20\) gives \(\Delta X=-2\)
-
-Fitted change: \(b_1\Delta X\approx+4.56\) score points
+Conditioning on \(C\), or a descendant \(S\), can open this path.
 
 ## 09. Why the observed groups might differ
 
@@ -142,11 +134,11 @@ Suppose language composition is related both to staffing decisions and to measur
 
 The arrows express this proposed explanation. An arrow from Z to X says language composition may influence staffing; an arrow from Z to Y says it may influence scores. Together, X←Z→Y gives an alternative route linking X and Y. To control for Z means to account for observed differences in Z when comparing ratios and scores. This motivates our next model: compare districts at the same measured language composition, while recognising that other differences may remain.
 
-Z: English-learner share, measured in percent
+\(Z\): English-learner share, in percent
 
-Possible confounder: related to both X and Y
+Possible confounder: related to staffing and scores
 
-X ← Z → Y: another explanation for the observed association
+\(X\leftarrow Z\rightarrow Y\): an alternative explanation
 
 ## 10. Law and order: identify the conviction comparison
 
@@ -172,11 +164,9 @@ This is why a control set is tied to a target comparison. A variable that was su
 
 Compare the two diagrams and explain the remaining route in words. We will use the same habit with school staffing, traffic laws, panel comparisons and instruments: specify the proposed cause, trace the alternatives, and state which assumptions or data close them. A regression coefficient is useful only when its comparison is clear.
 
-\(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
+Remaining route: \(A\leftarrow U\rightarrow Y\)
 
-\(b_0=\overline Y-b_1\overline X\)
-
-Without regressor variation, the slope cannot be separately estimated.
+A control plan is specific to the chosen explanatory variable.
 
 ## 12. Make the first regression model explicit
 
@@ -188,13 +178,13 @@ The error term \(u_i\) contains the part of the outcome outside the included lin
 
 In the sample we estimate coefficients \(b_0\) and \(b_1\). Their values give the fitted score \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\); the hat over Y means a fitted value. The residual \(e_i\)=\(Y_i\)−\(\widehat Y_i\) is the observed score minus that fit. We can calculate a residual, but we cannot directly observe the population error. This distinction will help us understand both how the line is chosen and what its assumptions do.
 
-\(Y_i\) = \(\beta_0\) + \(\beta_1\)\(X_i\) + \(u_i\): population model
+Population: \(Y_i=\beta_0+\beta_1X_i+u_i\)
 
-\(\beta_0\): intercept; \(\beta_1\): slope; \(u_i\): error term
+\(\beta_0\): intercept; \(\beta_1\): slope; \(u_i\): error
 
-E(\(u_i\) | \(X_i\)) = 0: average error is zero at each X
+Assumption: \(E(u_i\mid X_i)=0\)
 
-\(\widehat Y_i\) = \(b_0\) + \(b_1\)\(X_i\); residual \(e_i\) = \(Y_i\) − \(\widehat Y_i\)
+Fitted: \(\widehat Y_i=b_0+b_1X_i\); residual: \(e_i=Y_i-\widehat Y_i\)
 
 ## 13. A slope is a change with units
 
@@ -206,11 +196,11 @@ In the simple regression, which includes one explanatory variable, the estimated
 
 Check the units as well as the sign. The result is in district score points, not percentages, and it compares two values on the line. Whether a staffing policy would cause this gain is the research-design question we discussed earlier. For now, make sure you can translate the proposed change correctly. After the break, we will examine how the data determine the line itself.
 
-\(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
+\(\Delta X=\text{new ratio}-\text{old ratio}\)
 
-\(b_1\): staffing slope at fixed \(Z\)
+\(22\rightarrow20\) gives \(\Delta X=-2\)
 
-The graph fixes language share at its sample average.
+Fitted change: \(b_1\Delta X\approx+4.56\) score points
 
 **Practice:** Use the same slope to calculate the fitted score change when the ratio rises from 20 to 23.
 
@@ -246,11 +236,11 @@ The slope formula adds the cross-products (\(X_i\)−\(\overline X\))(\(Y_i\)−
 
 The denominator measures the variation available in X. If every district had the same ratio, it would be zero: we would have no comparison from which to estimate a slope. When it is positive, the ratio of these two sums gives \(b_1\). Then \(b_0\)=\(\overline Y\)−\(b_1\)\(\overline X\) chooses the intercept so the line passes through the sample mean point. The next small example lets us check these steps without using software.
 
-\(b_1\) = \(\sum\)(\(X_i\)−\(\overline X\))(\(Y_i\)−\(\overline Y\)) / \(\sum\)(\(X_i\)−\(\overline X\))²
+\(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
 
-\(b_0\) = \(\overline Y\) − \(b_1\)\(\overline X\)
+\(b_0=\overline Y-b_1\overline X\)
 
-No regressor variation ⇒ no separately estimated slope
+Without regressor variation, the slope cannot be separately estimated.
 
 ## 17. A small calculation you can finish
 
@@ -276,11 +266,11 @@ The staffing coefficient \(b_1\) now answers a more specific descriptive questio
 
 Select Next step to compare the simple and adjusted lines. For the adjusted line we hold Z at its sample average. Both lines use the same 420 districts, so any change in their slopes comes from adding Z, not from comparing different samples. Notice whether the line becomes steeper or flatter. The next slide translates that change into the staffing comparison we used earlier.
 
-\(\widehat Y_i\) = \(b_0\) + \(b_1\)\(X_i\) + \(b_2\)Zᵢ
+\(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
 
-\(b_1\): staffing slope when Z is held fixed
+\(b_1\): staffing slope at fixed \(Z\)
 
-The graph fixes Z at its sample average
+The graph fixes language share at its sample average.
 
 ## 19. Explain why the estimated slope changed
 
