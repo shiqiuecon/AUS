@@ -1,4 +1,4 @@
-import {data,escapeHTML as e} from './common.mjs';
+import {data,escapeHTML as e} from './common.mjs?v=ab6e29338788';
 const select=document.querySelector('#week-filter');
 const initial=new URLSearchParams(location.search).get('week');
 if([...select.options].some(o=>o.value===initial))select.value=initial;

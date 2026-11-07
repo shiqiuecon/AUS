@@ -1,5 +1,5 @@
-import {data,escapeHTML as e} from './common.mjs';
-import {graph,graphKinds,captions} from './graphs.mjs';
+import {data,escapeHTML as e} from './common.mjs?v=ab6e29338788';
+import {graph,graphKinds,captions} from './graphs.mjs?v=77f32967d1d2';
 const params=new URLSearchParams(location.search);
 const requested=params.get('meeting')||'01';
 const key=Object.hasOwn(data.lessons,requested)?requested:'01';
@@ -19,7 +19,7 @@ function showVisual(){
  if(!graphKinds.has(s.kind)){$('#visual').innerHTML='';return;}
  let controls='<button id="zoom-graph" type="button" aria-pressed="false">Enlarge graph</button>';
  const config={fit:['Candidate slope',-5,1,.01,data.stats.school_simple.slope],residual:['Choose district',1,420,1,40],arsim:['Error persistence ρ',-.9,.95,.05,.65],hac:['Maximum covariance lag L',0,12,1,4]}[s.kind];
- if(config){value=config[4];controls=`<label for="graph-input">${config[0]}</label><input id="graph-input" type="range" min="${config[1]}" max="${config[2]}" step="${config[3]}" value="${value}"><output id="control-value" for="graph-input"></output>`;}
+ if(config){value=config[4];controls+=`<label for="graph-input">${config[0]}</label><input id="graph-input" type="range" min="${config[1]}" max="${config[2]}" step="${config[3]}" value="${value}"><output id="control-value" for="graph-input"></output>`;}
  if(['schools','serial','traffic'].includes(s.kind))controls+='<button id="animate" type="button">Animate reveal</button>';
  if(['schools','serial','traffic','dag','counterfactual','adjustment','residual'].includes(s.kind))controls+='<button id="reset-graph" type="button">Reset graph</button>';
  $('#visual').innerHTML=`<div class="graph-stage"></div><p class="graph-caption">${e(captions[s.kind])}</p>${controls?`<div class="graph-control">${controls}</div>`:''}`;
@@ -33,7 +33,7 @@ function showVisual(){
   frame=requestAnimationFrame(tick);
  });
  updateGraph();
- $('#zoom-graph').addEventListener('click',()=>{
+ $('#zoom-graph')?.addEventListener('click',()=>{
   const on=$('.graph-stage').classList.toggle('zoomed');
   $('#zoom-graph').setAttribute('aria-pressed',String(on));
   $('#zoom-graph').textContent=on?'Fit graph to slide':'Enlarge graph';
@@ -51,9 +51,9 @@ function render(){
  $('#position').textContent=`${index+1} / ${lesson.slides.length}`;
  $('#previous').disabled=index===0;$('#next').disabled=index===lesson.slides.length-1;
  $('#step').disabled=false;
- for(const sel of ['#full-script','#script-link'])$(sel).href=`transcript_${key}.html#slide-${index+1}`;
- $('#do-file').href=`downloads/meeting_${key}.do`;
- history.replaceState(null,'',`?meeting=${key}&slide=${index+1}`);
+ for(const sel of ['#full-script','#script-link'])$(sel).href=`transcript_${key}.html?v=${data.revision}#slide-${index+1}`;
+ $('#do-file').href=`downloads/meeting_${key}.do?v=${data.revision}`;
+ history.replaceState(null,'',`?meeting=${key}&slide=${index+1}&v=${data.revision}`);
  document.title=`Meeting ${key} · ${index+1}. ${s.title} · ECO 603`;
  showVisual();
 }

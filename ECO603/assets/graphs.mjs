@@ -1,4 +1,4 @@
-import {data,escapeHTML as e} from './common.mjs';
+import {data,escapeHTML as e} from './common.mjs?v=ab6e29338788';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
 const X=(v,lo,hi)=>85+(v-lo)/(hi-lo)*765;
@@ -62,7 +62,7 @@ function counterfactual(step){
  let s=node(295,25,310,'One target district','Same population, two policy states');
  s+=arrow(365,108,245,185)+arrow(535,108,660,185);
  s+=node(70,200,330,'Ratio of 20','Potential score: Yᵢ(20)')+node(500,200,330,'Ratio of 22','Potential score: Yᵢ(22)');
- if(step>0)s+=text(450,330,'Policy contrast: Yᵢ(20) − Yᵢ(22)',28);
+ if(step>0)s+=text(450,330,'Policy difference: Yᵢ(20) − Yᵢ(22)',28);
  if(step>1)s+=text(450,382,'Only one state is observed for a district in this period.',21,'middle',gold);
  return svg(s,'Two potential outcomes for the same district. Only one staffing state can be observed.');
 }
@@ -137,4 +137,4 @@ export function graph(kind,step,value,progress=1){
  if(kind==='intervals')return intervals();
  return '';
 }
-export const captions={schools:'California school districts · 420 observations · observational data',fit:'Rotate around the mean point. The loss uses all 420 observed districts.',residual:'Vertical distance from the observed score to the fitted line · actual district data',adjustment:'Adjusted line fixes English-learner share at its sample mean. Both fits use the same 420 districts.',dag:'Arrows state a proposed mechanism. They are not inferred from the scatterplot.',counterfactual:'Conceptual policy comparison · no invented effect size',traffic:'Historical California traffic data · monthly observations',serial:'Residuals from the actual log-accident regression · 108 months',lagplot:'Actual residual pairs · one initial observation lost to lagging',arsim:'Illustrative simulation · fixed innovations · vertical range adapts to the selected persistence',hac:'Taper weights only. The slider does not recalculate the actual Stata standard errors.',intervals:'Actual Stata estimates and SEs · approximate intervals = b ± 1.96 × SE. Exact software intervals are in the output.'};
+export const captions={schools:'California school districts · 420 observed districts',fit:'Rotate around the mean point. The loss uses all 420 observed districts.',residual:'Vertical distance from the observed score to the fitted line · actual district data',adjustment:'Adjusted line fixes English-learner share at its sample mean. Both fits use the same 420 districts.',dag:'Arrows show the proposed explanation. The scatterplot alone does not establish it.',counterfactual:'Conceptual policy comparison · no numerical effect is assumed',traffic:'Historical California traffic data · monthly observations',serial:'Residuals from the actual log-accident regression · 108 months',lagplot:'Actual residual pairs · one initial observation lost to lagging',arsim:'Illustrative simulation · fixed innovations · vertical range adapts to the selected persistence',hac:'Declining lag weights only. The slider does not recalculate the Stata standard errors.',intervals:'Actual Stata estimates and SEs · approximate intervals = b ± 1.96 × SE. Exact software intervals are in the output.'};

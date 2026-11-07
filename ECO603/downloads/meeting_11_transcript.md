@@ -14,41 +14,41 @@ Draft for review. No narration.
 
 ## 01. Why can the same estimate have different uncertainty?
 
-Start with a familiar policy question and monthly observations.
+Monthly observations may share information; uncertainty calculations must account for it.
 
-Suppose you are evaluating a traffic-safety policy. You have monthly observations on total reported accidents, unemployment, seasonal indicators and dates when two laws were in force. The outcome is a statewide monthly total, not a record for each driver. The data run from January 1981 through December 1989, giving 108 observations.
+Imagine evaluating a traffic-safety law using monthly accident records. A month is one observation in this dataset. We observe total reported accidents in California from January 1981 through December 1989, giving 108 observations. We also observe unemployment, calendar information and whether two traffic laws were in force. Our outcome is total accidents, not fatal accidents or the risk faced by one driver.
 
-Our question is whether the relation between policy indicators and accidents is estimated with honest uncertainty when neighboring months resemble one another. First predict what happens if a bad traffic month tends to be followed by another bad month. Would 108 months then contain the same information as 108 independent draws?
+Earlier, we used a regression model, an equation relating an outcome to explanatory variables, to estimate a relationship. We also used a standard error, or SE, to describe how much an estimated coefficient would vary across comparable datasets. Inference means using such estimates and their uncertainty to learn about a population relationship. Today we ask whether that uncertainty calculation needs to change when one month carries information about the next.
 
-This is an inference lesson built around a real dataset. The law indicators are not randomly assigned, so we will keep the causal limitations explicit. A statistically precise policy association can still reflect omitted changes in travel, enforcement or reporting. Today we will separate that design issue from the dependence issue rather than asking one standard-error option to solve both.
+For example, bad road conditions or a change in enforcement may last several months. Those months can share influences that our recorded variables do not fully capture. They are then dependent: knowing something about one month helps us anticipate another. If we count them as independent observations, which would provide unrelated information, we may misjudge how much we have learned. Model errors are the part of the outcome outside the included relationship. When those errors are correlated across dates, we call it serial correlation. We will trace this problem through the graphs, then compare three SE calculations for the same regression.
 
-**Attempt:** Name one reason accidents in adjacent months might remain correlated after some observed controls.
+**Attempt:** Name a factor that might affect accidents for several consecutive months but is not fully measured in the dataset.
 
-**Solution:** Persistent travel conditions, unmeasured enforcement, economic activity or reporting changes can make neighboring monthly errors related. A seasonal cycle should first be modeled if relevant rather than simply labeled random noise.
+**Solution:** A lasting change in road conditions, enforcement or reporting could affect several months. Such a shared influence can make the unexplained parts of their accident totals related.
 
 **Teaching note:** 0–10: retrieve the distinction between the conditional-mean model and the covariance of its errors.
 
-## 02. Begin with a dated model
+## 02. Define the monthly accident model
 
-Specify what is observed now, what is lagged and what each unit means.
+State the outcome, law indicators, calendar controls and error term.
 
-Let t index months. Define A_t as total reported accidents, L_t as the indicator that the seat-belt law is in force, S_t as the speed-law indicator, U_t as the unemployment rate and W_t as the number of weekends. We model log(A_t) with a linear trend, eleven month indicators, these controls and an error u_t.
+First define the variables so that we know what relationship the regression describes. Let t identify a month and Aₜ be its total reported accidents. The model uses log(Aₜ), the natural logarithm of the accident count. The logarithm is a transformation that lets differences in the fitted outcome describe proportional differences in counts. A log difference of 0.01 is approximately a 1% difference; later we will calculate the exact conversion.
 
-The coefficient on L_t is a difference in the fitted log outcome, holding the included trend, season and observed controls fixed. It is not a percentage-point change in a probability and does not concern fatal accidents unless we change the dependent variable. Defining the outcome carefully prevents the sign from being given an unrelated interpretation.
+Let Bₜ equal one when the seat-belt law is in force and zero otherwise. A variable coded zero or one is an indicator, also called a dummy variable. Define Sₜ similarly for the speed law. Uₜ is the unemployment rate and Wₜ is the number of weekends. The equation also includes a linear trend, a change at a constant fitted rate as months pass, and month effects, recurring differences between calendar months. Eleven month indicators compare February through December with January.
 
-The data are in their documented chronological order. The do-file reconstructs the Stata monthly date and verifies it against the year, sequential time trend and all eleven archived month indicators. A correct lag operation requires the correct time index. Declaring tsset without checking order and gaps is not a substitute for that verification.
+In the equation, a is a baseline intercept. The coefficients b, c, d and f multiply B, S, U and W, while g multiplies the time trend t. The error uₜ is the part of the log outcome outside this included relationship. The coefficient b therefore describes a fitted difference in log accidents between law states, after accounting for the other listed variables. We will first investigate the remaining error pattern, then return to interpreting b.
 
 **Teaching note:** 10–55: question/comparison block across pages 2–7.
 
-## 03. Remove modeled patterns before interpreting residuals
+## 03. Separate the outcome pattern from the error pattern
 
-A seasonal outcome pattern is not itself an error diagnostic.
+Serial correlation concerns errors across dates, after specifying the model.
 
-The outcome time plot includes both what the model explains and what it leaves unexplained. If accidents rise in particular months or trend over the sample, those patterns can belong in the conditional-mean model. Serial correlation concerns the relation between errors across dates after that model is specified.
+The raw accident graph shows the outcome before we account for its predictors. A pattern that repeats at the same part of each year is seasonality. A gradual movement across the years is a trend. The month indicators and time trend in our equation are intended to describe such patterns, so a pattern in the raw outcome is not automatically a problem in the remaining error.
 
-This distinction is why we do not diagnose the regression merely by pointing at the raw outcome plot. A strongly seasonal series can have relatively uncorrelated model errors after adequate adjustment. Conversely, an outcome that looks fairly stable can leave persistent residuals after regression.
+We call the model's average outcome at given regressor values its conditional mean. 'Conditional' means that we specify the values of the explanatory variables when making the comparison. If the conditional-mean model is appropriate, its error averages to zero at those values. Serial correlation means that errors at different dates are correlated: for example, a positive error in one month tends to be followed by a positive error. Autocorrelation is another name for correlation across time within a series.
 
-Use the plot to predict which controls are economically sensible, then compare it with the residual path on the next page. The purpose is not to force every visible wiggle into the model. It is to identify systematic, substantively justified variation and then assess the remaining dependence under a clearly stated specification.
+This distinction tells us what to examine next. First allow the model to account for trend, seasonality and the observed controls. Then inspect the residuals, the observed outcomes minus their fitted values. A seasonal accident series may have little residual dependence after this adjustment. Equally, a fairly stable accident series can leave related residuals. We need the residual graph to see what the fitted model has left unexplained.
 
 **Attempt:** Does a seasonal accident plot prove that the errors in a seasonally adjusted regression are serially correlated?
 
@@ -56,81 +56,81 @@ Use the plot to predict which controls are economically sensible, then compare i
 
 ## 04. Follow the residual path
 
-Neighboring residuals can carry related information.
+Look for sequences of positive or negative residuals.
 
-Each point now shows the fitted regression's residual for one month. Positive means more log accidents than the model predicts; negative means fewer. Reveal the path gradually and look for runs above or below zero rather than reading each month as unrelated to the last.
+Each point now shows a residual from the fitted log-accident regression. A positive residual means more log accidents than the model predicts for that month; a negative one means fewer. Reveal the sequence gradually. Do several months remain on the same side of zero? Such a run is a visual sign that nearby residuals may be related.
 
-Runs are a useful visual clue, but not a complete test or a proof of a particular error process. Residuals are estimated from a model and differ from the unobserved population errors. Short samples can produce patterns by chance, while modest dependence can be hard to see. Formal diagnostics and economic reasoning therefore complement the graph.
+Residuals help us study the errors, but they are not the errors themselves. We calculate residuals after estimating the model; the population errors are unobserved. A short sequence can also show runs by chance. We will therefore use the graph to understand the concern and later use a formal test to assess it under stated assumptions.
 
-Explain why dependence changes information. If one unobserved disruption persists for several months, those observations partly repeat news about the same disruption. Treating them as independent can misstate the variance of the estimated policy coefficient. The direction and magnitude of the mistake depend on the regressor and covariance structure; it is not a universal rule that every serial correlation makes every conventional SE too small.
+Why would a run matter for uncertainty? Suppose one unrecorded disruption affects four consecutive months. Those observations partly repeat information about the same disruption. They need not provide as much new information as four independent disruptions. The effect on a coefficient's SE depends on which months help estimate that coefficient and how their errors are related. To see the relation more directly, we will compare each residual with the preceding month's residual.
 
 ## 05. Compare one month with the previous month
 
-A lag plot changes the horizontal variable.
+Put the previous month's residual on the horizontal axis.
 
-In this graph, the horizontal coordinate is the previous month's residual, e_(t−1), and the vertical coordinate is the current residual, e_t. We lose the first date because there is no preceding observed residual. There are 107 plotted pairs from the 108-month fit.
+A lag is a value from an earlier date. A lag-one residual is the previous month's residual, written eₜ₋₁. In this lag plot, the horizontal axis shows eₜ₋₁ and the vertical axis shows the current residual eₜ. Each dot therefore represents two neighboring months, rather than an outcome and a policy variable.
 
-If points tend to occupy the lower-left and upper-right regions, a negative residual tends to be followed by a negative one and a positive residual by a positive one. That is the kind of pattern associated with positive lag-one dependence. An alternating sequence would instead tend toward an opposite-sign pattern.
+Consider a dot in the upper-right part of the graph. Both residuals are positive: a month with more accidents than predicted followed another such month. In the lower-left part, both are negative. A tendency for dots to occupy those two regions suggests positive lag-one association. Positive means the values tend to have the same direction relative to their averages, not that both values must always be above zero.
 
-Read these axes carefully. This is not a scatterplot of accidents against unemployment, and its fitted slope is not the policy effect. We are investigating how the fitted errors relate over time. A lag plot can motivate a model check, but identifying a causal law effect still requires the separate exogeneity and counterfactual arguments.
+There are 107 pairs because the first of our 108 residuals has no observed predecessor. The graph does not estimate the law's effect. It studies the pattern left after the accident regression. We can make that pattern easier to understand with a constructed process in which we choose how strongly one error carries into the next.
 
 **Attempt:** Why are there 107 residual pairs? What does a point in the upper-right region mean?
 
 **Solution:** The first residual has no observed predecessor. An upper-right point is a month with a positive residual preceded by another month with a positive residual.
 
-## 06. Build a serially correlated process
+## 06. See how an error can carry into the next month
 
-An AR(1) illustration makes persistence visible.
+An AR(1) process adds a new shock to a fraction of the previous error.
 
-Consider an illustrative error process u_t=ρu_(t−1)+ε_t. The parameter ρ describes how much of the previous error carries into the next month. The innovations ε_t are independent, mean-zero shocks in this constructed example. For an absolute value of ρ less than one, a stationary version of this process exists under suitable finite-variance conditions.
+To study how errors carry over, consider uₜ=ρuₜ₋₁+εₜ. This is a first-order autoregressive process, abbreviated AR(1). 'Autoregressive' means that a value depends on its own past value, and 'first order' means one earlier period enters directly. Here uₜ is the current error, ρ, read 'rho', is the carry-over coefficient, and εₜ is a new, unpredictable change. Such a new change is called an innovation.
 
-Move ρ while keeping the innovation draws fixed. At zero, the next error does not inherit the previous error through this channel. A positive value produces persistence; a negative value encourages alternating signs. Near one, shocks can take a long time to fade. The displayed path is a simulation after a burn-in, not an estimated traffic-error process.
+For this illustration, the innovations are independent and average to zero. If ρ=0.6 and last month's error is two, the part carried into this month is 1.2 before adding the new innovation. A positive ρ produces persistence: effects remain for several periods. A negative ρ tends to produce alternating signs. With |ρ|<1, meaning rho is between −1 and 1, an initial disturbance fades over time rather than growing on its own.
 
-Keeping the innovations fixed helps you see the consequence of changing the persistence parameter instead of confusing it with a new random draw. This is a teaching experiment about dependence. It does not prove that the actual residuals follow AR(1), nor does choosing a visually similar path justify a particular estimator.
+Move the control while keeping the same innovation draws. The graph is a simulation, data generated by a specified rule, rather than an estimated traffic-error process. It uses a burn-in: the first 300 generated periods are discarded so the starting value has little effect on the displayed path. Keeping the new shocks fixed helps us isolate what changing ρ does. The graph's vertical range adjusts to keep the path visible, so check the axis values as well as the shape.
 
-## 07. Separate three questions
+## 07. Separate the comparison, model and uncertainty
 
-Coefficient validity, dynamic specification and inference are distinct.
+Related errors do not, by themselves, tell us whether the coefficient is valid.
 
-First ask whether the regressors are exogenous in the relevant model. If a regressor is correlated with the current error, the policy slope may not estimate the intended target consistently. Second ask whether the conditional-mean specification omits important dynamics. Third ask how the errors' covariance affects uncertainty around the estimator.
+The simulation shows how errors can be related over time. Before choosing a response, separate three questions. Are the regressors suitably unrelated to the error? Does the model account for the predictable parts of the outcome? Does the SE calculation allow for the dependence that remains? These concern the comparison, the model and uncertainty, respectively.
 
-Serial correlation alone does not automatically imply biased or inconsistent OLS coefficients. For example, with a correctly specified linear mean and suitable strict exogeneity, serially correlated errors need not bias OLS. Under appropriate stationarity, weak-dependence, moment and rank conditions, consistent estimation can still be possible.
+Exogeneity is the assumption that the regressors have the required lack of relation with the error. A common stronger version is strict exogeneity: the error at a date averages to zero given the regressors at all dates, including future ones. For example, a policy change made in response to unrecorded accident risk would make the policy variable related to the error and threaten this assumption. Endogeneity names this problem of a regressor being related to the error.
 
-But when the model includes a lagged outcome, persistent omitted errors may be correlated with that lagged outcome. Then an inference adjustment alone is insufficient. Write a short diagnosis stating which of the three questions is at stake before choosing a command. This discipline is more useful than memorizing 'serial correlation means use Newey–West'.
+Serial correlation alone does not establish endogeneity. With an appropriate linear model and strict exogeneity, OLS, ordinary least squares, can remain unbiased even if errors are serially correlated. Unbiased means its average estimate across repeated datasets equals the population coefficient. Consistency is a different property: as the number of observations grows, the estimator approaches that coefficient. Serial dependence can be compatible with consistency when the needed stability, dependence and regressor conditions hold. We must therefore diagnose coefficient validity separately from how we calculate its SE. The next slide shows exactly where dependence enters the uncertainty calculation.
 
 **Teaching note:** Break after page 7, at 55–65 minutes.
 
-## 08. A conventional SE omits cross-date terms
+## 08. Why dependence changes uncertainty
 
-Dependence adds covariance, not more independent observations.
+Related errors add covariance terms to the variance calculation.
 
-To see the issue without matrix algebra, suppose we average n errors. The variance of their average equals one over n squared times the sum of all individual variances plus twice all pairwise covariances. Under independence the cross-date covariances vanish. Under serial dependence they need not.
+Recall that an SE estimates the spread of a coefficient across comparable datasets. Variance is another measure of spread: the average squared distance from a variable's mean. Its square root is the standard deviation. Covariance measures how two variables move together around their means. A positive covariance means they tend to be above their means together or below their means together. These ideas let us see what dependence adds to uncertainty.
 
-OLS slopes involve weighted combinations of errors, so their variance similarly depends on cross-date terms involving regressors and errors. Heteroskedasticity-robust inference allows the size of the error variance to differ across observations. It does not generally account for nonzero covariance between different dates.
+Start with the average of n errors, written mean u. The formula adds their individual variances and twice the covariances between different dates, then divides by n². The symbol Σ means 'add'; Σₛ<ₜ adds each pair of dates once. For two errors each with variance one and covariance zero, the average has variance (1+1)/4=0.5. If their covariance is 0.5, its variance becomes (1+1+2×0.5)/4=0.75. Averaging has removed less uncertainty because the errors move together.
 
-This explains why adding vce(robust) need not solve a time-series dependence problem. It also explains why the exact effect on an SE depends on the weights and covariance signs rather than just an intuitive count of observations. We use an average to expose the logic, not to replace the regression covariance formula with the formula for a sample mean.
+An OLS coefficient also combines errors, with weights determined by the regressors. Its variance therefore depends on related cross-date terms, not just the variance of each error separately. Conventional SEs rely on a restrictive error structure. Heteroskedasticity-robust SEs allow unequal error variance, called heteroskedasticity, but generally leave out serial covariance terms. The average example explains why another adjustment may be needed; it is not the full formula for a regression SE.
 
 **Teaching note:** 65–110: model/evidence block across pages 8–14.
 
-## 09. HAC estimates long-run covariance
+## 09. Use HAC to account for unequal spread and time dependence
 
-Allow both changing variance and short-range dependence.
+Newey–West keeps the OLS coefficients and changes their estimated uncertainty.
 
-HAC stands for heteroskedasticity and autocorrelation consistent. The Newey–West procedure keeps the OLS point estimate and estimates its covariance using same-date and selected cross-date products of regressors times residuals. It does not change the dependent variable or add lagged regressors.
+The missing covariance terms motivate HAC standard errors. HAC stands for heteroskedasticity and autocorrelation consistent. It describes a method for estimating uncertainty that can allow both unequal error variance and dependence across dates. Newey–West is the particular HAC method used here. It retains the OLS coefficients while estimating their variances and how the coefficient estimates vary together. The SE of a coefficient is the square root of its estimated variance.
 
-The lag window gives a visual account of one part of the calculation. For maximum lag L, Bartlett weights taper as 1−k/(L+1) at positive lag k up to L. For L=4, those weights are 0.8, 0.6, 0.4 and 0.2. These are weights on estimated lag-covariance contributions, not the actual autocorrelations in the data.
+Newey–West combines same-date information with contributions from pairs of dates separated by selected lags. For a regression, these contributions involve regressors multiplied by residuals, not residual correlations alone. A lag window specifies which lags enter and their weights. The graph shows Bartlett weights, which decline in a straight line as dates move further apart. Let L be the maximum lag and k a particular positive lag. Its weight is 1−k/(L+1), up to L. With L=4, the weights are 0.8, 0.6, 0.4 and 0.2.
 
-The word consistent requires assumptions: suitable weak dependence, moments, a valid coefficient model and bandwidth conditions. A fixed lag chosen for a short classroom example is a specification to inspect, not a guarantee of reliable finite-sample inference. State the data frequency and lag choice, and consider whether the relevant dependence extends beyond the chosen window.
+The word 'consistent' is a condition-dependent claim, not a promise for any dataset. The covariance estimate can approach the needed population value as data increase when the model, error behaviour and lag-selection conditions support that result. Weak dependence means that relations between distant observations weaken sufficiently for such large-sample reasoning. A fixed four-lag classroom example does not establish those conditions. The graph explains the weights; next we will connect their lags to calendar time.
 
 ## 10. Interpret the lag in calendar time
 
-Four lags mean four months in these data.
+Interpret the selected maximum lag using months or quarters.
 
-In our monthly application, lag(4) uses residual-based dependence contributions through four months. In quarterly data the same option reaches four quarters, which is a year. Confusing the sampling frequency changes the substantive interpretation of the correction.
+Our maximum lag L must be interpreted using the data frequency, meaning how often we observe the series. These observations are monthly, so lag(4) allows covariance contributions through four months. In quarterly data, one observation covers three months; the same lag option would reach four quarters, or one year.
 
-The option is not a command to add four lags of accidents, four lags of a policy variable or four seasonal indicators. Those changes would alter the conditional-mean regression. Newey–West instead changes how uncertainty is estimated for the existing OLS coefficients on a fixed sample.
+This maximum lag is also called a bandwidth in this setting. It controls how far apart two observations can be and still contribute directly to the estimated covariance. It does not add lagged accidents, lagged policy variables or more seasonal controls to the regression equation. Adding those variables would change the mean model; selecting this window changes the uncertainty calculation.
 
-Ask what economic mechanism might make errors related over four, twelve or more months. A larger lag window includes more estimated covariance terms and can make a noisy estimate still noisier; the resulting SE need not increase monotonically. The slider illustrates taper weights only. To compare actual lag choices, rerun Stata and report the resulting estimates rather than pretending the slider has recalculated a HAC covariance matrix.
+Move L in the graph and watch which weights remain positive. A larger window includes more estimated covariance contributions, but it does not guarantee a larger or better SE. Those extra terms can add noise, and their values can have different signs. The graph changes the taper weights only; it does not rerun Stata. To compare actual SEs for several windows, we would run the same regression with each stated lag choice and explain why those windows are plausible for the application.
 
 **Attempt:** For quarterly data, what calendar window is lag(12)? Does that option add twelve regressors?
 
@@ -138,69 +138,62 @@ Ask what economic mechanism might make errors related over four, twelve or more 
 
 ## 11. What stays fixed in the three fits?
 
-Same dependent variable, regressors and sample; different covariance estimates.
+Hold the fitted model fixed and compare its three SE calculations.
 
-The three estimates shown here use the same log-accident outcome, trend, month effects, unemployment, both policy indicators and weekend count, on the same 108 observations. Conventional, heteroskedasticity-robust and Newey–West lag-four methods therefore produce the same OLS law coefficient.
+We are now ready to compare the three SE methods in the actual accident regression. The outcome, regressors and 108 observations are identical in all three fits. Conventional, heteroskedasticity-robust and Newey–West calculations therefore report the same OLS law coefficient. The different bars show different estimated uncertainty, rather than three different estimated policy relationships.
 
-The horizontal intervals use the familiar large-sample estimate ±1.96 times SE to make the uncertainty comparison visible. They are explicitly approximate; the raw Stata output reports its own reference distribution and interval. Keep those two displays conceptually separate when checking exact endpoint values.
+Each bar is an approximate 95% confidence interval calculated as the estimate plus or minus 1.96 SEs. A confidence interval comes from a procedure designed to cover the population coefficient at its stated rate across comparable datasets. The multiplier 1.96 uses a normal reference distribution, the familiar bell-shaped pattern that gives a large-sample approximation under suitable conditions. Stata's tables use their own stated reference rule, so their interval endpoints differ slightly from this graph.
 
-The robust SE is smaller than the conventional SE in this application, while the HAC4 SE is larger. That is useful evidence against the rule that robust adjustments always increase SEs. What matters is whether the covariance estimator matches the dependence assumptions, not whether it produces the largest or most reassuring interval.
+Notice that the robust SE is smaller than the conventional SE, while the HAC4 SE is larger. HAC4 means Newey–West with a maximum of four lags. There is no rule that a robust SE must always increase. We should choose a method because its assumptions match the dependence in the application, not because it gives the widest interval or the preferred test result. With that distinction clear, we can ask which problems this adjustment still leaves unresolved.
 
-## 12. What HAC leaves unresolved
+## 12. What an SE adjustment cannot repair
 
-An uncertain estimate and a biased estimate are different problems.
+HAC changes uncertainty; it does not remove a regressor's relation with the error.
 
-Suppose the policy indicator is correlated with an omitted change in enforcement or reporting. That violates the causal comparison regardless of which SE appears next to the estimate. Newey–West leaves the coefficient unchanged and therefore cannot remove that source of endogeneity.
+The SE adjustment deals with uncertainty, but it does not change which comparison the coefficient describes. Suppose the law is introduced when officials anticipate rising accident risk that our recorded variables do not capture. The law indicator is then related to the error: the endogeneity problem defined earlier. Newey–West leaves that relation, and the OLS coefficient, unchanged.
 
-Now suppose the model includes a lagged accident outcome while the current error remains serially correlated. The lagged outcome contains past errors, which can be related to the current error. In that setting we need to examine coefficient consistency as well as standard errors. Simply changing the covariance option can give precise-looking inference around an inconsistent estimator.
+A related problem can arise after adding last month's outcome to the equation. This is a lagged outcome. It contains the influence of last month's error. If that error is related to this month's error, the lagged outcome may also be related to the current error. OLS can then be inconsistent: collecting more months does not necessarily make it approach the target coefficient. A different SE formula cannot remove that regressor–error relation.
 
-The right response depends on the diagnosis. Better dynamics may help explain an omitted predictable component. A stronger policy design may address endogeneity. HAC can address the covariance calculation under its assumptions. These responses can be combined when justified, but none should be sold as a universal correction for every problem revealed by a residual plot.
+This gives us a practical sequence. Check the comparison and the mean model before relying on an uncertainty adjustment. If the remaining concern is error dependence under a valid coefficient model, HAC may address it. If an included variable is related to the error, we need to reconsider the model or the source of the comparison. Next we will look more closely at how omitted predictable changes can create these difficulties.
 
 **Attempt:** A lagged outcome is correlated with the current error. What does an HAC option change, and what does it leave?
 
 **Solution:** It changes the estimated covariance around the fitted coefficients. It leaves the regressor–error correlation and potential coefficient inconsistency in place.
 
-## 13. Dynamic completeness concerns predictability
+## 13. Check whether past information is still missing
 
-A richer mean model can remove some residual pattern.
+Dynamic completeness concerns whether the model uses the relevant past information.
 
-Let the information set contain the current exogenous regressors and relevant history. A dynamically adequate conditional-mean specification uses that information so that omitted past information does not systematically predict the remaining error. This is the sense of dynamic completeness useful for this course.
+Suppose an unrecorded change in travel demand lasts for several months. If information from earlier months helps predict its effect on today's accidents, our model may be leaving out a predictable part of the outcome. Dynamic completeness means that, after the included variables are taken into account, additional relevant past information does not improve the prediction of the conditional mean. 'Dynamic' refers to how the relationship develops over time.
 
-If lagged outcomes or lagged predictors explain a systematic component left out of the model, including them can change coefficients, the sample and the residual dependence. The choice must be motivated by timing, mechanism and statistical evidence, not by adding lags until a favorite p-value appears.
+For example, yesterday's or last month's travel conditions may help explain today's outcome even after current unemployment and seasonality are included. Adding a justified lag can then change the fitted relationship and reduce the residual pattern. It can also reduce the sample, because the earliest observations may lack the required past values. We should explain which past information matters and why, rather than add variables only until a test gives a preferred answer.
 
-Not every residual autocorrelation is proof that a specific additional lag belongs in the causal model. Local-projection errors, for instance, can overlap by construction across adjacent forecast horizons even with a sensible mean specification. We will study that next meeting. Today retain the distinction between modeling predictable outcome variation and estimating a robust covariance for whatever dependence remains.
+There are now two separate tasks. One is to model predictable changes in accidents; the other is to estimate uncertainty when unexplained parts remain related. Improving the first task may help the second, but a residual pattern alone does not tell us which variable belongs in the causal comparison. The next slide compares adding lags with two methods that treat the error dependence in different ways.
 
 ## 14. Choose the response that matches the problem
 
-Adding lags, HAC and Prais–Winsten do different jobs.
+Adding lags, Newey–West and Prais–Winsten change different parts of the analysis.
 
-Adding lagged regressors changes the mean specification. It can alter the coefficient target, estimates and usable sample. HAC keeps OLS on the same specification and sample but changes estimated uncertainty. Prais–Winsten uses a modeled AR(1) error process to transform the regression and can change both coefficients and standard errors.
+Consider three responses to the problem we have traced. Adding a lagged regressor changes the equation used to explain accidents. This can change the coefficient interpretation, the estimates and the sample. Applying Newey–West to the same equation and sample keeps the OLS coefficients and changes their estimated uncertainty. Those methods therefore solve different parts of the problem.
 
-Prais–Winsten can be useful under a justified error model and suitable regressor assumptions. It is not automatically preferable because a residual plot looks persistent, and its additional structure should be checked. Nor should we choose the method that produces statistical significance.
+A third response is Prais–Winsten, a method that uses an AR(1) model for the errors. It estimates the carry-over coefficient ρ and uses that estimate to transform the outcome and regressors. For later observations, the transformation subtracts an estimated fraction of the previous value from the current value; the first observation receives a special adjustment. This changes how observations enter the fit, so coefficients and SEs can both change. The method requires a credible error model and suitable exogeneity assumptions.
 
-For an empirical report, state which issue each choice addresses. A concise explanation might say that seasonality is modeled in the mean, residual dependence motivates a HAC covariance estimate and policy endogeneity remains a limitation. This is a much more informative answer than listing three corrections without saying what they change.
+Return to the application before choosing. If the equation misses a predictable effect of earlier travel conditions, consider whether a lag belongs in the mean model. If the equation is appropriate but its errors remain dependent, justify an uncertainty calculation. Prais–Winsten adds stronger structure about the errors than the HAC approach. We will examine its software output next meeting. Today we will hold our equation fixed so that the Stata comparison isolates changes in the SE method.
 
 **Teaching note:** Break at 110–120 minutes. Prais–Winsten is explained here; its actual output belongs in the next meeting's lab.
 
 ## 15. Run the conventional regression
 
-Read the actual monthly-data output.
+Find the law coefficient and understand the labels before comparing SEs.
 
-Run the first marked block of the do-file. The seat-belt-law coefficient is 0.09545264 and its conventional SE is about 0.01424. Locate the trend and month terms so that you can describe exactly what is held fixed. The sample remains 108 monthly observations.
+Open the do-file, the saved list of commands for this lesson, and run the conventional regression block. First check that Stata has the correct monthly time variable. The command tsset tells Stata which variable orders the observations in time. A correct time variable is needed before using lags. The script checks the dates against the recorded years and calendar-month indicators.
 
-The coefficient is positive for total accidents. It does not show that a seat-belt law caused fatal crashes to increase. The outcome is different, the policy was not randomly assigned and omitted contemporaneous changes may matter. A surprising sign is a reason to inspect the model and design, not to reverse the definition of the dependent variable.
+The code calls log(Aₜ) logacc, the seat-belt indicator beltlaw, the speed-law indicator spdlaw, unemployment unem and the weekend count wkends. The coefficient table comes from the actual run. Find beltlaw: its coefficient is 0.09545, with a conventional SE of about 0.01424. Trend is the monthly time count. Rows 2 through 12 under month compare February through December with January, the omitted reference month. A reference category is the category represented by the intercept and other common terms rather than a separate indicator coefficient. The row _cons is the intercept.
 
-Reproduce the command rather than typing the displayed numbers into a new table. Check that your variable definitions and sample match. If the output differs, investigate before explaining the result; do not change data or controls to force agreement. The published excerpt preserves the numerical output from the recorded run.
+For the coefficient tests, the null hypothesis is that the population coefficient is zero. A null hypothesis is the specific statement being tested. The t statistic, shown in the t column, divides the estimate's distance from that null by its SE. P>|t| is the two-sided p-value: under the null and test assumptions, the probability of a statistic at least as far from zero in either direction. The final columns give the confidence interval. We focus on the beltlaw row, then rerun the identical equation with robust SEs to see what changes.
 
 ```text
 . regress logacc trend i.month unem spdlaw beltlaw wkends
-
-      Source |       SS           df       MS      Number of obs   =       108
--------------+----------------------------------   F(16, 91)       =     57.61
-       Model |  1.14490873        16  .071556796   Prob > F        =    0.0000
-    Residual |  .113028314        91  .001242069   R-squared       =    0.9101
--------------+----------------------------------   Adj R-squared   =    0.8943
-       Total |  1.25793704       107  .011756421   Root MSE        =    .03524
 
 ------------------------------------------------------------------------------
       logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
@@ -228,26 +221,20 @@ Reproduce the command rather than typing the displayed numbers into a new table.
 ------------------------------------------------------------------------------
 ```
 
-**Teaching note:** 120–165: software/application block across pages 15–21.
+**Teaching note:** 120–165: software/application block across pages 15–20.
 
 ## 16. Run heteroskedasticity-robust inference
 
-The coefficient stays; the estimated standard error changes.
+vce(robust) allows unequal error variance, while preserving the OLS coefficients.
 
-The next command adds vce(robust) to the same regression. The law coefficient stays at approximately 0.09545 while the SE is approximately 0.01237. The program explicitly checks that the coefficient is unchanged, so this is a verified property of the actual run rather than an assumption about two different samples.
+The next command adds vce(robust) to the same regression. This requests heteroskedasticity-robust SEs, the unequal-variance adjustment discussed earlier. The law coefficient remains about 0.09545, while its SE changes from about 0.01424 to 0.01237. The do-file checks that the coefficient is unchanged, so we are comparing uncertainty methods for the same fitted relationship.
 
-This covariance estimate allows changing error variance under suitable independent or uncorrelated-observation asymptotics. It does not generally allow serial dependence of the regressor–error products across months. That is why the word 'robust' must always be followed by 'robust to what?'
+Why can the line stay while the SE moves? OLS still minimises the same sum of squared residuals on the same observations. The robust option changes how we estimate variation in the resulting coefficient. It allows unequal error variance, but does not generally include the cross-month covariance terms we studied in the averaging example.
 
-Compare the robust and conventional columns before moving on. Here the robust SE is smaller. That observation does not make it correct or incorrect by itself; suitability depends on the data-generating and sampling conditions. Report the chosen method and its justification, rather than using 'robust' as an all-purpose quality label.
+In this dataset the robust SE is smaller, not larger. That fact alone does not show whether it is the suitable method. The question is which error patterns the calculation allows and whether those conditions describe this application. Since the residual evidence suggests dependence across months, we will next allow those cross-date contributions using Newey–West.
 
 ```text
 . regress logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
-
-Linear regression                               Number of obs     =        108
-                                                F(16, 91)         =      51.37
-                                                Prob > F          =     0.0000
-                                                R-squared         =     0.9101
-                                                Root MSE          =     .03524
 
 ------------------------------------------------------------------------------
              |               Robust
@@ -278,20 +265,16 @@ Linear regression                               Number of obs     =        108
 
 ## 17. Run Newey–West on the same model
 
-lag(4) changes inference, while preserving the OLS coefficient.
+newey with lag(4) allows covariance contributions through four months.
 
-The command newey uses the identical dependent variable and regressors with a maximum lag of four months. The law coefficient stays at approximately 0.09545, and the HAC SE is approximately 0.01890. Again the do-file checks equality of the coefficients numerically.
+Run newey with the same outcome and regressors and with lag(4). In Stata, newey requests Newey–West SEs. The lag option is the four-month covariance window we examined in the graph; it does not insert four new predictors into the equation. All 108 months remain in this comparison.
 
-Explain the result in two separate statements. The fitted policy association is unchanged because the OLS problem is unchanged. Estimated uncertainty changes because the covariance calculation now incorporates selected cross-date contributions. This is why an inference adjustment can matter even when the estimated policy contrast does not move.
+The law coefficient is still about 0.09545, but its SE is now about 0.01890. The do-file again checks that the coefficient agrees with the original OLS estimate. The change from 0.01237 under robust SEs to 0.01890 under HAC4 shows that allowing the selected cross-month terms matters for the estimated uncertainty here.
 
-Do not claim that lag four has been proven optimal. It is a transparent teaching choice for comparing procedures. An applied paper should justify and inspect its bandwidth choice, the time-series assumptions and the stability of the specification. The same care applies even when several plausible lag choices lead to the same reject/fail-to-reject decision.
+This is evidence about the comparison of SE calculations, not proof that four lags is the best window. A practical analysis should explain what might keep errors related across months and inspect plausible lag choices. Here the fixed window serves a teaching purpose: it lets us separate the unchanged fitted coefficient from a changed estimate of its uncertainty. Before using that coefficient in a policy report, we must also convert its log units carefully.
 
 ```text
 . newey logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
-
-Regression with Newey–West standard errors      Number of obs     =        108
-Maximum lag = 4                                 F( 16,        91) =      37.42
-                                                Prob > F          =     0.0000
 
 ------------------------------------------------------------------------------
              |             Newey–West
@@ -320,20 +303,18 @@ Maximum lag = 4                                 F( 16,        91) =      37.42
 ------------------------------------------------------------------------------
 ```
 
-## 18. Give a log coefficient a careful interpretation
+## 18. Convert the fitted log difference into percent
 
-Total accidents are an outcome count, modeled in logs.
+Use 100[exp(b)−1] for the exact contrast between exponentiated fitted values.
 
-For a binary policy indicator in this log-outcome model, multiplying the coefficient by one hundred gives the familiar approximate percentage contrast, about 9.55%. The exact contrast in the exponentiated fitted log outcome is 100[exp(b)−1], about 10.02%.
+The coefficient describes a difference in fitted log accidents. To return from logs to the original count scale, use the exponential function exp, the inverse of the natural logarithm. When the law indicator increases from zero to one, the fitted log outcome increases by b. The ratio of the two exponentiated fitted values is therefore exp(b), and their percentage difference is 100[exp(b)−1]. Here that difference is about 10.02%, compared with the approximation 100b, about 9.55%.
 
-This exact transformation does not by itself make the result a change in the conditional arithmetic mean of accident counts. Retransforming a log model into a mean in levels requires attention to the conditional distribution of the error, because the expectation of an exponential is not generally the exponential of an expectation.
+Stata's nlcom command calculates a nonlinear combination, a transformation of coefficients such as this exponential expression. The output labels this calculated result _nl_1. The reported SE uses the delta method: it approximates the transformation locally by a straight line to carry uncertainty from b into the transformed result. In this example the approximate transformed SE is 100exp(b) times SE(b). This explains why its units are percentage units rather than log units. The z statistic divides the transformed estimate by its approximate SE for a zero null, using a normal reference distribution.
 
-Stata's nlcom computes the nonlinear transformation and a delta-method uncertainty estimate. Read the units as percent, not percentage points. Then add the design qualification: the fitted contrast does not establish a causal safety effect. This is the same discipline used for the school-staffing example, now combined with a log scale and dependent observations.
+One further distinction matters. The exponential of an average log outcome is not generally the average outcome in levels. Converting a fitted log outcome back to levels is called retransformation. To interpret exp(b) as a ratio of conditional arithmetic means, we also need the average of exp(error) to be the same in the compared law states. An arithmetic mean is the ordinary sum divided by the number of values. Without that condition, report the contrast in exponentiated fitted log outcomes. A causal law effect would still require the separate policy-design argument.
 
 ```text
 . nlcom 100*(exp(_b[beltlaw])-1)
-
-       _nl_1: 100*(exp(_b[beltlaw])-1)
 
 ------------------------------------------------------------------------------
       logacc | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
@@ -342,15 +323,15 @@ Stata's nlcom computes the nonlinear transformation and a delta-method uncertain
 ------------------------------------------------------------------------------
 ```
 
-## 19. Use diagnostic evidence without overclaiming
+## 19. Read the serial-correlation diagnostic
 
-A serial-correlation test addresses a specified null.
+Breusch–Godfrey tests a stated no-serial-correlation null.
 
-After restoring the conventional regression, we run Breusch–Godfrey tests at orders one and four. The output rejects the respective no-serial-correlation nulls at conventional levels. This supports taking residual dependence seriously in this specification.
+The graphs suggested that residuals are related. We can assess that evidence with a Breusch–Godfrey test, a test for serial correlation up to a specified number of lags. The script first restores the conventional regression so that the diagnostic uses the intended model. A diagnostic is a check on a feature of the fitted model; it is not a complete judgment of the study.
 
-A rejection does not prove that the errors follow an exact AR(1) process, that the policy coefficient is biased or that one particular correction solves the problem. It is evidence about the specified null conditional on the model and test assumptions. The test should be interpreted with the residual plots and the economic timing argument.
+The null hypothesis is no serial correlation through the stated lag order. The label H0 is shorthand for that null. The header calls this an LM, or Lagrange multiplier, test: here it checks whether earlier residuals help explain the current residual after accounting for the included regressors. In the output, lags(p) tells us that order: one or four months here. The symbol p in that label is not a p-value. The chi2 column is the chi-square test statistic. Its reference distribution describes how the statistic is expected to vary under the null, using the test's large-sample approximation. The df column gives degrees of freedom, the number of restrictions tested here. The corresponding values are one and four. Prob > chi2 reports the p-value.
 
-The program uses the conventional fit for this diagnostic rather than silently forcing a test after an incompatible estimation command. When reading a software result, verify which model is active; Stata stores the most recent estimation results unless you save and restore them. That small reproducibility habit prevents a diagnostic from being attached to the wrong regression.
+The reported p-values, about 0.0003 and 0.0020, lead us to reject their respective nulls at the 5% level. This supports taking serial dependence seriously in this regression. It does not establish an exact AR(1) process or prove the policy coefficient is inconsistent. We now combine the diagnostic evidence with the SE comparison, rather than treating a test rejection as an instruction to use one method in every setting.
 
 ```text
 . estimates restore conventional
@@ -370,55 +351,55 @@ Breusch–Godfrey LM test for autocorrelation
 
 ## 20. Calculate, then explain the comparison
 
-Arithmetic alone does not choose the correct covariance model.
+Calculate the test and interval, then report what they describe.
 
-Compute the coefficient-to-SE ratio for each of the three fits. The rough ratios are 6.71 with the conventional SE, 7.72 with the robust SE and 5.05 with HAC4. All exceed 1.96 in absolute value, but that common decision should not hide the substantial difference in estimated uncertainty.
+Use the three SEs to calculate the t ratio for a zero-coefficient null. The coefficient is the same each time, so divide about 0.09545 by each SE. The results are approximately 6.71 with conventional SEs, 7.72 with robust SEs and 5.05 with HAC4. Different uncertainty calculations change how far the estimate lies from zero in SE units.
 
-Under the large-sample approximation, the HAC4 interval is wider because its SE is larger here. We would not choose an SE by asking which one rejects. We choose it because the covariance assumptions fit the dependence structure and the inferential target, subject to finite-sample limitations.
+Using the normal large-sample rule, an absolute ratio above about 1.96 rejects a zero null at the two-sided 5% level. All three ratios pass that threshold here. Yet they do not express the same amount of uncertainty. With the HAC4 SE, the approximate 95% interval is 0.09545±1.96×0.01890, or about [0.05841, 0.13249]. These endpoints are in log-outcome coefficient units, not percent.
 
-Now write a report that states the outcome and sampling frequency, gives the coefficient, names the HAC window and distinguishes the association from the causal policy effect. This is the kind of short empirical answer expected in a graduate course: precise, economical and qualified by a specific assumption rather than a generic disclaimer.
+Write the result as part of an empirical report. State that the data are monthly, describe the fitted law association, give the uncertainty method and name its four-month window. Then state the main condition that the report has not established, such as the absence of unmeasured changes related to policy timing. A precise report explains both the number and the comparison behind it.
 
-**Attempt:** Use b=0.09545264 and HAC4 SE=0.01889849. Compute the approximate t ratio and 95% interval for b.
+**Attempt:** Use b=0.09545264 and HAC4 SE=0.01889849 to calculate the approximate t ratio and 95% interval for b.
 
-**Solution:** t≈5.05. The large-sample interval is 0.09545264±1.96×0.01889849≈[0.05841,0.13249]. It is on the log-outcome coefficient scale. It is not a causal effect interval unless the identification assumptions also hold.
+**Solution:** t≈5.05. The large-sample interval is 0.09545264±1.96×0.01889849≈[0.05841, 0.13249], on the log-outcome coefficient scale. This is uncertainty about the fitted coefficient under the inference assumptions; it is not automatically an interval for a causal law effect.
 
-## 21. Transfer the logic to quarterly inflation
+## 21. Apply the reasoning to quarterly inflation
 
-A different application uses the same inference questions.
+Define the economic shock and time horizon before interpreting a future response.
 
-Suppose a quarterly regression relates an inflation-persistence outcome four quarters ahead to a current supply shock and observed controls. A separate regression is fitted for each horizon. The coefficient at horizon four concerns the outcome one year after the shock, not four months later.
+The same reasoning applies to a new question: does an unexpected increase in production costs affect inflation a year later? Inflation is the rate at which the general price level rises. A supply shock is an unexpected change in production costs or capacity. For example, a sudden disruption to oil supply can increase production costs across many industries. These definitions tell us what the economic question concerns before we write a regression.
 
-Neighboring horizon-regression errors can share future shocks because their outcome windows overlap. HAC inference can therefore be natural even if the researcher has chosen a sensible set of lag controls. This is one reason residual dependence is not always a simple demand for an extra lagged regressor.
+Suppose the data are quarterly. A forecast horizon h is the number of observation periods ahead, so h=4 means four quarters, or one year. A local projection fits a separate regression of a future outcome on the current measured shock and stated controls for each horizon. Here it would relate inflation four quarters ahead to the current shock and relevant information. A coefficient has a causal shock-response interpretation only if the shock measurement and comparison support that claim; calling a change a shock does not establish its exogeneity.
 
-For an accessible first treatment, take the outcome measure and identified shock as given while still asking what makes the shock plausibly exogenous. We do not need to estimate a regime-switching model to learn horizon interpretation or HAC logic. The next meeting develops this extension step by step, with the frequency, horizon and coefficient target defined before the output.
+Errors in neighboring future-outcome regressions can share unanticipated developments over the overlapping periods. HAC inference can therefore be useful even when the mean model has sensible lag controls. A window of 12 in these quarterly data reaches three years, unlike the four-month window in today's accident example. We will develop these horizon regressions next meeting. The connection is that the meaning of dependence, the data frequency and the coefficient target must all be clear before choosing an SE method.
 
 **Teaching note:** 165–180: transfer and exit checks across the last three pages.
 
-## 22. Choose the next action for a named problem
+## 22. Choose an action that addresses the actual problem
 
-Match the intervention to the diagnosis.
+Connect the observed concern to the model, comparison or uncertainty calculation.
 
-Consider three research problems. First, the conditional mean is plausible but residuals remain dependent over nearby dates. An appropriately justified HAC covariance may address uncertainty. Second, an omitted lag predicts the outcome and its omission makes an included regressor endogenous. Reconsider the mean specification and identification; HAC alone cannot repair the coefficient. Third, policy timing responds to unobserved contemporaneous safety conditions. You need a more credible causal comparison.
+We have seen several reasons why a regression result might need attention. Choose the next action by naming which problem is present. If the mean equation is appropriate but its errors remain related across nearby dates, a justified HAC calculation can address uncertainty. If relevant past information still predicts the outcome, reconsider whether the mean equation needs that information.
 
-None of these choices requires new notation, but each requires a different argument. That is the modest graduate step beyond reading a coefficient: explain why a proposed method addresses the actual failure, and say what it leaves unresolved.
+If a regressor is related to the current error, changing the SE method cannot remove that relation. For example, officials might adopt a law because they anticipate an unrecorded rise in accident risk. This is a problem with the policy comparison, even if the residual dependence is also handled carefully. The study needs a reason why its policy variation can separate the law's effect from that changing risk.
 
-Write your diagnosis in the form 'The concern is…, therefore I would…, under the assumption that…'. A sentence in that form makes it harder to hide a design problem behind a command name. Discuss disagreements by tracing the regressor, error and information timing rather than by selecting a preferred software option.
+Practise linking a recommendation to the diagnosis: 'The concern is…, so I would…, assuming…'. For each case, explain what your proposed change fixes and what it leaves. This prepares you to assess a new empirical question without choosing a command just because it is labelled robust. In the exit task, use the accident example to show that you can make these distinctions in one connected paragraph.
 
 **Attempt:** A policy indicator responds to unobserved accident risk. Is the first remedy a longer HAC window?
 
 **Solution:** No. The named problem is policy endogeneity. A longer HAC window changes uncertainty estimates but does not create an exogenous policy comparison. Address the design or identify a defensible source of policy variation.
 
-## 23. Exit check: model, estimate or uncertainty?
+## 23. Exit check: connect the model, estimate and SE
 
-Explain what each proposed change actually changes.
+Explain the three choices as responses to different empirical concerns.
 
-Without looking at the earlier pages, explain the difference between adding a lagged outcome, applying Newey–West to the same model and fitting Prais–Winsten. Identify which change leaves OLS point estimates unchanged and give the calendar interpretation of lag four in today's data.
+Explain how three proposed changes would affect our accident analysis. Adding a lagged outcome changes the fitted equation and may reduce the usable sample. Newey–West on the same equation and sample keeps the OLS coefficients but changes estimated uncertainty. Prais–Winsten uses an estimated AR(1) error process to transform the fit, so it can change coefficients as well as SEs. State the assumptions behind the change you recommend.
 
-Then state one condition needed for meaningful inference and one limitation that no standard-error option resolves. A strong answer connects weak dependence and exogeneity to the appropriate roles, rather than listing assumptions with no explanation. Minor rounding differences in the t ratio should not obscure this conceptual distinction.
+Then give the calendar meaning of lag(4) for today's monthly data. It reaches covariance contributions through four months; it is not four new regressors. Explain why a coefficient can stay fixed while its interval changes. This links the arithmetic of the output to the variance-and-covariance reasoning, rather than leaving them as separate facts to memorise.
 
-Finally, return to the traffic-policy question. We have learned that the same fitted association can carry different estimated uncertainty and that residual dependence matters for the covariance calculation. We have not established a causal accident effect of either law. Carry both conclusions into the next class, where dynamics and horizon responses will extend the same reasoning.
+Finally, return to the traffic-policy question. We found a positive fitted law coefficient for total accidents and evidence of residual serial correlation. HAC4 produced a larger SE than the other two methods in this example. These results tell us about the stated regression and its estimated uncertainty. They do not establish that the law caused more accidents. Next meeting, we will use the same distinctions to study models with richer time relationships and responses at future horizons.
 
-**Attempt:** In one paragraph, compare the three changes and interpret monthly lag(4).
+**Attempt:** In one paragraph, compare adding a lag, using Newey–West and fitting Prais–Winsten. Interpret lag(4) for this dataset.
 
-**Solution:** Adding a lag changes the mean model and may change coefficients and sample. Newey–West on the same specification and sample retains OLS coefficients while changing the covariance estimate; lag(4) here reaches four months. Prais–Winsten models an AR(1) error process and can change coefficients as well as SEs. None automatically cures policy endogeneity.
+**Solution:** Adding a lag changes the mean equation and may change the sample and coefficients. Newey–West keeps OLS coefficients on the same equation and sample, while changing their estimated covariance; lag(4) here reaches four months. Prais–Winsten uses an AR(1) error model to transform the fit and may change coefficients and SEs. None of these changes, by itself, creates an exogenous policy comparison.
 
