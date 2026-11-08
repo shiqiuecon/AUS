@@ -6,7 +6,7 @@ Begin with a dated outcome and a plausible alternative explanation.
 
 Traffic accidents can change after a law for several reasons: policy, travel volume, employment conditions or the time of year. A before-and-after difference combines these influences. Time-series regression uses observations ordered through time to describe a more specific comparison.
 
-Our data are monthly California accident totals from January 1981 through December 1989. We will identify trend and seasonality, write an equation with explicit timing and inspect actual output. The main question is what the controls explain and what assumption is still needed to describe a policy effect. The calendar must be understood before a coefficient is interpreted.
+Our data are monthly California accident totals from January 1981 through December 1989. A trend is a gradual time pattern; seasonality is a pattern recurring at the same calendar positions, such as each December. We will identify these patterns, write an equation with explicit timing and inspect actual output. The main question is what the controls explain and what assumption is still needed to describe a policy effect. The calendar must be understood before a coefficient is interpreted.
 
 ## 02. A time-only policy variable compares dates
 
@@ -74,7 +74,7 @@ Adding dynamics changes the exogeneity question.
 
 A lagged outcome is the outcome from an earlier date. If it enters the current regression, it includes the influence of earlier unobserved shocks. When those shocks are related to the current error, the lagged outcome can be endogenous in the current equation.
 
-This is a reason to model timing explicitly rather than assume lagging a variable always makes it safe. Some well-specified dynamic models use appropriate sequential restrictions, but an omitted persistent component can threaten coefficient consistency. We will develop persistence and serial correlation in the next two lessons, keeping this connection between the regressor and the error in view.
+This is a reason to model timing explicitly rather than assume lagging a variable always makes it safe. Some well-specified dynamic models use appropriate sequential restrictions, but an omitted persistent component can threaten coefficient consistency. Serial correlation means that errors at different dates move together. We will develop that dependence and the persistence of past influences in the later time-series lessons, keeping this connection between the regressor and the error in view.
 
 A lagged outcome is the outcome from an earlier date.
 
@@ -162,7 +162,7 @@ Allow a relationship to unfold over several periods.
 
 Travel behaviour and economic conditions can adjust gradually. A current unemployment change may be associated with current accidents and with accidents in later months. A model containing only the current regressor assumes away those additional direct lag relationships.
 
-A distributed-lag model includes current and earlier values of an explanatory variable. We will use the monthly accident series to distinguish an immediate coefficient from a sum of lag coefficients. We then add autoregressive persistence, define the conditions for a stable long-run comparison and examine why unrelated trending series can produce misleading regressions.
+A distributed-lag model includes current and earlier values of an explanatory variable. We will use the monthly accident series to distinguish an immediate coefficient from a sum of lag coefficients. Later we allow earlier outcomes to help predict current outcomes, define stability conditions for long-run comparisons and examine misleading relationships between unrelated trending series.
 
 ## 16. Define lags, differences and horizons
 
@@ -216,19 +216,19 @@ Temporary cumulative response and permanent long-run level contrast are differen
 
 Try the comparison before opening the explanation.
 
-A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit x shock.
+A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
 
 Write the temporary and permanent paths separately. State whether the sum refers to responses across dates or the outcome difference at a late date.
 
-**Practice:** A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit x shock.
+**Practice:** A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
 
 ## 21. Lag sum: explanation
 
 Follow the calculation and interpret its units.
 
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. An autoregressive dependent-variable model has a different multiplier formula.
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
 
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. An autoregressive dependent-variable model has a different multiplier formula.
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
 
 ## 22. Introduce the uncertainty option before reading the lag table
 
@@ -290,7 +290,7 @@ Lincom calculates the sum using the fitted covariance matrix. State the outcome 
 
 A collection of lag coefficients can cancel in its sum.
 
-In the finite distributed-lag model, let beta zero through beta q be the current and lagged input coefficients. A joint test that all are zero asks whether the input has any modelled response at those horizons. A test that their sum is zero asks whether a permanent one-unit input change has zero eventual fitted effect in this model.
+In the finite distributed-lag model, let beta zero through beta q be the current and lagged input coefficients. A joint test that all are zero asks whether the input has any modelled response at those horizons. Their sum is called the long-run propensity in this finite-lag model. A test that this sum is zero asks whether a permanent one-unit input change has zero eventual fitted effect in this model.
 
 Positive early and negative later coefficients can sum to zero even though there is a substantial temporary response. A scalar sum needs its covariance-based standard error; the joint restriction needs the covariance of the entire coefficient vector. Use the same sample and the uncertainty procedure justified for the dated observations. Neither test independently establishes that the input change was an exogenous intervention.
 
@@ -304,7 +304,7 @@ Different null restrictions answer different empirical questions.
 
 Compare fit and tests on compatible observations.
 
-A two-lag model loses the first two observations if no earlier data are available. Adding more lags can remove still more dates. A comparison between nested models can be distorted if their apparent fit differences also reflect different samples.
+A two-lag model loses the first two observations if no earlier data are available. Adding more lags can remove still more dates. A comparison between nested models, where one is obtained by restricting coefficients in the other, can be distorted if their apparent fit differences also reflect different samples.
 
 Define the common estimation window before comparing models or applying a fit-loss test. Record the number of usable observations after each transformation. This is the time-series version of keeping samples fixed in multiple regression: a numerical model comparison is informative only when we know which history each equation actually uses.
 
@@ -316,7 +316,7 @@ Define the common estimation window before comparing models or applying a fit-lo
 
 One label such as effect is not enough.
 
-A useful dynamic report states the data frequency, timing of the X change, immediate response, relevant later responses and uncertainty for any sum or multiplier. It says whether the scenario is temporary or permanent and which stability and exogeneity conditions support it.
+A useful dynamic report states the data frequency, timing of the X change, immediate response, relevant later responses and uncertainty for any stated sum or long-run contrast. It says whether the scenario is temporary or permanent and which stability and exogeneity conditions support it.
 
 For the accident application, describe dated unemployment associations rather than a causal experiment unless the design identifies that variation. For a constructed model with a known shock, explain the known assumptions explicitly. This keeps a graph of responses from carrying a stronger interpretation than its source supports.
 

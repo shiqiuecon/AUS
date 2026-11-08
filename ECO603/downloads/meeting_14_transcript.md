@@ -6,7 +6,7 @@ Use changes within states to study alcohol taxes and traffic fatalities.
 
 States differ in geography, driving culture and other persistent characteristics. A pooled comparison between beer taxes and traffic fatalities can mix those differences with a policy relationship. Panel data observe the same identifiable units repeatedly, giving us a way to remove a particular kind of stable omitted factor.
 
-Our application follows 48 states for seven years, with 336 state-year observations. The outcome is traffic fatalities per ten thousand residents and the regressor is a real beer-tax measure. We will compare pooled, fixed-effect and two-period change regressions, then build a simple difference-in-differences policy comparison with clearly constructed numbers.
+Our application follows 48 states for seven years, with 336 state-year observations. The outcome is traffic fatalities per ten thousand residents and the regressor is a real beer-tax measure. We will compare a pooled regression using all rows, a fixed-effects regression accounting for stable unit components, and a two-period change regression, then build a simple difference-in-differences policy comparison with clearly constructed numbers.
 
 ## 02. A panel has identities as well as dates
 
@@ -62,7 +62,7 @@ Adjacent differences share one error with opposite signs.
 
 Suppose the level errors for one panel unit are independent over time with common variance sigma squared. The differenced error at t is u t minus u t minus one. Its variance is two sigma squared. The next adjacent difference shares one level error with the opposite sign, so their covariance is minus sigma squared and their correlation is minus one half.
 
-This calculation does not make the differenced regressor exogenous; that needs its own moment condition. It does show why treating repeated differences from one unit as independent can give an incorrect covariance estimate. Unit-clustered inference permits within-unit dependence under its own sampling and many-independent-cluster conditions. Independent-data robust standard errors alone do not generally handle those shared errors.
+This calculation does not make the differenced regressor exogenous; that needs its own moment condition. It does show why treating repeated differences from one unit as independent can give an incorrect covariance estimate. A cluster is a group whose errors may be related; here all dates for one panel unit form a cluster. Unit-clustered inference permits within-unit dependence under its own sampling and many-independent-cluster conditions. Independent-data robust standard errors alone do not generally handle those shared errors.
 
 \(\Delta u_{it}=u_{it}-u_{i,t-1}\); if level errors are independent with variance \(\sigma^2\), \(\operatorname{Var}(\Delta u_{it})=2\sigma^2\).
 
@@ -153,7 +153,7 @@ They do not remove state-specific changes.
 
 A year effect permits a common intercept change for every state in the same year. It can absorb a nationwide shift represented by that common component. State effects instead absorb stable additive differences between states. Including both asks which tax changes remain beyond each state's stable level and the common year shifts.
 
-The separate housing diagram illustrates the limit of common time controls. Nearness to an incinerator can be associated with stable location quality, which also affects house prices. Conditioning on common time conditions does not close that location route. Removing a stable additive location component uses a different comparison, and its causal interpretation still requires assumptions about changing local factors. An algebraic subtraction does not literally erase a causal arrow from the world.
+The separate housing diagram illustrates the limit of common time controls. Nearness to an incinerator, a facility that burns waste, can be associated with stable location quality, which also affects house prices. Conditioning on common time conditions does not close that location route. Removing a stable additive location component uses a different comparison, and its causal interpretation still requires assumptions about changing local factors. An algebraic subtraction does not literally erase a causal arrow from the world.
 
 Year effects: common date shifts. State effects: stable additive state differences.
 
@@ -205,7 +205,7 @@ First-difference OLS instead needs its differenced regressor to have the require
 
 Begin with the Head Start policy question from the original DiD lesson.
 
-Can expanded preschool access allow mothers to take paid work? This is the Head Start policy question in our earlier DiD lesson. Preschool may relax child-care constraints, but mothers can use the released time for work, care or other activities. Economic reasoning motivates a response to measure; it does not determine its size in advance.
+Can expanded preschool access allow mothers to take paid work? This is the Head Start policy question in the instructor's reference material. We now build the difference-in-differences method, abbreviated DiD, for that question. Preschool may relax child-care constraints, but mothers can use the released time for work, care or other activities. Economic reasoning motivates a response to measure; it does not determine its size in advance.
 
 For a two-period teaching design, define a group eligible before the expansion and a comparison group not eligible. Observe maternal employment before and after the specified expansion. A difference-in-differences comparison subtracts the comparison group's change from the eligible group's change. The related reading studies Head Start expansions and experimental access, but our simple two-group diagram is a teaching model, not a replication of that paper's full research design.
 
@@ -249,7 +249,7 @@ It is not a requirement that the groups begin at the same level.
 
 Use the four labels from the original diagram. A is the eligible group's employment rate before expansion, 40 percent, and B its later observed rate, 48 percent. C and D are the comparison group's rates, 60 and 63 percent. These are constructed teaching values. Different initial levels do not by themselves rule out parallel trends.
 
-The average treatment effect on the treated, abbreviated ATT, is the average difference between the eligible group's post-expansion employment outcome and its outcome without the specified expansion. Here treated means exposure of the predefined eligible group to the expansion; it does not mean that every eligible mother enrolled a child. Under parallel untreated trends, the eligible group's no-expansion increase would equal the comparison group's three-percentage-point increase.
+The average treatment effect on the treated, abbreviated ATT, is the average difference between the eligible group's post-expansion employment outcome and its outcome without the specified expansion. Here treated means exposure of the predefined eligible group to the expansion; it does not mean that every eligible mother enrolled a child. Parallel untreated trends means the two groups would have the same average outcome change without the expansion. Under that assumption, the eligible group's no-expansion increase would equal the comparison group's three-percentage-point increase.
 
 The assumed eligible post rate is therefore 43 percent. Its observed rate is 48, giving a five-percentage-point contrast. The dashed line represents a missing untreated outcome under that assumption. We do not observe it after expansion. Changing the control lets us examine an alternative assumed untreated change; it does not reveal that missing outcome.
 
@@ -303,7 +303,7 @@ Its interpretation follows the four group-time means.
 
 Let the individual outcome Y be one if a mother is employed and zero otherwise. G is one for the group defined as eligible before expansion, and P is one for the post-expansion period. The intercept beta zero is the comparison group's initial employment probability. Beta one is its change over time, beta two the initial eligible-group gap, and beta three the additional change in the eligible group. The remaining term u is the regression error.
 
-The interaction slope is 0.05 in our constructed example, equivalent to five percentage points. An equation with an intercept, group indicator, time indicator and their interaction reproduces the four cell means; this is a saturated two-by-two specification. Interpreting its interaction as the expansion effect needs the policy and untreated-trend assumptions. It does not automatically estimate the effect of preschool participation.
+The interaction slope is 0.05 in our constructed example, equivalent to five percentage points. An equation with an intercept, group indicator, time indicator and their interaction reproduces the four cell means, one for each group-and-period combination; this is a saturated two-by-two specification. Interpreting its interaction as the expansion effect needs the policy and untreated-trend assumptions. It does not automatically estimate the effect of preschool participation.
 
 \(Y_{it}=\beta_0+\beta_1P_t+\beta_2G_i+\beta_3G_iP_t+u_{it}\).
 
@@ -481,7 +481,7 @@ The number of rows need not equal the number of independent sources.
 
 Imagine a state policy observed for many districts. Districts in one state may share an implementation decision or an economic shock, so their errors need not be independent. Adding districts within that state then adds less independent policy information than adding another independently assigned state.
 
-A cluster is a group within which errors may be related. Cluster-robust inference allows that within-group dependence while relying on suitable independence across clusters and enough informative clusters. The clustering unit should follow the policy assignment and error story; it is not selected to obtain a preferred standard error. For repeated state observations, state clustering is often a candidate, but common national shocks or very few states require additional care. We use repeated-state data in Meeting 14.
+A cluster is a group within which errors may be related. Cluster-robust inference allows that within-group dependence while relying on suitable independence across clusters and enough informative clusters. The clustering unit should follow the policy assignment and error story; it is not selected to obtain a preferred standard error. For repeated state observations, state clustering is often a candidate, but common national shocks or very few states require additional care. Our repeated-state data provide this within-state dependence example.
 
 Cluster: a group within which errors may be related.
 
@@ -595,7 +595,7 @@ From panel comparisons to instrumental variation
 
 Panel methods removed a stable unit component, and the DiD discussion made assumptions about missing untreated changes explicit. Neither method automatically removes a time-varying cause of both the regressor and the outcome.
 
-We now ask whether an instrument can provide useful regressor variation. It must predict the endogenous input and support an exclusion and exogeneity argument. A convincing first stage supplies only the first part of that case.
+An instrument is an observed variable proposed as a source of regressor variation under additional restrictions. We now ask whether it supplies a useful comparison. It must predict the endogenous input and support an exclusion and exogeneity argument. The first stage is the regression describing how the endogenous input varies with the proposed instrument and controls. A convincing prediction supplies only the first part of the validity case.
 
 From panel comparisons to instrumental variation
 
@@ -659,7 +659,7 @@ Compare how the instrument moves the outcome and the regressor.
 
 Start with the constant-slope structural equation Y equal to alpha plus beta times X plus u. The first stage describes how X changes with Z. The reduced form is the relationship of Y directly to Z, using the same controls and observations. If the instrument changes X by pi one units per Z unit and has no other outcome channel, its outcome relationship is beta times pi one.
 
-Thus the reduced-form slope rho equals beta times the first-stage slope pi one under the IV assumptions. Divide to recover beta when pi one is nonzero. In a sample, the simple just-identified IV estimate is the ratio of the two estimated slopes after matching their controls and sample. The units cancel: outcome per tax unit divided by log-price per tax unit becomes outcome per log-price unit. For log quantity and log price, that coefficient is an elasticity.
+Thus the reduced-form slope rho equals beta times the first-stage slope pi one under the IV assumptions. Divide to recover beta when pi one is nonzero. In a sample, the simple IV estimate with one excluded instrument for one endogenous regressor, called just identified, is the ratio of the two estimated slopes after matching their controls and sample. The units cancel: outcome per tax unit divided by log-price per tax unit becomes outcome per log-price unit. For log quantity and log price, that coefficient is an elasticity.
 
 First stage: \(X=\pi_0+\pi_1Z+v\)
 
@@ -955,9 +955,9 @@ Strength and validity are different requirements.
 
 A formula under strong-instrument asymptotics is not a cure for weak identification.
 
-In the single-endogenous-regressor, single-instrument model with an intercept, iid observations and homoskedastic structural errors, the usual large-sample IV variance can be written as sigma squared divided by centred X variation times the first-stage R squared. Here sigma squared is the structural error variance and the first-stage R squared measures instrument-predicted X variation in that simple model.
+In the single-endogenous-regressor, single-instrument model with an intercept, iid observations and homoskedastic structural errors, the usual large-sample IV variance can be written as sigma squared divided by the product of centred X variation and the first-stage R squared. Here sigma squared is the structural error variance and the first-stage R squared measures instrument-predicted X variation in that simple model.
 
-When the first stage explains little variation, the denominator is small and ordinary ratio-based inference becomes fragile. This formula assumes the regular strong-identification approximation; it should not be used to declare standard Wald inference reliable in a weak-instrument design. With controls, use the appropriate partial first-stage variation and a dedicated procedure. The earlier weak-robust coefficient test addresses inference under specified instrument validity, not exclusion itself.
+When the first stage explains little variation, the denominator is small and ordinary ratio-based inference becomes fragile. This formula assumes the regular strong-identification approximation; it should not be used to declare standard Wald inference reliable in a weak-instrument design. With controls, use the appropriate partial first-stage variation and a dedicated procedure. The next weak-instrument-robust coefficient test addresses inference under specified instrument validity, not exclusion itself.
 
 Simple homoskedastic strong-IV approximation: \(\operatorname{Var}(\widehat\beta_{IV})\approx\sigma_u^2/[SST_X R_{X,Z}^2]\).
 

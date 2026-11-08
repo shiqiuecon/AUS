@@ -6,11 +6,11 @@ What makes an OLS comparison informative and precise?
 
 The multiple-regression fit has already supplied a staffing coefficient and a control set. We now ask two separate questions: which sample variation determines that coefficient, and which assumptions describe its behaviour across repeated samples? The partialling-out calculation answers the first; conditional means and variances answer the second.
 
-We retain the same district data and the same coefficient. After following the residualised variables, we use compact matrix notation to prove the coefficient identity and derive unbiasedness and precision. Each additional assumption will have a stated role, so a computational equality will not be mistaken for a causal or uncertainty result. A heteroskedasticity-robust standard error permits unequal error variances across independent observations; we keep that distinction explicit when comparing it with the conventional variance formula.
+We retain the same district data and the same coefficient. After following the residualised variables, we use compact matrix notation to prove the coefficient identity and derive conditions for correct average estimation and useful precision. Each additional assumption will have a stated role, so a computational equality will not be mistaken for a causal or uncertainty result.
 
-Same school application; separate the OLS calculation, identification argument and repeated-sample properties.
+Separate the coefficient calculation, causal assumptions and behaviour across repeated samples.
 
-Scalar residualisation first; matrix proof and precision second.
+Begin with one residualised regressor; then organise the same equations in matrices.
 
 ## 02. Residual versus error
 
@@ -78,7 +78,7 @@ The theorem is an estimation identity. It shows that the staffing coefficient is
 
 Define dimensions and operations before using the compact estimator.
 
-Stack the n observed scores into a column vector y. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
+Stack the n observed scores into a column vector y, meaning a vertical list of numbers. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
 
 Full column rank means no column is an exact linear combination of the others. It makes X prime X invertible: its inverse undoes multiplication by that square matrix. The displayed estimator solves the same OLS normal equations as the scalar formulas. Matrix notation keeps the bookkeeping compact; it introduces no additional causal assumption.
 
@@ -94,7 +94,7 @@ Remove the same control space from the outcome and target regressor.
 
 Let x be the staffing column and let Z contain the intercept and the other controls. The projection matrix P sub Z maps a vector to its fitted values from OLS on Z. The residual-maker M sub Z is the identity matrix I minus that projection. I leaves a vector unchanged, so M sub Z keeps the remainder after fitting on Z.
 
-The residual-maker is symmetric, meaning its transpose equals itself, and idempotent, meaning that applying it twice changes nothing further. It also removes Z exactly. Minimising the full squared-error criterion over the coefficients on Z therefore leaves a criterion using M sub Z times y and M sub Z times x. Its one-regressor normal equation gives the displayed FWL coefficient. This proves the coefficient identity, while uncertainty still needs the full model's covariance calculation and degrees of freedom.
+The residual-maker is symmetric, meaning its transpose equals itself, and idempotent, meaning that applying it twice changes nothing further. It also removes Z exactly. Minimising the full squared-error criterion over the coefficients on Z therefore leaves a criterion using M sub Z times y and M sub Z times x. Its one-regressor normal equation gives the displayed FWL coefficient. This proves the coefficient identity, while uncertainty still needs assumptions about error variation and an accounting of every fitted coefficient.
 
 \(P_Z=Z(Z\prime Z)^{-1}Z\prime\), \(M_Z=I-P_Z\); \(M_ZZ=0\).
 
@@ -128,9 +128,9 @@ y1   -0.068776   -0.488267    1.494517  640.315497
 
 The slopes agree to numerical precision.
 
-The residual-on-residual coefficient matches the staffing coefficient in the full regression. This is the Frisch–Waugh–Lovell result, usually abbreviated FWL. It is an exact least-squares identity when both subtractions use the same observations and control columns as the full fit. The residual regression needs no extra intercept because both remainders already have zero means.
+The residual-on-residual coefficient matches the staffing coefficient in the full regression. This is the Frisch–Waugh–Lovell result, abbreviated FWL. It is an exact least-squares identity when both subtractions use the same observations and control columns as the full fit. The residual regression needs no extra intercept because both remainders already have zero means.
 
- The identity concerns the coefficient. A separate manual residual regression can print a different standard error because it can use different assumptions about error spread and a different count of fitted coefficients. A standard error describes uncertainty across repeated samples; we teach that calculation in the next meeting. For now, verify the coefficient identity and explain the two residual axes. Use the full fitted model when later requesting its uncertainty estimates.
+This identity concerns the coefficient. It does not make every uncertainty calculation from a manual residual regression identical to the full model's calculation. Those calculations can use different assumptions about error spread and different counts of fitted coefficients. First verify the coefficient and explain the two residual axes. We will then define how a coefficient varies across repeated samples and how to estimate that spread.
 
 FWL: the same adjusted coefficient from compatible residuals.
 
@@ -176,9 +176,9 @@ Regress wages on an intercept and experience and save the residuals. Regress sch
 
 The random object changes.
 
-A distribution describes the possible values of a random quantity and how often they occur. The distribution of district scores concerns variation among districts. The sampling distribution of an estimator concerns the slopes we would obtain from repeated comparable samples.
+A distribution describes the possible values of a random quantity and how often they occur. The distribution of district scores concerns variation among districts. An estimator is a rule that calculates a coefficient from sample data; an estimate is the numerical value it gives in one sample. Its sampling distribution describes the slopes that rule would produce across repeated comparable samples.
 
-These are different objects. A large spread of scores does not itself tell us the SE of a slope. Sample size, error variation and usable regressor variation all matter for the estimator's spread. We use repeated samples as a way to understand uncertainty even though the empirical study usually provides one observed dataset.
+These are different objects. A large spread of scores does not itself tell us how much the estimated slope varies across samples. Sample size, error variation and usable regressor variation all matter for the estimator's spread. We use repeated samples as a way to understand uncertainty even though the empirical study usually provides one observed dataset.
 
 A distribution describes the possible values of a random quantity and how often they occur.
 
@@ -190,19 +190,19 @@ Variance and standard deviation summarize different kinds of variation.
 
 For the three equally likely numbers zero, one and two, the mean is one. Their squared distances from the mean are one, zero and one. Averaging gives a variance of two thirds. The square root, about 0.816, is the standard deviation and has the original units. Variance has squared units.
 
-The same calculation can describe scores across districts or coefficient estimates across repeated samples. These are different distributions. A standard error estimates the standard deviation of an estimator, not the standard deviation of individual outcomes. We do not observe all repeated samples, so we use a formula justified by assumptions about sampling and the errors. Degrees of freedom count independent residual directions left after fitting parameters; a regression with n observations and k nonredundant fitted coefficients has n minus k residual degrees of freedom.
+The same calculation can describe scores across districts or coefficient estimates across repeated samples. These are different distributions. A standard error estimates the standard deviation of an estimator, not the standard deviation of individual outcomes. We do not observe all repeated samples, so we use a formula justified by assumptions about sampling and the errors. Degrees of freedom count independent residual directions left after fitting parameters; a regression with n observations and p nonredundant fitted coefficients, including the intercept, has n minus p residual degrees of freedom.
 
 \(\operatorname{Var}(0,1,2)=(1+0+1)/3=2/3\)
 
 Standard deviation: \(\sqrt{2/3}\approx0.816\)
 
-Residual degrees of freedom: \(n-k\)
+Residual degrees of freedom: \(n-p\), with \(p=k+1\) including the intercept.
 
 ## 17. A standard error estimates the estimator’s spread
 
 It is not the standard deviation of the outcome.
 
-A standard error estimates how much a coefficient estimate would vary across repeated samples under the maintained model. For the adjusted staffing slope, the heteroskedasticity-robust standard error is about 0.433 score points per student per teacher. This calculation permits error spread to vary across regressor values rather than assuming the same spread everywhere. It is in the same units as the coefficient. It is not the typical prediction error for a district.
+A standard error estimates how much a coefficient estimate would vary across repeated samples under the maintained model. For the adjusted staffing slope, the heteroskedasticity-robust standard error is about 0.433 score points per student per teacher. Heteroskedasticity means that the conditional error variance differs across regressor values. This robust calculation permits that unequal spread under appropriate independent-sampling and large-sample conditions; we will derive it in the variance lesson. It is in the same units as the coefficient. It is not the typical prediction error for a district.
 
 To turn this spread into an interval or test, we also need a reference distribution: the distribution that a standardized estimation error approximately follows under the assumptions. A normal reference is bell shaped, centered at zero and scaled to standard deviation one. About 95 percent of its probability lies between minus 1.96 and plus 1.96. This explains where the familiar multiplier comes from; it is not a guarantee for every dataset or every error structure.
 
@@ -242,7 +242,7 @@ Linearity of the estimator in outcomes and linearity of the model in parameters 
 
 Make the assumptions behind the precision calculation explicit.
 
-Suppose errors have conditional variance sigma squared, are uncorrelated across observations, and have zero mean conditional on the design. Equal conditional variances are called homoskedasticity. The covariance matrix of OLS is then sigma squared times X prime X inverse. For a particular regressor j, its variance can also be written using its total centred variation and the R squared from regressing it on the other inputs.
+Suppose errors have conditional variance sigma squared, are uncorrelated across observations, and have zero mean conditional on the design. Equal conditional variances are called homoskedasticity. A covariance matrix collects the coefficient variances on its diagonal and the pairwise covariances off that diagonal. The covariance matrix of OLS is then sigma squared times X prime X inverse. For a particular regressor j, its variance can also be written using its total centred variation and the R squared from regressing it on the other inputs.
 
 As that auxiliary R squared approaches one, less separate variation remains and the coefficient becomes less precise. Estimate sigma squared by residual sum of squares divided by n minus p, where p counts every fitted coefficient including the intercept. The conventional standard error is the square root of the corresponding estimated variance. Later, unequal variance and dependence will change this covariance formula.
 
@@ -300,25 +300,7 @@ BLUE: best linear unbiased estimator under the stated mean, rank and covariance 
 
 Normality is not needed for this theorem.
 
-## 25. Reconstruct precision and the degrees of freedom
-
-Try the comparison before opening the explanation.
-
-Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
-
-State the assumptions and units alongside the calculation.
-
-**Practice:** Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
-
-## 26. Reconstruct precision and the degrees of freedom: explanation
-
-Follow the calculation and interpret its units.
-
-The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
-
-The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
-
-## 27. Use VIF as a description, not a decision rule
+## 25. Use VIF as a description, not a decision rule
 
 It measures linear overlap among included regressors.
 
@@ -345,6 +327,24 @@ No universal VIF cutoff certifies a causal model.
 -------------+----------------------
     Mean VIF |      1.11
 ```
+
+## 26. Reconstruct precision and the degrees of freedom
+
+Try the comparison before opening the explanation.
+
+Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
+
+State the assumptions and units alongside the calculation.
+
+**Practice:** Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
+
+## 27. Reconstruct precision and the degrees of freedom: explanation
+
+Follow the calculation and interpret its units.
+
+The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
+
+The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
 
 ## 28. Collinearity
 
@@ -452,7 +452,7 @@ From OLS properties to statistical inference
 
 We can now separate the calculation of an OLS coefficient from its repeated-sample properties. Full rank makes the sample solution unique, zero conditional mean supports unbiasedness, and additional variance assumptions determine the conventional precision formula.
 
-The next meeting uses these ideas for confidence intervals and hypothesis tests. A causal interpretation still needs the earlier argument about the economic comparison; an interval describes uncertainty around the coefficient in a specified model.
+The next meeting uses these ideas for confidence intervals and hypothesis tests. A confidence interval is a range from a procedure intended to cover the coefficient at a stated rate across repeated samples. A hypothesis test assesses a specified population restriction using sample evidence and a reference rule. A causal interpretation still needs the earlier argument about the economic comparison; an interval describes uncertainty around the coefficient in a specified model.
 
 From OLS properties to statistical inference
 

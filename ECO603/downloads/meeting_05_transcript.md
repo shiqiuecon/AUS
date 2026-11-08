@@ -1,32 +1,6 @@
 # 05. Multiple regression: statistical inference
 
-## 01. School staffing: reproduce and explain
-
-Reproduce the evidence, then explain its economic meaning.
-
-Open schools.csv and run lab_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
-
-Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
-
-**Practice:** Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Keep your commands, log, output and interpretation.
-
-## 02. School staffing: reproduce and explain: explanation
-
-A reproducible result needs both a calculation and an interpretation.
-
-The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change.
-
-A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
-
-The income-adjusted gain is 0.137551 points with robust SE 0.580319 on 420 districts. It remains an adjusted association.
-
-Original two-student fitted gains: +4.56 and +2.20 points.
-
-With income: gain \(0.137551\), robust SE \(0.580319\).
-
-The smaller adjusted association does not establish a causal intervention effect.
-
-## 03. Is the staffing relationship large enough to matter?
+## 01. Is the staffing relationship large enough to matter?
 
 A decision needs magnitude and uncertainty.
 
@@ -38,7 +12,7 @@ Question: how accurately does the sample measure the relevant magnitude?
 
 Inference adds an uncertainty argument to the fitted estimate.
 
-## 04. Recall which coefficient the model estimates
+## 02. Recall which coefficient the model estimates
 
 Keep its units and adjustment fixed.
 
@@ -50,7 +24,7 @@ The adjusted staffing slope is -1.101 points per additional student per teacher.
 
 Before calculating a test, state the exact target.
 
-## 05. State a null before calculating a p-value
+## 03. State a null before calculating a p-value
 
 The evidence is evaluated under a specific claim.
 
@@ -64,11 +38,11 @@ Under the null and the maintained inference assumptions, compare that statistic 
 
 p-value: a tail probability under the null and reference assumptions.
 
-## 06. Normal-error exact inference and robust approximations differ
+## 04. Normal-error exact inference and robust approximations differ
 
 Know which argument supports the reference distribution.
 
-Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
+Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions, where F is used for a joint test of several coefficient restrictions, are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
 
  Heteroskedasticity-robust inference permits error spread to vary with the regressors. Its usual justification is a large-sample approximation, with suitable sampling and finite variances for the quantities being averaged and no small set of observations dominating the fit. It does not automatically allow errors to be related across districts, states or dates. The reference distribution and the covariance formula are distinct choices, and neither fixes a failure of the model's zero conditional-mean requirement.
 
@@ -76,7 +50,7 @@ Exact conventional t/F: normal, independent, equal-variance errors under the lin
 
 Robust: large-sample approximation allowing unequal variance; dependence needs separate treatment.
 
-## 07. State the reference distribution before choosing a critical value
+## 05. State the reference distribution before choosing a critical value
 
 An exact classical t test uses its residual degrees of freedom.
 
@@ -90,7 +64,7 @@ Choose \(c\) from \(P(|t_{n-p}|>c)=0.05\).
 
 Interval: \(\widehat\beta_j\pm cSE_j\).
 
-## 08. Build a confidence interval step by step
+## 06. Build a confidence interval step by step
 
 Combine the estimate with a stated reference rule.
 
@@ -100,7 +74,7 @@ For an illustrative estimate of 0.30 with SE 0.12, the margin is 0.2352 and the 
 
 \(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
 
-## 09. Confidence interval
+## 07. Confidence interval
 
 Try the comparison before opening the explanation.
 
@@ -110,7 +84,7 @@ First calculate the estimate plus and minus 1.96 standard errors. For a zero nul
 
 **Practice:** An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
 
-## 10. Confidence interval: explanation
+## 08. Confidence interval: explanation
 
 Follow the calculation and interpret its units.
 
@@ -118,19 +92,19 @@ Follow the calculation and interpret its units.
 
 \(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
 
-## 11. A rejection is not an effect-size statement
+## 09. A rejection is not an effect-size statement
 
 Statistical significance and practical value answer different questions.
 
 A statistically significant result passes a chosen testing threshold. A practically important result is large enough, in its application, to matter for a decision. A tiny effect can be estimated very precisely in a large sample; a meaningful effect can remain uncertain in a noisy sample.
 
-For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives. Report an interval as well as the point estimate. The policy reader should be able to see both the range of values consistent with the model and the scale of the decision being considered.
+For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives. A point estimate is the single numerical coefficient reported from the sample. Report its interval as well. The policy reader should be able to see both the range of values consistent with the model and the scale of the decision being considered.
 
 A statistically significant result passes a chosen testing threshold.
 
 For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives.
 
-## 12. One-sided alternatives must express a prior scientific question
+## 10. One-sided alternatives must express a prior scientific question
 
 The direction of the alternative changes the tail probability.
 
@@ -144,7 +118,7 @@ Upper-sided p-value: \(P(T\ge t_{obs}\mid H_0)\).
 
 Choose the direction before inspecting the estimate.
 
-## 13. Test a substantively meaningful value
+## 11. Test a substantively meaningful value
 
 A zero null is not the only relevant question.
 
@@ -161,7 +135,7 @@ Use Stata's test command to evaluate that stated restriction. A coefficient can 
             Prob > F =    0.8151
 ```
 
-## 14. Compute uncertainty for the policy contrast
+## 12. Compute uncertainty for the policy contrast
 
 Scale the SE along with the estimate.
 
@@ -181,7 +155,7 @@ The lincom output supplies the contrast, SE and interval together. State that th
 ------------------------------------------------------------------------------
 ```
 
-## 15. A linear contrast uses cross-coefficient covariance
+## 13. A linear contrast uses cross-coefficient covariance
 
 Combine coefficients in the units of the intended fitted comparison.
 
@@ -195,7 +169,7 @@ If V hat estimates the coefficient covariance, the contrast's estimated variance
 
 Test \(H_0:\theta=c\) with \(t=(\widehat\theta-c)/\sqrt{a\prime\widehat Va}\), under the appropriate reference.
 
-## 16. A confidence interval can contain an important effect
+## 14. A confidence interval can contain an important effect
 
 Failing to reject is not proof of no effect.
 
@@ -207,7 +181,7 @@ If an interval includes zero and also includes effects large enough to matter, t
 
 Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision.
 
-## 17. Economic versus statistical size
+## 15. Economic versus statistical size
 
 Try the comparison before opening the explanation.
 
@@ -217,7 +191,7 @@ Use the outcome units and the decision threshold. A small p-value and a worthwhi
 
 **Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
 
-## 18. Economic versus statistical size: explanation
+## 16. Economic versus statistical size: explanation
 
 Follow the calculation and interpret its units.
 
@@ -225,7 +199,7 @@ No. Report the units, realistic policy contrast, interval, policy cost and relev
 
 No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
 
-## 19. More observations help only under the relevant conditions
+## 17. More observations help only under the relevant conditions
 
 The information gain depends on what the observations add.
 
@@ -235,7 +209,7 @@ Repeating highly dependent information may add less precision. Increasing observ
 
 Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
 
-## 20. Avoid repeated specification searches for a preferred p-value
+## 18. Avoid repeated specification searches for a preferred p-value
 
 The search changes what an isolated test can mean.
 
@@ -247,7 +221,7 @@ If an analyst tries many outcomes, control sets and sample restrictions and repo
 
 Keep a clear account of the main question and intended specification.
 
-## 21. Write an uncertainty statement for a policy reader
+## 19. Write an uncertainty statement for a policy reader
 
 Include the comparison, units and conditions.
 
@@ -259,7 +233,7 @@ A concise result sentence names the adjusted comparison, gives a feasible policy
 
 For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points.
 
-## 22. Check the reference distribution and scale
+## 20. Check the reference distribution and scale
 
 An interval is meaningful only for a defined quantity.
 
@@ -271,7 +245,7 @@ Before interpreting an interval, identify whether it concerns a coefficient, a f
 
 Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations.
 
-## 23. Use the evidence to identify the next useful step
+## 21. Use the evidence to identify the next useful step
 
 Precision, fit and design can require different improvements.
 
@@ -283,7 +257,7 @@ An imprecise but credible comparison may benefit from more informative observati
 
 These are different diagnoses.
 
-## 24. DAG practice: uncertainty is not adjustment
+## 22. DAG practice: uncertainty is not adjustment
 
 Trace the routes before choosing a control.
 
@@ -293,7 +267,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
 
-## 25. DAG practice: uncertainty is not adjustment: explanation
+## 23. DAG practice: uncertainty is not adjustment: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -303,7 +277,7 @@ On an unchanged model and sample, the OLS coefficient remains the same while the
 
 The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them. On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
 
-## 26. Report magnitude and uncertainty together
+## 24. Report magnitude and uncertainty together
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -313,7 +287,7 @@ Use the fitted two-student gain to assess a null gain of one score point, rather
 
 **Practice:** Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Keep your commands, log, output and interpretation.
 
-## 27. Report magnitude and uncertainty together: explanation
+## 25. Report magnitude and uncertainty together: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -328,6 +302,32 @@ Two-student gain: \(2.202592\), robust SE \(0.865694\).
 Null gain of one: \((2.202592-1)/0.865694=1.389164\).
 
 Separate a policy-relevant magnitude from a test against zero.
+
+## 26. School staffing: reproduce and explain
+
+Reproduce the evidence, then explain its economic meaning.
+
+Open schools.csv and run lab_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
+
+Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Keep your commands, log, output and interpretation.
+
+## 27. School staffing: reproduce and explain: explanation
+
+A reproducible result needs both a calculation and an interpretation.
+
+The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change.
+
+A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
+
+The income-adjusted gain is 0.137551 points with robust SE 0.580319 on 420 districts. It remains an adjusted association.
+
+Original two-student fitted gains: +4.56 and +2.20 points.
+
+With income: gain \(0.137551\), robust SE \(0.580319\).
+
+The smaller adjusted association does not establish a causal intervention effect.
 
 ## 28. From finite-sample inference to large-sample reasoning
 
@@ -369,9 +369,9 @@ Restricted and unrestricted fits must answer one nested comparison.
 
 The restricted model imposes the null equalities; the unrestricted model allows the corresponding coefficients to vary. Both must use the same outcome and observations. SSR is the sum of squared residuals. For a constructed example, let restricted SSR be 110, unrestricted SSR be 100, and let two restrictions remove two parameters. With 100 observations and five unrestricted coefficients, divide the SSR increase per restriction, five, by unrestricted SSR per residual degree of freedom, 100 divided by 95. The F statistic is 4.75.
 
-The general formula uses q for the number of restrictions and k subscript U for all unrestricted coefficients, including the intercept. The classical F reference needs the conventional model assumptions. With unequal variance or dependence, use an appropriately estimated covariance and a justified joint test rather than treating a mechanical SSR calculation as universally valid.
+The general formula uses q for the number of restrictions and p subscript U for all unrestricted coefficients, including the intercept. The classical F reference needs the conventional model assumptions. With unequal variance or dependence, use an appropriately estimated covariance and a justified joint test rather than treating a mechanical SSR calculation as universally valid.
 
-\(F=\dfrac{(SSR_R-SSR_U)/q}{SSR_U/(n-k_U)}\)
+\(F=\dfrac{(SSR_R-SSR_U)/q}{SSR_U/(n-p_U)}\)
 
 Example: \(F=\dfrac{(110-100)/2}{100/(100-5)}=4.75\)
 

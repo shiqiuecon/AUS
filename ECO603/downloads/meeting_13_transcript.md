@@ -30,7 +30,7 @@ Weights apply to regressor–residual covariance contributions.
 
 Autocorrelation of errors and covariance of the coefficient estimates are connected by the regressors.
 
-For a time-series regression, define the score-like vector s t as the regressor vector x t multiplied by the model error u t. The long-run covariance sums covariance of these vectors across all date separations, when that sum and the required limit approximation are well defined. With Q equal to the limiting regressor second moment, the coefficient covariance is approximately Q inverse times this long-run covariance times Q inverse, divided by T.
+For a time-series regression, define the regressor-error product vector s t as the regressor vector x t multiplied by the model error u t. The long-run covariance sums covariance of these vectors across all date separations, when that sum and the required limit approximation are well defined. With Q equal to the limiting regressor second moment, the coefficient covariance is approximately Q inverse times this long-run covariance times Q inverse, divided by T.
 
 A Newey–West estimate uses fitted residuals, a finite lag window and weights that taper with lag distance. Here bandwidth means the number of lagged cross-products kept in that window. Its consistency requires suitable exogeneity, moments, dependence and bandwidth conditions. Changing the lag choice changes which empirical cross-date products contribute. It does not remove an omitted cause or automatically guarantee accurate inference in a short persistent sample.
 
@@ -74,7 +74,7 @@ ARCH describes volatility clustering, not necessarily directional error predicta
 
 Autoregressive conditional heteroskedasticity, abbreviated ARCH, allows the conditional variance to depend on past squared errors. In an ARCH one model, the error can still have zero conditional mean while its conditional variance is alpha zero plus alpha one times the previous squared error. Positive alpha one makes large absolute shocks tend to follow large absolute shocks.
 
-A conventional ARCH LM diagnostic regresses squared fitted residuals on a constant and selected lags of squared residuals. Its reference distribution needs the model and approximation conditions. The actual monthly traffic example reports a lag-one statistic of about 0.350 and p-value 0.554. This is a failure to reject that specified diagnostic null, not proof that all forms of changing variance are absent. Neither result settles exogeneity.
+A conventional ARCH LM diagnostic regresses squared fitted residuals on a constant and selected lags of squared residuals. For the one-lag version, the null is alpha one equal to zero: the previous squared error has no role in this variance equation. Its reference distribution needs the model and approximation conditions. The actual monthly traffic example reports a lag-one statistic of about 0.350 and p-value 0.554. This is a failure to reject that specified diagnostic null, not proof that all forms of changing variance are absent. Neither result settles exogeneity.
 
 \(E[u_t\mid I_{t-1}]=0\), \(E[u_t^2\mid I_{t-1}]=\alpha_0+\alpha_1u_{t-1}^2\), \(\alpha_0>0,\alpha_1\ge0\).
 
@@ -279,7 +279,7 @@ A policy effect still needs an assignment argument.
 
 Compare improving dynamics, changing an error model and estimating a future response.
 
-The serial-correlation lesson left two tasks: check whether the conditional mean uses relevant past information, and estimate uncertainty for dependence that remains. Today we compare actual dynamic and Prais–Winsten accident fits, then apply the same reasoning to future inflation responses.
+The serial-correlation lesson left two tasks: check whether the conditional mean uses relevant past information, and estimate uncertainty for dependence that remains. In this second part, we compare actual dynamic and Prais–Winsten accident fits, then apply the same reasoning to future inflation responses.
 
 The quarterly inflation example is a controlled simulation with a known shock and known population response. Its Stata output is real software output from generated data, not an empirical estimate for a country. Knowing the truth lets us see how finite samples and horizon choices affect reported response paths without pretending that a regression identifies a real macroeconomic shock by itself.
 
@@ -447,7 +447,7 @@ A negative sample estimate can coexist with a positive true response.
 
 The estimated horizon-four coefficient in this generated sample is -0.178, with HAC SE 0.101. The known population response is 0.8 times 0.6 to the fourth power, about 0.104. This particular point estimate is quite different from that truth.
 
-A confidence procedure has a repeated-sample coverage property, not a promise for each sample or every horizon simultaneously. The example is deliberately retained rather than edited to obtain a visually pleasing response. Use the difference to explain uncertainty, the limits of pointwise intervals and the distinction between a known simulation population and an observed research setting.
+A confidence procedure has a repeated-sample coverage property, not a promise for each sample or every horizon simultaneously. The example is deliberately retained rather than edited to obtain a visually pleasing response. Use the difference to explain uncertainty, the limits of pointwise intervals, meaning intervals for individual horizons rather than for the whole path together, and the distinction between a known simulation population and an observed research setting.
 
 ```text
 . newey F4.inflation shock L.inflation, lag(8)
@@ -549,9 +549,9 @@ Write a time line for the shock, controls and outcome.
 
 Measurement and first-step uncertainty can matter.
 
-In the simulation, the independent shock is observed exactly because we generated it. In applied macroeconomics, a shock may instead be inferred from a first regression, a statistical decomposition or an outside instrument. An inferred shock contains estimation uncertainty and may mix the intended innovation with other economic news.
+In the simulation, the independent shock is observed exactly because we generated it. In applied macroeconomics, a shock may instead be inferred from a first regression, a statistical decomposition or a separate source of economic variation. An inferred shock contains estimation uncertainty and may mix the intended innovation with other economic news.
 
-Putting that estimated series into a response regression is a two-step procedure. Inference must consider how the first-step estimation affects the response estimate, including dependence between the steps. A suitable joint method or resampling procedure depends on the actual construction and target. Before choosing one, explain what intervention the shock is meant to represent and why its variation is independent of omitted future-outcome causes. We develop the outside-instrument argument in Meeting 14.
+Putting that estimated series into a response regression is a two-step procedure. Inference must consider how the first-step estimation affects the response estimate, including dependence between the steps. A suitable joint method or a resampling procedure that repeats both estimation steps on appropriately redrawn histories depends on the actual construction and target. Before choosing one, explain what intervention the shock is meant to represent and why its variation is independent of omitted future-outcome causes. We develop the outside-instrument argument in Meeting 14.
 
 Known simulated shock: observed by construction.
 

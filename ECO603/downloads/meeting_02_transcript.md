@@ -4,9 +4,9 @@
 
 Define the regression equation, its coefficients and the error term.
 
-We now turn from a causal model to a statistical description of district scores. A regressor is a variable used to explain or predict an outcome. Our first regressor is the student–teacher ratio X; the outcome Y is the district score. In the population equation, beta zero is an intercept and beta one is a slope. The error u collects the outcome variation outside that specified line.
+We now turn from a causal model to a statistical description of district scores. A regressor is a variable used to explain or predict an outcome. Our first regressor is the student–teacher ratio X; the outcome Y is the district score. In the population equation, beta zero is an intercept, the height of the line at X equal to zero, and beta one is a slope. These unknown numbers are the model coefficients. The error u collects the outcome variation outside that specified line.
 
-If the mean error is zero at every X, the line describes the conditional mean: the average score among districts at that ratio. This is an assumption about the population, not a consequence of fitting a line. A causal interpretation needs the additional intervention and assignment argument developed above. Estimation means choosing coefficient values using the sample data. The sample fit uses these estimated coefficients, written with hats, and gives a fitted score for each district. A residual is its observed score minus that fitted score; unlike the population error, we can calculate it after estimation.
+If the mean error is zero at every X, the line describes the conditional mean: the average score among districts at that ratio. This is an assumption about the population, not a consequence of fitting a line. A causal interpretation needs the additional intervention and assignment argument developed above. Estimation means choosing coefficient values using the sample data. An estimator is the calculation rule; an estimate is the numerical result from one sample. The sample fit uses these estimated coefficients, written with hats, and gives a fitted score for each district. A residual is its observed score minus that fitted score; unlike the population error, we can calculate it after estimation.
 
 Population: \(Y_i=\beta_0+\beta_1X_i+u_i\)
 
@@ -18,7 +18,7 @@ Fit: \(\widehat Y_i=\widehat\beta_0+\widehat\beta_1X_i\); residual: \(e_i=Y_i-\w
 
 The error is an unobserved population remainder; the residual follows an estimated line.
 
-Write the population relationship as Y equals beta zero plus beta one times X plus u. The betas are unknown fixed parameters. If the conditional mean of u given X is zero, the population conditional mean of Y at X equal to x is beta zero plus beta one times x. A conditional mean is an average over units sharing the stated X value.
+Write the population relationship as Y equals beta zero plus beta one times X plus u. A parameter is a fixed numerical feature of the population model; the betas are its unknown intercept and slope. If the conditional mean of u given X is zero, the population conditional mean of Y at X equal to x is beta zero plus beta one times x. A conditional mean is an average over units sharing the stated X value.
 
 The sample line uses estimated coefficients b zero and b one. Its fitted value for district i is b zero plus b one times its staffing ratio. The residual is observed score minus that fitted value. A residual is calculated from this sample, whereas the population error depends on the unknown coefficients. The sample line approximates a population comparison; causal meaning still requires the earlier identification argument.
 
@@ -128,9 +128,9 @@ Insert each ratio into this fitted equation and subtract its fitted score from t
 
 An average restriction need not hold at every regressor value.
 
-Covariance measures average co-movement: the expected product of two variables after subtracting their means. If the error has mean zero conditional on X, averaging X times that conditional mean gives a zero covariance between X and u, provided the relevant expectations exist. This is a population moment restriction, meaning an equality involving an average of random variables.
+Variance is the expected squared distance from a variable's mean; it measures spread in squared units. Covariance measures average co-movement: the expected product of two variables after subtracting their means. When both standard deviations are positive and finite, correlation divides covariance by their product. It is a unit-free measure of linear co-movement, between minus one and one. If the error has mean zero conditional on X, averaging X times that conditional mean gives a zero covariance between X and u, provided the relevant expectations exist. This is a population moment restriction, meaning an equality involving an average of random variables.
 
-The converse need not hold. In a constructed example, X takes minus one, zero and one with equal probability, and u equals X squared minus two thirds. Its mean is zero and its covariance with X is zero, but its conditional mean is one third at the two extremes and minus two thirds at zero. Linear co-movement vanishes while the conditional pattern remains. Neither zero sample residual covariance nor zero population covariance alone proves a causal model.
+The converse need not hold. In a constructed example, X takes minus one, zero and one with equal probability, and u equals X squared minus two thirds. Its mean is zero and its covariance with X is zero, but its conditional mean is one third at the two extremes and minus two thirds at zero. Linear co-movement vanishes while the conditional pattern remains. In this regression discussion, exogeneity refers to the stated restriction connecting regressors and the population error, such as zero conditional mean. Neither zero sample residual covariance nor zero population covariance alone establishes that restriction or proves a causal model.
 
 \(\operatorname{Cov}(X,u)=E[(X-EX)(u-Eu)]\).
 
@@ -156,15 +156,15 @@ With an intercept: \(\sum_i(\widehat Y_i-\overline Y)\widehat u_i=0\), so \(SST=
 
 Units belong to the coefficient, not to the fit.
 
-Suppose staffing X is recorded in students per teacher, and define X star as c times X for a nonzero constant c. Replacing X with X star in a regression that spans the same columns divides its coefficient by c. Multiplying that coefficient by X star recovers the same contribution to every fitted score.
+Suppose staffing X is recorded in students per teacher, and define X star as c times X for a nonzero constant c. Replacing X with X star in the same regression divides its coefficient by c. Multiplying that coefficient by X star recovers the same contribution to every fitted score. For example, doubling the recorded staffing numbers halves their fitted slope.
 
-If the outcome is multiplied by a positive scale factor a, the intercept, slopes, residuals and their standard errors scale by a. Ratios such as a coefficient divided by its standard error stay unchanged. These are changes of measurement, not new economic evidence. A model without an intercept is different: it forces the fitted mean to zero at X equal to zero, and the centred fit decomposition need not hold.
+If the outcome is multiplied by a positive scale factor a, its intercept, slopes, fitted values and residuals all scale by a. These are changes of measurement, not new economic evidence. Removing the intercept is different: it forces the fitted line through zero when X is zero. That imposes a restriction, and the centred fit decomposition need not hold. We will revisit uncertainty under rescaling after developing sampling uncertainty.
 
 \(X^\star=cX\Rightarrow b_1^\star=b_1/c\), \(c\ne0\).
 
-\(Y^\star=aY\Rightarrow b^\star=ab\); for \(a>0\), \(SE^\star=aSE\).
+\(Y^\star=aY\Rightarrow b_0^\star=ab_0,\ b_1^\star=ab_1\), \(a>0\).
 
-Removing an intercept imposes an economic restriction; rescaling a column does not.
+Changing units preserves the translated fit; removing an intercept changes the model.
 
 ## 13. Logs provide a second measurement scale for a simple regression
 
@@ -200,7 +200,7 @@ OLS with an intercept makes the two sample cross-products zero up to numerical p
 
 ## 16. Read a genuine Stata result
 
-Read the coefficient, SE, test and interval in a real Stata table.
+Read the fitted coefficients and their units in the actual Stata display.
 
 Stata has fitted the score line to the 420 districts. To focus on what we have learned, this display reports only the fitted coefficients. The command matrix list prints a rectangular table of numbers; e(b) is Stata's stored coefficient table. The column str refers to students per teacher. Its coefficient is minus 2.279808 score points per additional student per teacher. The _cons column is the intercept.
 
@@ -224,7 +224,7 @@ y1   -2.279808  698.932953
 
 lincom translates a slope into the particular comparison we want.
 
-A policy reader usually cares about a feasible staffing change rather than a one-unit coefficient. The proposed change from 22 to 20 students per teacher is minus two units. Stata evaluates minus twice the staffing coefficient and obtains 4.559616 score points.
+Stata's lincom command calculates a stated weighted sum of estimated coefficients; here the weight is minus two on the staffing slope. A policy reader usually cares about a feasible staffing change rather than a one-unit coefficient. The proposed change from 22 to 20 students per teacher is minus two units. Stata evaluates minus twice the staffing coefficient and obtains 4.559616 score points.
 
 The sign is positive because both the slope and the proposed ratio change are negative. The intercept cancels when two fitted scores from the same line are subtracted. Compare this fitted difference with the four-point causal effect in our earlier teaching model. They answer different questions: one comes from an observed-data fit, while the other follows from specified causal mechanisms. Numerical similarity would not establish that they have the same interpretation.
 

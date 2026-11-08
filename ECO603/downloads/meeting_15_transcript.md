@@ -66,9 +66,9 @@ Name the coefficient’s index scale. Use the two starting-probability examples 
 
 Follow the calculation and interpret its units.
 
-It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect to discuss probabilities.
+It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
 
-It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect to discuss probabilities.
+It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
 
 ## 07. Probit also uses an index coefficient
 
@@ -90,7 +90,7 @@ Only the sign of the unobserved index is observed.
 
 A latent variable is an unobserved continuous quantity used to describe the binary decision. Write Y star as x prime beta plus e, and record Y equal to one when Y star is positive. Multiplying the entire latent equation by a positive constant leaves that observed decision unchanged, so its absolute scale cannot be recovered from the binary outcome alone.
 
-Probit fixes the latent error to a standard normal distribution with variance one. Standard logit fixes a logistic distribution, with variance pi squared divided by three. Their coefficients therefore use different index scales. A mechanical coefficient conversion is only a rough comparison, not an identity or a test that the models agree. Compare fitted probabilities and stated probability contrasts on the same observed sample.
+Probit fixes the latent error to a standard normal distribution with variance one. Standard logit fixes a logistic distribution, with variance pi squared divided by three. Here pi is the mathematical constant, about 3.14159, rather than the inflation variable used in the earlier application. Their coefficients therefore use different index scales. A mechanical coefficient conversion is only a rough comparison, not an identity or a test that the models agree. Compare fitted probabilities and stated probability contrasts on the same observed sample.
 
 \(Y^\star=x\prime\beta+e\), \(Y=1\{Y^\star>0\}\).
 
@@ -130,7 +130,7 @@ The log likelihood, written lowercase ell, takes the logarithm of that product a
 
 The observed outcome selects which probability enters each contribution.
 
-Let p i of beta be the model probability of denial for applicant i. For a zero-or-one outcome, the Bernoulli probability contribution is p i raised to Y i times one minus p i raised to one minus Y i. An observed denial contributes p i; an approval contributes one minus p i. Under conditional independence, multiply these contributions across applicants.
+Let p i of beta be the model probability of denial for applicant i. A Bernoulli distribution describes one zero-or-one outcome with probability p i of one. Its probability contribution is p i raised to Y i times one minus p i raised to one minus Y i. An observed denial contributes p i; an approval contributes one minus p i. Under conditional independence, multiply these contributions across applicants.
 
 Taking logs turns the product into the displayed sum. Maximum likelihood chooses beta to maximise it. A gradient is the vector of derivatives of this objective with respect to the coefficients; numerical optimisation uses such local information. Existence, identification, suitable sampling, correct probability specification and enough smoothness and information near the true coefficients are needed for the familiar consistency and large-sample normal approximation. The fitting criterion itself does not establish a causal effect.
 
@@ -237,7 +237,7 @@ dy/dx wrt:  pir
 
 A nonlinear transformation does not commute with averaging.
 
-Let G be the probability link, g its derivative, and x i the observed input vector. For a continuous input entering the index linearly without an interaction, applicant i's local probability slope is g of x i prime b times coefficient b j. The average partial effect, APE, averages these slopes over observed applicants. It is also called an average marginal effect, AME.
+Let G be the response function mapping the index to a probability, and g its derivative, and x i the observed input vector. For a continuous input entering the index linearly without an interaction, applicant i's local probability slope is g of x i prime b times coefficient b j. The average partial effect, APE, averages these slopes over observed applicants. It is also called an average marginal effect, AME.
 
 The partial effect at the average, PEA, instead evaluates the derivative at the vector of sample mean inputs. This vector can describe a hypothetical applicant, and its result generally differs from the average of applicant-specific slopes. For an indicator, use a finite zero-to-one probability difference, holding the other inputs at their stated values, then average if that is the target. Interactions and squares require the full derivative or fitted contrast.
 

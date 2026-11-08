@@ -4,7 +4,7 @@
 
 Use a known population to separate bias from sampling noise.
 
-Large administrative datasets often produce small SEs. That is useful when the comparison estimates the intended effect, but it can make a flawed comparison look very convincing. Today we will construct data where the true coefficient is known and observe what increases in sample size actually do.
+Asymptotics studies what happens to statistical procedures as sample size grows. Large administrative datasets often produce small SEs. That is useful when the comparison estimates the intended effect, but it can make a flawed comparison look very convincing. Today we will construct data where the true coefficient is known and observe what increases in sample size actually do.
 
 The simulation distinguishes a short regression omitting ability from a longer regression that includes it. The true direct X coefficient is one. The short slope approaches one and a half in this constructed population. Watching the distributions narrow around different values makes consistency and bias visible before we return to imperfect real-world records.
 
@@ -40,9 +40,9 @@ Causal consistency: observed/potential-outcome link; a different use of the word
 
 The two properties answer different repeated-sample questions.
 
-Suppose Y observations are independent draws with mean mu and a positive finite variance. Estimating mu using only the first observation is unbiased, because that observation has mean mu. But collecting more unused observations does not make this estimator concentrate near mu; its distribution stays unchanged. It is not consistent for a non-degenerate population.
+Suppose Y observations are independent draws with mean mu and a positive finite variance. Estimating mu using only the first observation is unbiased, because that observation has mean mu. But collecting more unused observations does not make this estimator concentrate near mu; its distribution stays unchanged. It is not consistent when the population has positive variance.
 
-Now use the sample mean plus one divided by n. Its repeated-sample mean is mu plus one divided by n, so it is biased at every finite n. Under the law of large numbers, the sample mean converges to mu and the added term vanishes, making the estimator consistent. These examples explain why neither finite-sample unbiasedness nor a small standard error alone settles the large-sample question.
+Now use the sample mean plus one divided by n. Its repeated-sample mean is mu plus one divided by n, so it is biased at every finite n. Under a law of large numbers, a result giving conditions for sample averages to approach population averages, the sample mean converges to mu and the added term vanishes, making the estimator consistent. These examples explain why neither finite-sample unbiasedness nor a small standard error alone settles the large-sample question.
 
 \(\widehat\mu_n=Y_1\): \(E\widehat\mu_n=\mu\), \(\operatorname{Var}(\widehat\mu_n)=\sigma^2>0\).
 
@@ -136,7 +136,7 @@ The square-root rate concerns sampling variation around a limit.
 
 For independent zero-or-one draws with probability one half, the average has mean one half and standard deviation 0.5 divided by the square root of sample size. At 100 observations that spread is 0.05; at 400 it is 0.025. Multiply the average's deviation from one half by the square root of sample size and its spread stays at 0.5. Under these conditions, the scaled distribution approaches a normal bell shape.
 
-This is the role of a central limit theorem: it describes the shape and scale of fluctuations, while a law of large numbers describes concentration near a limit. Under suitable regressor and error conditions, a coefficient estimator has a similar square-root-of-sample-size approximation. In the formula, beta is the target, beta hat its estimate, the arrow marked d means convergence in distribution, and Omega is the limiting variance. None of these statements centers an inconsistent short regression on the true structural coefficient.
+This is the role of a central limit theorem: it describes the shape and scale of fluctuations, while a law of large numbers describes concentration near a limit. Under suitable regressor and error conditions, a coefficient estimator has a similar square-root-of-sample-size approximation. In the formula, beta is the target, beta hat its estimate, the arrow marked d means convergence in distribution: for this continuous normal limit, probabilities of falling below each fixed cutoff approach the normal probabilities, and Omega is the limiting variance. None of these statements centers an inconsistent short regression on the true structural coefficient.
 
 Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=0.5/\sqrt n\)
 
@@ -146,7 +146,7 @@ Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(
 
 Define the moments needed for consistency and normal approximation.
 
-Let x i be the p-entry regressor vector, including the intercept, and let Q be its population second-moment matrix. Assume independent observations, a nonsingular, meaning invertible, Q, zero expected x i times u i, and sufficient finite moments for a law of large numbers and central limit theorem. For example, finite second moments of x i times u i support the familiar independent-data normal approximation.
+Let x i be the p-entry regressor vector, including the intercept, and let Q be its population second-moment matrix. A second moment is an expected product: entry j, k of Q is the population average of regressor j times regressor k. These products are not centred as in a covariance matrix. Asymptotic means describing a limit as sample size grows. Assume independent observations, a nonsingular, meaning invertible, Q, zero expected x i times u i, and sufficient finite moments for a law of large numbers and central limit theorem. For example, finite second moments of x i times u i support the familiar independent-data normal approximation.
 
 The scaled OLS estimation error equals the inverse sample second moment times the sum of regressor-error products divided by square root n. The first part approaches Q inverse. The second has a limiting normal distribution with covariance S, defined as the expectation of u squared times x x prime. Their combination gives Q inverse S Q inverse. The asymptotic covariance of the scaled estimator is not its finite-sample variance; the approximate coefficient covariance divides that limiting matrix by n.
 
@@ -174,9 +174,9 @@ The approximation concerns sampling variation around the estimator’s limit.
 
 The auxiliary statistic and reference distribution must match the null.
 
-Suppose the unrestricted model contains the original inputs and q additional columns. The null sets the coefficients on those q columns to zero. Fit the restricted model first and obtain its residuals. In the conventional homoskedastic linear-model LM construction, regress those residuals on the complete unrestricted regressor set, including the original inputs and the intercept.
+LM abbreviates Lagrange multiplier. This test assesses omitted coefficient restrictions using a fit that imposes the null. Suppose the unrestricted model contains the original inputs and q additional columns. The null sets the coefficients on those q columns to zero. Fit the restricted model first and obtain its residuals. In the conventional homoskedastic linear-model LM construction, regress those residuals on the complete unrestricted regressor set, including the original inputs and the intercept.
 
-The auxiliary statistic is n times its R squared, with an asymptotic chi-squared reference having q degrees of freedom under the stated sampling, moment, rank and variance conditions. A chi-squared variable with q degrees of freedom is the sum of squares of q independent standard normal variables. This ordinary construction is not automatically valid under arbitrary heteroskedasticity. The robust Wald construction in the variance block uses a suitable covariance instead. The restriction count comes from the null, not from the number of degrees of freedom in a conveniently available critical-value table.
+The auxiliary statistic is n times its R squared, with an asymptotic chi-squared reference having q degrees of freedom under the stated sampling, moment, rank and variance conditions. A chi-squared variable with q degrees of freedom is the sum of squares of q independent standard normal variables. This ordinary construction is not automatically valid under arbitrary heteroskedasticity. For unequal variance, the later variance lesson develops a joint test based on a suitable covariance estimate instead. The restriction count comes from the null, not from the number of degrees of freedom in a conveniently available critical-value table.
 
 \(H_0:\gamma_1=\cdots=\gamma_q=0\) for the \(q\) additional columns.
 

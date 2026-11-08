@@ -4,9 +4,9 @@
 
 Show the comparison left after observed controls are removed.
 
-The longer staffing regression compared districts at fixed language composition and income. Today we will see how OLS constructs that adjusted comparison. The method is called partialling out, or residualisation: remove the part of a variable predicted by selected controls, then study the remainder.
+The simple regression compared district scores using staffing alone. Now we introduce multiple regression: include more than one explanatory variable in the same fitted equation. Adding language composition and income lets us describe staffing differences while holding those measured characteristics fixed in the model.
 
-This is useful when a coefficient table hides the source of variation. We will apply the method to actual district scores and staffing ratios. A numerical equality will show that the partialled regression reproduces the full-model slope. The equality explains estimation; separate assumptions are still needed to interpret that slope as a causal policy effect.
+We will first define the longer equation, explain its fitting rule and derive why adding a regressor can change a slope. We then check those ideas in the actual district data. In the next lesson, partialling out will make the adjusted comparison visible by removing the fitted contributions of the controls. A coefficient calculation and its causal policy interpretation will continue to require separate arguments.
 
 ## 02. Why can adding a regressor change a slope?
 
@@ -60,7 +60,7 @@ Orthogonality here means a zero sum of paired products.
 
 Use a second variable to understand a changed slope.
 
-The previous lesson found a negative association between students per teacher and district test scores. The fitted difference became smaller after accounting for English-learner share. Today we ask why that happened and what the second regression can establish. This matters whenever a policy variable is chosen rather than assigned by chance.
+The previous lesson found a negative association between students per teacher and district test scores. We will now compare that fit with a regression including English-learner share. The question is whether the fitted staffing comparison changes and what that change can establish. This matters whenever a policy variable is chosen rather than assigned by chance.
 
 We will use the same 420 districts throughout the main comparison. Keeping the observations fixed lets us study a change in the model without also changing the sample. Our goal is to explain the coefficient movement with an equation, a diagram and actual data, then decide what additional assumptions a causal interpretation would require.
 
@@ -92,7 +92,7 @@ Exogeneity for this mean model: \(E(u_i\mid X_i,Z_i)=0\)
 
 Multiply the omitted effect by the omitted-variable association.
 
-Let Z be English-learner share and X the staffing ratio. The longer score relationship has staffing slope beta one and language slope beta two. To describe how Z varies with X, write a supporting equation: Z equals delta zero plus delta one times X plus v. Delta zero is its intercept, delta one its slope, and v the remainder with mean zero at each X.
+Let Z be English-learner share and X the staffing ratio. The longer score relationship has staffing slope beta one and language slope beta two. To describe how Z varies with X, write an auxiliary equation, meaning a supporting regression: Z equals delta zero plus delta one times X plus v. Delta zero is its intercept, delta one its slope, and v the remainder with mean zero at each X.
 
 Substitute that expression for Z into the longer score equation. The constant terms combine, and the coefficient multiplying X becomes beta one plus beta two times delta one. The new error is beta two times v plus u. If the longer error u also has mean zero given X and Z, this composite error has mean zero given X. The short population regression therefore adds beta two times delta one to the longer staffing slope. Bias here means a difference from the target longer-model coefficient; that target is causal only under its stated causal assumptions.
 
@@ -315,9 +315,9 @@ Locate the variable in time. Ask whether it precedes the policy and helps determ
 
 Follow the calculation and interpret its units.
 
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
 
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
 
 ## 26. Add income and inspect what changes
 

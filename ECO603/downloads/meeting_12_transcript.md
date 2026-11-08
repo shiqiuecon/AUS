@@ -272,7 +272,7 @@ We have seen several reasons why a regression result might need attention. Choos
 
 If a regressor is related to the current error, changing the SE method cannot remove that relation. For example, officials might adopt a law because they anticipate an unrecorded rise in accident risk. This is a problem with the policy comparison, even if the residual dependence is also handled carefully. The study needs a reason why its policy variation can separate the law's effect from that changing risk.
 
-Practise linking a recommendation to the diagnosis: 'The concern is…, so I would…, assuming…'. For each case, explain what your proposed change fixes and what it leaves. This prepares you to assess a new empirical question without choosing a command just because it is labelled robust. In the exit task, use the accident example to show that you can make these distinctions in one connected paragraph.
+Practise linking a recommendation to the diagnosis: 'The concern is…, so I would…, assuming…'. For each case, explain what your proposed change fixes and what it leaves. This prepares you to assess a new empirical question without choosing a command just because it is labelled robust. Write one connected paragraph about the accident example: name the concern, choose a response, state its assumptions and explain what it cannot establish.
 
 **Practice:** A policy indicator responds to unobserved accident risk. Is the first remedy a longer HAC window?
 

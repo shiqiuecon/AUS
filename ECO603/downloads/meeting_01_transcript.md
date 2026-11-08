@@ -36,7 +36,7 @@ One observation is one district; define the variables and their units.
 
 Before writing an equation, decide what one row in the dataset represents. This is the unit of observation. Here it is a school district. We have 420 observations, so we write n=420, where n is the number of observations. We do not have one observation for every student or every classroom.
 
-Let i identify a district. Write \(Y_i\) for its average test score, measured in score points, and \(X_i\) for its student–teacher ratio. Y is the outcome: the variable we want to explain. X is an explanatory variable, also called a regressor: a variable used to explain differences in the outcome. The subscript i simply tells us which district's values we are using.
+Let i identify a district. Write \(Y_i\) for its average test score, measured in score points, and \(X_i\) for its student–teacher ratio. Y is the outcome: the variable we want to explain. X is an explanatory variable, also called a regressor or covariate: a variable used to explain differences in the outcome. The subscript i simply tells us which district's values we are using.
 
 The population is the full set of units we want to understand; the sample is the set we observe. Our 420 districts form the observed sample, and we must decide which wider population, if any, they represent. This dataset is a cross section because it compares different districts for one study period. A time series follows a unit over time. A panel follows the same identifiable units repeatedly, such as these districts each year. These different structures will give us different comparisons later in the course.
 
@@ -70,7 +70,9 @@ Data structure and sampling design are separate questions.
 
 Independence and a common distribution need a substantive argument.
 
-Independent observations do not provide information about one another's random outcomes under the sampling model. Identically distributed means that the observations follow the same joint distribution of the measured variables. The abbreviation iid combines independent and identically distributed. A random sample is one familiar setting in which both conditions hold.
+A random variable is a quantity whose value is uncertain before we observe it. A probability is a chance, measured between zero and one. A probability distribution describes the possible values and their chances. A joint distribution describes combinations of variables: here, which score and staffing values occur together in a district. These population descriptions differ from the particular values in our observed file.
+
+Independent observations do not provide information about one another's random outcomes under the sampling model. Identically distributed means that each observation follows the same joint distribution of the measured variables. The abbreviation iid combines independent and identically distributed. A random sample, in the convention used here, consists of independent draws from one population distribution.
 
 Neighbouring districts may share shocks, and later observations in a time series can depend on earlier ones. A file restricted to large districts can also represent a different population from a file covering all districts. These cases need an explicit sampling argument. A large number of rows does not establish independence or population representativeness.
 
@@ -124,11 +126,13 @@ Observed groups do not automatically supply the missing outcome.
 
 ## 09. Average effects require a population and an identification argument
 
-Define the target before choosing an estimator.
+Define the policy states, population and averaging rule.
 
-For a binary policy D, define Y of one and Y of zero as a unit's outcomes under the two specified interventions. The average treatment effect, ATE, averages their difference over the target population. The average treatment effect on the treated, ATT, averages over units with D equal to one. The populations can differ, so the two averages need not agree when responses vary.
+For this example, let D equal one when a district receives the specified teacher-hiring policy and zero when it receives the comparison policy. Such a zero-or-one variable is binary. Y of one and Y of zero are its outcomes under those two interventions. The average treatment effect, ATE, averages their difference over the target population. The average treatment effect on the treated, ATT, averages over units that actually receive the policy. Responses can vary, so these two population averages need not agree.
 
-Consistency links the observed outcome to the potential outcome under the intervention received. Conditional exchangeability says that, given suitable prior characteristics C, treatment membership carries no further information about the potential outcomes. Overlap requires both treatment states at the characteristics used for the comparison. With these assumptions and appropriate sampling, adjusted conditional means can identify the population average. A regression coefficient equals that target only if its specification and averaging also match it.
+In the formulas, E means expectation: a population average, weighted by the distribution. A vertical bar means given, or conditional on. Thus E of Y given D equal to one and C is an average among treated units sharing the prior characteristics C. P denotes probability. The perpendicular symbol means independence; with a conditioning bar, it means independence within the stated characteristics. E with subscript C averages the displayed comparisons across the target population's C values.
+
+Consistency links an observed outcome to the potential outcome under the intervention received. Conditional exchangeability says that, given suitable prior characteristics C, treatment membership supplies no further information about either potential outcome. Overlap requires both treatment states to be possible at the C values used. With these conditions and suitable sampling, the displayed adjusted mean difference identifies the ATE. Identification means that the observed-data distribution and assumptions determine the target quantity. It does not mean that the comparison is assumption-free or already estimated precisely.
 
 \(ATE=E[Y(1)-Y(0)]\); \(ATT=E[Y(1)-Y(0)\mid D=1]\).
 
@@ -152,7 +156,7 @@ The range of the data also limits what we can learn. The observed ratios run fro
 
 ## 11. Use a DAG to make the causal story visible
 
-Begin with assumptions about arrows before choosing controls.
+Begin with assumptions about the arrows and mechanisms.
 
 The two mechanisms can also be drawn. A node is a variable: X represents staffing, Y the score and C prior support. An arrow from C to X says that support enters the staffing mechanism. An arrow from C to Y says that support also enters the learning mechanism. The arrow from X to Y represents the proposed staffing effect. An absent arrow is an assumption that there is no additional direct mechanism between those variables in this model.
 
@@ -170,7 +174,7 @@ A causal route follows arrows; a general path need not.
 
 A path is a sequence of distinct connected nodes. First trace X to Y along the direct arrow. Next trace X back to C and then forward to Y. Both are paths, even though the second traversal goes against the first arrow. Only the first is a directed causal path from staffing to scores.
 
-The second route begins with an arrow pointing into X. We call a path with that beginning a backdoor path. Here C is a common cause of X and Y. Districts with different staffing can therefore have different support even before the staffing mechanism affects learning. Confounding means that such an alternative source of outcome differences contaminates the proposed causal comparison. The distinction is visible before any coefficient is calculated.
+The second route begins with an arrow pointing into X. We call a path with that beginning a backdoor path. Here C is a common cause of X and Y. Districts with different staffing can therefore have different support even before the staffing mechanism affects learning. Confounding means that such an alternative source of outcome differences contaminates the proposed causal comparison. The distinction is visible before fitting any numerical relationship.
 
 Causal route: \(X\rightarrow Y\)
 
@@ -180,7 +184,7 @@ Backdoor route: \(X\leftarrow C\rightarrow Y\)
 
 Compare districts with similar prior background.
 
-Suppose we compare districts at the same prior-support value. This is conditioning on C: restrict the comparison to a fixed value or account for it in a model. It changes which districts are compared; it does not set anyone's staffing by intervention. Select C in the graph. The common-cause route through C closes, while the staffing-to-score arrow remains.
+Suppose we compare districts at the same prior-support value. This is conditioning on C: restrict the comparison to a fixed value or account for it in a model. It changes which districts are compared; it does not set anyone's staffing by intervention. Using C as a control means holding its observed value fixed in the comparison. A regression is a statistical model relating an average outcome to stated explanatory variables; it can represent such a conditional comparison. Select C in the graph. The common-cause route through C closes, while the staffing-to-score arrow remains.
 
 On this path, C is a non-collider because its two neighboring arrows do not both point into it. Conditioning on a non-collider blocks that path. In the simple graph, holding support fixed closes the only drawn backdoor. A regression that correctly represents the conditional relationship could use that comparison, provided the needed staffing values occur at the support levels being compared. This availability is called overlap or support. The conclusion depends on the graph being adequate, on measuring C appropriately and on the comparison being available in the data.
 
@@ -220,7 +224,7 @@ Conditioning can open a route that was blocked.
 
 The scholarship diagram names the pattern we just calculated. Preparation and need both point into scholarship selection. On the path joining those two causes, selection is a collider: the two arrowheads meet at the same interior node. A collider blocks the path when we do not condition on it or select information about its consequences. This is why the unselected graph does not connect the two independent causes through selection.
 
-Select scholarship selection in the diagram. The path opens, matching the relationship among recipients in the four-case example. Conditioning on a shared consequence can therefore create an association rather than remove one. Collider is a role on a particular path, not a permanent label that a variable carries on every path. An open path allows dependence; it does not guarantee a nonzero observed correlation for every possible numerical model.
+Select scholarship selection in the diagram. The path opens, matching the relationship among recipients in the four-case example. Conditioning on a shared consequence can therefore create an association rather than remove one. Collider is a role on a particular path, not a permanent label that a variable carries on every path. An open path allows dependence; it does not guarantee a nonzero observed association for every possible numerical model.
 
 Collider: \(P\rightarrow S\leftarrow N\)
 
@@ -288,7 +292,7 @@ Keep the same model but make arrest probability the explanatory variable. Enforc
 
 This is why a control set is tied to a target comparison. A variable that was sufficient for the conviction question need not be sufficient for the arrest question. The dashed background box also reminds us that naming a necessary control does not make it observed. We may need another design or better measurements rather than another command in the same dataset.
 
-Compare the two diagrams and explain the remaining route in words. We will use the same habit with school staffing, traffic laws, panel comparisons and instruments: specify the proposed cause, trace the alternatives, and state which assumptions or data close them. A regression coefficient is useful only when its comparison is clear.
+Compare the two diagrams and explain the remaining route in words. We will use the same habit with school staffing and later policy applications: specify the proposed cause, trace the alternatives, and state which assumptions or data close them. A fitted comparison is useful only when its meaning is clear.
 
 Remaining route: \(A\leftarrow U\rightarrow Y\)
 
@@ -312,7 +316,7 @@ Use these checks to propose a local study. Specify which schools we would study,
 
 A test of the slope and a credible policy comparison answer different questions.
 
-Consider this proposed recommendation: 'The staffing slope is statistically significant, so reducing class sizes will improve scores by exactly the fitted amount.' We now have the tools to evaluate each part of that sentence. The test gives evidence against a zero population slope under the model's assumptions. It does not test whether staffing choices are free from other influences on learning.
+Consider this proposed recommendation: 'The staffing slope is statistically significant, so reducing class sizes will improve scores by exactly the fitted amount.' Here statistically significant means that a statistical test finds the estimate unusually far from a specified zero slope under its reference assumptions. A test is a rule for assessing such a population claim using sample data; we will develop its calculation after studying estimation and uncertainty. Even if that rule gives evidence against zero, it addresses the observed comparison under the model's assumptions. It does not test whether staffing choices are free from other influences on learning.
 
 The diagram makes the remaining issue concrete. If language composition, family resources or learning needs connect staffing and scores, a sample association can reflect those connections. An estimate of sampling uncertainty tells us how the estimate might vary across comparable samples. It does not tell us whether the comparison separates the policy effect from those other influences. Repeating the same flawed comparison more precisely does not solve that problem.
 
@@ -326,7 +330,7 @@ Rewrite the recommendation using the evidence we have. Name the fitted compariso
 
 Choose new data or a new comparison to address a specific concern.
 
-Suppose you can improve the study in one way. Adding more districts could make the estimated slope more precise. Precision means that estimates vary less across comparable samples, which is usually reflected in smaller SEs. But more observations do not by themselves explain why districts chose different staffing levels.
+Suppose you can improve the study in one way. Adding more districts could make the estimated slope more precise. Precision means that estimates vary less across comparable samples, when the sampling conditions support that comparison. But more observations do not by themselves explain why districts chose different staffing levels.
 
 If that choice is the main concern, a staffing offer allocated by chance could provide more useful evidence about the policy effect. A natural experiment is another possibility: an outside event or rule creates a comparison that can be argued to resemble random assignment. For example, an unexpected funding rule might alter teacher recruitment for some schools. We would still need to explain why the rule was unrelated to other changes in learning and whether it affected scores through other routes.
 
@@ -362,11 +366,11 @@ Before estimating, state what the data can answer
 
 We have defined the observation, the policy intervention and the missing comparison. A useful empirical argument states which population is represented and which assumptions connect its data to the policy question. The causal graph makes proposed channels visible; it does not supply evidence for every arrow.
 
-Next we build the simple regression carefully. A fitted slope will describe an observed comparison. Its calculation and its causal interpretation require separate arguments.
+Write four sentences: name the district population; define the teacher-hiring intervention and score outcome; explain one alternative cause that could distort an observed comparison; and propose evidence that would address it. Next we build simple regression carefully. A fitted slope will describe an observed comparison. Its calculation and its causal interpretation require separate arguments.
 
 Before estimating, state what the data can answer
 
-**Practice:** Write the four-sentence report described here.
+**Practice:** Write four sentences naming the population, staffing intervention and outcome, one alternative explanation, and evidence that could address it.
 
 **Explanation:** One observation is a school district, and staffing is measured as students per teacher. A reduction of two students per teacher gives about +4.56 fitted score points in the simple model. The difference is about +2.20 points after holding English-learner share fixed. Other district differences or staffing responses to learning needs could still prevent either number from measuring the causal gain from hiring teachers.
 
@@ -374,9 +378,17 @@ Before estimating, state what the data can answer
 
 Try the comparison before opening the explanation.
 
-Use schools.csv in Stata. Verify the number of districts, inspect score, str, el and income, and count districts with el above 20. Save your commands and output. Explain which sampling and causal claims cannot be verified merely by these counts.
+Stata is the statistical software used for our applications. Download the Stata bundle and extract it into one folder. A do-file is a saved text file of Stata commands, which lets you repeat and document an analysis. Save your own commands in that folder and run them from there. A log is a saved record of the commands and their printed results.
 
-State the assumptions and units alongside the calculation.
+The file schools.csv stores one district per row. Its columns are score, the average test score in points; str, students per teacher; el, English-learner share in percent; and income, average district income in thousands of dollars. CSV means comma-separated values, a plain-text table format. The command import delimited reads that table. The summarize command reports counts, averages, spread and ranges; count if el>20 counts rows meeting the stated condition.
+
+Use these commands to verify the number of districts, inspect the four variables and count districts with el above 20. Save the do-file and output log. Explain which sampling and causal claims those numerical checks cannot establish.
+
+Read schools.csv with import delimited; inspect score, str, el and income with summarize.
+
+count if el>20 counts districts with English-learner share above 20 percent.
+
+Save your commands in a do-file and their printed results in a log.
 
 **Practice:** Use schools.csv in Stata. Verify the number of districts, inspect score, str, el and income, and count districts with el above 20. Save your commands and output. Explain which sampling and causal claims cannot be verified merely by these counts.
 

@@ -30,7 +30,7 @@ The same OLS weights can propagate different observation variances.
 
 In simple regression with an intercept, the estimation error in the slope is a weighted sum of population errors. Conditional on the design and uncorrelated observations, its variance is a sum of each squared weight times that observation's error variance. Equal error variances reduce this expression to the familiar sigma squared divided by centred X variation.
 
-The basic heteroskedasticity-robust estimator replaces each unknown error variance with its squared fitted residual. This is called HC zero. Stata's usual robust option applies a degrees-of-freedom correction, HC one, multiplying the covariance by n divided by n minus p. Its justification uses a large-sample approximation and suitable moments and leverage behaviour. It permits unequal error variance; independent-data robust covariance does not account for arbitrary correlation between observations.
+The basic heteroskedasticity-robust estimator replaces each unknown error variance with its squared fitted residual. HC abbreviates heteroskedasticity consistent; this basic version is called HC zero. Stata's usual robust option applies a degrees-of-freedom correction, HC one, multiplying the covariance by n divided by n minus p. Its justification uses a large-sample approximation and finite averages of the required regressor-error products, with no small set of observations dominating the fit. It permits unequal error variance; independent-data robust covariance does not account for arbitrary correlation between observations.
 
 \(\operatorname{Var}(b_1\mid X)=\dfrac{\sum_i(X_i-\overline X)^2\sigma_i^2}{[\sum_i(X_i-\overline X)^2]^2}\).
 
@@ -85,7 +85,7 @@ Squares and products expand the auxiliary variance regression.
 
 The White test uses the original regressors, their squares and their pairwise products to look for a broader pattern in squared residuals. With staffing and language share, this adds staffing squared, language share squared and their product. There are five auxiliary slopes to test jointly. Their units differ, but the joint null is that every slope is zero.
 
-The actual White statistic is 42.46, again with a p-value below 0.001. The first White-test block is our target; Stata also prints a separate decomposition involving other error properties. More flexible diagnostics use more degrees of freedom and can have low power in small samples. A failure to reject would not establish equal variance, and a rejection need not reveal the correct variance formula. An appropriate uncertainty procedure can be specified in advance rather than switched on only after a significant diagnostic.
+The actual White statistic is 42.46, again with a p-value below 0.001. The first White-test block is our target; Stata also prints a separate decomposition involving other error properties. More flexible diagnostics use more degrees of freedom and can have difficulty detecting a real variance pattern in small samples. A failure to reject would not establish equal variance, and a rejection need not reveal the correct variance formula. An appropriate uncertainty procedure can be specified in advance rather than switched on only after a significant diagnostic.
 
 Auxiliary columns: staffing, language share, their squares and their product.
 
@@ -114,7 +114,7 @@ Account for co-movement when testing several equalities.
 
 Let R be a matrix whose q rows select q linear combinations of the p coefficients, and let r be their hypothesised values. The vector g is R times the estimated coefficients minus r. If V hat consistently estimates the coefficient covariance under the sampling conditions, R V hat R prime estimates the covariance of those restriction estimates.
 
-The Wald statistic measures their squared distance from zero after adjusting for this covariance. With q independent restrictions and appropriate large-sample conditions, its null reference is chi squared with q degrees of freedom. With one restriction it equals the squared corresponding t statistic. The covariance used must match unequal variance or the relevant dependence structure. An ordinary restricted-versus-unrestricted SSR calculation is not automatically robust.
+The Wald statistic measures their squared distance from zero after adjusting for this covariance. With q linearly independent restrictions, meaning none is implied by the others, and appropriate large-sample conditions, its null reference is chi squared with q degrees of freedom. With one restriction it equals the squared corresponding t statistic. The covariance used must match unequal variance or the relevant dependence structure. An ordinary restricted-versus-unrestricted SSR calculation is not automatically robust.
 
 \(H_0:R\beta=r\); \(g=R\widehat\beta-r\); \(R:q\times p\).
 
@@ -126,7 +126,7 @@ For one restriction, \(W=t^2\).
 
 Give less weight to observations with greater conditional error variance.
 
-Robust OLS changes the uncertainty calculation while keeping the fitted line. Weighted least squares instead changes the fitting objective. Let w for observation i be a positive weight. The method minimises the sum of w times each squared residual. If a correctly specified linear mean has independent errors whose conditional variances are known up to a common scale, inverse-variance weights can improve precision.
+Robust OLS changes the uncertainty calculation while keeping the fitted line. Weighted least squares, abbreviated WLS, instead changes the fitting objective. Let w for observation i be a positive weight. The method minimises the sum of w times each squared residual. If a correctly specified linear mean has independent errors whose conditional variances are known up to a common scale, inverse-variance weights can improve precision.
 
 Consider a district average. Under a particular model of independent pupil noise, its error variance is proportional to one divided by enrolment. That model suggests enrolment weights. It is a hypothesis, because pupils can share district-level shocks. Multiplying the outcome, every regressor and the constant column by the square root of enrolment gives the same weighted fit. Transform the constant too; an ordinary untransformed intercept would define a different equation.
 
@@ -362,7 +362,7 @@ Influence: material change in the fitted result when the case changes.
 
 A diagnostic threshold prompts investigation rather than automatic deletion.
 
-The diagonal entry h i of the OLS hat matrix is the leverage of observation i. The average leverage is p divided by n, where p includes the intercept. Under the conventional variance model, residual i has variance sigma squared times one minus h i. Dividing a residual by its estimated scale gives an internally studentised residual.
+The OLS hat matrix maps the observed outcome vector to its fitted values. Its diagonal entry h i is the leverage of observation i. The average leverage is p divided by n, where p includes the intercept. Under the conventional variance model, residual i has variance sigma squared times one minus h i. Dividing a residual by its estimated scale gives an internally studentised residual.
 
 Cook's distance combines residual size with leverage to describe how omitting a case can change the fitted coefficient vector. Its displayed formula uses p equal to the total number of fitted coefficients. A value above a rule-of-thumb threshold is an investigation signal, not a formal proof that a valid observation should be removed. Check coding and units, then report a clearly specified sensitivity comparison.
 
@@ -376,19 +376,19 @@ Cook distance: \(D_i=\dfrac{\widehat u_i^2}{p s^2}\dfrac{h_i}{(1-h_i)^2}\).
 
 Try the comparison before opening the explanation.
 
-For each case, name what changes and justify it: unequal district error variances under zero conditional mean; correlated monthly errors with an otherwise adequate mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
+For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
 
 State the assumptions and units alongside the calculation.
 
-**Practice:** For each case, name what changes and justify it: unequal district error variances under zero conditional mean; correlated monthly errors with an otherwise adequate mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
+**Practice:** For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
 
 ## 27. Choose the covariance and estimator for the stated problem: explanation
 
 Follow the calculation and interpret its units.
 
-Independent-data robust covariance addresses unequal variance without changing OLS coefficients. A justified dependence-aware covariance or error model addresses the monthly covariance problem. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
+Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
 
-Independent-data robust covariance addresses unequal variance without changing OLS coefficients. A justified dependence-aware covariance or error model addresses the monthly covariance problem. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
+Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
 
 ## 28. Influence
 

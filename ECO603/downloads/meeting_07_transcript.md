@@ -12,7 +12,7 @@ Functional form means the way variables enter a model, such as levels, logarithm
 
 Inspect the data before interpreting a transformed variable.
 
-The file contains retail-price records linked to local median family income. Its five variables do not establish that each row is a unique geographic area, so we describe the observed records rather than claim one independent observation per postcode. The working sample contains 401 records with positive, observed price and income values.
+The file contains retail-price records linked to local median family income. A median is the middle value when values are ordered; it differs from the arithmetic mean. Its five variables do not establish that each row is a unique geographic area, so we describe the observed records rather than claim one independent observation per postcode. The working sample contains 401 records with positive, observed price and income values.
 
 Price is measured in dollars. Income is measured in dollars and is also scaled into units of ten thousand dollars for a readable level coefficient. This rescaling changes a coefficient's numerical units without changing fitted prices. Taking logs instead changes the shape and interpretation of the fitted relationship.
 
@@ -64,7 +64,7 @@ Keep the regressor units visible.
 
 In a log–level model the outcome is logged and the regressor stays in levels. A change of delta X produces a fitted log difference of b times delta X. The approximate percent contrast is 100b times delta X; the exact contrast between exponentiated fitted values is 100 times exp(b delta X) minus one.
 
-If income is measured in ten-thousand-dollar units, a coefficient applies to that unit, not one dollar. A dummy-variable coefficient compares its zero and one states. These interpretations all follow from the same equation. The apparent variety of percentage rules becomes manageable when we first write the change in the fitted log outcome.
+If income is measured in ten-thousand-dollar units, a coefficient applies to that unit, not one dollar. A dummy variable is a zero-or-one indicator for a stated condition. Its coefficient compares those two states in this log specification. These interpretations all follow from the same equation. The apparent variety of percentage rules becomes manageable when we first write the change in the fitted log outcome.
 
 \(\widehat{\log P}=a+bX\)
 
@@ -132,7 +132,7 @@ Try the comparison before opening the explanation.
 
 In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
 
-An elasticity uses percentage changes on both sides. For a finite income increase, use its ratio rather than substituting a percentage-point change.
+An elasticity uses percentage changes on both sides. For the finite price increase asked here, use the new-to-old price ratio rather than treating a local approximation as exact.
 
 **Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
 
@@ -505,7 +505,7 @@ The graph draws the two fitted lines at a common observed income value. Select t
 
 Use Stata’s interaction notation to include the needed terms.
 
-In Stata, c.str marks the staffing ratio as continuous and i.high marks the group indicator as categorical. The double-hash operator includes both main effects and their interaction. This makes the intended model easier to inspect and supports post-estimation comparisons.
+In Stata, c.str treats staffing as a numerical input whose size matters, rather than as separate categories; i.high marks the group indicator as categorical. The double-hash operator includes both main effects and their interaction. This makes the intended model easier to inspect and supports post-estimation comparisons.
 
 Read the resulting row labels rather than assume every coefficient applies to every group. The staffing row gives the reference slope; the interaction row gives the additional slope for the higher-share group. The group indicator row gives an intercept difference. These meanings follow the coding we defined before estimating.
 
@@ -531,7 +531,7 @@ Read the resulting row labels rather than assume every coefficient applies to ev
 
 A two-student change uses that group’s total slope.
 
-For the higher-share group, a two-student reduction changes the fitted score by minus two times beta one plus beta three. The grouping and income value are held fixed in this calculation. The result differs from simply multiplying the interaction coefficient by minus two.
+For the higher-share group, a two-student reduction changes the fitted score by minus two times the sum of beta one and beta three. The grouping and income value are held fixed in this calculation. The result differs from simply multiplying the interaction coefficient by minus two.
 
 The distinction matters in policy applications where one group responds differently from another. A slope difference describes heterogeneity, meaning variation in the fitted relationship across groups. The total group slope describes the within-group change. Name which of those quantities the question asks for before calculating or testing it.
 
@@ -551,7 +551,7 @@ The distinction matters in policy applications where one group responds differen
 
 Coefficient estimates can move together across samples.
 
-The higher-group slope is the staffing coefficient plus the interaction coefficient. Across repeated samples, those estimates move together, so their separate standard errors do not determine the sum's standard error. Covariance is the average product of their deviations from their respective means. We introduced that co-movement measure in the previous meeting; here it concerns estimates rather than raw district variables.
+The higher-group slope is the staffing coefficient plus the interaction coefficient. Across repeated samples, those estimates move together, so their separate standard errors do not determine the sum's standard error. Covariance is the average product of their deviations from their respective means. We introduced that co-movement measure in earlier lessons; here it concerns estimates rather than raw district variables.
 
 For a constructed example, suppose their variances are 0.04 and 0.09 and their covariance is minus 0.03. The sum's variance is 0.04 plus 0.09 minus 0.06, or 0.07. Its standard error is the square root, about 0.265. Adding the two standard errors would give 0.5 and be wrong. In the displayed matrix notation, V eleven and V thirty-three are the two variances and V thirteen their covariance. Stata's lincom uses all three pieces.
 
@@ -799,7 +799,7 @@ Training: 280 districts for fitting and tuning.
 
 Test: 140 districts kept out of fitting and tuning.
 
-Base: three predictors; expanded: nine predetermined predictor columns.
+Base: three predictors; expanded: nine predictor columns specified before test evaluation.
 
 ## 64. Ridge shrinks coefficients with a squared penalty
 
@@ -807,7 +807,7 @@ Accept some bias if it reduces enough estimation variation.
 
 Highly related predictor columns can produce unstable OLS coefficients. Shrinkage pulls fitted coefficients toward zero. A penalty is an extra cost in the fitting objective; lambda is the nonnegative number controlling its strength. Ridge adds a squared-coefficient penalty to the usual prediction loss, trading some coefficient bias against reduced sampling variation.
 
-The formula uses n training observations, p predictor columns, outcome y, intercept a and slopes b. Index i identifies an observation and j a predictor column. The z columns are standardised: centred and scaled using training information, so large numerical units alone do not dictate the penalty. The intercept is not penalised. In the single-standardised-predictor illustration, increasing lambda smoothly shrinks the ridge slope. The real nine-column fit need not follow this simple one-column formula.
+The formula uses n training observations, k predictor columns, outcome y, intercept a and slopes b. Index i identifies an observation and j a predictor column. The z columns are standardised: subtracting a training mean and dividing by a training standard deviation, so large numerical units alone do not dictate the penalty. The intercept is not penalised. In the single-standardised-predictor illustration, increasing lambda smoothly shrinks the ridge slope. The real nine-column fit need not follow this simple one-column formula.
 
 Loss: \(L(a,b)=\frac{1}{2n}\sum_i[y_i-a-\sum_j b_jz_{ij}]^2\).
 
@@ -849,7 +849,7 @@ Score frozen predictions on the separate 140-district test sample.
 
 A small error difference is evidence for this run, not a universal ranking.
 
-The prediction do-file fits all four models before calculating test errors. Stata uses elasticnet with alpha zero for ridge and lasso linear for lasso. Here alpha is the software's penalty-mixing setting, not the intercept a in our equation. Five-fold training cross-validation chooses each penalty.
+The prediction do-file fits all four models before calculating test errors. Stata's elasticnet command can mix squared and absolute-value penalties. Alpha zero selects the squared ridge penalty; lasso linear fits the absolute-value lasso penalty. Here alpha is the software's penalty-mixing setting, not the intercept a in our equation. Five-fold training cross-validation chooses each penalty.
 
 On the same 140 held-out districts, the RMSEs are 9.992 for three-column OLS, 9.906 for expanded OLS, 9.886 for ridge and 9.991 for lasso. Lower is better under this loss. Ridge is slightly lower in this split; the small differences do not establish universal superiority. Do not keep changing the split or penalty grid until the test ranking looks attractive. Explain the intended prediction population and preserve the reported result even when a preferred method does not win.
 
@@ -869,7 +869,7 @@ Return to the DAG when the question changes from prediction to intervention.
 
 The selected lasso retains some income and language columns and drops others. It may retain an interaction while dropping its main column. This reports a penalised prediction choice conditional on the other candidate columns, not a test that a structural staffing effect is zero.
 
-If our question is a staffing intervention, begin again with its causal target and the DAG. A required pre-treatment confounder cannot be removed solely because prediction lasso gives it zero weight. A mediator or collider does not become a suitable causal control because it improves prediction. Ordinary post-selection p-values also need separate justification; specialised inferential lasso methods use additional procedures and assumptions. Our short component concerns prediction and the disciplined evaluation of new observations.
+If our question is a staffing intervention, begin again with its causal target and the DAG. A required pre-treatment confounder cannot be removed solely because prediction lasso gives it zero weight. A mediator or collider does not become a suitable causal control because it improves prediction. Ordinary p-values computed after using the same data to select predictors also need separate justification; specialised inferential lasso methods use additional procedures and assumptions. Our short component concerns prediction and the disciplined evaluation of new observations.
 
 Prediction selection depends on the candidate columns, penalty and sample.
 

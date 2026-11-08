@@ -6,7 +6,7 @@ When is a persistent time series stable enough for the model?
 
 A lagged outcome can carry a shock forward for several periods. Our next question is whether this propagation settles into a stable process and whether past information still helps predict the remaining error. Stationarity concerns stability of distributions or moments; weak dependence concerns restrictions on information shared across distant dates.
 
-We begin with the autoregressive model already used for the accident application, contrast it with a random walk, and examine a moving-average example. We then make dynamic completeness explicit. These are assumptions and modelling questions, not conclusions that follow from seeing a smooth line in the data.
+We now introduce an autoregressive model, which predicts an outcome using its own past values. We compare a fading response with a random walk, in which new shocks accumulate permanently, and then examine a finite-memory moving-average example. We then make dynamic completeness explicit. These are assumptions and modelling questions, not conclusions that follow from seeing a smooth line in the data.
 
 Distinguish persistence, stationarity and dependence.
 
@@ -28,7 +28,7 @@ One innovation with \(\rho=0.6\): \(1,0.6,0.36,0.216,\ldots\)
 
 Specify which definition is being used.
 
-Covariance stationarity means that a series has a constant finite mean and variance, and covariance between two dates depends on their separation rather than on which calendar dates they are. Observations can still fluctuate and be related across time. The random walk fails this definition because its variance grows with the date.
+Covariance stationarity means that a series has a constant finite mean and variance, and covariance between two dates depends on their separation rather than on which calendar dates they are. Observations can still fluctuate and be related across time. The rho-equals-one accumulation just traced fails this definition when its variance grows with the date.
 
 For an AR(1) with independent mean-zero, finite-variance innovations and absolute rho below one, a stationary regime exists: old innovations receive progressively smaller weights. Exact stationarity also requires an initial distribution consistent with that regime; an arbitrary starting value can create an initial adjustment period. Strict stationarity is a different definition requiring every joint distribution, the probabilities for a collection of dates, to be unchanged when all those dates shift together. With finite second moments it implies covariance stationarity, but the converse need not hold. Our main calculations use the covariance definition.
 
@@ -44,7 +44,7 @@ Moment statements require the corresponding moments to exist.
 
 Strict stationarity means that every finite collection of observations has the same joint distribution after a common shift in its dates. Covariance stationarity asks only for a constant finite mean and variance, and for covariance between dates to depend on their distance rather than their calendar location.
 
-Strict stationarity with finite second moments implies covariance stationarity. Without those moments, the mean and variance may not even exist. Neither definition alone supplies every dependence condition needed for a central limit theorem. In an applied model with deterministic trends or seasonal terms, the relevant stability claim may concern the remaining process after those terms have been accounted for.
+In the notation, gamma of h denotes covariance between observations h periods apart; gamma of zero is the variance. Strict stationarity with finite second moments implies covariance stationarity. Without those moments, the mean and variance may not even exist. Neither definition alone supplies every dependence condition needed for a central limit theorem. In an applied model with deterministic trends or seasonal terms, the relevant stability claim may concern the remaining process after those terms have been accounted for.
 
 Strict: \((Y_{t_1},\ldots,Y_{t_m})\) and \((Y_{t_1+h},\ldots,Y_{t_m+h})\) share a distribution.
 
@@ -58,7 +58,7 @@ An MA(1) observation shares one innovation with its neighbour.
 
 Let e subscript t denote independent shocks with mean zero and variance sigma squared. A moving-average process of order one, abbreviated MA one, adds the current shock to theta times the previous shock. Theta is a fixed coefficient. The process variance is one plus theta squared, multiplied by sigma squared. Consecutive observations share the previous shock, so their covariance is theta times sigma squared.
 
-Observations separated by at least two dates use disjoint independent shocks in this example. Take theta equal to one half and give each shock variance one. The process variance is then 1.25. The covariance of neighbours is one half. Dividing that covariance by 1.25 gives their correlation, 0.4. This is a concrete finite-memory example with the needed moments; correlation decay alone is not a general proof of every large-sample theorem.
+Observations separated by at least two dates use disjoint independent shocks in this example. Take theta equal to one half and give each shock variance one. The process variance is then 1.25. The covariance of neighbours is one half. Dividing that covariance by 1.25 gives their correlation, 0.4. Rho of h denotes this lag-h correlation, rather than the single carry-over coefficient rho in the earlier autoregression. This is a concrete finite-memory example with the needed moments; correlation decay alone is not a general proof of every large-sample theorem.
 
 \(Y_t=e_t+\theta e_{t-1}\), with iid mean-zero shocks of variance \(\sigma^2\).
 
@@ -116,7 +116,7 @@ The steady-state change solves \(\Delta Y=0.6\Delta Y+0.2\), so \(\Delta Y=0.2/(
 
 The fitted lag is a conditional association.
 
-The lagged log-accident coefficient is 0.678, with HAC SE 0.083, in the model with trend and month effects. Its positive magnitude suggests substantial persistence in the fitted outcome after those controls.
+The lagged log-accident coefficient is 0.678, with HAC SE 0.083, in a model containing the lagged outcome, trend and month effects, without the law and economic controls. The later expanded dynamic fit adds those inputs, so its lagged-outcome coefficient need not agree. Its positive magnitude suggests substantial persistence in the fitted outcome after those controls.
 
 This estimate does not prove that errors are independent or that every other regressor is exogenous. If omitted persistent errors are related to lagged accidents, coefficient consistency can be threatened. The result should motivate a careful dynamic specification and residual analysis. The next serial-correlation lesson separates those model questions from the covariance adjustment used here.
 
@@ -154,7 +154,7 @@ A high R-squared can be misleading.
 
 Two independent series with accumulating random shocks can produce a striking regression fit in levels even without an economic relationship. This is the spurious-regression concern: familiar t statistics and fit measures can look persuasive when the series do not satisfy the usual regression asymptotics.
 
-Inspect time plots and model the source of persistence before interpreting a slope. A common deterministic trend, a stochastic trend and stable fluctuations require different treatments. The purpose is not to reject all level regressions, but to establish why the selected equation and inference are justified for the histories being compared.
+Inspect time plots and model the source of persistence before interpreting a slope. A common deterministic trend, a trend built from accumulated random changes and stable fluctuations require different treatments. The purpose is not to reject all level regressions, but to establish why the selected equation and inference are justified for the histories being compared.
 
 Two independent series with accumulating random shocks can produce a striking regression fit in levels even without an economic relationship.
 
@@ -190,17 +190,7 @@ Weak dependence: sufficiently distant information becomes weak enough for the st
 
 Stationarity alone does not guarantee that time averages behave like independent draws.
 
-## 16. From dynamic completeness to serial-correlation diagnosis
-
-From dynamic completeness to serial-correlation diagnosis
-
-An autoregressive model uses past outcomes, while a distributed-lag model describes the time pattern of an input. Stability and appropriate moment conditions are needed before turning those coefficients into long-run statements.
-
-We next inspect what the fitted errors still remember across dates. Residual correlation can diagnose missing dynamics or a dependent error process, but a test result must be interpreted together with the regressors and the economic model.
-
-From dynamic completeness to serial-correlation diagnosis
-
-## 17. Dynamic completeness is a conditional-mean claim
+## 16. Dynamic completeness is a conditional-mean claim
 
 Past information should not predict the remaining mean error.
 
@@ -212,7 +202,7 @@ Dynamic completeness: omitted history adds no conditional-mean prediction for th
 
 A lagged outcome changes both the comparison and the needed assumptions.
 
-## 18. Define the information set before calling an error an innovation
+## 17. Define the information set before calling an error an innovation
 
 A mean restriction is stronger than a failed residual-correlation test.
 
@@ -226,7 +216,7 @@ If past errors are measurable from the past information and the needed moments e
 
 Mean unpredictability, zero autocovariance and a diagnostic test result are distinct.
 
-## 19. Fit a dynamic conditional mean in the same monthly data
+## 18. Fit a dynamic conditional mean in the same monthly data
 
 Try the comparison before opening the explanation.
 
@@ -236,7 +226,7 @@ State the assumptions and units alongside the calculation.
 
 **Practice:** Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your own commands and robust output.
 
-## 20. Fit a dynamic conditional mean in the same monthly data: explanation
+## 19. Fit a dynamic conditional mean in the same monthly data: explanation
 
 Follow the calculation and interpret its units.
 
@@ -244,7 +234,7 @@ The first lag removes the initial observation, leaving 107 months for this compl
 
 The first lag removes the initial observation, leaving 107 months for this complete dataset. The lagged log-accident coefficient is about 0.332658 with robust SE 0.090942. Interpret it conditional on the included calendar and policy regressors. A coefficient inside minus one and one is compatible with stability of that specified AR part, but does not establish the whole data-generating process or zero conditional mean given all relevant information.
 
-## 21. Add a lagged outcome with its timing made explicit
+## 20. Add a lagged outcome with its timing made explicit
 
 A different coefficient can be a different conditional comparison.
 
@@ -271,4 +261,14 @@ The law coefficient now describes a comparison at fixed previous accidents as we
        _cons |   7.018421   1.156725     6.07   0.000     4.720033    9.316809
 ------------------------------------------------------------------------------
 ```
+
+## 21. From dynamic completeness to serial-correlation diagnosis
+
+From dynamic completeness to serial-correlation diagnosis
+
+An autoregressive model uses past outcomes, while a distributed-lag model describes the time pattern of an input. Stability and appropriate moment conditions are needed before turning those coefficients into long-run statements.
+
+We next inspect what the fitted errors still remember across dates. Residual correlation can diagnose missing dynamics or a dependent error process, but a test result must be interpreted together with the regressors and the economic model.
+
+From dynamic completeness to serial-correlation diagnosis
 

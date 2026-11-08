@@ -2,7 +2,8 @@ import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e6592220
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
 import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=4d2768d6287f';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
-const legacy=data.previousRevision===params.get('v')?data.bookmarks?.[`${params.get('meeting')||first}:${params.get('slide')||1}`]:null;
+const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
+const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];
 if(legacy){params.set('meeting',legacy.meeting);params.set('slide',legacy.slide);params.set('v',data.revision);history.replaceState(null,'',`?${params}`);}
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
