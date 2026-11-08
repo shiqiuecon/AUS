@@ -22,15 +22,13 @@ Changing the reference group changes how coefficients are labelled, but not the 
 
 Include the main terms as well as their product.
 
-Let Y be score, X the staffing ratio and W income. The equation includes an intercept, X, D, X times D and income. Beta two shifts the intercept between groups, while beta three changes the X slope for D equal to one. Income is included additively here, so its fitted slope is common across these groups.
+Let X be the staffing ratio, D the zero-or-one higher-language-share group indicator, and W district income. Y remains the test score. Multiplying X by D gives an interaction regressor: it is zero for group zero and equals X for group one. This permits the fitted staffing slope to differ by group.
 
-This is a specific modelling choice. An interaction does not automatically represent every possible difference between groups. Define which relationships may vary and which remain common. The fitted comparison then has an explicit meaning that we can evaluate against the empirical question.
-
-Gamma is the common income slope, W is income and u is the remaining outcome error. Multiplying X by D switches the additional staffing term off in the reference group and on in the higher-language-share group.
+In the equation, beta zero is the group-zero intercept, beta one its staffing slope, beta two the group-one intercept shift and beta three the group-one slope shift. Gamma is the income slope, assumed common to both groups in this specification, and u is the remaining error. Define these roles before reading coefficients. The next step is simply to substitute D equal to zero and one, so that the two fitted lines can be seen directly.
 
 \(Y_i=\beta_0+\beta_1X_i+\beta_2D_i+\beta_3X_iD_i+\gamma W_i+u_i\)
 
-\(\gamma\): common income slope; \(XD\): staffing–group product
+\(X\): staffing; \(D\): group; \(W\): income; \(XD\): their interaction.
 
 ## 04. Substitute zero and one before interpreting
 
@@ -44,33 +42,31 @@ Work through these substitutions before using verbal shortcuts. An intercept dif
 
 \(D=1:\quad \partial E(Y\mid X,D,W)/\partial X=\beta_1+\beta_3\)
 
-## 05. Read both fitted lines in the actual school data
+## 05. Interaction contrast
+
+Try the comparison before opening the explanation.
+
+In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
+
+This constructed border example uses the same zero-or-one substitution as the school-group model. Set near to zero and then one; keep the intercept shift separate from the slope change.
+
+**Practice:** In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
+
+## 06. Interaction contrast: explanation
+
+Follow the calculation and interpret its units.
+
+Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
+
+Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
+
+## 07. Read both fitted lines in the actual school data
 
 The reference slope and slope difference can have different signs.
 
 The lower-share group's staffing slope is 0.680. The interaction is -2.192, so the higher-share group's fitted slope is about -1.512. These are conditional associations with income held fixed. They do not establish that changing a district's group status would cause either pattern.
 
 The graph draws the two fitted lines at a common observed income value. Select the next step to show the difference. Use it to check that the interaction changes a slope, while the group main effect changes the intercept. The two changes enter different policy and group comparisons.
-
-## 06. Interaction contrast
-
-Apply the idea before reading the solution.
-
-In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
-
-## 07. Interaction contrast: explanation
-
-Connect the calculation to the empirical claim.
-
-Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
 
 ## 08. Factor-variable syntax keeps the model explicit
 
@@ -122,17 +118,33 @@ The distinction matters in policy applications where one group responds differen
 
 Coefficient estimates can move together across samples.
 
-The variance of a sum equals the sum of variances plus twice the covariance. Here covariance describes how the two coefficient estimates vary together across comparable samples. Ignoring it can overstate or understate uncertainty in the combined slope.
+The higher-group slope is the staffing coefficient plus the interaction coefficient. Across repeated samples, those estimates move together, so their separate standard errors do not determine the sum's standard error. Covariance is the average product of their deviations from their respective means. We introduced that co-movement measure in the previous meeting; here it concerns estimates rather than raw district variables.
 
-The SE is the square root of that variance; it is not the sum of the coefficient SEs. Stata's lincom uses the fitted covariance matrix to calculate the appropriate combination. The same rule applies to many policy contrasts, marginal effects and predicted differences, making covariance a practical concept rather than an abstract extra term.
-
-V-eleven and V-thirty-three denote the variances of the first and interaction slope estimates. V-thirteen is their covariance, the corresponding off-diagonal entry of the estimated coefficient covariance matrix.
+For a constructed example, suppose their variances are 0.04 and 0.09 and their covariance is minus 0.03. The sum's variance is 0.04 plus 0.09 minus 0.06, or 0.07. Its standard error is the square root, about 0.265. Adding the two standard errors would give 0.5 and be wrong. In the displayed matrix notation, V eleven and V thirty-three are the two variances and V thirteen their covariance. Stata's lincom uses all three pieces.
 
 \(\operatorname{Var}(\widehat\beta_1+\widehat\beta_3)=V_{11}+V_{33}+2V_{13}\)
 
-\(V_{11},V_{33}\): variances; \(V_{13}\): covariance
+Example: \(SE=\sqrt{0.04+0.09+2(-0.03)}=\sqrt{0.07}\approx0.265\)
 
-## 11. Read the higher-group slope as one tested quantity
+## 11. Uncertainty of a sum
+
+Try the comparison before opening the explanation.
+
+In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
+
+Use the variance of a sum. A negative covariance can make the sum more precise than a calculation that ignores co-movement.
+
+**Practice:** In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
+
+## 12. Uncertainty of a sum: explanation
+
+Follow the calculation and interpret its units.
+
+No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
+
+No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
+
+## 13. Read the higher-group slope as one tested quantity
 
 Use the output for the combination the question asks about.
 
@@ -150,25 +162,29 @@ Compare this with the interaction row alone. A significant interaction tests a d
 ------------------------------------------------------------------------------
 ```
 
-## 12. A group gap can depend on X
+## 14. A group gap can depend on X
 
 The group main effect is not the gap at every staffing ratio.
 
-At a fixed staffing ratio X and income W, the fitted gap between D equals one and D equals zero is beta two plus beta three times X. When there is an interaction, the gap changes along the horizontal axis.
+The group indicator shifts the fitted intercept by beta two, and its interaction shifts the staffing slope by beta three. Subtract the fitted value for group zero from that for group one at the same staffing X and income. The gap is beta two plus beta three times X. It is not a single constant when the slopes differ.
 
-Evaluate it at a realistic ratio, such as twenty, instead of treating the group main effect as a universal difference. If a zero value of X is not meaningful, the intercept difference alone may have little substantive use. Centering X around a realistic reference point can make that intercept comparison easier to interpret without changing the fitted model.
+The intercept gap refers to X equal to zero, which is not a realistic school-staffing ratio. To make it refer to 20 students per teacher, define a centered regressor as X minus 20 and rewrite the same model using it. Centering means subtracting a chosen reference value. It changes coefficient labels and the meaning of an intercept but leaves the fitted lines unchanged. We verify this algebra below.
 
 \(\mathrm{Gap}(X)=\beta_2+\beta_3X\)
 
-## 13. A joint hypothesis asks whether several restrictions hold together
+Center at 20: \(X^c=X-20\)
+
+## 15. A joint hypothesis asks whether several restrictions hold together
 
 One coefficient test cannot replace the combined question.
 
-Suppose we ask whether the two groups share the same intercept and staffing slope, conditional on income. The joint null sets both the group main effect and the interaction to zero. A joint test evaluates those restrictions together, taking their covariance into account.
+To ask whether the two group lines coincide, test two restrictions together: the group intercept shift is zero and the interaction slope shift is zero. Checking only the interaction permits different intercepts. Checking two separate p-values also does not create a single test with the desired overall rejection probability.
 
-The F statistic summarises the evidence against the group of restrictions under the chosen inference method. Its numerator degrees of freedom count the restrictions, here two. With robust covariance estimation, this is a robust Wald-type F test rather than an automatically exact classical finite-sample test. State the hypothesis in words before reading the p-value.
+A Wald test measures the estimated restrictions' joint distance from their null values, accounting for their estimated variances and covariances. A restriction is a claimed equality involving coefficients. Here there are two. After the robust regression, Stata can test the indicator and interaction jointly using the fitted covariance matrix. A classical F test obtains a related comparison from the loss of fit between restricted and unrestricted models under the additional equal-variance assumptions introduced in Meeting 04.
 
-\(H_0:\ \beta_2=0,\ \beta_3=0\)
+\(H_0:\beta_2=0,\ \beta_3=0\)
+
+Joint Wald test: evaluate the estimated restrictions using their covariance.
 
 ```text
 . test 1.high 1.high#c.str
@@ -180,39 +196,17 @@ The F statistic summarises the evidence against the group of restrictions under 
             Prob > F =    0.0000
 ```
 
-## 14. Uncertainty of a sum
-
-Apply the idea before reading the solution.
-
-To test the near-group slope \(\beta_1+\beta_2\), is \(\operatorname{SE}(\widehat\beta_1)+\operatorname{SE}(\widehat\beta_2)\) correct?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** To test the near-group slope \(\beta_1+\beta_2\), is \(\operatorname{SE}(\widehat\beta_1)+\operatorname{SE}(\widehat\beta_2)\) correct?
-
-## 15. Uncertainty of a sum: explanation
-
-Connect the calculation to the empirical claim.
-
-No. Its variance is \(\operatorname{Var}(\widehat\beta_1)+\operatorname{Var}(\widehat\beta_2)+2\operatorname{Cov}(\widehat\beta_1,\widehat\beta_2)\). Take the square root of that sum; use lincom after the fitted interaction model. The covariance cannot generally be ignored.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-No. Its variance is \(\operatorname{Var}(\widehat\beta_1)+\operatorname{Var}(\widehat\beta_2)+2\operatorname{Cov}(\widehat\beta_1,\widehat\beta_2)\). Take the square root of that sum; use lincom after the fitted interaction model. The covariance cannot generally be ignored.
-
 ## 16. Classical fit-loss F tests require matched models
 
 Restricted and unrestricted fits must answer one nested comparison.
 
-In the classical constant-variance setting, an F test can compare the increase in residual sum of squares when q restrictions are imposed. The restricted model must be nested within the unrestricted model, meaning it is obtained by imposing those restrictions. Both fits must use the same observations.
+The restricted model imposes the null equalities; the unrestricted model allows the corresponding coefficients to vary. Both must use the same outcome and observations. SSR is the sum of squared residuals. For a constructed example, let restricted SSR be 110, unrestricted SSR be 100, and let two restrictions remove two parameters. With 100 observations and five unrestricted coefficients, divide the SSR increase per restriction, five, by unrestricted SSR per residual degree of freedom, 100 divided by 95. The F statistic is 4.75.
 
-The numerator measures fit lost per restriction; the denominator scales it by the unrestricted residual variance estimate. This formula is not the general formula for a heteroskedasticity-robust test. If using robust inference, use the estimated covariance and a suitable Wald test rather than applying the classical residual-sum-of-squares shortcut without its assumptions.
+The general formula uses q for the number of restrictions and k subscript U for all unrestricted coefficients, including the intercept. The classical F reference needs the conventional model assumptions. With unequal variance or dependence, use an appropriately estimated covariance and a justified joint test rather than treating a mechanical SSR calculation as universally valid.
 
-SSR means sum of squared residuals. R and U label the restricted and unrestricted regressions, q counts the restrictions and k-U counts all coefficients estimated in the unrestricted regression, including the intercept. The denominator n minus k-U is its residual degrees of freedom.
+\(F=\dfrac{(SSR_R-SSR_U)/q}{SSR_U/(n-k_U)}\)
 
-\(F=\dfrac{(SSR_R-SSR_U)/q}{SSR_U/(n-k_U)}\) under classical conditions
-
-\(SSR\): residual sum of squares; \(q\): restrictions; \(k_U\): unrestricted coefficients
+Example: \(F=\dfrac{(110-100)/2}{100/(100-5)}=4.75\)
 
 ## 17. Centering changes coefficient labels, not fitted values
 
@@ -228,19 +222,35 @@ This is a useful presentation choice, especially when an uncentered intercept li
 
 A time-only variable cannot survive unrestricted time indicators.
 
-Suppose a tax measure has one common value for all districts in each year. An intercept and a full set of year indicators can reproduce that tax series exactly. Its separate coefficient is therefore not identified in the same equation. This is exact multicollinearity, not merely a large SE.
+A year indicator permits a separate intercept shift for each year. Suppose a tax is one in the first year and two in the second for every district. With an intercept and an indicator for the second year, the tax equals the intercept column plus that indicator. It supplies no separate variation, so its coefficient cannot also be estimated. We say the year effects absorb it.
 
-An interaction between the time-varying tax and a district group can still vary across groups within a year and across years. After unit and year effects are removed, that remaining interaction may be estimable. It describes a differential relationship across groups; it does not recover the absorbed common tax effect. The written equation must match the interpretation.
+Now multiply the tax by near, a zero-or-one indicator for a location group. In each year the product differs between the groups, and its group difference changes across years. It can therefore have variation beyond the common year shifts. The coefficient is a differential group slope, while the common tax slope remains absorbed. In Meeting 13 we add separate unit intercepts and show how to check the variation that survives both kinds of controls.
 
-A year fixed effect is a separate intercept shift for each year. The span of the year indicators is the set of all series their linear combinations can reproduce. A variable entirely in that set adds no new variation for estimating a separate coefficient.
+If \(Tax_t=1+1\{t=2\}\), its column duplicates year-intercept variation.
 
-\(T_t\in\operatorname{span}\{\text{year indicators}\}\)
+\(Tax_t\times near_i\) can vary across groups within a year.
 
-\(T_tD_i\) can retain two-way residual variation
+A separate coefficient needs variation beyond the included controls.
 
-\(\operatorname{span}\): all linear combinations of the listed variables
+## 19. What year effects absorb
 
-## 19. Separate group heterogeneity from causal identification
+Try the comparison before opening the explanation.
+
+\(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
+
+Try reproducing the common tax column using the year indicators. Then ask whether the tax-by-group product has additional variation.
+
+**Practice:** \(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
+
+## 20. What year effects absorb: explanation
+
+Follow the calculation and interpret its units.
+
+The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
+
+The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
+
+## 21. Separate group heterogeneity from causal identification
 
 A different slope is still a fitted relationship.
 
@@ -250,19 +260,19 @@ For a causal heterogeneity claim, explain how staffing variation is identified w
 
 Let X indicate programme participation, M post-programme skills, Y earnings and U prior ability. Skills can be a mediator between participation and earnings. If prior ability affects both skills and earnings, skills are also a collider on the programme-to-skills-to-ability-to-earnings alternative route. Conditioning on skills can both remove part of the programme mechanism and open selection through ability. The interaction coefficient describes functional-form heterogeneity; the DAG supplies the separate causal control argument.
 
-## 20. Choose the dependence unit for inference
+## 22. Choose the dependence unit for inference
 
 The number of rows need not equal the number of independent sources.
 
-If several observations share a policy assignment or common shocks, their errors may be related. Clustered SEs allow dependence within specified groups while relying on suitable conditions across clusters. A cluster is a group of observations treated as a potentially dependent unit for inference.
+Imagine a state policy observed for many districts. Districts in one state may share an implementation decision or an economic shock, so their errors need not be independent. Adding districts within that state then adds less independent policy information than adding another independently assigned state.
 
-For a state policy observed in many districts, state-level clustering may be a starting point if states provide the relevant independent variation. Merely clustering by district can miss shared state shocks. The right choice depends on assignment, sampling and error dependence, and few clusters can make conventional approximations unreliable. Explain the structure rather than invoke one universal threshold.
+A cluster is a group within which errors may be related. Cluster-robust inference allows that within-group dependence while relying on suitable independence across clusters and enough informative clusters. The clustering unit should follow the policy assignment and error story; it is not selected to obtain a preferred standard error. For repeated state observations, state clustering is often a candidate, but common national shocks or very few states require additional care. We use repeated-state data in Meeting 13.
 
-If several observations share a policy assignment or common shocks, their errors may be related.
+Cluster: a group within which errors may be related.
 
-For a state policy observed in many districts, state-level clustering may be a starting point if states provide the relevant independent variation.
+Independent information follows the assignment/error structure, not just the row count.
 
-## 21. Build an empirical comparison before reading stars
+## 23. Build an empirical comparison before reading stars
 
 List the coefficient combination and its units.
 
@@ -273,26 +283,6 @@ In a policy memo, report a feasible change within each group and the evidence fo
 For each question, write the required expression: a reference slope, a second-group slope, a slope difference or a group gap at a stated X.
 
 In a policy memo, report a feasible change within each group and the evidence for any difference between them.
-
-## 22. What year effects absorb
-
-Apply the idea before reading the solution.
-
-\(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** \(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
-
-## 23. What year effects absorb: explanation
-
-Connect the calculation to the empirical claim.
-
-The common tax variable is an exact linear combination of year indicators and is absorbed. The interaction can survive because it differs across groups within a year and changes over time. With both unit and year effects, identification requires nonzero two-way residualized interaction variation. It estimates a differential slope, not the absorbed common effect.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The common tax variable is an exact linear combination of year indicators and is absorbed. The interaction can survive because it differs across groups within a year and changes over time. With both unit and year effects, identification requires nonzero two-way residualized interaction variation. It estimates a differential slope, not the absorbed common effect.
 
 ## 24. DAG practice: a binary treatment still needs a control argument
 
@@ -319,8 +309,6 @@ Conditioning on skills blocks the mediated programme route \(X\rightarrow M\righ
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_07.do. Compute the staffing slope for each language-share group and the fitted score contrast for a reduction of two students per teacher in each group, holding income fixed. Use the lincom output to assess the higher-share contrast. Explain why the group slope difference and the group intercept difference answer different questions.
-
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
 
 **Practice:** Run meeting_07.do. Compute the staffing slope for each language-share group and the fitted score contrast for a reduction of two students per teacher in each group, holding income fixed. Use the lincom output to assess the higher-share contrast. Explain why the group slope difference and the group intercept difference answer different questions.
 

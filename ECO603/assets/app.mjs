@@ -1,6 +1,6 @@
 import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e65922206d';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=f31c2011ad1e';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=ae18502977a9';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=69bc3c9120da';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);

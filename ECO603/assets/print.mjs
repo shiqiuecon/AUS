@@ -1,5 +1,5 @@
 import {data,escapeHTML as e,typeset} from './common.mjs?v=f31c2011ad1e';
-import {graph,graphKinds,scenarioCaptions,captions,chartControls} from './graphs.mjs?v=ae18502977a9';
+import {graph,graphKinds,scenarioCaptions,captions,chartControls} from './graphs.mjs?v=69bc3c9120da';
 const key=new URLSearchParams(location.search).get('meeting')||'01',lesson=data.lessons[key];
 if(!lesson)throw Error('Unknown meeting');
 const initial={fit:data.stats.school_simple.slope,residual:40,arsim:.65,hac:4};

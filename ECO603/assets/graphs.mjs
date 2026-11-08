@@ -163,7 +163,7 @@ export const scenarioCaptions={
  lagbars:'Actual monthly unemployment coefficients from the finite distributed-lag regression. Cumulative means the sum through the selected lag.',
  lp:'Constructed quarterly process; actual local-projection estimates with approximate pointwise 95% intervals. The dashed path is the known response.',
  panel:'Observed state fatality rates, 1982–1988. The control selects a state; pale paths show the remaining states.',
- did:'Constructed two-group, two-period example. Dashed treatment counterfactual uses the untreated group’s three-point change.',
+ did:'Constructed earnings example, in thousand dirhams per month. The dashed counterfactual assumes the untreated group’s three-unit change.',
  ivfirst:'Actual 1995 state price and tax data. The first stage describes relevance; it cannot establish the exclusion restriction.',
  binary:'Actual fitted LPM, probit and logit predictions from the same 2,380 applications. Payment-to-income is a fraction; these are descriptive fits.'
 };
@@ -175,7 +175,11 @@ function extendedChart(scenario,step,value,progress){
   const r=scatter(ds.fwl,'str','score',b,`Short ${est['02'].short.b.toFixed(2)} · adjusted ${est['02'].long.b.toFixed(2)}`,{step,progress,xlabel:'Students per teacher',ylabel:'Test score (points)'});
   return svg(r.s,'School scatterplot and illustrative slope movement between short and adjusted regression endpoints.');
  }
- if(scenario==='fwl')return svg(scatter(ds.fwl,'rx','ry',est['03'].full.b,'Both variables adjusted for language share and income',{step,progress,intercept:0,xlabel:'Staffing residual (students per teacher)',ylabel:'Score residual (points)'}).s,'Actual residual-on-residual plot and the full-model staffing slope.');
+ if(scenario==='fwl'){
+  const r=scatter(ds.fwl,'rx','ry',est['03'].full.b,'Both variables adjusted for language share and income',{step,progress,intercept:0,xlabel:'Staffing residual (students per teacher)',ylabel:'Score residual (points)'}),first=ds.fwl[0],cx=X(first.rx,r.xl,r.xh),cy=Y(first.ry,r.yl,r.yh);
+  r.s+=circle(cx,cy,6,gold,1)+text(cx-9,cy-12,'First district',16,'end',gold);
+  return svg(r.s,'Actual residual plot; gold marks the first exported district used in the worked subtraction.');
+ }
  if(scenario==='test'){
   const b=est['04'].robust.b,se=est['04'].robust.se;let s=axes(-3.1,1.1,0,1.05,[-3,-2,-1,0,1],[0,.5,1],'Staffing slope (score points per student/teacher)','Relative density');
   s+=pathLine(Array.from({length:150},(_,i)=>{const x=-3.1+i*4.2/149;return[X(x,-3.1,1.1),Y(Math.exp(-.5*((x-b)/se)**2),0,1.05)];}),teal);
@@ -227,12 +231,12 @@ function extendedChart(scenario,step,value,progress){
   s+=text(840,29,`Selected state: ${chosen} · within-state changes differ from between-state levels`,18,'end');return svg(s,'Actual seven-year state trajectories with one state highlighted.');
  }
  if(scenario==='did'){
-  let s=axes(0,1,6,16,[0,1],[6,8,10,12,14,16],'Period (0: before, 1: after)','Outcome (constructed units)');
+  let s=axes(0,1,6,16,[0,1],[6,8,10,12,14,16],'Period (0: before, 1: after)','Earnings (thousand dirhams)');
   s+=line(X(0,0,1),Y(8,6,16),X(1,0,1),Y(11,6,16),teal,4);
   s+=circle(X(0,0,1),Y(10,6,16),6,ink,1);
   if(step>0)s+=line(X(0,0,1),Y(10,6,16),X(1,0,1),Y(14,6,16),ink,4);
   if(step>1)s+=line(X(0,0,1),Y(10,6,16),X(1,0,1),Y(13,6,16),gold,3,'8 5')+line(825,Y(13,6,16),825,Y(14,6,16),gold,5);
-  s+=text(840,29,'Navy: treated · Teal: untreated · Gold: parallel-trend counterfactual',18,'end');return svg(s,'Constructed difference-in-differences example: treatment change four, comparison change three, difference one.');
+  s+=text(840,29,'Navy: treated · Teal: untreated · Gold: parallel-trend counterfactual',18,'end');return svg(s,'Constructed earnings DiD: changes four and three thousand dirhams; difference one, causal only under the stated assumptions.');
  }
  if(scenario==='ivfirst')return svg(scatter(ds.iv,'salestax','logp',est['14'].first.b,'First-stage slope: '+est['14'].first.b.toFixed(4),{step,progress,xlabel:'Sales-tax component (real cents per pack)',ylabel:'Log real cigarette price'}).s,'Actual state first-stage relationship between the proposed tax instrument and cigarette price.');
  if(scenario==='binary'){

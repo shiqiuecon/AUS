@@ -20,7 +20,19 @@ Newey–West retains the OLS coefficient on the same equation and sample while c
 
 Before comparing the results, say which concern motivates each operation.
 
-## 03. Add a lagged outcome with its timing made explicit
+## 03. Dynamic completeness is a conditional-mean claim
+
+Past information should not predict the remaining mean error.
+
+A mean specification is dynamically complete relative to an information set if relevant earlier information cannot improve its conditional-mean prediction. This does not mean that every series must include every possible lag. It asks whether the history left out of the equation still predicts the outcome after the included variables have been used.
+
+For accidents, earlier travel conditions or enforcement changes could carry information beyond current controls. A lagged outcome may summarize some of that history, but adding it changes the equation and can create a regressor–error relationship if the remaining error is persistent. We therefore state the timing and mean assumptions before reading its coefficient. A residual dependence test is evidence to investigate, not proof that one particular dynamic specification is correct.
+
+Dynamic completeness: omitted history adds no conditional-mean prediction for the stated information set.
+
+A lagged outcome changes both the comparison and the needed assumptions.
+
+## 04. Add a lagged outcome with its timing made explicit
 
 A different coefficient can be a different conditional comparison.
 
@@ -48,19 +60,33 @@ The law coefficient now describes a comparison at fixed previous accidents as we
 ------------------------------------------------------------------------------
 ```
 
-## 04. Dynamic completeness is a conditional-mean claim
+## 05. Transform a serial-error equation step by step
 
-Past information should not predict the remaining mean error.
+Subtracting the error carry-over also transforms the regressors.
 
-A dynamically complete mean specification uses the relevant history so additional past information does not improve its conditional-mean prediction. It does not mean every possible lag belongs in the equation. Timing and economic mechanisms determine which history might matter.
+Suppose the outcome equation is Y at t equal to an intercept a plus beta times X at t plus u at t. Model the error as rho times the previous error plus a new mean-zero innovation. For a later observation, subtract rho times the entire previous outcome equation from the current equation. The new error is u at t minus rho times the previous u, which equals the innovation.
 
-For accidents, past travel conditions or enforcement changes may be relevant. Adding lags until a diagnostic stops rejecting can introduce poorly motivated terms and sample changes. State the information set and why it is sufficient for the intended comparison. Then investigate the remaining error dependence under that specification rather than assume a successful fit has proved the assumptions.
+The left side becomes current Y minus rho times previous Y. The regressor becomes current X minus rho times previous X, and the intercept becomes a times one minus rho. Transforming only the outcome would leave a different model. If the error process and exogeneity assumptions are appropriate, this transformed equation removes that particular error carry-over and can use information more efficiently.
 
-A dynamically complete mean specification uses the relevant history so additional past information does not improve its conditional-mean prediction.
+\(Y_t=a+\beta X_t+u_t,\quad u_t=\rho u_{t-1}+\varepsilon_t\)
 
-For accidents, past travel conditions or enforcement changes may be relevant.
+\(Y_t-\rho Y_{t-1}=a(1-\rho)+\beta(X_t-\rho X_{t-1})+\varepsilon_t\)
 
-## 05. Prais–Winsten models an AR(1) error process
+## 06. Make the transformation feasible
+
+Prais–Winsten estimates the carry-over and retains the first observation.
+
+The carry-over rho is usually unknown. Prais–Winsten estimates it from the fitted error pattern and uses that estimate to transform the outcome and every regressor. With rho equal to 0.5, an outcome pair of ten followed by twelve gives a transformed later outcome of twelve minus five, or seven. A regressor pair of two followed by three becomes three minus one, or two. The intercept column becomes one half.
+
+For stationary AR(1) errors with absolute rho below one, the first observation has a different variance from the transformed later innovations. Prais–Winsten retains it with a square-root-of-one-minus-rho-squared weight. The method therefore uses a structured error model and can change coefficients as well as standard errors. Its potential precision gain depends on that structure and the exogeneity assumptions being credible; it is not interchangeable with retaining OLS and using HAC.
+
+For \(\rho=0.5\): \(12-0.5(10)=7\), \(3-0.5(2)=2\)
+
+First-observation weight: \(\sqrt{1-\rho^2}\)
+
+Estimate rho, transform all columns, and fit the transformed equation.
+
+## 07. Prais–Winsten models an AR(1) error process
 
 Its additional structure can change the fit.
 
@@ -84,53 +110,51 @@ The potential efficiency benefit depends on the error model and appropriate regr
 -------------+----------------------------------------------------------------
 ```
 
-## 06. A horizon
+## 08. Model or inference?
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
-In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Compare three operations: add a predictor, retain OLS but change covariance, or transform the equation using a modeled error process.
 
-**Practice:** In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+**Practice:** Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
 
-## 07. A horizon: explanation
+## 09. Model or inference?: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
-It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
+Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
 
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
 
-It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
-
-## 08. A local projection asks about a specified future outcome
-
-Define the shock and horizon before the coefficient.
-
-A local projection fits a separate regression for each future horizon. Here inflation h quarters ahead is related to a current shock and lagged inflation. A horizon is the number of observation periods into the future, so h equal to four in quarterly data means one year.
-
-A supply shock is an unexpected change in production costs or capacity. In real applications, identifying such a shock is a substantive task. In our generated example the shock is drawn independently by construction. This makes the causal simulation comparison clear while showing why the same regression form would not automatically identify a causal response in observed macroeconomic data.
-
-The Greek letter pi denotes inflation, s denotes the shock and h is the horizon in quarters. The coefficients a-h, b-h and c-h are estimated separately at each horizon; b-h is the response of interest. The horizon-specific error collects future inflation variation outside those included predictors.
-
-\(\pi_{t+h}=a_h+b_h s_t+c_h\pi_{t-1}+u_{t+h}\)
-
-\(\pi\): inflation; \(s\): shock; \(h\): quarters ahead; \(b_h\): response
-
-## 09. Specify the known quarterly data-generating rule
+## 10. Specify the known quarterly data-generating rule
 
 A stable process gives a transparent response benchmark.
 
-The constructed inflation process has an autoregressive coefficient of 0.6 and a direct shock coefficient of 0.8, with independent innovations. We generate a longer history, discard the first 200 periods and analyse 240 remaining quarterly observations. Discarding initial periods is a burn-in used to reduce starting-value effects.
+Change applications explicitly: we now use a constructed quarterly inflation experiment, not the historical accident data. Pi denotes inflation. Its rule is 0.6 times last quarter's inflation plus 0.8 times the current shock s plus a separate innovation epsilon. The shock and innovation draws are independent across dates and of each other in this experiment.
 
-For a one-period unit shock, the true response is 0.8 immediately and 0.8 times 0.6 to the power h at horizon h. These are known features of the simulation, not estimates. The graph can therefore display the true path beside the independently estimated Stata local-projection points.
+Define the intervention as increasing the current s by one while holding all other external draws and the previous inflation value fixed. The inflation mechanism is then allowed to carry the change forward. Inflation rises by 0.8 immediately, 0.48 next quarter and 0.288 the quarter after. At horizon h, measured in quarters after the initial date, the known response is 0.8 times 0.6 to power h. This response is known because we specified the causal mechanism and its inputs; it is not a fitted historical policy effect.
 
 \(\pi_t=0.6\pi_{t-1}+0.8s_t+\varepsilon_t\)
 
-True impulse response: \(b_h=0.8(0.6)^h\)
+Hold other external draws fixed; allow inflation to propagate.
 
-## 10. The horizon coefficient has outcome-per-shock units
+Known intervention response: \(0.8(0.6)^h\)
+
+## 11. A local projection asks about a specified future outcome
+
+Define the shock and horizon before the coefficient.
+
+A local projection estimates a separate regression for each future horizon. At horizon zero, regress current inflation on the current shock and the chosen earlier information. At horizon four, use inflation four quarters later as the outcome but keep the shock dated at the initial quarter. The shock coefficient then has inflation-units per unit of that initial shock.
+
+In the displayed equation, h is the horizon, a subscript h is its intercept, b subscript h its shock coefficient and c subscript h the coefficient on earlier inflation. The error is also horizon specific: different future outcomes leave different unexplained components. Because the constructed shock is independent of the other innovations, this experiment lets us compare estimates with the known intervention response. In observed data, the shock and control choices require their own identification argument.
+
+\(\pi_{t+h}=a_h+b_hs_t+c_h\pi_{t-1}+u^{(h)}_{t+h}\)
+
+\(h\): quarters ahead; \(b_h\): response per current shock unit.
+
+## 12. The horizon coefficient has outcome-per-shock units
 
 Do not confuse a future value with a cumulative sum.
 
@@ -142,7 +166,25 @@ At horizon four, the coefficient concerns inflation four quarters after the shoc
 
 Write the economic sentence before calculating: a one-unit shock is associated with a fitted difference in the outcome at a specified future date, conditional on the included information.
 
-## 11. Inspect the estimated path without forcing it to match the truth
+## 13. A horizon
+
+Try the comparison before opening the explanation.
+
+In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+
+Keep the shock date fixed and move the outcome date forward by h observation periods. Translate those periods into quarters.
+
+**Practice:** In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+
+## 14. A horizon: explanation
+
+Follow the calculation and interpret its units.
+
+It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
+
+It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
+
+## 15. Inspect the estimated path without forcing it to match the truth
 
 Finite-sample response estimates can be noisy.
 
@@ -150,7 +192,7 @@ The plotted points and SEs come from the Stata regressions at horizons zero thro
 
 This is not a reason to select a different random seed after seeing an inconvenient result. The simulation helps us learn that sampling uncertainty remains even with a correctly identified constructed shock. At longer horizons, fewer usable observations and greater unexplained variation can make the path less precise. Report that uncertainty instead of drawing a smooth curve that hides the actual estimates.
 
-## 12. Read the horizon-four output honestly
+## 16. Read the horizon-four output honestly
 
 A negative sample estimate can coexist with a positive true response.
 
@@ -174,39 +216,19 @@ F4.inflation | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 ------------------------------------------------------------------------------
 ```
 
-## 13. Future-outcome errors can overlap across dates
+## 17. Future-outcome errors can overlap across dates
 
 A sensible mean model can still leave serial dependence.
 
-For a horizon longer than one, future outcomes from neighboring starting dates can be affected by some of the same intervening shocks. Their projection errors may therefore be related even if the original one-step innovations are independent. This is one reason local-projection inference often allows serial covariance.
+At a given horizon, two adjacent starting dates can use outcomes affected by some of the same future innovations. To see overlap simply, consider a two-period outcome sum whose unexplained component at starting date t is v at t plus one plus v at t plus two. The next starting date's error includes v at t plus two plus v at t plus three. Both contain the same middle innovation.
 
-The overlap argument concerns the regression errors at a specified horizon. It does not imply that every residual pattern requires another lagged predictor. First understand the construction of the outcome and information set, then choose a covariance treatment justified for that structure. A mean-model diagnosis and an uncertainty diagnosis remain distinct.
+This is a constructed overlap illustration, not a claim that the inflation experiment has exactly that two-term error formula. It explains why independent underlying innovations can still produce related regression errors at a future horizon. The relevant dependence belongs to the error process for that horizon, so the covariance choice should reflect its timing and other maintained conditions. Overlap does not make every estimated response biased, but it matters for inference.
 
-For a horizon longer than one, future outcomes from neighboring starting dates can be affected by some of the same intervening shocks.
+Illustration: \(w_t=v_{t+1}+v_{t+2}\)
 
-The overlap argument concerns the regression errors at a specified horizon.
+\(w_{t+1}=v_{t+2}+v_{t+3}\): shared \(v_{t+2}\)
 
-## 14. Model or inference?
-
-Apply the idea before reading the solution.
-
-Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
-
-## 15. Model or inference?: explanation
-
-Connect the calculation to the empirical claim.
-
-Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
-
-## 16. A HAC lag has calendar meaning
+## 18. A HAC lag has calendar meaning
 
 The same number describes different windows at different frequencies.
 
@@ -218,29 +240,51 @@ The simulation uses quarterly data and Newey–West lag eight, allowing contribu
 
 The appropriate window depends on the dependence structure and the asymptotic justification, and a finite-sample analysis should inspect plausible choices.
 
-## 17. Pointwise intervals do not cover an entire response path at the same rate
+## 19. Pointwise intervals do not cover an entire response path at the same rate
 
 Multiple horizons change the inferential question.
 
-A pointwise 95% interval refers to one horizon considered on its own under the procedure's assumptions. Drawing nine such intervals does not guarantee a 95% chance, in the repeated-sample sense, that all nine cover together. The estimated horizon coefficients are also related.
+A pointwise 95-percent interval is designed for one specified horizon considered by itself. Covering every point on a response path is a different event: every horizon's interval must succeed together. For illustration, if nine separate coverage events were independent and each had probability 0.95, their joint probability would be 0.95 to the ninth power, about 0.63.
 
-If the research claim concerns a whole response path or a sum, define an inference procedure for that combined quantity. For this introductory application, label the plotted normal-approximation bars as pointwise and avoid an unsupported whole-path claim. The visual should help distinguish what was estimated from what has actually been tested.
+Actual local-projection estimates across horizons are correlated, so 0.63 is not the coverage probability of this graph. The example shows why individual confidence levels do not automatically provide the same simultaneous confidence level. A claim about the whole path, a peak or a cumulative response needs an inference procedure for that joint quantity, using its covariance and an appropriate reference argument.
 
-A pointwise 95% interval refers to one horizon considered on its own under the procedure's assumptions.
+Pointwise coverage: one stated horizon.
 
-If the research claim concerns a whole response path or a sum, define an inference procedure for that combined quantity.
+Simultaneous coverage: the complete stated collection of horizons.
 
-## 18. Controlling a mechanism can change the response being studied
+Illustration only, with independent events: \(0.95^9\approx0.63\).
+
+## 20. Controlling a mechanism can change the response being studied
 
 A current mediator is not just another lag control.
 
-Suppose a cost shock changes inflation expectations, which then influence future inflation. Expectations can be a mediator: part of the pathway through which the shock affects the outcome. Controlling current expectations can therefore remove part of the total response rather than merely improve precision.
+Consider a new causal story for observed inflation: a shock changes expectations, and expectations help determine future inflation. This expectations variable is not part of the small simulation's specified equation. We add it here to analyze a possible control choice. It is a mediator when it carries part of the shock's total effect.
 
-A direct-response interpretation requires additional assumptions about that mediator and other confounding. A smaller shock coefficient after adding expectations is consistent with several stories; it does not prove mediation by itself. Define whether the study targets a total response or a response holding a mechanism fixed before comparing specifications.
+Other news may also affect expectations and future inflation. Select expectations in the graph. Doing so blocks part of the shock's mechanism and can open a path through other news because expectations are a collider on that alternative route. A smaller adjusted shock coefficient would therefore not prove that its difference is a mediated effect. The intervention target, timing, support and mediator–outcome assumptions must be stated before interpreting the adjusted comparison.
 
-Here M denotes expectations and U other news. Expectations are downstream of the shock in this diagram. Conditioning on them closes one shock-to-inflation mechanism. They are also a shared consequence of the shock and other news, so that conditioning can open an alternative route through news. The smaller adjusted shock coefficient is therefore not, by itself, an identified direct effect or proof of mediation.
+New application: expectations mediate a shock and also respond to other news.
 
-## 19. Initial information and post-shock information have different roles
+Post-shock controls can change the target and create selection.
+
+## 21. Mediation is not proven
+
+Try the comparison before opening the explanation.
+
+A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
+
+Trace the mediated route and the route through other news. A coefficient difference alone cannot tell which mechanism produced the change.
+
+**Practice:** A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
+
+## 22. Mediation is not proven: explanation
+
+Follow the calculation and interpret its units.
+
+No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
+
+No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
+
+## 23. Initial information and post-shock information have different roles
 
 Timing determines what a control can do.
 
@@ -252,19 +296,19 @@ A variable known before the shock can help account for the state of the economy 
 
 Write a time line for the shock, controls and outcome.
 
-## 20. Distinguish an estimated shock from a known innovation
+## 24. Distinguish an estimated shock from a known innovation
 
 Measurement and first-step uncertainty can matter.
 
-Our simulation observes its independent shock exactly. Real research often estimates a shock or a latent persistence measure from another model. Those generated quantities can carry measurement error and uncertainty from the first step.
+In the simulation, the independent shock is observed exactly because we generated it. In applied macroeconomics, a shock may instead be inferred from a first regression, a statistical decomposition or an outside instrument. An inferred shock contains estimation uncertainty and may mix the intended innovation with other economic news.
 
-The appropriate treatment depends on how they were obtained and the inferential target. Taking a supplied measure as given is a legitimate classroom simplification when it is stated, but it should not be mistaken for a complete uncertainty analysis of the original research. Keep the simple regression lesson useful while identifying what a full empirical study would still need to justify.
+Putting that estimated series into a response regression is a two-step procedure. Inference must consider how the first-step estimation affects the response estimate, including dependence between the steps. A suitable joint method or resampling procedure depends on the actual construction and target. Before choosing one, explain what intervention the shock is meant to represent and why its variation is independent of omitted future-outcome causes. We develop the outside-instrument argument in Meeting 14.
 
-Our simulation observes its independent shock exactly.
+Known simulated shock: observed by construction.
 
-The appropriate treatment depends on how they were obtained and the inferential target.
+Estimated empirical shock: identification and first-step uncertainty need separate arguments.
 
-## 21. Choose among the three changes using the application
+## 25. Choose among the three changes using the application
 
 The preferred response follows the diagnosed failure.
 
@@ -276,27 +320,7 @@ For omitted predictable dynamics, reconsider the conditional-mean equation and i
 
 None automatically solves policy endogeneity or shock mismeasurement.
 
-## 22. Mediation is not proven
-
-Apply the idea before reading the solution.
-
-A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
-
-## 23. Mediation is not proven: explanation
-
-Connect the calculation to the empirical claim.
-
-No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
-
-## 24. DAG practice: expectations after a shock
+## 26. DAG practice: expectations after a shock
 
 Trace the routes before choosing a control.
 
@@ -306,7 +330,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
 
-## 25. DAG practice: expectations after a shock: explanation
+## 27. DAG practice: expectations after a shock: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -316,17 +340,15 @@ The adjusted shock coefficient therefore does not automatically identify a direc
 
 Expectations lie on \(s_t\rightarrow M\rightarrow\pi_{t+h}\), so conditioning on them blocks part of the shock’s response. They also form a collider on \(s_t\rightarrow M\leftarrow U\rightarrow\pi_{t+h}\); conditioning can open the route through other news. The adjusted shock coefficient therefore does not automatically identify a direct response. An observed reduction in its size is compatible with several stories. State the target, the control’s timing and the additional assumptions needed to separate mediation from selection or mediator–outcome confounding.
 
-## 26. Compare a known response with a noisy estimate
+## 28. Compare a known response with a noisy estimate
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_12.do. In its explicitly constructed quarterly experiment, calculate the true response four quarters after a unit shock. Compare it with the actual horizon-four estimate and approximate interval. Explain what the discrepancy teaches about finite-sample estimates and why the experiment does not identify an observed historical supply shock.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_12.do. In its explicitly constructed quarterly experiment, calculate the true response four quarters after a unit shock. Compare it with the actual horizon-four estimate and approximate interval. Explain what the discrepancy teaches about finite-sample estimates and why the experiment does not identify an observed historical supply shock.
 
-## 27. Compare a known response with a noisy estimate: explanation
+## 29. Compare a known response with a noisy estimate: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -336,7 +358,7 @@ A coverage statement concerns repeated samples, so a particular estimated respon
 
 The known response is 0.8 times 0.6 to the fourth power, or 0.10368. The estimated horizon-four coefficient is -0.178410, with SE 0.101311. Its approximate 1.96 interval is [-0.3770, 0.0202]. This particular interval misses the true positive response. A coverage statement concerns repeated samples, so a particular estimated response can have the wrong sign and a particular interval can miss the truth. The displayed result has not been replaced with its theoretical target. The independent shock is known by construction in this experiment. Observed macroeconomic work still needs a credible shock measure, appropriate dated controls and justified inference.
 
-## 28. Next, use repeated units to construct another comparison
+## 30. Next, use repeated units to construct another comparison
 
 Panel methods exploit changes within an identified unit.
 

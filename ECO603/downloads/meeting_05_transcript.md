@@ -48,17 +48,15 @@ That is a small dollar difference even when a statistical test detects a relatio
 
 Small log differences approximate percentage differences.
 
-The natural logarithm, written log or ln here, turns multiplication into addition. For positive values, the log difference between a new and old value equals the log of their ratio. This is why a change of about 0.01 in a log outcome corresponds to about one percent.
+A natural logarithm changes the scale of a positive number. Think of it as answering which power of the number e, about 2.718, produces the original number. A price of one has log zero; a price of two has log about 0.693. The exponential function reverses this operation: exponentiating 0.693 gives about two. We use natural logs throughout.
 
-The approximation is useful for small changes. For an exact percentage difference, undo the log using the exponential function, exp. A log change of 0.08 gives 100 times exp(0.08) minus one, about 8.33 percent, rather than exactly eight percent. Define the proposed comparison before choosing between a local approximation and an exact finite change.
+The useful property is that subtracting logs gives the log of a ratio. If price rises from two to 2.20, its ratio is 1.10 and its log change is about 0.09531. Exponentiating the log change and subtracting one recovers the proportional change, 0.10 or ten percent. A log change is close to a proportional change when the change is small, but they are not identical. We can now interpret a regression with a logged outcome without confusing the two scales.
 
-We use the natural logarithm throughout. The exponential function, written exp, is its inverse: exp(log P) returns the positive price P. Thus the exponential converts a log difference into a ratio before we subtract one to obtain a proportional change.
+\(\log(1)=0,\quad \log(2)\approx0.693,\quad \exp(0.693)\approx2\)
 
-\(\log P_1-\log P_0=\log(P_1/P_0)\)
+\(\log(2.20)-\log(2)=\log(1.10)\approx0.09531\)
 
-\(\%\Delta P=100\{\exp(\Delta\log P)-1\}\)
-
-\(\exp(\log P)=P\) for \(P>0\)
+\(100\{\exp(0.09531)-1\}\approx10\%\)
 
 ## 05. A log–level model gives a proportional outcome contrast
 
@@ -72,27 +70,39 @@ If income is measured in ten-thousand-dollar units, a coefficient applies to tha
 
 \(100\{\exp(b\Delta X)-1\}\)
 
-## 06. Exact log change
+## 06. Which average does a log fit describe?
 
-Apply the idea before reading the solution.
+An average log is not the log of an arithmetic average.
+
+Take two equally likely positive prices, one and nine. Their arithmetic mean is five. Their logs are zero and about 2.197, whose average is about 1.099. Exponentiating that average gives three, not five. This is the geometric mean: the exponential of the average log.
+
+A regression for the mean log price therefore does not automatically predict the arithmetic mean price when exponentiated. Our percentage translations initially describe ratios of exponentiated fitted log values. If the outcome distributions in two comparison groups differ only by a common multiplicative factor, that ratio also gives the ratio of arithmetic means. More generally, we must account for the remaining log-error distribution. Keep this distinction in mind as we compare the functional forms; we return to its formula after the worked contrasts.
+
+Arithmetic mean: \((1+9)/2=5\)
+
+Exponentiated mean log: \(\exp\{(\log1+\log9)/2\}=3\)
+
+State which prediction quantity is being compared.
+
+## 07. Exact log change
+
+Try the comparison before opening the explanation.
 
 In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Convert the fitted log difference to a ratio with the exponential, then subtract one and multiply by 100. Name the prediction quantity.
 
 **Practice:** In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
 
-## 07. Exact log change: explanation
+## 08. Exact log change: explanation
 
-Connect the calculation to the empirical claim.
-
-Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Follow the calculation and interpret its units.
 
 Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
 
-## 08. A level–log model gives a level outcome contrast
+Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
+
+## 09. A level–log model gives a level outcome contrast
 
 A percent change in X becomes a small change in log X.
 
@@ -104,7 +114,7 @@ The outcome units remain dollars, points or whatever its original definition spe
 
 \(\Delta\widehat Y=b\log(X_1/X_0)\)
 
-## 09. A log–log slope is an elasticity
+## 10. A log–log slope is an elasticity
 
 It relates proportional changes in both variables.
 
@@ -116,7 +126,25 @@ For a finite ten-percent price rise, the exact fitted quantity ratio is 1.1 rais
 
 \(\%\Delta\widehat Y=100\{(X_1/X_0)^b-1\}\)
 
-## 10. Read the actual price–income elasticity
+## 11. Elasticity
+
+Try the comparison before opening the explanation.
+
+In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
+
+An elasticity uses percentage changes on both sides. For a finite income increase, use its ratio rather than substituting a percentage-point change.
+
+**Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
+
+## 12. Elasticity: explanation
+
+Follow the calculation and interpret its units.
+
+The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
+
+The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
+
+## 13. Read the actual price–income elasticity
 
 A unit-free slope still needs an empirical interpretation.
 
@@ -136,7 +164,7 @@ The coefficient does not show what a transfer to households would cause retailer
 ------------------------------------------------------------------------------
 ```
 
-## 11. Compare predictions for the same realistic change
+## 14. Compare predictions for the same realistic change
 
 Use the equation, not just the coefficient label.
 
@@ -144,53 +172,35 @@ Choose two income values within the observed range and calculate the fitted pric
 
 Comparing predictions also makes model differences understandable to a nontechnical reader. Show the income range supported by the records, the fitted curves and the proposed contrast. Avoid evaluating one model at an observed income and another at an unsupported extrapolation. A fair comparison keeps both the sample and the economic scenario clear.
 
-## 12. A quadratic lets the slope change with X
+## 15. A quadratic lets the slope change with X
 
 Define the squared term before interpreting it.
 
-A quadratic model includes X and its square. The coefficient on the squared term does not by itself give the effect of a one-unit increase in X, because that increase changes both X and X squared. The local slope is beta one plus twice beta two times X.
+A straight line has the same slope everywhere. A quadratic adds the square of X, allowing the fitted slope to change with the starting value. In the teaching curve, the fitted score is 500 plus eight times X minus 0.2 times X squared. A derivative is the local slope: the fitted change per unit for a very small movement in X.
 
-In a price–income model, this allows the fitted dollar association to become steeper or flatter with income. The model remains linear in its coefficients even though it curves in X. This is the meaning of linear regression used by OLS: linear in the unknown coefficients, not necessarily a straight line in the original regressor.
+For this curve, the local slope is eight minus 0.4 times X. It equals four at X equal to ten and zero at X equal to twenty. The displayed general formula uses b zero for the intercept, b one for the X coefficient and b two for the squared-X coefficient. Although the curve is nonlinear in X, it is linear in those unknown coefficients, so OLS can estimate them. For a substantial change in X, calculate two fitted values rather than treating a local slope as constant.
 
-The derivative, written d fitted Y over d X, is the local slope: the fitted outcome change per very small change in X. It can vary with the starting value of X even though the regression is linear in its coefficients.
+\(\widehat Y=500+8X-0.2X^2\)
 
-\(\widehat Y=b_0+b_1X+b_2X^2\)
+Local slope: \(d\widehat Y/dX=8-0.4X\)
 
-\(\dfrac{d\widehat Y}{dX}=b_1+2b_2X\)
+General slope: \(b_1+2b_2X\)
 
-\(d\widehat Y/dX\): local fitted slope at the stated \(X\)
-
-## 13. Use a finite quadratic difference for a finite change
+## 16. Use a finite quadratic difference for a finite change
 
 The tangent slope is a local description.
 
-For a change from X to X plus delta, substitute both values into the fitted equation and subtract. The resulting difference is beta one times delta plus beta two times twice X delta plus delta squared. The last term is why multiplying the starting slope by a large change is only an approximation.
+Increase X from ten to fifteen in the teaching curve. The first fitted score is 560 and the second is 575, so the finite fitted difference is fifteen points. At the starting value ten, the local slope was four. Multiplying that slope by five would give twenty and overstate the finite difference because the slope falls along the curve.
 
-Work through the illustrative score equation with slope 8 minus 0.4X. At X equal to ten, its local slope is four points per unit. A five-unit change does not keep that slope fixed. Showing the two fitted endpoints on a curve makes this distinction easier to see than treating a derivative as a universal finite effect.
+Let delta denote a finite change from a starting value X. Expand the square of X plus delta and subtract the original fitted value. The remaining terms are b one times delta plus b two times the quantity twice X times delta plus delta squared. This expression equals direct prediction and subtraction. The derivative becomes a useful approximation when the proposed change is small enough that the slope barely changes.
+
+\(\widehat Y(10)=560,\quad\widehat Y(15)=575,\quad\Delta\widehat Y=15\)
 
 \(\Delta\widehat Y=b_1\Delta+b_2(2X\Delta+\Delta^2)\)
 
-## 14. Elasticity
+Local approximation: \(4\times5=20\), not the finite difference.
 
-Apply the idea before reading the solution.
-
-In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-## 15. Elasticity: explanation
-
-Connect the calculation to the empirical claim.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-## 16. A turning point must be inside a meaningful range
+## 17. A turning point must be inside a meaningful range
 
 Do not report an unsupported optimum.
 
@@ -200,7 +210,25 @@ Before describing an economic optimum, check whether the turning point lies insi
 
 \(X^*=-\dfrac{b_1}{2b_2}\) when \(b_2\ne0\)
 
-## 17. Inspect the actual curvature rather than assume it
+## 18. Quadratic slope
+
+Try the comparison before opening the explanation.
+
+For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
+
+Differentiate the fitted curve, substitute the requested starting X, and distinguish a local slope from a finite change.
+
+**Practice:** For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
+
+## 19. Quadratic slope: explanation
+
+Follow the calculation and interpret its units.
+
+The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
+
+The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
+
+## 20. Inspect the actual curvature rather than assume it
 
 A flexible model may provide little evidence of bending.
 
@@ -223,7 +251,7 @@ c.inc10#c.inc10 |  -7.86e-06   .0008332    -0.01   0.992    -.0016458    .001630
 ---------------------------------------------------------------------------------
 ```
 
-## 18. Ask Stata for slopes at stated values
+## 21. Ask Stata for slopes at stated values
 
 margins makes the comparison explicit.
 
@@ -255,21 +283,21 @@ inc10        |
 ------------------------------------------------------------------------------
 ```
 
-## 19. Retransforming a log fit needs care
+## 22. Retransforming a log fit needs care
 
 The exponential of an average log is not the average level.
 
-Retransformation means returning a transformed prediction to the original outcome scale. In a log model, simply exponentiating the fitted log outcome does not generally give the conditional arithmetic mean in levels. The additional factor is the conditional average of exp(error).
+Write a log-outcome model as log Y equals m of X plus u. Here m of X is the fitted or population linear log relationship and u is the remaining log error. Exponentiating both sides gives Y equal to exp of m times exp of u. At a fixed X, taking the average therefore gives exp of m times the conditional average of exp of u.
 
-If that factor is the same across the compared regressor values, a ratio of exponentiated fits can also describe the ratio of conditional arithmetic means. Otherwise the mean-level contrast needs more work. State what quantity the reported prediction represents. A clean percentage formula does not remove the statistical issue introduced by a nonlinear transformation.
+Even a mean-zero log error does not generally make that last average equal to one. The one-and-nine example showed the reason: exponentiation changes how spread contributes to an average. To estimate an arithmetic mean in levels, we need a suitable estimate of this retransformation factor. To interpret a ratio between groups as a mean ratio, we need the factors to cancel or to be modeled. State the target before selecting a correction.
 
-Here X beta is a compact way to write the intercept plus all coefficient-weighted regressors. E of exp u given X is the conditional mean of the exponentiated error; it need not equal one even when the conditional mean of u is zero.
+\(\log Y=m(X)+u\)
 
-\(E(Y\mid X)=\exp(X\beta)E\{\exp(u)\mid X\}\)
+\(E(Y\mid X)=\exp\{m(X)\}\,E\{\exp(u)\mid X\}\)
 
-\(X\beta\): intercept plus coefficient-weighted regressors
+The retransformation factor need not be one or constant across X.
 
-## 20. Zeros and negative values are substantive information
+## 23. Zeros and negative values are substantive information
 
 Do not hide them through an automatic log transformation.
 
@@ -281,7 +309,7 @@ The natural log is defined only for positive values.
 
 In this retail application, the analysis explicitly requires positive observed price and income.
 
-## 21. Choose a form for a decision-sized comparison
+## 24. Choose a form for a decision-sized comparison
 
 Keep fit, interpretation and design connected.
 
@@ -293,7 +321,7 @@ An analyst studying affordability may want dollar price differences.
 
 Use graphs and stated prediction contrasts to communicate the model.
 
-## 22. Transforming the variables does not close a backdoor
+## 25. Transforming the variables does not close a backdoor
 
 A better scale and a credible comparison answer different questions.
 
@@ -307,27 +335,7 @@ Functional form chooses the scale and shape.
 
 Identification addresses the alternative causal explanations.
 
-## 23. Quadratic slope
-
-Apply the idea before reading the solution.
-
-For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-## 24. Quadratic slope: explanation
-
-Connect the calculation to the empirical claim.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-## 25. DAG practice: logs and a common cause
+## 26. DAG practice: logs and a common cause
 
 Trace the routes before choosing a control.
 
@@ -337,7 +345,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
 
-## 26. DAG practice: logs and a common cause: explanation
+## 27. DAG practice: logs and a common cause: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -347,17 +355,15 @@ The graph states the proposed causal relationships and helps assess controls or 
 
 The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation. The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
 
-## 27. Translate retail coefficients into a useful contrast
+## 28. Translate retail coefficients into a useful contrast
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_05.do using retail.csv. In the level model, calculate the fitted soda-price contrast for a 20,000-dollar income difference. In the log–log model, calculate the exact contrast for a ten-percent income increase. State the units and the prediction quantity in each answer.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_05.do using retail.csv. In the level model, calculate the fitted soda-price contrast for a 20,000-dollar income difference. In the log–log model, calculate the exact contrast for a ten-percent income increase. State the units and the prediction quantity in each answer.
 
-## 28. Translate retail coefficients into a useful contrast: explanation
+## 29. Translate retail coefficients into a useful contrast: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -367,7 +373,7 @@ The log–log income slope is 0.037475. A ten-percent income rise multiplies the
 
 Income is rescaled by 10,000 in the level model, so the proposed change is two units. The fitted price contrast is two times 0.009073, or 0.018147 dollars. Treating the coefficient as dollars per one dollar of income would give the wrong magnitude. The log–log income slope is 0.037475. A ten-percent income rise multiplies the exponentiated fitted log price by 1.1 raised to that slope, giving 0.3578 percent. This is a contrast in exponentiated fitted log values. A claim about arithmetic mean prices also requires the retransformation factor to be handled appropriately. These local-income associations do not identify a causal income effect.
 
-## 29. Connect functional form with the next data-quality question
+## 30. Connect functional form with the next data-quality question
 
 A better curve cannot repair every data problem.
 

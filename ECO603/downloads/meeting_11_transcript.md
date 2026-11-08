@@ -18,23 +18,15 @@ For example, bad road conditions or a change in enforcement may last several mon
 
 State the outcome, law indicators, calendar controls and error term.
 
-First define the variables so that we know what relationship the regression describes. Let t identify a month and \(A_t\) be its total reported accidents. The model uses log(\(A_t\)), the natural logarithm of the accident count. The logarithm is a transformation that lets differences in the fitted outcome describe proportional differences in counts. A log difference of 0.01 is approximately a 1% difference; later we will calculate the exact conversion.
+We keep the monthly accident equation from Meeting 09 fixed. A is total accidents and log A its logged outcome. B and S indicate the seat-belt and speed-law states. U is unemployment and W the weekend count. Each included predictor has its own coefficient, and lowercase u is the remaining error. Keeping uppercase unemployment U distinct from lowercase error u matters in both the equation and the timing argument.
 
-Let \(B_t\) equal one when the seat-belt law is in force and zero otherwise. A variable coded zero or one is an indicator, also called a dummy variable. Define \(S_t\) similarly for the speed law. \(U_t\) is the unemployment rate and \(W_t\) is the number of weekends. The equation also includes a linear trend, a change at a constant fitted rate as months pass, and month effects, recurring differences between calendar months. Eleven month indicators compare February through December with January.
-
-In the equation, a is a baseline intercept. The coefficients b, c, d and f multiply B, S, U and W, while g multiplies the time trend t. The error \(u_t\) is the part of the log outcome outside this included relationship. The coefficient b therefore describes a fitted difference in log accidents between law states, after accounting for the other listed variables. We will first investigate the remaining error pattern, then return to interpreting b.
-
-In the displayed sum, D-m-t is the indicator for calendar month m and gamma-m is its coefficient. The sum includes February through December. January is represented by the intercept rather than a redundant twelfth indicator.
-
-\(A_t\): monthly accidents; outcome: \(\log(A_t)\)
-
-\(B_t,S_t\): seat-belt and speed-law indicators
-
-\(U_t,W_t\): unemployment and weekend count
+The trend term uses the monthly index t. The calendar indicators are written D subscript m t here, with gamma subscript m giving each month's shift relative to January. The sum contains eleven indicators because the intercept already represents January. We compare uncertainty procedures for this unchanged equation and sample, so a change in the standard error can be attributed to the covariance calculation rather than a new fitted comparison.
 
 \(\log(A_t)=a+bB_t+cS_t+dU_t+fW_t+gt+\sum_{m=2}^{12}\gamma_mD_{mt}+u_t\)
 
-\(D_{mt}\): month indicator; \(\gamma_m\): January-relative month shift
+\(B,S\): law indicators; \(U\): unemployment; \(W\): weekend count.
+
+\(D_{mt}\): month indicator; \(u_t\): error.
 
 ## 03. Separate the outcome pattern from the error pattern
 
@@ -126,11 +118,15 @@ Two unit-variance errors: covariance \(0\Rightarrow0.5\); covariance \(0.5\Right
 
 Newey–West keeps the OLS coefficients and changes their estimated uncertainty.
 
-The missing covariance terms motivate HAC standard errors. HAC stands for heteroskedasticity and autocorrelation consistent. It describes a method for estimating uncertainty that can allow both unequal error variance and dependence across dates. Newey–West is the particular HAC method used here. It retains the OLS coefficients while estimating their variances and how the coefficient estimates vary together. The SE of a coefficient is the square root of its estimated variance.
+We introduced Newey–West in the lag model. Here we examine how this HAC covariance estimator combines information across dates. For each date, multiply the regressor values by that date's residual. The covariance calculation uses both these same-date products and pairs of products separated by a lag. It is not simply a correction based on the residual correlation alone.
 
-Newey–West combines same-date information with contributions from pairs of dates separated by selected lags. For a regression, these contributions involve regressors multiplied by residuals, not residual correlations alone. A lag window specifies which lags enter and their weights. The graph shows Bartlett weights, which decline in a straight line as dates move further apart. Let L be the maximum lag and k a particular positive lag. Its weight is 1−k/(L+1), up to L. With L=4, the weights are 0.8, 0.6, 0.4 and 0.2.
+A lag window says which separations enter and how strongly. Let L be the largest included lag and k a positive lag. Bartlett weights are one minus k divided by L plus one, declining linearly to smaller positive weights. The same-date weight is one. With L equal to four, the positive-lag weights are 0.8, 0.6, 0.4 and 0.2. A consistent covariance estimate requires suitable exogeneity, limits on extreme regressor–error products, dependence and lag-selection conditions. A fixed four-lag illustration does not prove those conditions for an arbitrary process.
 
-The word 'consistent' is a condition-dependent claim, not a promise for any dataset. The covariance estimate can approach the needed population value as data increase when the model, error behaviour and lag-selection conditions support that result. Weak dependence means that relations between distant observations weaken sufficiently for such large-sample reasoning. A fixed four-lag classroom example does not establish those conditions. The graph explains the weights; next we will connect their lags to calendar time.
+\(w_0=1,\quad w_k=1-k/(L+1),\quad k=1,\ldots,L\)
+
+For \(L=4\): \(1,0.8,0.6,0.4,0.2\)
+
+Weights apply to regressor–residual covariance contributions.
 
 ## 10. Interpret the lag in calendar time
 
@@ -194,17 +190,15 @@ HAC addresses uncertainty from dependence that remains
 
 Adding lags, Newey–West and Prais–Winsten change different parts of the analysis.
 
-Consider three responses to the problem we have traced. Adding a lagged regressor changes the equation used to explain accidents. This can change the coefficient interpretation, the estimates and the sample. Applying Newey–West to the same equation and sample keeps the OLS coefficients and changes their estimated uncertainty. Those methods therefore solve different parts of the problem.
+Keep the mean equation and uncertainty calculation separate. Adding a lagged predictor changes what the regression uses to explain accidents; it can change coefficients, interpretation and sample size. Applying Newey–West to an unchanged equation and sample keeps the OLS coefficients while changing the estimated covariance and hence standard errors.
 
-A third response is Prais–Winsten, a method that uses an AR(1) model for the errors. It estimates the carry-over coefficient \(\rho\) and uses that estimate to transform the outcome and regressors. For later observations, the transformation subtracts an estimated fraction of the previous value from the current value; the first observation receives a special adjustment. This changes how observations enter the fit, so coefficients and SEs can both change. The method requires a credible error model and suitable exogeneity assumptions.
+If a credible model describes how errors persist, another possibility is to transform the equation using that model. The next meeting derives Prais–Winsten, a transformation for an AR(1) error process, before examining its output. We do not need that method to complete today's comparison. Our task here is to decide whether remaining dependence changes uncertainty, signals missing mean dynamics, or accompanies an invalid policy comparison.
 
-Return to the application before choosing. If the equation misses a predictable effect of earlier travel conditions, consider whether a lag belongs in the mean model. If the equation is appropriate but its errors remain dependent, justify an uncertainty calculation. Prais–Winsten adds stronger structure about the errors than the HAC approach. We will examine its software output next meeting. Today we will hold our equation fixed so that the Stata comparison isolates changes in the SE method.
+Missing mean dynamics → reconsider the equation.
 
-Add regressors → change the conditional-mean model
+Valid mean model with suitable remaining dependence → justify covariance estimation.
 
-HAC → retain OLS coefficients, change covariance estimate
-
-Prais–Winsten → use an AR(1) error model; estimates can change
+A structured error transformation is developed in the next meeting.
 
 ## 15. Run the conventional regression
 
@@ -290,11 +284,15 @@ This is evidence about the comparison of SE calculations, not proof that four la
 
 Use 100[exp(b)−1] for the exact contrast between exponentiated fitted values.
 
-The coefficient describes a difference in fitted log accidents. To return from logs to the original count scale, use the exponential function exp, the inverse of the natural logarithm. When the law indicator increases from zero to one, the fitted log outcome increases by b. The ratio of the two exponentiated fitted values is therefore exp(b), and their percentage difference is 100[exp(b)−1]. Here that difference is about 10.02%, compared with the approximation 100b, about 9.55%.
+From the log-model lesson, an indicator coefficient b gives a percentage contrast in exponentiated fitted outcomes of 100 times exp of b minus one. At b about 0.09545, this is about 10.02 percent. The coefficient is uncertain, so the transformed contrast is uncertain too.
 
-Stata's nlcom command calculates a nonlinear combination, a transformation of coefficients such as this exponential expression. The output labels this calculated result _nl_1. The reported SE uses the delta method: it approximates the transformation locally by a straight line to carry uncertainty from b into the transformed result. In this example the approximate transformed SE is 100exp(b) times SE(b). This explains why its units are percentage units rather than log units. The z statistic divides the transformed estimate by its approximate SE for a zero null, using a normal reference distribution.
+Near this coefficient, the transformation's local slope is 100 times exp of b, about 110.02. A small coefficient change of 0.01 therefore changes the contrast by about 1.10 percentage units. Multiplying this local slope by the HAC standard error, about 0.01890, gives a transformed standard error near 2.08 percentage units. This local propagation of uncertainty is the delta method. Stata's nlcom performs it using the fitted covariance. A z statistic divides the transformed estimate by its approximate standard error and uses a normal reference. As before, a contrast in arithmetic mean accidents requires the relevant retransformation factors to match or be modeled.
 
-One further distinction matters. The exponential of an average log outcome is not generally the average outcome in levels. Converting a fitted log outcome back to levels is called retransformation. To interpret exp(b) as a ratio of conditional arithmetic means, we also need the average of exp(error) to be the same in the compared law states. An arithmetic mean is the ordinary sum divided by the number of values. Without that condition, report the contrast in exponentiated fitted log outcomes. A causal law effect would still require the separate policy-design argument.
+\(g(b)=100\{\exp(b)-1\}\)
+
+\(g\,\!^{\prime}(b)=100\exp(b)\approx110.02\)
+
+\(SE\{g(\widehat b)\}\approx|g\,\!^{\prime}(\widehat b)|SE(\widehat b)\approx2.08\) percentage units
 
 ```text
 . nlcom 100*(exp(_b[beltlaw])-1)
@@ -310,11 +308,15 @@ One further distinction matters. The exponential of an average log outcome is no
 
 Breusch–Godfrey tests a stated no-serial-correlation null.
 
-The graphs suggested that residuals are related. We can assess that evidence with a Breusch–Godfrey test, a test for serial correlation up to a specified number of lags. The script first restores the conventional regression so that the diagnostic uses the intended model. A diagnostic is a check on a feature of the fitted model; it is not a complete judgment of the study.
+The Breusch–Godfrey diagnostic asks whether earlier residuals help explain the current residual after the original regressors are included. Its supporting regression adds the requested residual lags and tests their coefficients jointly. Under the null, these extra lag coefficients are zero. A rejection gives evidence against that no-serial-correlation condition for the fitted specification.
 
-The null hypothesis is no serial correlation through the stated lag order. The label H0 is shorthand for that null. The header calls this an LM, or Lagrange multiplier, test: here it checks whether earlier residuals help explain the current residual after accounting for the included regressors. In the output, lags(p) tells us that order: one or four months here. The symbol p in that label is not a p-value. The chi2 column is the chi-square test statistic. Its reference distribution describes how the statistic is expected to vary under the null, using the test's large-sample approximation. The df column gives degrees of freedom, the number of restrictions tested here. The corresponding values are one and four. Prob > chi2 reports the p-value.
+The output calls this an LM, or Lagrange multiplier, test. Its large-sample statistic uses a chi-square reference: a distribution obtained by adding squares of independent standard-normal variables. Here the degrees of freedom equal the number of residual-lag restrictions, one or four. The label lags(p) gives the lag order; this p is not a p-value. Prob greater than chi-square reports the tail probability under the null approximation. The small reported p-values support investigating dependence. They neither establish an exact AR(1) process nor diagnose policy endogeneity by themselves.
 
-The reported p-values, about 0.0003 and 0.0020, lead us to reject their respective nulls at the 5% level. This supports taking serial dependence seriously in this regression. It does not establish an exact AR(1) process or prove the policy coefficient is inconsistent. We now combine the diagnostic evidence with the SE comparison, rather than treating a test rejection as an instruction to use one method in every setting.
+Supporting regression: current residual on original regressors and earlier residuals.
+
+Null: added residual-lag coefficients are jointly zero.
+
+Chi-square reference degrees of freedom: number of tested lag restrictions.
 
 ```text
 . estimates restore conventional
@@ -404,8 +406,6 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
 
 ## 26. Choose an uncertainty statement for repeated months: explanation
@@ -422,11 +422,15 @@ The common law coefficient is about 0.095453. The SEs are about 0.014235, 0.0123
 
 Explain the three choices as responses to different empirical concerns.
 
-Explain how three proposed changes would affect our accident analysis. Adding a lagged outcome changes the fitted equation and may reduce the usable sample. Newey–West on the same equation and sample keeps the OLS coefficients but changes estimated uncertainty. Prais–Winsten uses an estimated AR(1) error process to transform the fit, so it can change coefficients as well as SEs. State the assumptions behind the change you recommend.
+Explain why the same fitted law coefficient can have three different standard errors. The conventional formula assumes the stated equal-variance and independence conditions. Heteroskedasticity-robust inference allows unequal spread but does not automatically allow time dependence. The Newey–West calculation adds weighted covariance information across nearby dates under its own conditions.
 
-Then give the calendar meaning of lag(4) for today's monthly data. It reaches covariance contributions through four months; it is not four new regressors. Explain why a coefficient can stay fixed while its interval changes. This links the arithmetic of the output to the variance-and-covariance reasoning, rather than leaving them as separate facts to memorise.
+Give the calendar meaning of four covariance lags for monthly data, and state whether any new predictor was added. Then write one connected paragraph reporting the fitted magnitude, its uncertainty and the evidence that adoption provides a credible policy comparison. If that last argument is missing, say what design evidence would be needed. In the next meeting we derive structured error transformations and then study responses at future horizons.
 
-Finally, return to the traffic-policy question. We found a positive fitted law coefficient for total accidents and evidence of residual serial correlation. HAC4 produced a larger SE than the other two methods in this example. These results tell us about the stated regression and its estimated uncertainty. They do not establish that the law caused more accidents. Next meeting, we will use the same distinctions to study models with richer time relationships and responses at future horizons.
+Same equation/sample → same OLS coefficient.
+
+Different justified covariance calculations → potentially different intervals.
+
+A policy effect still needs an assignment argument.
 
 **Practice:** In one paragraph, compare adding a lag, using Newey–West and fitting Prais–Winsten. Interpret lag(4) for this dataset.
 

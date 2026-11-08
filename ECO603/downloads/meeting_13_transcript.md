@@ -24,17 +24,29 @@ Before estimating, verify that the state-year pair uniquely identifies rows and 
 
 An unobserved unit component may be related to policy.
 
-Let i identify states and t identify years. Alpha i is an unobserved state component that does not change over the observed period. Lambda t is a year effect shared across states. The remaining error varies by both state and year.
+Use i for a state and t for a year. Y is the fatality rate and X the beer tax. Alpha subscript i is an additive state component that is constant across the observed years, such as a stable part of road conditions. Lambda subscript t is a common year shift. The remaining error u subscript i t can vary across both states and years.
 
-If states with particular driving environments also choose different taxes, the stable component can be correlated with the tax. Pooled OLS that leaves it out can then mix the tax association with that stable difference. Panel transformations address this specific time-invariant component; they do not remove every unobserved influence.
-
-The two subscripts i and t identify state and year. Alpha-i is a stable state component, lambda-t is a common year shift and u-i-t is the remaining error that can vary across both states and years. Beta is the slope on the observed regressor.
+The tax coefficient beta is the target slope in this specification. If stable state factors are related to taxes, a regression pooling all observations without accounting for them can mix their contribution into the tax association. Repeated observations let us subtract the same stable component from itself. The next numerical example shows this cancellation before we apply the general first-difference and demeaning formulas.
 
 \(Y_{it}=\beta X_{it}+\alpha_i+\lambda_t+u_{it}\)
 
-\(\alpha_i\): stable state component; \(\lambda_t\): common year shift
+\(\alpha_i\): stable state component; \(\lambda_t\): common year shift.
 
-## 04. First differencing removes a stable unit component
+\(u_{it}\): remaining state-year error.
+
+## 04. Follow one unit across two dates
+
+Subtracting the same unit’s outcomes removes its stable intercept.
+
+Consider a constructed unit with X equal to two before and four after, and Y equal to ten before and fourteen after. Its X change is two and its Y change is four. Suppose its outcome rule contains an unobserved stable component alpha equal to six. Subtracting later Y minus earlier Y subtracts six minus six, which is zero.
+
+This is why a within-unit comparison can remove a stable additive omitted component. It does not remove a component that changes over time or a stable characteristic whose effect itself changes. Common date changes also remain unless the model accounts for them. We now write the subtraction in general notation, keeping i for unit and t for date.
+
+\((X_{i1},X_{i2})=(2,4),\quad(Y_{i1},Y_{i2})=(10,14)\)
+
+\(\Delta X_i=2,\quad\Delta Y_i=4,\quad\alpha_i-\alpha_i=0\)
+
+## 05. First differencing removes a stable unit component
 
 Subtract the earlier equation from the later equation.
 
@@ -44,53 +56,53 @@ Time-invariant regressors also disappear from a differenced equation. This is us
 
 \(\Delta Y_i=\beta\Delta X_i+\Delta\lambda+\Delta u_i\)
 
-## 05. A two-period athlete example uses the same algebra
+## 06. A two-period athlete example uses the same algebra
 
 State what disappears and what the comparison still needs.
 
-Consider a student's GPA in two semesters, related to whether the student's sport is in season. Differencing removes a stable student component such as persistent ability. A common semester effect remains as a constant in the change equation. A time-invariant test-score control disappears.
+Apply the same subtraction to a student rather than a state. GPA means grade point average, a numerical summary of course grades. The regressor season equals one when the student's sport is in season and zero otherwise. Suppose a stable student component captures lasting preparation, while a semester effect captures a common change across students.
 
-The design can still be confounded by time-varying course difficulty, study time or other changes related to the in-season indicator. The word panel does not establish that these changes are unrelated. Explain why differencing addresses stable ability and why it does not, by itself, eliminate every other explanation for a GPA change.
+Subtract the student's first-semester equation from the second. The stable preparation component cancels. A semester change remains, as does any change in unobserved study conditions. The coefficient uses students whose season indicator changes. If course difficulty or study time changes with the sports season, that time-varying factor can still confound the comparison. Differencing removes the stable additive component, not every reason that participation and grades might move together.
 
-GPA means grade point average, a numerical summary of a student’s course grades. In this example, compare the same student across semesters rather than different students with potentially different stable preparation.
+\(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\)
 
-Consider a student's GPA in two semesters, related to whether the student's sport is in season.
+\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\)
 
-The design can still be confounded by time-varying course difficulty, study time or other changes related to the in-season indicator.
+GPA: grade point average; season: a zero-or-one indicator.
 
-GPA: grade point average
+## 07. First differences
 
-## 06. First differences
-
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+GPA is the student’s grade point average. Subtract the same student’s first-semester equation from the second; keep the common semester change.
 
 **Practice:** In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
 
-## 07. First differences: explanation
+## 08. First differences: explanation
 
-Connect the calculation to the empirical claim.
-
-\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Follow the calculation and interpret its units.
 
 \(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
 
-## 08. Demeaning uses each unit’s own average
+\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
+
+## 09. Demeaning uses each unit’s own average
 
 Fixed effects remove the same stable component over several periods.
 
-The within transformation subtracts each state's time average from its values at every date. The state component disappears because its average equals itself. The remaining equation compares deviations from a state's usual outcome with deviations from its usual tax.
+Demeaning means subtracting a unit's own time average from each of its observations. For the constructed unit, X values two and four have average three, giving demeaned values minus one and plus one. Y values ten and fourteen have average twelve, giving minus two and plus two. The within-unit slope is therefore two in this simple example.
 
-This is the fixed-effects estimator in the linear panel model. It uses within-state variation rather than treating a permanent high-tax state as equivalent to a tax increase within a state. The parameter interpretation and required exogeneity argument must fit that within comparison. A state with no tax variation contributes no direct within variation for the tax slope.
+A stable additive component equals its own time average, so it disappears in this subtraction. With several dates, the transformation uses every available date for that unit rather than just two endpoints. Common year effects must also be accounted for in the transformed equation. Fixed-effects estimation performs this calculation to estimate the slope from within-unit variation; it does not make a changing omitted cause disappear or establish that the remaining regressor changes are exogenous.
 
-\(Y_{it}-\overline Y_i=\beta(X_{it}-\overline X_i)+(\lambda_t-\overline\lambda)+u_{it}-\overline u_i\)
+\(X_i=(2,4)\Rightarrow X_i-\overline X_i=(-1,1)\)
 
-## 09. Two-period fixed effects and first differences share a slope identity
+\(Y_i=(10,14)\Rightarrow Y_i-\overline Y_i=(-2,2)\)
+
+\(Y_{it}-\overline Y_i=\beta(X_{it}-\overline X_i)+(\lambda_t-\overline\lambda)+(u_{it}-\overline u_i)\)
+
+## 10. Two-period fixed effects and first differences share a slope identity
 
 The identity requires the same two-period sample and specification.
 
@@ -102,7 +114,7 @@ With two observations per unit, demeaning produces one half of the change and it
 
 Our application compares a two-period change from 1982 to 1988 with a fixed-effects fit using all seven years.
 
-## 10. Read pooled and within-state associations
+## 11. Read pooled and within-state associations
 
 Removing stable differences can change the sign.
 
@@ -123,17 +135,19 @@ The fixed-effect coefficient is measured in fatalities per ten thousand resident
 -------------+----------------------------------------------------------------
 ```
 
-## 11. Use year effects for common shocks
+## 12. Use year effects for common shocks
 
 They do not remove state-specific changes.
 
-Year indicators allow a common outcome shift in each year, such as a national change in vehicle safety or economic conditions. Combined with state effects, they separate stable state differences and shared year movements from the variation used for the slope.
+A year effect permits a common intercept change for every state in the same year. It can absorb a nationwide shift represented by that common component. State effects instead absorb stable additive differences between states. Including both asks which tax changes remain beyond each state's stable level and the common year shifts.
 
-The remaining comparison is still vulnerable to state-specific changes related to tax policy. It also cannot identify the effect of a regressor that varies only nationally by year. That common regressor is absorbed by the year effects. These are consequences of the written equation, so the empirical interpretation should be checked before software is run.
+The separate housing diagram illustrates the limit of common time controls. Nearness to an incinerator can be associated with stable location quality, which also affects house prices. Conditioning on common time conditions does not close that location route. Removing a stable additive location component uses a different comparison, and its causal interpretation still requires assumptions about changing local factors. An algebraic subtraction does not literally erase a causal arrow from the world.
 
-The diagram adapts the earlier incinerator example: X is proximity, Y house price, C stable location quality and T common time conditions. Common time conditions affect house prices, but stable location quality affects both proximity to the incinerator and prices. Holding time fixed leaves that location backdoor open. A within-unit transformation can cancel a stable additive component under the panel model; it does not literally erase the causal arrows or remove changing confounding. If proximity itself never changes, its level coefficient is also absorbed; a proximity-by-post-period interaction supplies a different, dated comparison. Parallel trends for a DiD comparison remains an additional assumption about untreated changes.
+Year effects: common date shifts. State effects: stable additive state differences.
 
-## 12. State the fixed-effects exogeneity condition
+A location common cause is not removed by a common calendar control.
+
+## 13. State the fixed-effects exogeneity condition
 
 Transforming variables does not make their remaining changes random.
 
@@ -143,45 +157,33 @@ First-difference OLS instead needs its differenced regressor to have the require
 
 \(E(u_{it}\mid X_{i1},\ldots,X_{iT},\alpha_i)=0\) as a sufficient panel condition
 
-## 13. Build a difference-in-differences comparison
+## 14. Build a difference-in-differences comparison
 
-Subtract the comparison group’s change from the treated group’s change.
+Calculate the observed contrast before assigning it a causal meaning.
 
-Difference-in-differences, DiD, compares changes across a treated group and a comparison group. Use constructed means: the treated group rises from ten to fourteen, while the comparison group rises from eight to eleven. The treated change is four and the comparison change is three, giving DiD equal to one.
+Use a new constructed training-program example. Outcomes are monthly earnings in thousands of dirhams. The treated group's mean rises from ten to fourteen, while the comparison group's rises from eight to eleven. The treated change is four and the comparison change is three. Difference-in-differences, or DiD, subtracts those changes and gives one thousand dirhams.
 
-The comparison group's change is used to represent what would have happened to the treated group without treatment. This is a counterfactual argument. The arithmetic is simple; the identifying assumption is the important new step. Baseline levels may differ even when the required untreated trends are parallel.
+That arithmetic is observable. Calling it a treatment effect requires a missing comparison: what would treated earnings have been after the program under the specified no-program intervention? We did not observe that potential outcome. The next slide states the assumption that uses the comparison group's change to supply it. Different baseline levels are allowed; the key issue is the untreated change, rather than equality of the initial means.
 
-\(\widehat\tau=(14-10)-(11-8)=1\)
+Treated: \(10\rightarrow14\); comparison: \(8\rightarrow11\)
 
-## 14. DiD arithmetic
+\(\widehat\tau=(14-10)-(11-8)=1\) thousand dirhams
 
-Apply the idea before reading the solution.
-
-Treated mean outcomes rise from 10 to 14; comparison means rise from 8 to 11. Compute DiD and state its identifying assumption.
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** Treated mean outcomes rise from 10 to 14; comparison means rise from 8 to 11. Compute DiD and state its identifying assumption.
-
-## 15. DiD arithmetic: explanation
-
-Connect the calculation to the empirical claim.
-
-\(\mathrm{DiD}=(14-10)-(11-8)=1\). A causal interpretation needs parallel untreated trends, no anticipation and suitable composition/spillover assumptions. Similar baseline levels are not required; the key assumption concerns counterfactual changes.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-\(\mathrm{DiD}=(14-10)-(11-8)=1\). A causal interpretation needs parallel untreated trends, no anticipation and suitable composition/spillover assumptions. Similar baseline levels are not required; the key assumption concerns counterfactual changes.
-
-## 16. Parallel trends is about unobserved untreated changes
+## 15. Parallel trends is about unobserved untreated changes
 
 It is not a requirement that the groups begin at the same level.
 
-Parallel trends means that, without treatment, the treated group's expected outcome change would match the comparison group's expected change over the relevant period. We do not observe the treated group's untreated post-period outcome, so this is an assumption about a missing comparison.
+Parallel untreated trends means that, without the program, the treated group would have had the same average outcome change as the comparison group. This is a statement about the no-program potential outcome, not a claim that their observed post-program paths must be parallel. In the example, it supplies a treated-group no-program change of three.
 
-Prior trends can provide relevant evidence, but similar earlier changes do not prove the unobserved post-period condition. Consider the mechanism: were other policies, economic shocks or selection changes different between groups? A convincing DiD study explains why the comparison change is informative for the treated group's missing path, not only why two plotted lines look similar before treatment.
+Add that change to the treated baseline of ten to obtain a counterfactual post-program mean of thirteen. The observed mean is fourteen, giving an effect of one thousand dirhams under the assumption. Earlier outcome trends can help assess the story, but similar pre-program paths do not prove the missing post-program path. The intervention also needs a stable meaning and an assignment story: a coincident treated-group earnings shock would undermine the comparison.
 
-## 17. No anticipation and stable comparison units also matter
+Counterfactual treated post mean under parallel untreated trends: \(10+(11-8)=13\)
+
+Effect under the maintained assumptions: \(14-13=1\)
+
+The unobserved untreated change is the identifying claim.
+
+## 16. No anticipation and stable comparison units also matter
 
 Define when treatment can begin to affect behaviour.
 
@@ -193,17 +195,37 @@ No anticipation means that future treatment does not already alter the pre-treat
 
 Also examine whether group composition changes and whether treatment affects the comparison group's outcomes through spillovers.
 
-## 18. The interaction in a two-by-two DiD equation has a specific meaning
+## 17. DiD arithmetic
+
+Try the comparison before opening the explanation.
+
+Treated mean outcomes rise from 10 to 14; comparison means rise from 8 to 11. Compute DiD and state its identifying assumption.
+
+Calculate both observed changes, then construct the treated group’s missing no-treatment post mean. State the assumptions needed for that second step.
+
+**Practice:** Treated mean outcomes rise from 10 to 14; comparison means rise from 8 to 11. Compute DiD and state its identifying assumption.
+
+## 18. DiD arithmetic: explanation
+
+Follow the calculation and interpret its units.
+
+\(\mathrm{DiD}=(14-10)-(11-8)=1\). A causal interpretation needs parallel untreated trends, no anticipation and suitable composition/spillover assumptions. Similar baseline levels are not required; the key assumption concerns counterfactual changes.
+
+\(\mathrm{DiD}=(14-10)-(11-8)=1\). A causal interpretation needs parallel untreated trends, no anticipation and suitable composition/spillover assumptions. Similar baseline levels are not required; the key assumption concerns counterfactual changes.
+
+## 19. The interaction in a two-by-two DiD equation has a specific meaning
 
 Its interpretation follows the four group-time means.
 
-Let D indicate the treated group and P indicate the post period. The equation includes both indicators and their product. The coefficient on the product equals the difference between the groups' changes in the simple two-by-two model.
+Let G equal one for membership in the treated group and zero for the comparison group. Let P equal one after the program and zero before it. Their product GP equals one only in the treated-post cell. In the displayed regression, a is the comparison group's pre mean, b the initial group gap and c the comparison group's time change.
 
-This is the same interaction algebra used earlier, now applied to time and group. The causal interpretation additionally requires the counterfactual trend assumptions. Recognising the product term is not enough to establish policy identification. For more complicated adoption patterns or heterogeneous effects, a simple extension may require different methods; the present core comparison is the two-group, two-period design.
+Substitute the four zero-or-one combinations and subtract the two changes. The coefficient tau on GP equals the observed DiD contrast. This algebra does not supply parallel untreated trends, no anticipation or the absence of changing composition and spillovers. Those assumptions connect the four observed cell means to a causal contrast under the specified intervention. Group membership, date and treatment exposure play distinct roles, even though their product conveniently encodes exposure here.
 
-\(Y=a+bD+cP+\tau(DP)+u\)
+\(Y=a+bG+cP+\tau(GP)+u\)
 
-## 19. Cluster inference for repeated units
+\(G\): treated-group membership; \(P\): post period; \(GP\): treated-post exposure.
+
+## 20. Cluster inference for repeated units
 
 Errors within a state can remain related after fixed effects.
 
@@ -215,7 +237,25 @@ State fixed effects remove a stable mean component; they do not force the remain
 
 The policy assignment and shared shocks help determine the appropriate clustering unit.
 
-## 20. Interpret a feasible tax difference
+## 21. Cluster choice
+
+Try the comparison before opening the explanation.
+
+A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
+
+Rows from districts in one state can share the same policy and shocks. Identify the independent assignment units before choosing the covariance calculation.
+
+**Practice:** A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
+
+## 22. Cluster choice: explanation
+
+Follow the calculation and interpret its units.
+
+Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
+
+Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
+
+## 23. Interpret a feasible tax difference
 
 Use the fitted contrast and preserve the outcome units.
 
@@ -233,7 +273,7 @@ Explain the within-state adjustment and time effects in the same result sentence
 ------------------------------------------------------------------------------
 ```
 
-## 21. Inspect the 1982-to-1988 changes separately
+## 24. Inspect the 1982-to-1988 changes separately
 
 A longer change can use different variation from annual fixed effects.
 
@@ -253,27 +293,7 @@ Discuss why their estimates need not be equal and which changes each model can r
 ------------------------------------------------------------------------------
 ```
 
-## 22. Cluster choice
-
-Apply the idea before reading the solution.
-
-A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
-
-## 23. Cluster choice: explanation
-
-Connect the calculation to the empirical claim.
-
-Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
-
-## 24. DAG practice: pooling is not within-location identification
+## 25. DAG practice: pooling is not within-location identification
 
 Trace the routes before choosing a control.
 
@@ -283,7 +303,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
 
-## 25. DAG practice: pooling is not within-location identification: explanation
+## 26. DAG practice: pooling is not within-location identification: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -293,17 +313,15 @@ A proximity-by-post-period interaction can vary across groups and dates. Interpr
 
 Year indicators do not block \(X\leftarrow C\rightarrow Y\) through stable location quality. Unit fixed effects can cancel an additive stable location component, but they also absorb a proximity indicator that never changes within a unit. Its separate level coefficient is then unavailable. A proximity-by-post-period interaction can vary across groups and dates. Interpreting that interaction as a DiD effect requires a well-defined intervention and parallel untreated trends, along with the other stated comparison assumptions. Neither pooling nor the causal diagram alone establishes those assumptions.
 
-## 26. Distinguish within-state and endpoint comparisons
+## 27. Distinguish within-state and endpoint comparisons
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_13.do using panel.csv. Compare the pooled and fixed-effects beer-tax slopes. Translate a ten-cent tax difference under the fixed-effects fit. Then compare the endpoint first-difference result and explain why it need not equal the seven-year fixed-effects estimate.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_13.do using panel.csv. Compare the pooled and fixed-effects beer-tax slopes. Translate a ten-cent tax difference under the fixed-effects fit. Then compare the endpoint first-difference result and explain why it need not equal the seven-year fixed-effects estimate.
 
-## 27. Distinguish within-state and endpoint comparisons: explanation
+## 28. Distinguish within-state and endpoint comparisons: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -313,7 +331,7 @@ The 1982-to-1988 first-difference slope is -1.040973. That fit uses only two end
 
 The pooled slope with year controls is 0.366336; the state fixed-effects slope with year controls is -0.639980. A 0.10-dollar tax contrast in the latter fit gives -0.063998 fatalities per 10,000 residents. Its uncertainty uses state clusters, reflecting repeated observations within 48 states. The 1982-to-1988 first-difference slope is -1.040973. That fit uses only two endpoints; the seven-year fixed-effects fit uses all within-state changes in its specified sample. The familiar equivalence between first differences and fixed effects concerns compatible two-period models, rather than these different samples. Both methods remove stable state components, while changing state-level confounding can remain.
 
-## 28. Next, seek a different source of treatment variation
+## 29. Next, seek a different source of treatment variation
 
 Panel adjustment may leave time-varying endogeneity.
 

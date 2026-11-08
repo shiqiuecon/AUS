@@ -26,25 +26,41 @@ Ability affects Y directly and is related to X. The constructed model therefore 
 
 One concerns an average at a sample size; the other concerns a limit.
 
-Unbiasedness means an estimator's expected value across repeated samples equals its target. Consistency means the estimator approaches its target as sample size increases. An estimator can have a small finite-sample bias and still be consistent; a biased design can remain inconsistent even with many observations.
+Unbiasedness concerns the average estimate across repetitions at a fixed sample size. Consistency asks what happens as the sample size grows: does the estimator concentrate near its target? An estimator can have some finite-sample bias and still be consistent. An omitted-variable estimator can instead become tightly concentrated around the wrong value.
 
-A probability limit, written plim, names the value an estimator approaches in probability. Approaching in probability means the chance of being more than any fixed small distance from that value tends to zero. The important applied question is whether this limit equals the economic coefficient we want, not merely whether estimates become stable.
+The probability limit, written plim, is the value approached in probability. That means the chance of an estimate lying more than any fixed small distance from the value goes to zero. We use the term consistency here for this estimator property. It differs from the causal consistency assumption in Meeting 01, which linked an observed outcome to the potential outcome under the intervention actually received. The shared word does not make these the same claim.
 
-\(\operatorname{plim}\widehat\beta=\beta\) for consistency
+Unbiasedness: correct repeated-sample mean at a fixed sample size.
+
+Estimator consistency: concentration near the target as sample size grows.
+
+Causal consistency: observed/potential-outcome link; a different use of the word.
 
 ## 04. The law of large numbers stabilises averages
 
 More data can reveal a stable but unwanted relationship.
 
-The law of large numbers, LLN, states under suitable conditions that sample averages approach their population counterparts. OLS is built from averages of regressor products and outcome products, so this helps explain where its coefficient goes as observations accumulate.
+Imagine repeatedly drawing independent zero-or-one observations with probability one half of obtaining one. The sample average need not be exactly one half, but as the number of draws grows it concentrates near one half. The law of large numbers gives conditions under which sample averages approach their population means. Independent, identically distributed observations with a finite absolute mean provide one familiar set of sufficient conditions.
 
-If an omitted factor remains related to X, the limiting sample products still contain that relationship. The LLN does not remove it. In our constructed model, the omitted ability contribution remains even though the random sampling fluctuations shrink. Larger samples can therefore make the population confounding pattern clearer rather than make it disappear.
+A probability limit is the value an estimator concentrates near as sample size grows. Consistency means that this limit equals its target. Averages inside an omitted-variable regression may stabilize perfectly while its coefficient converges to the wrong target. To see why, we must calculate the population relationship retained by the short model. The theorem reduces sampling fluctuation; it does not delete the omitted mechanism.
 
-The law of large numbers, LLN, states under suitable conditions that sample averages approach their population counterparts.
+Law of large numbers: sample averages approach population means under stated conditions.
 
-If an omitted factor remains related to X, the limiting sample products still contain that relationship.
+Consistent estimator: concentrates near its target as the sample grows.
 
-## 05. Calculate the wrong limit before simulating it
+## 05. Measure co-movement before calculating the limit
+
+Covariance records whether centered variables tend to move together.
+
+Variance averages the square of one variable's deviation from its mean. Covariance instead averages the product of two variables' deviations from their means. It is positive when above-average values tend to occur together, negative when they tend to move oppositely, and zero when those products balance. Zero covariance alone is weaker than independence.
+
+In our experiment, X is A plus V. A and V are independent, each has mean zero and variance one. X therefore has variance two. Multiplying X by A and averaging gives the variance of A plus the covariance of V and A, or one plus zero. Thus the covariance of X with A is one. These facts provide the supporting slope needed to calculate omitted-variable bias before running a simulation.
+
+\(\operatorname{Cov}(X,A)=E[(X-EX)(A-EA)]\)
+
+\(X=A+V:\quad\operatorname{Var}(X)=2,\quad\operatorname{Cov}(X,A)=1\)
+
+## 06. Calculate the wrong limit before simulating it
 
 The short slope tends to one and a half.
 
@@ -56,27 +72,7 @@ The resulting short slope has probability limit 1.5. This prediction follows fro
 
 \(\operatorname{plim}\widehat b_{\mathrm{short}}=1+\dfrac12=1.5\)
 
-## 06. More data, same bias
-
-Apply the idea before reading the solution.
-
-An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
-
-## 07. More data, same bias: explanation
-
-Connect the calculation to the empirical claim.
-
-It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
-
-## 08. Compare repeated samples at two sizes
+## 07. Compare repeated samples at two sizes
 
 Concentration alone is not evidence of a correct target.
 
@@ -84,7 +80,25 @@ The graph uses 300 Stata-generated replications at each sample size, 100 and 1,0
 
 Select the larger sample size. Both collections should become less spread out, but they need not move toward the same centre. The short estimates concentrate near 1.5, while the controlled estimates concentrate near one. These are simulation results, not observed labour-market effects. They illustrate the specific assumptions we built into the experiment.
 
-## 09. Read one large generated sample
+## 08. More data, same bias
+
+Try the comparison before opening the explanation.
+
+An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
+
+Compare where each distribution is centered, then compare its spread. A narrower distribution can still concentrate on the wrong target.
+
+**Practice:** An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
+
+## 09. More data, same bias: explanation
+
+Follow the calculation and interpret its units.
+
+It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
+
+It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
+
+## 10. Read one large generated sample
 
 A small SE can accompany substantial omitted-variable bias.
 
@@ -104,37 +118,31 @@ Do not interpret the small SE as evidence against the omitted-variable explanati
 ------------------------------------------------------------------------------
 ```
 
-## 10. The central limit theorem describes scaled fluctuations
+## 11. The central limit theorem describes scaled fluctuations
 
 The square-root rate concerns sampling variation around a limit.
 
-The central limit theorem, CLT, gives a limiting distribution for a suitably standardised average under conditions such as finite variance and adequate independence or weak dependence. Related results justify normal approximations for many estimators.
+For independent zero-or-one draws with probability one half, the average has mean one half and standard deviation 0.5 divided by the square root of sample size. At 100 observations that spread is 0.05; at 400 it is 0.025. Multiply the average's deviation from one half by the square root of sample size and its spread stays at 0.5. Under these conditions, the scaled distribution approaches a normal bell shape.
 
-For a consistent coefficient estimator, multiplying its deviation from the target by the square root of n can produce a stable limiting distribution. This is the source of the familiar inverse-square-root uncertainty rate. If the estimator approaches the wrong target, the approximation describes fluctuations around that wrong limit. The theorem does not substitute for an exogeneity assumption.
+This is the role of a central limit theorem: it describes the shape and scale of fluctuations, while a law of large numbers describes concentration near a limit. Under suitable regressor and error conditions, a coefficient estimator has a similar square-root-of-sample-size approximation. In the formula, beta is the target, beta hat its estimate, the arrow marked d means convergence in distribution, and Omega is the limiting variance. None of these statements centers an inconsistent short regression on the true structural coefficient.
 
-The arrow marked d means convergence in distribution: the shape approaches the stated reference distribution as the sample grows. N with mean zero denotes a normal, bell-shaped distribution. Omega is its limiting variance and describes the spread after the square-root-of-n scaling.
+Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=0.5/\sqrt n\)
 
-\(\sqrt n(\widehat\beta-\beta)\overset{d}{\longrightarrow}N(0,\Omega)\) under suitable conditions
+Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(0,\Omega)\)
 
-\(\overset d\longrightarrow\): convergence in distribution; \(\Omega\): limiting variance
-
-## 11. Measurement error creates a different source of inconsistency
+## 12. Measurement error creates a different source of inconsistency
 
 A noisy regressor is not just a noisier outcome.
 
-Suppose the observed regressor W equals a true X plus measurement noise M. Classical measurement error assumes that noise has mean zero and is unrelated to the true regressor and the outcome error. Even in an otherwise valid simple regression, regressing Y on W generally attenuates the slope toward zero.
+Start a separate experiment. The true outcome relation is Y equal to an intercept plus beta times true X plus u. We observe W equal to X plus measurement noise M. Assume the true outcome error has mean zero at each true X. M is independent of X and u, has mean zero, and true X has positive variance. Substituting X equal to W minus M into the outcome equation leaves beta times W plus the new error u minus beta times M.
 
-The probability limit multiplies the true coefficient by a reliability ratio: true-regressor variance divided by true variance plus noise variance. This ratio lies between zero and one when both variances are positive. These assumptions are specific. Nonclassical error and multiple-regressor settings can produce other patterns, so the simple attenuation result should not be treated as universal.
+W contains M, so W is related to that new error even when true X was exogenous. With these classical measurement-error assumptions, the coefficient limit is beta times the variance of true X divided by the sum of the true-X and noise variances. This ratio is the reliability ratio. Equal variances give one half, explaining attenuation toward zero in this simple one-regressor case. More complicated measurement errors need not produce the same direction of bias.
 
-This is a separate experiment from the earlier omitted-factor example. We write the new measurement noise as M to keep it distinct from the V that helped generate the earlier X. The outcome model and independence assumptions are reset for this experiment.
-
-\(W=X+M\)
+\(W=X+M,\quad Y=a+\beta W+(u-\beta M)\)
 
 \(\operatorname{plim}\widehat b_W=\beta\dfrac{\operatorname{Var}(X)}{\operatorname{Var}(X)+\operatorname{Var}(M)}\)
 
-\(M\): new measurement noise, independent of true \(X\) and the outcome error
-
-## 12. Check attenuation in a separate generated comparison
+## 13. Check attenuation in a separate generated comparison
 
 Use a clean outcome equation and known noise variance.
 
@@ -154,7 +162,25 @@ The actual Stata estimate is 0.518, close to the predicted limit of 0.5 in this 
 ------------------------------------------------------------------------------
 ```
 
-## 13. Outcome noise has another role
+## 14. Measurement error
+
+Try the comparison before opening the explanation.
+
+Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
+
+Use the separate measurement-error experiment and its independence assumptions. Do not carry the omitted-factor experiment into this calculation.
+
+**Practice:** Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
+
+## 15. Measurement error: explanation
+
+Follow the calculation and interpret its units.
+
+Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
+
+Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
+
+## 16. Outcome noise has another role
 
 Mean-zero independent outcome error need not attenuate the slope.
 
@@ -166,27 +192,7 @@ If the outcome is measured with an additional error unrelated to the regressors,
 
 The direction of measurement matters.
 
-## 14. Measurement error
-
-Apply the idea before reading the solution.
-
-Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
-
-## 15. Measurement error: explanation
-
-Connect the calculation to the empirical claim.
-
-Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
-
-## 16. Missing observations can change the population represented
+## 17. Missing observations can change the population represented
 
 Complete-case analysis needs a selection argument.
 
@@ -196,7 +202,7 @@ Describe who is missing and why. Refit comparisons on a common sample when evalu
 
 Here S indicates whether the record is observed. Selection depends only on included X, while the disturbance U is independent of X under the proposed graph. Conditioning on S does not open a path from X to U. With an appropriate conditional-mean model and adequate support, this kind of selection need not bias the conditional slope, although it can change the represented population and precision.
 
-## 17. A missing-data assumption should be stated in context
+## 18. A missing-data assumption should be stated in context
 
 Explain what makes the analysed cases informative.
 
@@ -206,19 +212,39 @@ For a policy study, report counts before and after restrictions and compare obse
 
 Now selection depends on the outcome. X and disturbance U both enter Y, making Y a collider on their connecting path. Conditioning on its descendant S can open that path. The target highlighted here is the X–disturbance association, because it matters for the selected-sample mean assumption. Outcome-based selection can therefore invalidate a regression that would have been valid before selection.
 
-## 18. Leverage and influence are different
+## 19. Leverage and influence are different
 
 An unusual regressor value need not be a bad observation.
 
-Leverage describes how unusual an observation's regressor values are relative to the rest of the sample. Influence concerns how much an observation changes the fitted model. A high-leverage observation close to the fitted relationship may have little effect, while a distant point with a large residual can be influential.
+An observation has high leverage when its regressor values are unusual relative to the rest of the sample. Think of a district with a staffing ratio far beyond the others. If it lies close to the line implied by the main group, it may have high leverage without greatly changing the fitted slope. A large residual instead means that its outcome lies far from the fitted prediction.
 
-Before deleting a record, check its accuracy and substantive relevance. If it is a confirmed coding error, correct or remove it with a documented reason. If it is valid, show how conclusions depend on it and explain why that population region matters. Removing observations solely because they change significance is not a defensible diagnostic strategy.
+Influence asks how much the fitted result changes when that observation is omitted or perturbed. A distant-X observation that also lies far above the main pattern can rotate the fitted line substantially. Check its coding, measurement and relevance to the target population, then conduct a sensitivity analysis: compare the estimates after a specified change, such as refitting with and without the case. An influential observation is a reason to investigate the evidence, not an automatic reason to delete a valid case.
 
-Leverage describes how unusual an observation's regressor values are relative to the rest of the sample.
+Leverage: unusual regressor values.
 
-Before deleting a record, check its accuracy and substantive relevance.
+Large residual: unusual outcome given the fitted predictors.
 
-## 19. Sensitivity analysis answers a stated question
+Influence: material change in the fitted result when the case changes.
+
+## 20. Influence
+
+Try the comparison before opening the explanation.
+
+A high-income district sits far from the remaining x values. Must it be deleted?
+
+Distinguish an unusual X value from a case that materially changes the fitted line. Describe an investigation before deciding whether to exclude it.
+
+**Practice:** A high-income district sits far from the remaining x values. Must it be deleted?
+
+## 21. Influence: explanation
+
+Follow the calculation and interpret its units.
+
+No. A distant x value can have high leverage; influence also depends on its residual and its effect on the fit. Verify the observation, explain substantive relevance and show defensible sensitivity analysis. Delete a confirmed error for a documented reason, not because it changes significance.
+
+No. A distant x value can have high leverage; influence also depends on its residual and its effect on the fit. Verify the observation, explain substantive relevance and show defensible sensitivity analysis. Delete a confirmed error for a documented reason, not because it changes significance.
+
+## 22. Sensitivity analysis answers a stated question
 
 Change one defensible feature and explain the comparison.
 
@@ -230,7 +256,7 @@ Sensitivity analysis examines how conclusions change under plausible alternative
 
 For example, compare a fitted income relationship with and without one verified extreme-income record and show the range supported by each sample.
 
-## 20. The data audit belongs before the policy sentence
+## 23. The data audit belongs before the policy sentence
 
 Units, ranges and recording rules affect interpretation.
 
@@ -242,7 +268,7 @@ Check how variables were measured, whether their ranges are possible and whether
 
 Record sample restrictions and verify identifiers before merging data.
 
-## 21. Choose a remedy for the named problem
+## 24. Choose a remedy for the named problem
 
 More observations, better measurement and better design do different jobs.
 
@@ -254,27 +280,7 @@ If uncertainty is large under a credible comparison, more informative observatio
 
 State the problem before proposing a remedy.
 
-## 22. Influence
-
-Apply the idea before reading the solution.
-
-A high-income district sits far from the remaining x values. Must it be deleted?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** A high-income district sits far from the remaining x values. Must it be deleted?
-
-## 23. Influence: explanation
-
-Connect the calculation to the empirical claim.
-
-No. A distant x value can have high leverage; influence also depends on its residual and its effect on the fit. Verify the observation, explain substantive relevance and show defensible sensitivity analysis. Delete a confirmed error for a documented reason, not because it changes significance.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-No. A distant x value can have high leverage; influence also depends on its residual and its effect on the fit. Verify the observation, explain substantive relevance and show defensible sensitivity analysis. Delete a confirmed error for a documented reason, not because it changes significance.
-
-## 24. DAG practice: selection on an outcome descendant
+## 25. DAG practice: selection on an outcome descendant
 
 Trace the routes before choosing a control.
 
@@ -284,7 +290,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Suppose X and the outcome disturbance U are independent before selection, both affect Y, and a record is observed depending on Y. Why can restricting attention to observed records create an X–U association? Compare this with selection depending only on included X.
 
-## 25. DAG practice: selection on an outcome descendant: explanation
+## 26. DAG practice: selection on an outcome descendant: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -294,17 +300,15 @@ If selection instead depends only on included X and carries no extra information
 
 Y is a collider on \(X\rightarrow Y\leftarrow U\). The observation indicator S is its descendant. Conditioning on \(S=1\) can open the collider path, so the selected sample can violate the disturbance mean assumption even when the original sample satisfied it. If selection instead depends only on included X and carries no extra information about U conditional on X, this particular path is not opened. The conditional slope may remain valid under a correct model and adequate support, although precision and the represented population can change. The selection mechanism, rather than missingness alone, determines the concern.
 
-## 26. Separate simulation truth from estimated evidence
+## 27. Separate simulation truth from estimated evidence
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_06.do. Identify the known true coefficient in the first experiment, the short-regression probability limit, and the two estimated coefficients from the 4,000-observation data. Then explain the separate measurement-error result. Use the repeated-sample file to check whether a larger sample narrows the distribution around the correct or incorrect target.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_06.do. Identify the known true coefficient in the first experiment, the short-regression probability limit, and the two estimated coefficients from the 4,000-observation data. Then explain the separate measurement-error result. Use the repeated-sample file to check whether a larger sample narrows the distribution around the correct or incorrect target.
 
-## 27. Separate simulation truth from estimated evidence: explanation
+## 28. Separate simulation truth from estimated evidence: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -314,7 +318,7 @@ The measurement-error experiment is generated separately. Its noisy-regressor es
 
 The first experiment sets the true direct X coefficient to one. Omitting A produces a probability limit of 1.5. In the generated 4,000-observation dataset, the short estimate is 1.516317 and the controlled estimate is 0.997692. They are estimates, so neither must equal its theoretical target exactly. The measurement-error experiment is generated separately. Its noisy-regressor estimate is 0.517755, compared with an attenuation limit of one half under its stated variances and independence assumptions. In the repeated-sample graphs, larger samples concentrate the short regression near 1.5 and the controlled regression near one. Precision improves around each model's limit; sample size does not change a biased design into a valid one.
 
-## 28. Next, compare groups without misreading interactions
+## 29. Next, compare groups without misreading interactions
 
 A group difference changes which coefficient combination matters.
 

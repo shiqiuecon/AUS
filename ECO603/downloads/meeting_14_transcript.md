@@ -4,13 +4,13 @@
 
 Price is chosen in a market, so its variation may be endogenous.
 
-Price and quantity are determined together in a market. A demand shock can raise both, making a regression of sales on price mix demand and supply movements. We need a source of price variation that can be argued to isolate the demand comparison.
+A state with high cigarette prices may also have strong anti-smoking attitudes or other policies affecting sales. A negative price–quantity association can therefore combine a demand response with differences in those omitted determinants. We want to isolate the price response in a stated demand equation rather than assign a causal meaning to every observed price difference.
 
-An instrumental variable, or instrument, is an outside variable used to generate a particular kind of regressor variation under stated conditions. We will use a proposed real sales-tax instrument in 48 states in 1995. The data and Stata estimates are observed teaching data, while the validity of the instrument remains an economic argument that the regression cannot prove by itself.
+Instrumental variables, abbreviated IV, uses a proposed outside source of regressor variation under explicit relevance and validity assumptions. Here that proposed source is a sales-tax component in the historical 48-state sample. We first define the outcome, price and tax units, then ask whether the tax predicts price and whether it has other relationships with demand. Finally we reconstruct the estimate from those relationships before interpreting its uncertainty and population meaning.
 
-IV is the abbreviation for instrumental variables. An instrument supplies regressor variation under relevance and validity assumptions; we will define each condition before using the estimate as an effect.
+Question: isolate a demand response from other state differences.
 
-IV: instrumental variables
+IV: instrumental variables; the proposed source of price variation needs its own argument.
 
 ## 02. Define the demand equation and its units
 
@@ -26,63 +26,61 @@ The error includes omitted demand influences. If price responds to those influen
 
 The instrument must move the endogenous regressor.
 
-Let Z be the proposed real sales-tax measure. Relevance requires a nonzero relation between Z and log price after accounting for included controls. The first-stage regression estimates this relationship. A flat first stage would provide no useful instrument-induced price comparison.
+An instrument is a proposed source of regressor variation used to identify the target effect under additional assumptions. In the cigarette example, Z is a sales-tax component measured in real cents per pack; X is log price and Y log quantity. The first stage is the regression describing how log price varies with that tax component and any included exogenous controls.
 
-The sign can help assess the economic story, but a particular positive sign is not a mathematical requirement for relevance. An unexpected sign should prompt checks of coding, mechanism and sample. It is not, on its own, proof that IV is invalid. We also need conditions on the instrument's relationship with the outcome error.
+Relevance means that Z predicts X after those controls: its population first-stage slope is nonzero. The notation pi zero is the intercept, pi one the tax slope and v the first-stage remainder. The first stage gives the scale of price variation associated with the instrument. It does not establish that tax differences are independent of omitted smoking demand or that taxes affect quantity only through the specified price measure. Those are the next requirements.
 
-Trace the instrument Z to price X and then quantity Y. Demand U affects both price and quantity, so the original price comparison is confounded. In the proposed IV graph, the instrument has no separate route to quantity outside price. Add the direct instrument-to-outcome channel to see an exclusion violation. A strong first-stage relationship can remain even when that extra channel invalidates the intended IV interpretation.
+First stage: \(X=\pi_0+\pi_1Z+v\)
 
-First stage: \(\log P_i=\pi_0+\pi_1Z_i+v_i\)
+Relevance: \(\pi_1\ne0\)
 
-Relevance: \(\pi_1\ne0\) in the relevant population model
+\(Z\): real cents per pack; \(X=\log P\)
 
 ## 04. Exogeneity and exclusion justify the comparison
 
 A strong first stage does not establish either condition.
 
-Instrument exogeneity requires the instrument to have the appropriate lack of relation with unobserved determinants in the structural outcome error. Exclusion means it affects the outcome through the included endogenous regressor rather than another causal route. In a simple constant-effect formulation these support a zero covariance between Z and the structural error.
+Instrument exogeneity rules out a relationship between the instrument and the omitted structural demand determinants under the model. Tax differences linked to unobserved smoking attitudes would threaten it. Exclusion says that an intervention changing the instrument reaches quantity only through the specified price channel. For example, a tax-linked information campaign could add a direct demand channel and violate exclusion.
 
-For sales tax, ask whether tax policy is related to state attitudes, other tobacco policies, income or cross-border purchases. Also ask whether the tax changes cigarette sales through prices of other goods or other channels. These are substantive threats. A small first-stage p-value cannot answer them.
+These restrictions do different jobs. In the DAG, the intended directed route runs from tax to price to quantity. A direct tax-to-quantity arrow violates exclusion; a common cause of tax and omitted demand threatens exogeneity. Together with relevance and an appropriate structural equation, the assumptions can justify the IV moment condition, zero covariance between Z and the structural error u. A strong first-stage relationship verifies neither substantive restriction.
 
-The red direct tax-to-demand arrow represents an exclusion threat. It bypasses price, so the reduced form can no longer be attributed entirely to the price channel. The graph does not test whether that arrow exists. It makes the restriction concrete enough to challenge with institutional knowledge, such as other price channels or policy responses linked to the proposed instrument.
+Exogeneity: no instrument relationship with omitted structural demand causes.
 
-Required condition: \(\operatorname{Cov}(Z_i,u_i)=0\)
+Exclusion: no causal instrument-to-quantity channel bypassing price.
 
-Exclusion requires every instrument-to-outcome route to pass through price.
+Required IV moment: \(\operatorname{Cov}(Z,u)=0\)
 
 ## 05. Derive the simple IV ratio
 
 Compare how the instrument moves the outcome and the regressor.
 
-The reduced form regresses log quantity on the same instrument and controls. It describes the instrument–outcome association. Under the constant-effect model and valid instrument conditions, that reduced-form slope equals the price effect times the first-stage slope.
+Start with the constant-slope structural equation Y equal to alpha plus beta times X plus u. The first stage describes how X changes with Z. The reduced form is the relationship of Y directly to Z, using the same controls and observations. If the instrument changes X by pi one units per Z unit and has no other outcome channel, its outcome relationship is beta times pi one.
 
-The simple IV coefficient is therefore reduced form divided by first stage. For an illustrative first-stage slope of 0.30 and reduced-form slope of minus 0.09, the ratio is minus 0.30. The ratio has outcome-per-regressor units because the instrument's units cancel. The interpretation depends on the shared sample, controls and identifying conditions, not just the arithmetic.
+Thus the reduced-form slope rho equals beta times the first-stage slope pi one under the IV assumptions. Divide to recover beta when pi one is nonzero. In a sample, the simple just-identified IV estimate is the ratio of the two estimated slopes after matching their controls and sample. The units cancel: outcome per tax unit divided by log-price per tax unit becomes outcome per log-price unit. For log quantity and log price, that coefficient is an elasticity.
 
-We label the reduced-form slope rho and the first-stage slope pi one. Their hats indicate sample estimates. In this scalar case, IV is the ratio of those two estimated slopes; the reduced-form intercept does not enter the ratio.
+First stage: \(X=\pi_0+\pi_1Z+v\)
 
-\(\widehat\beta_{IV}=\dfrac{\widehat\rho}{\widehat\pi_1}\)
+Reduced form: \(Y=c+\rho Z+\eta,\quad\rho=\beta\pi_1\)
 
-\(\widehat\rho\): reduced-form slope; \(\widehat\pi_1\): first-stage slope
+\(\widehat\beta_{IV}=\widehat\rho/\widehat\pi_1\)
 
 ## 06. Wald ratio
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Use the constant-slope model just derived. Divide the outcome-per-instrument slope by the treatment-per-instrument slope and track the canceled units.
 
 **Practice:** A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
 
 ## 07. Wald ratio: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
-The ratio is \(-0.09/0.30=-0.30\) outcome units per treatment unit. Relevance is necessary. Instrument exogeneity and exclusion are separate substantive restrictions; heterogeneous-effect interpretations may additionally require assumptions such as monotonicity. A statistically significant first stage does not establish exclusion.
+The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
 
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The ratio is \(-0.09/0.30=-0.30\) outcome units per treatment unit. Relevance is necessary. Instrument exogeneity and exclusion are separate substantive restrictions; heterogeneous-effect interpretations may additionally require assumptions such as monotonicity. A statistically significant first stage does not establish exclusion.
+The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
 
 ## 08. Inspect the OLS demand comparison first
 
@@ -144,7 +142,23 @@ The reduced form is informative about the policy–outcome relation, but interpr
 ------------------------------------------------------------------------------
 ```
 
-## 11. Use the dedicated IV estimator for uncertainty
+## 11. What the two stages actually fit
+
+Use the instrument-predicted part of price, with a dedicated IV variance calculation.
+
+Let C denote the included exogenous controls, and gamma their coefficients. If there are several controls, gamma times C stands for their coefficient-weighted sum. In the first stage, predict each state's log price from the tax instrument and all included exogenous controls. The fitted price is the part explained by those columns. Two-stage least squares, abbreviated 2SLS, then uses that fitted-price variation and the controls to obtain the structural coefficient. With one excluded instrument and one endogenous regressor, it gives the same coefficient as the reduced-form ratio.
+
+The uncertainty calculation must use the structural residual: actual Y minus the intercept, controls and beta times actual X. An ordinary second-stage regression instead forms residuals using fitted X. These are different residuals, so its usual OLS standard errors are not the proper IV standard errors. Use a dedicated IV estimator with a covariance option justified for the sampling and error structure. The two stages explain the coefficient; they do not license the naive variance formula.
+
+\(C\): included exogenous controls; \(\gamma C\): their coefficient-weighted sum.
+
+First stage: \(\widehat X=\widehat E_{linear}(X\mid Z,C)\)
+
+Structural residual: \(\widehat u=Y-\widehat\alpha-\widehat\beta X-\widehat\gamma C\)
+
+2SLS uses instrument-predicted variation; IV inference uses the structural model.
+
+## 12. Use the dedicated IV estimator for uncertainty
 
 Manual fitted-regressor OLS is not enough for valid IV SEs.
 
@@ -154,7 +168,25 @@ Its ordinary SE formula does not provide the appropriate IV covariance calculati
 
 \(\texttt{ivregress 2sls logq (logp = salestax), vce(robust)}\)
 
-## 12. Compare the actual IV coefficient with its ratio
+## 13. Two stages and uncertainty
+
+Try the comparison before opening the explanation.
+
+Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
+
+Compare actual X with first-stage fitted X in the residual. The variance calculation must correspond to the structural estimating problem.
+
+**Practice:** Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
+
+## 14. Two stages and uncertainty: explanation
+
+Follow the calculation and interpret its units.
+
+The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
+
+The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
+
+## 15. Compare the actual IV coefficient with its ratio
 
 The do-file verifies equality before rounding.
 
@@ -174,7 +206,7 @@ The IV estimate has more sampling uncertainty than the OLS benchmark here. That 
 ------------------------------------------------------------------------------
 ```
 
-## 13. Included exogenous controls belong in the IV specification
+## 16. Included exogenous controls belong in the IV specification
 
 They help define the same conditional comparison in both stages.
 
@@ -195,33 +227,73 @@ The income adjustment can help with some observed demand differences but does no
 ------------------------------------------------------------------------------
 ```
 
-## 14. Unexpected first-stage sign
+## 17. School availability illustrates the exclusion question
 
-Apply the idea before reading the solution.
+A plausible first stage can still leave another route to the outcome.
+
+Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score. Relevance asks whether availability actually moves attendance. Exclusion asks whether availability affects scores only through the attendance measure in the equation.
+
+Residential choice, local resources or school competition may create other relationships. Family preferences can also relate availability to unobserved motivation. Discuss these mechanisms explicitly instead of treating geographical proximity as automatically random. A useful IV proposal identifies the potential violation and explains what institutional evidence or controls could make the assumption more credible.
+
+Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score.
+
+Residential choice, local resources or school competition may create other relationships.
+
+## 18. Unexpected first-stage sign
+
+Try the comparison before opening the explanation.
 
 School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+In this separate school-attendance example, relevance asks for a nonzero slope. Investigate an unexpected sign without confusing it with a test of exclusion.
 
 **Practice:** School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
 
-## 15. Unexpected first-stage sign: explanation
+## 19. Unexpected first-stage sign: explanation
 
-Connect the calculation to the empirical claim.
-
-No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Follow the calculation and interpret its units.
 
 No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
 
-## 16. Weak instruments make the ratio fragile
+No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
+
+## 20. Whose treatment changes when encouragement changes?
+
+A binary encouragement example introduces the treatment-response groups.
+
+For a separate constructed example, randomly assign an offer of a training place. Z is the zero-or-one offer and D is zero-or-one attendance. A complier attends if offered but does not attend without the offer. An always-taker attends either way; a never-taker attends neither way. A defier would attend only without the offer.
+
+Monotonicity rules out defiers for this direction of encouragement: the offer cannot make anyone less likely to attend in the individual potential-attendance comparison. It does not require everyone to attend or every effect to be positive. Suppose the offer raises attendance from 0.30 to 0.60 and raises average scores by 0.90 points. We next explain whose causal effect the ratio three can represent under the additional assumptions.
+
+Compliers: attend only if offered. Always-takers/never-takers: unchanged attendance.
+
+Monotonicity: the offer does not reduce any individual’s attendance.
+
+Constructed ratio: \(0.90/(0.60-0.30)=3\) score points.
+
+## 21. With heterogeneous effects, say whose response IV identifies
+
+A constant coefficient can hide a local treatment comparison.
+
+Heterogeneous effects are effects that differ across individuals. In the binary offer-and-attendance example, assume random offer assignment, relevance, exclusion of a direct offer effect, consistency, no relevant spillovers and monotonicity. The attendance difference then gives the fraction of compliers. Always-takers and never-takers do not change attendance, so their treatment status does not generate the offer's outcome difference under exclusion.
+
+Dividing the outcome difference by the attendance difference identifies the compliers' average treatment effect: the local average treatment effect, abbreviated LATE. The constructed ratio is three score points for that group. It is not automatically the average effect for everyone. This binary interpretation does not transfer unchanged to the continuous cigarette-price application; there the interpretation depends on its structural slope and heterogeneity assumptions. State the relevant population rather than calling every IV coefficient a universal effect.
+
+LATE: average treatment effect for compliers under the binary-IV assumptions.
+
+An IV population is determined by the instrument and the maintained model.
+
+## 22. Weak instruments make the ratio fragile
 
 A near-zero first stage magnifies uncertainty.
 
-A weak instrument provides little useful movement in the endogenous regressor relative to sampling noise. Dividing a noisy reduced form by a near-zero first-stage estimate can produce unstable coefficients and unreliable familiar normal approximations.
+An instrument is weak when the first stage supplies little information about the endogenous regressor after controls. A ratio with a denominator near zero becomes sensitive to small estimation changes. For illustration, dividing minus 0.09 by 0.30 gives minus 0.30. If both population relationships are ten times smaller, sampling changes of 0.02 in the first-stage slope can move a denominator of 0.03 to 0.01 or 0.05, giving very different ratios.
 
-Inspect first-stage diagnostics and discuss instrument strength in the actual specification. A rule such as a first-stage F above a familiar cutoff is a rough screening device under particular conditions, not a theorem that validates exclusion or guarantees inference. When weakness is a material concern, use methods justified for that setting rather than report a conventional IV interval without qualification.
+In such cases, the usual normal approximation for IV can be poor and conventional intervals misleading. A first-stage F statistic can be informative about strength in a specified setting, but a universal cutoff is not a theorem and strong prediction does not establish exclusion. Evaluate strength using diagnostics and inference suited to the actual number of instruments, covariance structure and target.
+
+Weak first stage → denominator uncertainty can dominate the ratio.
+
+Strength and validity are different requirements.
 
 ```text
 . estat firststage
@@ -235,43 +307,19 @@ Inspect first-stage diagnostics and discuss instrument strength in the actual sp
   --------------------------------------------------------------------------
 ```
 
-## 17. A larger instrument set adds assumptions as well as information
+## 23. A larger instrument set adds assumptions as well as information
 
 More instruments are not automatically a better design.
 
-An overidentified model has more excluded instruments than endogenous regressors. It can permit a test of restrictions implied jointly by the instrument assumptions and model, but the test does not certify that every instrument is valid. Instruments can share a common violation, and tests can lack power.
+An excluded instrument appears in the first stage but is excluded from the structural outcome equation except through the endogenous regressors. A model is overidentified when there are more such instruments than endogenous regressors. Extra instruments can supply additional variation, but each needs a substantive validity argument and may be weak.
 
-For the core application we keep one excluded instrument and a transparent ratio. The broader lesson is to justify each proposed instrument's economic route. Adding convenient predictors only because they raise first-stage fit can weaken the credibility of the structural interpretation, even when software provides more diagnostic output.
+An overidentification test checks whether the instrument moment restrictions are mutually compatible with the maintained model. A nonrejection does not prove every instrument valid: the test can have little power, meaning a low probability of detecting a particular violation. Some violations can also be shared across instruments. Keep the present one-instrument application transparent, and explain the distinct economic argument for any proposed additional instrument before using a larger set.
 
-An overidentified model has more excluded instruments than endogenous regressors.
+Overidentified: more excluded instruments than endogenous regressors.
 
-For the core application we keep one excluded instrument and a transparent ratio.
+A compatibility test cannot certify all substantive instrument assumptions.
 
-## 18. School availability illustrates the exclusion question
-
-A plausible first stage can still leave another route to the outcome.
-
-Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score. Relevance asks whether availability actually moves attendance. Exclusion asks whether availability affects scores only through the attendance measure in the equation.
-
-Residential choice, local resources or school competition may create other relationships. Family preferences can also relate availability to unobserved motivation. Discuss these mechanisms explicitly instead of treating geographical proximity as automatically random. A useful IV proposal identifies the potential violation and explains what institutional evidence or controls could make the assumption more credible.
-
-Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score.
-
-Residential choice, local resources or school competition may create other relationships.
-
-## 19. With heterogeneous effects, say whose response IV identifies
-
-A constant coefficient can hide a local treatment comparison.
-
-If treatment effects differ across people, a binary-instrument, binary-treatment IV estimate may identify a local average treatment effect under assumptions including exclusion, instrument independence and monotonicity. Monotonicity rules out individuals whose treatment response moves in the opposite direction from the instrument's intended encouragement.
-
-The relevant group is the compliers: units whose treatment status changes because of the instrument. This does not automatically equal the average effect for every student or consumer. The constant-effect demand model is a simpler core framework, but an applied reader should avoid calling every IV coefficient a population-wide average without checking the effect interpretation.
-
-If treatment effects differ across people, a binary-instrument, binary-treatment IV estimate may identify a local average treatment effect under assumptions including exclusion, instrument independence and monotonicity.
-
-The relevant group is the compliers: units whose treatment status changes because of the instrument.
-
-## 20. Instrument scaling does not change the simple ratio
+## 24. Instrument scaling does not change the simple ratio
 
 Consistent numerator and denominator transformations cancel.
 
@@ -281,7 +329,7 @@ Scaling does not solve a weak or invalid instrument. It changes labels and coeff
 
 \(\dfrac{\widehat\rho/c}{\widehat\pi_1/c}=\dfrac{\widehat\rho}{\widehat\pi_1}\) for nonzero \(c\)
 
-## 21. Write the IV argument as a chain of evidence
+## 25. Write the IV argument as a chain of evidence
 
 Separate relevance, exclusion, estimation and inference.
 
@@ -293,27 +341,7 @@ Begin with the endogenous comparison and the omitted forces that threaten OLS.
 
 This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality.
 
-## 22. Two stages and uncertainty
-
-Apply the idea before reading the solution.
-
-Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
-
-## 23. Two stages and uncertainty: explanation
-
-Connect the calculation to the empirical claim.
-
-The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
-
-## 24. DAG practice: challenge exclusion with one extra arrow
+## 26. DAG practice: challenge exclusion with one extra arrow
 
 Trace the routes before choosing a control.
 
@@ -323,7 +351,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
 
-## 25. DAG practice: challenge exclusion with one extra arrow: explanation
+## 27. DAG practice: challenge exclusion with one extra arrow: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -333,17 +361,15 @@ The reduced-form instrument association would combine the price channel and that
 
 The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price. The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
 
-## 26. Reconstruct IV and assess the instrument separately
+## 28. Reconstruct IV and assess the instrument separately
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_14.do using cigarettes.csv. Divide the reduced-form tax slope by the first-stage price slope and compare the ratio with ivregress. Explain the coefficient in elasticity units. Then name one concrete exclusion threat that a strong first stage cannot rule out.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_14.do using cigarettes.csv. Divide the reduced-form tax slope by the first-stage price slope and compare the ratio with ivregress. Explain the coefficient in elasticity units. Then name one concrete exclusion threat that a strong first stage cannot rule out.
 
-## 27. Reconstruct IV and assess the instrument separately: explanation
+## 29. Reconstruct IV and assess the instrument separately: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -353,15 +379,15 @@ The ratio uses the same observations, instrument and controls in both supporting
 
 The reduced-form slope is -0.033297 and the first-stage slope is 0.030729. Their ratio is -1.083587, matching the simple IV price coefficient. In this log–log specification it is an elasticity: a small one-percent price increase corresponds to roughly 1.08 percent lower quantity under the model and identifying assumptions. The ratio uses the same observations, instrument and controls in both supporting regressions. The first stage addresses relevance. Tax policy could still be associated with smoking attitudes or other tobacco policies, or affect consumption through other price channels. Those are substantive exogeneity or exclusion threats. Report the dedicated IV estimator's uncertainty rather than ordinary second-stage OLS SEs.
 
-## 28. Next, change the outcome from a level to a probability
+## 30. Next, change the outcome from a level to a probability
 
 A binary response requires a different interpretation of the fitted function.
 
-We have used an outside source of variation to address a possible endogeneity problem under explicit assumptions. The final teaching lesson asks how to model outcomes that take only zero and one, such as whether a mortgage application is denied.
+The instrument lesson connected an outcome contrast to variation justified by a substantive assignment argument. We separated relevance, exogeneity and exclusion, reconstructed the simple ratio and explained why a dedicated estimator is needed for uncertainty. These distinctions remain useful when the outcome is a zero-or-one event.
 
-We will compare a linear probability model with logit and probit, define their prediction scales and calculate useful probability contrasts. Model choice does not remove the identification issues from today. The aim is to select a functional form and inference that answer the empirical question while keeping assumptions, units and limits clear.
+Next we study whether a mortgage application is denied. A straight-line prediction can leave the zero-to-one probability range, while a bounded curve changes how coefficients translate into probabilities. We will build those functions from a numerical index example before interpreting them. Changing the outcome scale alters the model and reported magnitude; a causal comparison still requires the intervention and identification argument.
 
-We have used an outside source of variation to address a possible endogeneity problem under explicit assumptions.
+Next outcome: a zero-or-one event.
 
-We will compare a linear probability model with logit and probit, define their prediction scales and calculate useful probability contrasts.
+Compare models on the probability scale after defining their functions.
 

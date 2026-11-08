@@ -4,9 +4,13 @@
 
 A decision needs magnitude and uncertainty.
 
-Suppose a ministry can afford a small staffing change but wants evidence that its learning benefit would justify the cost. A coefficient gives a fitted magnitude; its standard error describes uncertainty under the model and sampling assumptions. Neither number alone answers the decision.
+Suppose a ministry would consider a staffing change worthwhile only if it improved learning by a meaningful amount relative to its cost. A fitted coefficient alone cannot say how accurately the sample measures that amount. Another comparable sample could give a different estimate. Statistical inference uses the sample and stated assumptions to quantify that uncertainty and assess claims about a population quantity.
 
-We will use the school regression with language composition fixed. The lesson develops a confidence interval, a test of a stated value and a policy-sized contrast. It then asks how unequal error spread changes the uncertainty calculation. Throughout, distinguish the observed fitted relationship from a causal staffing effect that needs its own research-design justification.
+We continue with the same staffing contrast and outcome units, then build a standard error, an interval and a test in that order of reasoning. An interval helps describe which magnitudes remain compatible with the estimated uncertainty. A test evaluates a specific proposed coefficient under a reference model. The decision also needs a credible causal comparison and a practical benefit threshold; neither is supplied by the software's uncertainty columns.
+
+Question: how accurately does the sample measure the relevant magnitude?
+
+Inference adds an uncertainty argument to the fitted estimate.
 
 ## 02. Recall which coefficient the model estimates
 
@@ -32,21 +36,47 @@ A distribution describes the possible values of a random quantity and how often 
 
 These are different objects.
 
-## 04. A standard error estimates the estimator’s spread
+## 04. Describe spread before estimating uncertainty
+
+Variance and standard deviation summarize different kinds of variation.
+
+For the three equally likely numbers zero, one and two, the mean is one. Their squared distances from the mean are one, zero and one. Averaging gives a variance of two thirds. The square root, about 0.816, is the standard deviation and has the original units. Variance has squared units.
+
+The same calculation can describe scores across districts or coefficient estimates across repeated samples. These are different distributions. A standard error estimates the standard deviation of an estimator, not the standard deviation of individual outcomes. We do not observe all repeated samples, so we use a formula justified by assumptions about sampling and the errors. Degrees of freedom count independent residual directions left after fitting parameters; a regression with n observations and k nonredundant fitted coefficients has n minus k residual degrees of freedom.
+
+\(\operatorname{Var}(0,1,2)=(1+0+1)/3=2/3\)
+
+Standard deviation: \(\sqrt{2/3}\approx0.816\)
+
+Residual degrees of freedom: \(n-k\)
+
+## 05. A standard error estimates the estimator’s spread
 
 It is not the standard deviation of the outcome.
 
-The SE estimates the standard deviation of the coefficient across comparable samples. A coefficient two SEs from a hypothesised value is more unusual under that hypothesis than a coefficient half an SE away, subject to the reference distribution and model assumptions.
+A standard error estimates how much a coefficient estimate would vary across repeated samples under the maintained model. For the adjusted staffing slope, the heteroskedasticity-robust standard error is about 0.433 score points per student per teacher. This calculation permits error spread to vary across regressor values rather than assuming the same spread everywhere. It is in the same units as the coefficient. It is not the typical prediction error for a district.
 
-Do not use the residual spread or the score standard deviation in place of the coefficient SE. They measure different kinds of variation. Also remember that the SE is itself estimated. Especially in small or strongly dependent samples, a familiar formula may give an unreliable uncertainty statement if its conditions do not fit the data.
+To turn this spread into an interval or test, we also need a reference distribution: the distribution that a standardized estimation error approximately follows under the assumptions. A normal reference is bell shaped, centered at zero and scaled to standard deviation one. About 95 percent of its probability lies between minus 1.96 and plus 1.96. This explains where the familiar multiplier comes from; it is not a guarantee for every dataset or every error structure.
 
-In the displayed statistic, beta-j-zero is the value proposed by the null hypothesis for coefficient j. The t statistic is the signed gap between the estimate and that proposed value, measured in estimated standard-error units.
+SE: estimated repeated-sample standard deviation of the coefficient.
 
-\(t=\dfrac{\widehat\beta_j-\beta_{j,0}}{\operatorname{SE}(\widehat\beta_j)}\)
+Normal reference: about 95% between \(-1.96\) and \(1.96\).
 
-\(\beta_{j,0}\): proposed null value; \(t\): gap measured in SE units
+## 06. State a null before calculating a p-value
 
-## 05. Build a confidence interval step by step
+The evidence is evaluated under a specific claim.
+
+A null hypothesis is a specific claim to evaluate, such as a staffing slope of zero. The alternative here is that the slope differs from zero in either direction. Write the null before examining whether the estimate looks surprising. Subtract the proposed value from the estimate, then divide by its standard error. This t statistic measures the gap in estimated standard-error units.
+
+Under the null and the maintained inference assumptions, compare that statistic with its reference distribution. The two-sided p-value is the probability of a statistic at least as far from zero in either direction as the one observed. It is not the probability that the null is true. With the robust slope near minus 1.101 and SE near 0.433, the statistic for zero is about minus 2.54. Its interpretation depends on the reference approximation and sampling assumptions.
+
+\(H_0:\beta_1=0\), \(H_1:\beta_1\ne0\)
+
+\(t=(\widehat\beta_1-\beta_{1,0})/SE(\widehat\beta_1)\)
+
+p-value: a tail probability under the null and reference assumptions.
+
+## 07. Build a confidence interval step by step
 
 Combine the estimate with a stated reference rule.
 
@@ -56,39 +86,25 @@ For an illustrative estimate of 0.30 with SE 0.12, the margin is 0.2352 and the 
 
 \(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
 
-## 06. Confidence interval
+## 08. Confidence interval
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+First calculate the estimate plus and minus 1.96 standard errors. For a zero null and a two-sided five-percent normal-reference test, check whether zero lies inside that same interval.
 
 **Practice:** An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
 
-## 07. Confidence interval: explanation
+## 09. Confidence interval: explanation
 
-Connect the calculation to the empirical claim.
-
-\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Follow the calculation and interpret its units.
 
 \(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
 
-## 08. State a null before calculating a p-value
+\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
 
-The evidence is evaluated under a specific claim.
-
-A null hypothesis is a specified population statement, such as a zero staffing slope. A two-sided alternative allows either a positive or negative departure. The t statistic scales the estimate's distance from the null by its SE.
-
-A p-value is the probability, under the null and test assumptions, of a statistic at least as extreme as the observed statistic. It is not the probability that the null is true, nor the probability that the policy works. Choose the comparison, sidedness and significance threshold for substantive reasons, rather than after inspecting which formulation gives a smaller p-value.
-
-A null hypothesis is a specified population statement, such as a zero staffing slope.
-
-A p-value is the probability, under the null and test assumptions, of a statistic at least as extreme as the observed statistic.
-
-## 09. A rejection is not an effect-size statement
+## 10. A rejection is not an effect-size statement
 
 Statistical significance and practical value answer different questions.
 
@@ -100,19 +116,19 @@ A statistically significant result passes a chosen testing threshold.
 
 For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives.
 
-## 10. Normal-error exact inference and robust approximations differ
+## 11. Normal-error exact inference and robust approximations differ
 
 Know which argument supports the reference distribution.
 
-Under the classical linear model with normally distributed errors and the other required conditions, certain t and F procedures have exact finite-sample reference distributions. Finite sample means a fixed number of observations rather than an argument about increasing sample size.
+Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
 
-Robust inference generally relies on a large-sample approximation instead. Using a t label in software does not turn that approximation into an exact result under arbitrary error behaviour. The applied task is to state why the chosen covariance estimate and reference rule are suitable, rather than assume every printed p-value has the same justification.
+ Heteroskedasticity-robust inference permits error spread to vary with the regressors. Its usual justification is a large-sample approximation, with suitable sampling and finite variances for the quantities being averaged and no small set of observations dominating the fit. It does not automatically allow errors to be related across districts, states or dates. The reference distribution and the covariance formula are distinct choices, and neither fixes a failure of the model's zero conditional-mean requirement.
 
-Under the classical linear model with normally distributed errors and the other required conditions, certain t and F procedures have exact finite-sample reference distributions.
+Exact conventional t/F: normal, independent, equal-variance errors under the linear model.
 
-Robust inference generally relies on a large-sample approximation instead.
+Robust: large-sample approximation allowing unequal variance; dependence needs separate treatment.
 
-## 11. Unequal error spread is heteroskedasticity
+## 12. Unequal error spread is heteroskedasticity
 
 It concerns the error variance at different regressor values.
 
@@ -124,7 +140,7 @@ Unequal variance does not by itself invalidate the OLS coefficient under exogene
 
 \(\operatorname{Var}(u_i\mid X_i)\) concerns spread
 
-## 12. A DAG does not encode the size of the noise
+## 13. A DAG does not encode the size of the noise
 
 Use a mean-zero innovation with a regressor-dependent scale.
 
@@ -138,7 +154,7 @@ Compare this with a diagram containing an unmeasured common cause of X and the o
 
 \(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
 
-## 13. Compare conventional and robust output
+## 14. Compare conventional and robust output
 
 Same coefficients, different estimated uncertainty.
 
@@ -159,7 +175,7 @@ The robust option changes the estimated covariance matrix, which records the est
 ------------------------------------------------------------------------------
 ```
 
-## 14. Do not choose an SE by the resulting significance
+## 15. Do not choose an SE by the resulting significance
 
 Match it to the sampling and dependence structure.
 
@@ -169,27 +185,25 @@ District-level independent sampling suggests one set of methods; repeated observ
 
 Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
 
-## 15. Robust does what?
+## 16. Robust does what?
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Keep the regression equation and sample fixed. Separate the fitted coefficient from the covariance calculation used for its uncertainty.
 
 **Practice:** After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
 
-## 16. Robust does what?: explanation
+## 17. Robust does what?: explanation
 
-Connect the calculation to the empirical claim.
-
-On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
+Follow the calculation and interpret its units.
 
 On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
 
-## 17. Test a substantively meaningful value
+On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
+
+## 18. Test a substantively meaningful value
 
 A zero null is not the only relevant question.
 
@@ -206,7 +220,7 @@ Use Stata's test command to evaluate that stated restriction. A coefficient can 
             Prob > F =    0.8151
 ```
 
-## 18. Compute uncertainty for the policy contrast
+## 19. Compute uncertainty for the policy contrast
 
 Scale the SE along with the estimate.
 
@@ -226,7 +240,7 @@ The lincom output supplies the contrast, SE and interval together. State that th
 ------------------------------------------------------------------------------
 ```
 
-## 19. A confidence interval can contain an important effect
+## 20. A confidence interval can contain an important effect
 
 Failing to reject is not proof of no effect.
 
@@ -238,7 +252,25 @@ If an interval includes zero and also includes effects large enough to matter, t
 
 Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision.
 
-## 20. More observations help only under the relevant conditions
+## 21. Economic versus statistical size
+
+Try the comparison before opening the explanation.
+
+A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
+
+Use the outcome units and the decision threshold. A small p-value and a worthwhile policy benefit are different claims.
+
+**Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
+
+## 22. Economic versus statistical size: explanation
+
+Follow the calculation and interpret its units.
+
+No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+
+No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+
+## 23. More observations help only under the relevant conditions
 
 The information gain depends on what the observations add.
 
@@ -248,7 +280,7 @@ Repeating highly dependent information may add less precision. Increasing observ
 
 Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
 
-## 21. Avoid repeated specification searches for a preferred p-value
+## 24. Avoid repeated specification searches for a preferred p-value
 
 The search changes what an isolated test can mean.
 
@@ -260,7 +292,7 @@ If an analyst tries many outcomes, control sets and sample restrictions and repo
 
 Keep a clear account of the main question and intended specification.
 
-## 22. Write an uncertainty statement for a policy reader
+## 25. Write an uncertainty statement for a policy reader
 
 Include the comparison, units and conditions.
 
@@ -272,27 +304,7 @@ A concise result sentence names the adjusted comparison, gives a feasible policy
 
 For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points.
 
-## 23. Economic versus statistical size
-
-Apply the idea before reading the solution.
-
-A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
-
-## 24. Economic versus statistical size: explanation
-
-Connect the calculation to the empirical claim.
-
-No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
-
-## 25. Check the reference distribution and scale
+## 26. Check the reference distribution and scale
 
 An interval is meaningful only for a defined quantity.
 
@@ -304,7 +316,7 @@ Before interpreting an interval, identify whether it concerns a coefficient, a f
 
 Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations.
 
-## 26. Use the evidence to identify the next useful step
+## 27. Use the evidence to identify the next useful step
 
 Precision, fit and design can require different improvements.
 
@@ -316,7 +328,7 @@ An imprecise but credible comparison may benefit from more informative observati
 
 These are different diagnoses.
 
-## 27. DAG practice: uncertainty is not adjustment
+## 28. DAG practice: uncertainty is not adjustment
 
 Trace the routes before choosing a control.
 
@@ -326,7 +338,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
 
-## 28. DAG practice: uncertainty is not adjustment: explanation
+## 29. DAG practice: uncertainty is not adjustment: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -336,17 +348,15 @@ On an unchanged model and sample, the OLS coefficient remains the same while the
 
 The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them. On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
 
-## 29. Report magnitude and uncertainty together
+## 30. Report magnitude and uncertainty together
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
 
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
-
 **Practice:** Run meeting_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
 
-## 30. Report magnitude and uncertainty together: explanation
+## 31. Report magnitude and uncertainty together: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -356,7 +366,7 @@ These calculations quantify uncertainty under the model and inference assumption
 
 The robust staffing estimate is -1.101296, with SE 0.432847. The approximate interval is [-1.9497, -0.2529] score points per additional student per teacher. Multiplying the slope by minus two gives 2.2026 points; its SE is 0.8657, because scaling by a constant scales the SE by its absolute value. These calculations quantify uncertainty under the model and inference assumptions. Stata's finite-degree-of-freedom interval can differ slightly from the 1.96 approximation. A recommendation also needs a credible causal comparison, the outcome's educational importance, staffing costs and the relevant population. Rejecting a zero slope does not supply those additional pieces of the decision.
 
-## 31. Next, let the model represent percentages and curvature
+## 32. Next, let the model represent percentages and curvature
 
 The interpretation depends on how variables enter.
 

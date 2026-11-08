@@ -58,21 +58,19 @@ Eleven recurring month indicators, not 108 unique date indicators
 
 ## 06. Frequency and season
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Translate each lag into calendar time using the observation frequency. A month effect repeats annually; a linear trend does not repeat.
 
 **Practice:** An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
 
 ## 07. Frequency and season: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
 There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
 
 There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
 
@@ -80,15 +78,15 @@ There are \(9\times12=108\) observations. Eleven indicators compare months with 
 
 Make the intervention and units explicit.
 
-Let A be total accidents, B the seat-belt-law indicator, S the speed-law indicator, U unemployment and W the number of weekends. The model uses log accidents, a linear trend, calendar-month effects and these observed controls. Each law indicator changes from zero to one when the law is in force.
+Let A denote monthly total accidents, so log A is the outcome. B indicates whether the seat-belt law is in force and S the speed-law state; each is zero or one. U is unemployment and W the weekend count. Lowercase u is the regression error, a different quantity from uppercase U. The intercept is a and g is the linear trend coefficient on the monthly index t.
 
-The law coefficient is a fitted log-level difference at fixed included controls and time pattern. It does not automatically give a causal law effect, because adoption may coincide with unmeasured changes. Nor does a coefficient on total accidents directly describe fatalities. The outcome definition must remain part of the result sentence.
-
-M-m-t is one when date t falls in calendar month m, and zero otherwise. The sum runs from February to December, with January as the reference. Gamma-m is that month’s fitted shift relative to January; a is the intercept and u is the remaining log-outcome error.
+M subscript m t is one if date t is in calendar month m. The sum includes February through December, each with coefficient gamma subscript m relative to January. January uses the intercept, avoiding a redundant twelfth indicator. The other coefficients describe fitted contrasts at fixed included calendar and economic variables. These controls represent particular patterns; they do not automatically supply the no-law accident path needed for a causal policy effect.
 
 \(\log A_t=a+gt+\sum_{m=2}^{12}\gamma_mM_{mt}+bB_t+cS_t+dU_t+fW_t+u_t\)
 
-\(M_{mt}\): month indicator; \(\gamma_m\): shift relative to January
+\(M_{mt}\): month indicator; January is the reference.
+
+\(U_t\): unemployment; \(u_t\): regression error.
 
 ## 09. Inspect the calendar-only regression
 
@@ -137,41 +135,41 @@ Use testparm after fitting the intended model to state the grouped restriction. 
             Prob > F =    0.0000
 ```
 
-## 11. Contemporaneous exogeneity concerns the current regressor vector
+## 11. Feedback across dates does not require a causal cycle
+
+Current accidents can affect the policy chosen next month.
+
+Before writing a time-series assumption, put the decision on a timeline. Let X be policy and Y accidents. Current policy can affect current accidents. An unexpectedly dangerous month can raise current accidents, and policymakers may respond by changing next month's policy. In the diagram, u is the unexpected current cause and the subscripts identify dates.
+
+Trace the route from the current unexpected cause to current accidents and then to next month's policy. It gives a reason that today's error can be related to a future regressor. No arrow runs backward in time, and there is no directed cycle. We will use this story to distinguish assumptions that condition only on current information from an assumption that conditions on the entire history, including future choices.
+
+\(u_t\rightarrow Y_t\rightarrow X_{t+1}\)
+
+Policy at the next date can respond to an unexpected outcome now.
+
+## 12. Contemporaneous exogeneity concerns the current regressor vector
 
 Current means the variables included for the same date.
 
-Write x sub t for the full vector of included regressors at month t. Contemporaneous exogeneity requires the current error to average to zero given that current vector. It rules out a current omitted influence related to the included current policy and controls in the specified way.
+A regressor vector is simply the ordered list of regressors in one observation. At date t, it includes the law indicators, unemployment, weekend composition and calendar controls in our model. Contemporaneous means at the same date. The contemporaneous zero conditional-mean assumption says that the average current error is zero at each value of that current regressor list.
 
-This assumption alone is weaker than conditioning on the full history and future of regressors. Time ordering matters because current shocks can influence future policy or future outcomes. State which information is conditioned on instead of using the word exogenous without defining its timing. The next slide compares stronger and weaker versions.
+This is a statement about the error's mean, not full independence of every variable. It rules out current policy being selected using an omitted current cause of accidents that remains in the error. It says nothing by itself about how tomorrow's policy responds to today's unexpected accidents. The timeline therefore helps us see which additional timing restrictions are required for a particular estimator or interpretation.
 
-\(E(u_t\mid x_t)=0\)
+\(x_t\): the ordered list of regressors at date \(t\)
 
-## 12. Strict and sequential exogeneity condition on different information
+Contemporaneous condition: \(E(u_t\mid x_t)=0\)
+
+## 13. Strict and sequential exogeneity condition on different information
 
 Future regressors make strict exogeneity demanding.
 
-Strict exogeneity requires the error at each date to average to zero given regressors at every date, including the future. Sequential exogeneity conditions on current and past regressors instead. Strict exogeneity implies the sequential restriction, which in turn implies the contemporaneous one when the conditions are well defined.
+Strict exogeneity requires the average error at date t to be zero conditional on the full regressor history, including later dates. In the feedback story, current unexpected accidents can influence future policy, so that condition can fail. Sequential exogeneity instead conditions on current and earlier regressors. It does not impose the same restriction involving future choices.
 
-For example, a current accident shock may influence a future law or enforcement response. That feedback can violate strict exogeneity even if the current policy was not set in response to the current unexpected shock. Dynamic regressions therefore need their timing assumptions examined carefully. A weaker timing condition can support consistency under suitable additional assumptions without guaranteeing finite-sample unbiasedness.
+The sequential condition can be plausible when current policy is chosen before the current innovation and the included history properly represents what decision makers use. It is still an assumption, and omitting relevant current causes can invalidate it. In the formulas, x one through x t means the regressor lists through the current date, while capital T is the final sample date. State which information set your mean restriction uses rather than describing every lagged variable as automatically exogenous.
 
 Strict: \(E(u_t\mid x_1,\ldots,x_T)=0\)
 
 Sequential: \(E(u_t\mid x_1,\ldots,x_t)=0\)
-
-## 13. Feedback across dates does not require a causal cycle
-
-Current accidents can affect the policy chosen next month.
-
-Here X denotes policy and Y accidents, with a subscript identifying the date. The arrows move forward in time: current policy can affect current accidents, which can influence next month's policy. An unexpected current cause of accidents can then reach that future policy through the observed accident outcome. We have not drawn a later policy causing an earlier accident.
-
-This is a concrete reason strict exogeneity can fail: a current regression disturbance can be related to future regressors. A sequential mean assumption conditions only on the allowed current and earlier regressor history, so it is a different claim. Whether it is justified depends on what policymakers observe and when they choose the current policy.
-
-Use dated nodes whenever the economic story contains feedback. Acyclic does not mean that the economy has no response mechanisms. It means the graph must represent the timing clearly enough that an arrow cannot be followed around a directed loop back to the same dated variable.
-
-Possible route: \(u_t\rightarrow Y_t\rightarrow X_{t+1}\)
-
-Future policy can respond to current unexpected outcomes.
 
 ## 14. Past outcomes can contain past errors
 
@@ -187,21 +185,19 @@ This is a reason to model timing explicitly rather than assume lagging a variabl
 
 ## 15. Strict exogeneity
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Trace the current-error-to-future-policy route. Compare whether future regressors appear in the conditioning information.
 
 **Practice:** Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
 
 ## 16. Strict exogeneity: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
 Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
 
 Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
 
@@ -240,7 +236,25 @@ For a causal claim, explain what the accident path would have looked like withou
 
 Earlier accident history and economic conditions can influence both law adoption and later accidents. The diagram shows the two resulting backdoor routes. Toggle the proposed history and economic controls separately. A calendar indicator does not close a route merely because adoption occurred at a known date; the relevant pre-policy causes must be addressed by the design and measured controls.
 
-## 19. A count and a rate answer different questions
+## 19. Before–after is not enough
+
+Try the comparison before opening the explanation.
+
+Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
+
+Describe the accident path that would have occurred under the specified no-law policy. Ask whether another change at adoption could explain the observed difference.
+
+**Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
+
+## 20. Before–after is not enough: explanation
+
+Follow the calculation and interpret its units.
+
+Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
+
+Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
+
+## 21. A count and a rate answer different questions
 
 Exposure can change while individual risk stays fixed.
 
@@ -252,31 +266,31 @@ Total accidents can rise because there is more driving, even if risk per trip fa
 
 Our current outcome is the recorded statewide count, logged for the fitted comparison.
 
-## 20. Time ordering changes the meaning of a sample
+## 22. Time ordering changes the meaning of a sample
 
 One realised history can contain strongly related observations.
 
-A cross-sectional sampling argument often imagines independent draws of units. A time series is one ordered history, and its neighboring observations can share persistent influences. We cannot treat the order as irrelevant simply because a regression command accepts the rows.
+A cross section records different units, often at a common date, and a simple sampling argument may treat them as independent draws. A time series instead records one ordered history. Neighboring months can share weather, travel conditions or persistent policy influences. Treating its rows as independent simply because a regression command accepts them would ignore that history.
 
-The law of large numbers and central limit reasoning used for independent observations require suitable extensions for dependent histories. Stability and weak dependence will matter. This does not make time-series regression unusable; it means the model, information timing and covariance assumptions must describe how the history evolves.
+The averaging and reference-distribution arguments from earlier lessons need conditions appropriate to this dependence. We must ask how strongly dates are related, whether old influences fade and whether the process keeps comparable statistical features over time. The next lesson gives those ideas precise names and worked examples. Time-series regression remains useful when the model and uncertainty calculation describe how the history evolves.
 
-A cross-sectional sampling argument often imagines independent draws of units.
+An ordered history can share information across dates.
 
-The law of large numbers and central limit reasoning used for independent observations require suitable extensions for dependent histories.
+Justify averaging and uncertainty for the process, rather than treating rows as independent.
 
-## 21. A linear trend does not remove every nonstationary process
+## 23. A linear trend does not remove every nonstationary process
 
-Distinguish a chosen path from cumulative random shocks.
+A straight calendar pattern need not describe accumulated random changes.
 
-A deterministic trend is a specified function of time. A stochastic trend is generated by random shocks whose effects accumulate rather than fade in the usual way. Removing a straight line does not necessarily eliminate that second kind of movement.
+A straight time trend assumes a predictable drift of a constant amount per period. A nonstationary process has statistical features that change with the calendar, such as a growing variance. Some series instead accumulate unexpected changes. If a new disturbance permanently changes the level each month, the path can wander far above or below any fitted straight line. Subtracting a deterministic trend does not remove this accumulation.
 
-Before interpreting relationships among trending variables, inspect their time plots and consider a model for their persistence. Two unrelated series can appear closely related if both wander over time. The next lesson will distinguish stationary fluctuations from persistent or accumulating paths and show why their regression interpretation requires care.
+We introduce stationarity and a random-walk model in the next meeting to describe the distinction precisely. For now, inspect the time plot and ask whether deviations appear to fade or remain. A calendar control addresses only the pattern it represents. It does not by itself justify treating the remaining observations as independent or interpreting a law indicator as the effect of a policy intervention.
 
-A deterministic trend is a specified function of time.
+A fixed calendar drift and accumulated unexpected changes are different mechanisms.
 
-Before interpreting relationships among trending variables, inspect their time plots and consider a model for their persistence.
+Inspect whether deviations fade before relying on a trend regression.
 
-## 22. Record the time-series specification in words
+## 24. Record the time-series specification in words
 
 Dates and frequency are part of reproducibility.
 
@@ -287,26 +301,6 @@ Then explain the proposed economic comparison and its main uncertainty and ident
 A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls.
 
 Then explain the proposed economic comparison and its main uncertainty and identification conditions.
-
-## 23. Before–after is not enough
-
-Apply the idea before reading the solution.
-
-Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-## 24. Before–after is not enough: explanation
-
-Connect the calculation to the empirical claim.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
 
 ## 25. DAG practice: dated policy feedback
 
@@ -333,8 +327,6 @@ The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason tha
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_09.do using traffic.csv. Verify the monthly date range and sample size. Translate the seat-belt-law coefficient into an exact percentage contrast in exponentiated fitted log accidents. Explain why the trend and month controls do not establish that the law caused this contrast.
-
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
 
 **Practice:** Run meeting_09.do using traffic.csv. Verify the monthly date range and sample size. Translate the seat-belt-law coefficient into an exact percentage contrast in exponentiated fitted log accidents. Explain why the trend and month controls do not establish that the law caused this contrast.
 

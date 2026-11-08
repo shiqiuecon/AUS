@@ -24,29 +24,27 @@ For example, districts might recruit teachers because their students need extra 
 
 Define what the short model leaves out.
 
-Let Y be a district score, X its student–teacher ratio and Z its English-learner share in percentage points. In the longer linear model, beta one is the staffing slope at fixed Z, and beta two is the language-composition slope at fixed X. Assume the remaining error averages to zero given X and Z for this model calculation.
+Keep X for staffing and let Z be English-learner share. The longer population equation has an intercept beta zero, a staffing slope beta one and a language-share slope beta two. Its error u contains outcome determinants left outside that specified relationship. Before asking what omitting Z does, state what makes the longer model's coefficient the target.
 
-The short regression includes X but omits Z. It must then use the staffing coefficient to summarise both the X relationship and any Z relationship that moves with X. The omitted-variable problem is therefore about the combination of two facts: Z matters for Y, and Z is related to X. Leaving out an irrelevant or unrelated variable does not create this particular bias term.
+Suppose the average u is zero at every combination of X and Z. This zero conditional-mean restriction is called exogeneity here: the included regressors provide no information about the remaining average error. If staffing is selected using an omitted learning need, that restriction can fail; we call that an endogeneity problem for the model. The causal interpretation also needs the intervention and assignment argument. The algebra that follows tells us how the shorter regression changes the longer coefficient under its stated conditions.
 
 \(Y_i=\beta_0+\beta_1X_i+\beta_2Z_i+u_i\)
 
-Assumption: \(E(u_i\mid X_i,Z_i)=0\)
+Exogeneity for this mean model: \(E(u_i\mid X_i,Z_i)=0\)
 
 ## 04. Two relationships determine omitted-variable bias
 
 Multiply the omitted effect by the omitted-variable association.
 
-Regress Z on X and an intercept. Call its population slope delta one. This auxiliary regression is a supporting regression used to describe how the omitted variable varies with the included one. Under the stated linear model, the short-regression slope equals beta one plus beta two times delta one.
+Let Z be English-learner share and X the staffing ratio. The longer score relationship has staffing slope beta one and language slope beta two. To describe how Z varies with X, write a supporting equation: Z equals delta zero plus delta one times X plus v. Delta zero is its intercept, delta one its slope, and v the remainder with mean zero at each X.
 
-Read the product in words. When X rises, its associated change in Z is delta one. Each unit of that Z difference contributes beta two units to Y. The short slope combines that contribution with the direct fitted X relationship. This derivation requires a clear longer model and suitable error assumptions; it is not a formula for discovering the true causal model from a coefficient table.
+Substitute that expression for Z into the longer score equation. The constant terms combine, and the coefficient multiplying X becomes beta one plus beta two times delta one. The new error is beta two times v plus u. If the longer error u also has mean zero given X and Z, this composite error has mean zero given X. The short population regression therefore adds beta two times delta one to the longer staffing slope. Bias here means a difference from the target longer-model coefficient; that target is causal only under its stated causal assumptions.
 
-In the supporting equation, delta zero is the intercept, delta one is the slope and v is its error. The subscript short labels the coefficient in the regression that leaves Z out; it does not identify a different population of districts.
+\(Z=\delta_0+\delta_1X+v\)
 
-\(Z_i=\delta_0+\delta_1X_i+v_i\)
+\(Y=(\beta_0+\beta_2\delta_0)+(\beta_1+\beta_2\delta_1)X+(\beta_2v+u)\)
 
-\(\beta_{1,\mathrm{short}}=\beta_1+\beta_2\delta_1\)
-
-\(\delta_0\): intercept; \(\delta_1\): supporting slope; \(v_i\): supporting error
+Short slope minus longer slope: \(\beta_2\delta_1\)
 
 ## 05. Predict the direction before seeing the estimate
 
@@ -58,21 +56,19 @@ In an earnings example, ability may raise wages and be positively related to sch
 
 ## 06. Predict omitted-variable bias
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 In a wage model, the causal return to schooling is \(\beta\). Ability raises wages by \(\gamma>0\), and the auxiliary regression of ability on schooling has slope \(\delta>0\). Under the scalar model, what is the omitted-variable bias?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Use the longer outcome slope of the omitted factor and its supporting relationship with X. Multiply their signs before inspecting the fitted staffing coefficients.
 
 **Practice:** In a wage model, the causal return to schooling is \(\beta\). Ability raises wages by \(\gamma>0\), and the auxiliary regression of ability on schooling has slope \(\delta>0\). Under the scalar model, what is the omitted-variable bias?
 
 ## 07. Predict omitted-variable bias: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
 The short-regression slope is \(\beta+\gamma\delta\), so its bias relative to \(\beta\) is positive. Schooling picks up some of the association between ability and wages. This requires the stated linear model and exogeneity of the remaining error.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
 
 The short-regression slope is \(\beta+\gamma\delta\), so its bias relative to \(\beta\) is positive. Schooling picks up some of the association between ability and wages. This requires the stated linear model and exogeneity of the remaining error.
 
@@ -85,16 +81,13 @@ The short staffing coefficient is -2.280. Adding English-learner share gives -1.
 Those two signs imply a negative omitted-variable contribution. They explain the observed direction of movement without requiring a new story after seeing the answer. This is a useful empirical habit: state the hypothesised mechanism and predicted direction first, then compare them with the data. The sign calculation concerns the stated linear models; whether either slope is a causal staffing effect remains a separate design question.
 
 ```text
-. regress score str el, vce(robust)
+. quietly regress score str el
 
-------------------------------------------------------------------------------
-             |               Robust
-       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
-          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
-       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
-------------------------------------------------------------------------------
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,3]
+           str          el       _cons
+y1   -1.101296   -0.649777  686.032250
 ```
 
 ## 09. Verify the omitted-variable calculation
@@ -108,14 +101,13 @@ This equality is a least-squares identity when the short, long and auxiliary reg
 \(b_{1,\mathrm{short}}-b_{1,\mathrm{long}}=b_2\widehat\delta_1\)
 
 ```text
-. regress el str
+. quietly regress el str
 
-------------------------------------------------------------------------------
-          el | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         str |   1.813719   .4643735     3.91   0.000     .9009206    2.726517
-       _cons |  -19.85405   9.162604    -2.17   0.031    -37.86458   -1.843531
-------------------------------------------------------------------------------
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,2]
+           str       _cons
+y1    1.813719  -19.854055
 ```
 
 ## 10. A confounder and a mediator do different jobs
@@ -148,41 +140,41 @@ The graph makes scholarship selection the common consequence of preparation and 
 
 State what each variable is meant to address.
 
-For the staffing study, make a short control plan before estimating another equation. Name each proposed variable, its timing and the alternative explanation it is meant to address. Family income may capture differences in resources; language composition may capture measured differences in student needs. Neither automatically captures all relevant background.
+Apply the school-control reasoning to a second setting: job training and earnings. The diagram's X is training, Y earnings, C prior education and U unmeasured motivation. Prior education can affect both participation and earnings, so holding it fixed can remove that common-cause route.
 
-Also consider the outcome of the policy. If hiring teachers changes attendance or course choices, controlling for those later outcomes may remove pathways of interest. The plan should therefore distinguish a total staffing effect from an effect holding a mechanism fixed. A defensible empirical specification is an equation chosen to represent that target comparison under stated assumptions, not simply the model with the most variables.
+Select education and trace the remaining route through motivation. It is still open because motivation affects both training and earnings. Acquired skills, by contrast, would occur after training and carry part of its effect. Before choosing controls, name the intervention, decide whether its total effect is wanted, and distinguish earlier common causes from later mechanisms. Moving to a new application changes the substantive story, while the path rules remain the same.
 
-In this training study, X is participation and Y is earnings. The diagram distinguishes measured prior education C from unmeasured motivation U. Conditioning on C closes one common-cause route, while the route through U remains. Select the control and trace both routes. The graph explains why a more adjusted coefficient is not automatically an identified effect.
+New application: training → earnings.
+
+Prior education is a proposed common cause; motivation remains unmeasured.
 
 ## 13. Adjustment changes a comparison; it does not guarantee identification
 
 A richer model can still leave an important factor out.
 
-Identification asks whether the data and assumptions let us learn the relationship or effect we want. Multiple regression can support identification when its controls and assumptions make the remaining comparison credible. It cannot create that credibility by calculation alone.
+Identification asks whether the available data and assumptions determine the quantity we want. For a causal staffing effect, we must be able to connect observed district comparisons to the outcomes under the specified staffing intervention. A coefficient being precisely computable from a dataset does not by itself make that connection.
 
-For example, districts may respond to a change in learning needs that our measured language share and income do not record. Then the included staffing ratio can still be related to the error in the longer model. A small p-value would address uncertainty under that model, rather than establish that the policy was as good as randomly assigned. Report which differences the model accounts for and name one plausible difference that remains.
+For example, holding language share fixed may close a route through measured district composition. An unmeasured learning need could still affect teacher recruitment and scores. If that route remains, several causal effects can be compatible with the same observed association under different background stories. State which routes the controls address and which assumptions rule out the others. Estimation then uses the sample to calculate the quantity the identifying argument has defined.
 
-Identification asks whether the data and assumptions let us learn the relationship or effect we want.
+Identification: do the data and assumptions determine the target?
 
-For example, districts may respond to a change in learning needs that our measured language share and income do not record.
+Estimation: use the sample to calculate it.
 
 ## 14. Confounder or mediator?
 
-Apply the idea before reading the solution.
+Try the comparison before opening the explanation.
 
 Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
 
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
+Locate the variable in time. Ask whether it precedes the policy and helps determine it, or is produced by the policy and carries its consequences.
 
 **Practice:** Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
 
 ## 15. Confounder or mediator?: explanation
 
-Connect the calculation to the empirical claim.
+Follow the calculation and interpret its units.
 
 No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
 
 No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
 
@@ -195,17 +187,13 @@ Adding district income changes the staffing coefficient to -0.069. This is much 
 Use the result to ask a more informed question: how much independent staffing variation remains among districts with similar observed backgrounds? If that variation is small or systematically chosen, a causal claim may still be difficult. The next lesson will make 'holding other variables fixed' more concrete by removing their fitted contributions from both staffing and scores.
 
 ```text
-. regress score str el income, vce(robust)
+. quietly regress score str el income
 
-------------------------------------------------------------------------------
-             |               Robust
-       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
-          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
-      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
-       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
-------------------------------------------------------------------------------
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,4]
+           str          el      income       _cons
+y1   -0.068776   -0.488267    1.494517  640.315497
 ```
 
 ## 17. Keep the estimation sample fixed
@@ -220,7 +208,25 @@ Compare identical observations
 
 Then investigate why observations are missing
 
-## 18. Interpret a control coefficient cautiously
+## 18. Keep the sample fixed
+
+Try the comparison before opening the explanation.
+
+A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
+
+Separate the two changes: adding a regressor changes the comparison, while excluding incomplete records changes which observations contribute.
+
+**Practice:** A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
+
+## 19. Keep the sample fixed: explanation
+
+Follow the calculation and interpret its units.
+
+The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
+
+The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
+
+## 20. Interpret a control coefficient cautiously
 
 The variable may be useful without having a causal interpretation.
 
@@ -232,7 +238,7 @@ The coefficient on English-learner share is an adjusted district association.
 
 The staffing study may include this variable to address a possible source of confounding, without trying to identify the causal effect of language composition itself.
 
-## 19. Fit and causal validity are different properties
+## 21. Fit and causal validity are different properties
 
 Explaining more variation need not improve the comparison.
 
@@ -242,7 +248,7 @@ A mediator or selection variable can improve prediction while changing or damagi
 
 \(R^2=1-\dfrac{\sum_i e_i^2}{\sum_i(Y_i-\overline Y)^2}\)
 
-## 20. A useful control plan fits in a short table
+## 22. A useful control plan fits in a short table
 
 Make the assumptions inspectable.
 
@@ -254,7 +260,7 @@ For each proposed control, write a sentence about timing and a sentence about pu
 
 This exercise reveals disagreements about the economic model before they become disagreements about software.
 
-## 21. Use the design to decide what data to collect next
+## 23. Use the design to decide what data to collect next
 
 More variables are useful when they address a named problem.
 
@@ -265,26 +271,6 @@ These suggestions follow from different explanations of the error term. Do not c
 If earlier learning difficulties drive teacher recruitment, prior outcome measurements may be useful.
 
 These suggestions follow from different explanations of the error term.
-
-## 22. Keep the sample fixed
-
-Apply the idea before reading the solution.
-
-A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
-
-Start by naming the comparison and its units. Write the assumption you need before calculating. If the question concerns a causal effect, explain why the proposed comparison would recover it. Keep your calculation and interpretation together so another reader can follow your reasoning.
-
-**Practice:** A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
-
-## 23. Keep the sample fixed: explanation
-
-Connect the calculation to the empirical claim.
-
-The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
-
-Compare this reasoning with your attempt. Check the sign, the units and the assumption separately. A correct number with an incorrect interpretation needs a different correction from a small rounding difference. Use the explanation to identify which part of the argument you would change.
-
-The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
 
 ## 24. Write the result as an empirical argument
 
@@ -335,8 +321,6 @@ Conditioning on skills closes the route \(X\rightarrow M\rightarrow Y\), removin
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_02.do using schools.csv. Record the staffing slopes in the short model and the model with English-learner share. Multiply the longer-model language coefficient by the auxiliary staffing–language slope. Check that this product equals the staffing-coefficient movement, then explain why that identity does not identify a causal language effect.
-
-Work in pairs if possible. One reader checks the data, units and software result; the other checks the interpretation and assumptions. Agree on a short result paragraph before opening the explanation. Keep the numerical calculation separate from the additional argument needed for a causal claim.
 
 **Practice:** Run meeting_02.do using schools.csv. Record the staffing slopes in the short model and the model with English-learner share. Multiply the longer-model language coefficient by the auxiliary staffing–language slope. Check that this product equals the staffing-coefficient movement, then explain why that identity does not identify a causal language effect.
 
