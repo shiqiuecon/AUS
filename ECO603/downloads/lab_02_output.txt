@@ -1,0 +1,103 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN short
+. regress score str, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(1, 418)         =      19.26
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0512
+                                                Root MSE          =     18.581
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -2.279808   .5194892    -4.39   0.000    -3.300945   -1.258671
+       _cons |    698.933   10.36436    67.44   0.000     678.5602    719.3057
+------------------------------------------------------------------------------
+
+. * END short
+. record short str
+
+. * BEGIN long
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END long
+. record long str
+
+. record language el
+
+. * BEGIN auxiliary
+. regress el str
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(1, 418)       =     15.25
+       Model |  4932.98526         1  4932.98526   Prob > F        =    0.0001
+    Residual |    135170.2       418  323.373684   R-squared       =    0.0352
+-------------+----------------------------------   Adj R-squared   =    0.0329
+       Total |  140103.185       419  334.375143   Root MSE        =    17.983
+
+------------------------------------------------------------------------------
+          el | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |   1.813719   .4643735     3.91   0.000     .9009206    2.726517
+       _cons |  -19.85405   9.162604    -2.17   0.031    -37.86458   -1.843531
+------------------------------------------------------------------------------
+
+. * END auxiliary
+. record auxiliary str
+
+. * BEGIN income
+. regress score str el income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     299.03
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7072
+                                                Root MSE          =     10.347
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
+          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
+      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
+       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
+------------------------------------------------------------------------------
+
+. * END income
+. record income str
+
+. export delimited score str el income using "output/meeting_02_data.csv", replace
+(file output/meeting_02_data.csv not found)
+file output/meeting_02_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_02_estimates.dta", clear
+
+. export delimited using "output/meeting_02_estimates.csv", replace
+(file output/meeting_02_estimates.csv not found)
+file output/meeting_02_estimates.csv saved
+
+. display "ECO603_MEETING_02_COMPLETE"
+ECO603_MEETING_02_COMPLETE
+

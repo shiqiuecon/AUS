@@ -1,395 +1,377 @@
-# 05. Functional form: levels, logs and curvature
+# 05. Multiple regression: statistical inference
 
-## 01. Do prices differ by the same amount or the same percent?
-
-Choose a scale that answers the economic question.
-
-Consider retail soda prices linked to local family income in New Jersey and Pennsylvania. A higher-income area might have a higher price in dollars, a higher price in percentage terms, or a relationship whose slope changes with income. These are different questions, so they need not use the same equation.
-
-Functional form means the way variables enter a model, such as levels, logarithms or squared terms. It determines what a coefficient describes. Today we will connect each form to a meaningful comparison, use actual pricing records and check exact changes rather than rely on a memorised percentage rule.
-
-## 02. Define the observation and the usable sample
-
-Inspect the data before interpreting a transformed variable.
-
-The file contains retail-price records linked to local median family income. Its five variables do not establish that each row is a unique geographic area, so we describe the observed records rather than claim one independent observation per postcode. The working sample contains 401 records with positive, observed price and income values.
-
-Price is measured in dollars. Income is measured in dollars and is also scaled into units of ten thousand dollars for a readable level coefficient. This rescaling changes a coefficient's numerical units without changing fitted prices. Taking logs instead changes the shape and interpretation of the fitted relationship.
-
-\(X=\text{income}/10{,}000\)
-
-Outcome: medium soda price, in dollars
-
-## 03. A level–level model has a constant unit slope
-
-A one-unit income change produces the same fitted dollar difference.
-
-In the level model, price equals an intercept plus beta times income measured in ten-thousand-dollar units. The coefficient is 0.009. A ten-thousand-dollar income difference therefore corresponds to about nine-tenths of one cent in fitted price.
-
-That is a small dollar difference even when a statistical test detects a relationship. For another feasible comparison, multiply the slope by the income difference in the correct scaled units. This model assumes the same slope across the observed income range. The assumption is about the shape of the fitted comparison, not proof that changing income would cause prices to follow it.
-
-\(\widehat P=a+bX\)
-
-\(\Delta\widehat P=b\Delta X\)
-
-```text
-. regress sprice inc10, vce(robust)
-
-------------------------------------------------------------------------------
-             |               Robust
-      sprice | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-       inc10 |   .0090733   .0031523     2.88   0.004     .0028761    .0152705
-       _cons |   1.002219   .0157154    63.77   0.000     .9713236    1.033114
-------------------------------------------------------------------------------
-```
-
-## 04. A logarithm expresses a proportional scale
-
-Small log differences approximate percentage differences.
-
-A natural logarithm changes the scale of a positive number. Think of it as answering which power of the number e, about 2.718, produces the original number. A price of one has log zero; a price of two has log about 0.693. The exponential function reverses this operation: exponentiating 0.693 gives about two. We use natural logs throughout.
-
-The useful property is that subtracting logs gives the log of a ratio. If price rises from two to 2.20, its ratio is 1.10 and its log change is about 0.09531. Exponentiating the log change and subtracting one recovers the proportional change, 0.10 or ten percent. A log change is close to a proportional change when the change is small, but they are not identical. We can now interpret a regression with a logged outcome without confusing the two scales.
-
-\(\log(1)=0,\quad \log(2)\approx0.693,\quad \exp(0.693)\approx2\)
-
-\(\log(2.20)-\log(2)=\log(1.10)\approx0.09531\)
-
-\(100\{\exp(0.09531)-1\}\approx10\%\)
-
-## 05. A log–level model gives a proportional outcome contrast
-
-Keep the regressor units visible.
-
-In a log–level model the outcome is logged and the regressor stays in levels. A change of delta X produces a fitted log difference of b times delta X. The approximate percent contrast is 100b times delta X; the exact contrast between exponentiated fitted values is 100 times exp(b delta X) minus one.
-
-If income is measured in ten-thousand-dollar units, a coefficient applies to that unit, not one dollar. A dummy-variable coefficient compares its zero and one states. These interpretations all follow from the same equation. The apparent variety of percentage rules becomes manageable when we first write the change in the fitted log outcome.
-
-\(\widehat{\log P}=a+bX\)
-
-\(100\{\exp(b\Delta X)-1\}\)
-
-## 06. Which average does a log fit describe?
-
-An average log is not the log of an arithmetic average.
-
-Take two equally likely positive prices, one and nine. Their arithmetic mean is five. Their logs are zero and about 2.197, whose average is about 1.099. Exponentiating that average gives three, not five. This is the geometric mean: the exponential of the average log.
-
-A regression for the mean log price therefore does not automatically predict the arithmetic mean price when exponentiated. Our percentage translations initially describe ratios of exponentiated fitted log values. If the outcome distributions in two comparison groups differ only by a common multiplicative factor, that ratio also gives the ratio of arithmetic means. More generally, we must account for the remaining log-error distribution. Keep this distinction in mind as we compare the functional forms; we return to its formula after the worked contrasts.
-
-Arithmetic mean: \((1+9)/2=5\)
-
-Exponentiated mean log: \(\exp\{(\log1+\log9)/2\}=3\)
-
-State which prediction quantity is being compared.
-
-## 07. Exact log change
-
-Try the comparison before opening the explanation.
-
-In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
-
-Convert the fitted log difference to a ratio with the exponential, then subtract one and multiply by 100. Name the prediction quantity.
-
-**Practice:** In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
-
-## 08. Exact log change: explanation
-
-Follow the calculation and interpret its units.
-
-Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
-
-Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
-
-## 09. A level–log model gives a level outcome contrast
-
-A percent change in X becomes a small change in log X.
-
-Now keep the outcome in levels and log the regressor. A proportional increase from X to 1.1X changes the fitted outcome by b log(1.1). For a small one-percent increase in X, the fitted level change is approximately b divided by one hundred.
-
-The outcome units remain dollars, points or whatever its original definition specifies. They do not become percent merely because one regressor is logged. For a substantial proposed income change, use the exact log ratio of new to old income. This avoids an interpretation that quietly treats a large change as a tiny local movement.
-
-\(\widehat Y=a+b\log X\)
-
-\(\Delta\widehat Y=b\log(X_1/X_0)\)
-
-## 10. A log–log slope is an elasticity
-
-It relates proportional changes in both variables.
-
-An elasticity is the proportional change in an outcome for a small proportional change in a regressor. In a log–log model, the slope is a constant fitted elasticity. A slope of minus 0.7 means a one-percent price rise corresponds locally to about a 0.7-percent quantity decline.
-
-For a finite ten-percent price rise, the exact fitted quantity ratio is 1.1 raised to the power minus 0.7. Its percentage change is about minus 6.45 percent. It is not exactly minus seven percent. The distinction between a local slope and a finite contrast is especially useful when policy changes are large.
-
-\(\widehat{\log Y}=a+b\log X\)
-
-\(\%\Delta\widehat Y=100\{(X_1/X_0)^b-1\}\)
-
-## 11. Elasticity
-
-Try the comparison before opening the explanation.
-
-In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-An elasticity uses percentage changes on both sides. For a finite income increase, use its ratio rather than substituting a percentage-point change.
-
-**Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-## 12. Elasticity: explanation
-
-Follow the calculation and interpret its units.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-## 13. Read the actual price–income elasticity
-
-A unit-free slope still needs an empirical interpretation.
-
-The log–log regression gives an income slope of 0.037, with robust SE 0.015. A one-percent higher local income corresponds to about a 0.037-percent higher fitted price in this sample. This is a small association, measured on a different scale from the dollar slope.
-
-The coefficient does not show what a transfer to households would cause retailers to charge. Area characteristics, costs and market structure may also vary with income. It is useful as a descriptive comparison and as a demonstration of how a meaningful proportional question changes the equation. Read both the scale and the design before making a policy claim.
-
-```text
-. regress lp li, vce(robust)
-
-------------------------------------------------------------------------------
-             |               Robust
-          lp | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-          li |   .0374749   .0145083     2.58   0.010     .0089527    .0659971
-       _cons |  -.3613775   .1559216    -2.32   0.021     -.667908   -.0548471
-------------------------------------------------------------------------------
-```
-
-## 14. Compare predictions for the same realistic change
-
-Use the equation, not just the coefficient label.
-
-Choose two income values within the observed range and calculate the fitted price at each under the level and log specifications. Then subtract or divide according to the question. The same numerical coefficient can imply very different changes when units and transformations differ.
-
-Comparing predictions also makes model differences understandable to a nontechnical reader. Show the income range supported by the records, the fitted curves and the proposed contrast. Avoid evaluating one model at an observed income and another at an unsupported extrapolation. A fair comparison keeps both the sample and the economic scenario clear.
-
-## 15. A quadratic lets the slope change with X
-
-Define the squared term before interpreting it.
-
-A straight line has the same slope everywhere. A quadratic adds the square of X, allowing the fitted slope to change with the starting value. In the teaching curve, the fitted score is 500 plus eight times X minus 0.2 times X squared. A derivative is the local slope: the fitted change per unit for a very small movement in X.
-
-For this curve, the local slope is eight minus 0.4 times X. It equals four at X equal to ten and zero at X equal to twenty. The displayed general formula uses b zero for the intercept, b one for the X coefficient and b two for the squared-X coefficient. Although the curve is nonlinear in X, it is linear in those unknown coefficients, so OLS can estimate them. For a substantial change in X, calculate two fitted values rather than treating a local slope as constant.
-
-\(\widehat Y=500+8X-0.2X^2\)
-
-Local slope: \(d\widehat Y/dX=8-0.4X\)
-
-General slope: \(b_1+2b_2X\)
-
-## 16. Use a finite quadratic difference for a finite change
-
-The tangent slope is a local description.
-
-Increase X from ten to fifteen in the teaching curve. The first fitted score is 560 and the second is 575, so the finite fitted difference is fifteen points. At the starting value ten, the local slope was four. Multiplying that slope by five would give twenty and overstate the finite difference because the slope falls along the curve.
-
-Let delta denote a finite change from a starting value X. Expand the square of X plus delta and subtract the original fitted value. The remaining terms are b one times delta plus b two times the quantity twice X times delta plus delta squared. This expression equals direct prediction and subtraction. The derivative becomes a useful approximation when the proposed change is small enough that the slope barely changes.
-
-\(\widehat Y(10)=560,\quad\widehat Y(15)=575,\quad\Delta\widehat Y=15\)
-
-\(\Delta\widehat Y=b_1\Delta+b_2(2X\Delta+\Delta^2)\)
-
-Local approximation: \(4\times5=20\), not the finite difference.
-
-## 17. A turning point must be inside a meaningful range
-
-Do not report an unsupported optimum.
-
-The quadratic slope is zero at minus beta one divided by twice beta two, provided beta two is nonzero. A negative squared coefficient gives a maximum and a positive one a minimum. This is a mathematical feature of the fitted curve.
-
-Before describing an economic optimum, check whether the turning point lies inside the data range and whether the model is credible there. A tiny, imprecise squared coefficient can produce an extreme and unstable turning point. The equation's ability to calculate one does not mean the data identify a useful policy threshold.
-
-\(X^*=-\dfrac{b_1}{2b_2}\) when \(b_2\ne0\)
-
-## 18. Quadratic slope
-
-Try the comparison before opening the explanation.
-
-For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-Differentiate the fitted curve, substitute the requested starting X, and distinguish a local slope from a finite change.
-
-**Practice:** For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-## 19. Quadratic slope: explanation
-
-Follow the calculation and interpret its units.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-## 20. Inspect the actual curvature rather than assume it
-
-A flexible model may provide little evidence of bending.
-
-The quadratic price specification estimates the squared-income coefficient at -0.000008, with SE 0.000833. Its magnitude is small relative to its uncertainty. The graph therefore should not be described as revealing a clear income threshold.
-
-This is a useful applied outcome. We learn that allowing curvature and finding convincing curvature are different things. Compare fitted values over observed incomes and consider whether the more complex specification materially changes the substantive comparison. Complexity is justified by the question and evidence, not by the mere availability of another polynomial term.
-
-```text
-. regress sprice c.inc10##c.inc10, vce(robust)
-
----------------------------------------------------------------------------------
-                |               Robust
-         sprice | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-          inc10 |   .0091573   .0103187     0.89   0.375    -.0111286    .0294432
-                |
-c.inc10#c.inc10 |  -7.86e-06   .0008332    -0.01   0.992    -.0016458    .0016301
-                |
-          _cons |   1.002011   .0304353    32.92   0.000     .9421772    1.061845
----------------------------------------------------------------------------------
-```
-
-## 21. Ask Stata for slopes at stated values
-
-margins makes the comparison explicit.
-
-After the quadratic regression, margins with dydx requests a derivative of the fitted outcome. The at option chooses income values where that derivative is evaluated. Here the values two, four and six are in ten-thousand-dollar units, so they correspond to twenty, forty and sixty thousand dollars.
-
-Read each derivative as a local fitted dollar change for one unit of scaled income at that point. Its uncertainty depends on both fitted coefficients and their covariance. Stata uses that covariance information. Computing a slope by hand is a useful check, but adding the two coefficient SEs would not produce the correct derivative SE.
-
-```text
-. margins, dydx(inc10) at(inc10=(2 4 6))
-
-Conditional marginal effects                               Number of obs = 401
-Model VCE: Robust
-
-Expression: Linear prediction, predict()
-dy/dx wrt:  inc10
-1._at: inc10 = 2
-2._at: inc10 = 4
-3._at: inc10 = 6
-
-------------------------------------------------------------------------------
-             |            Delta-method
-             |      dy/dx   std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-inc10        |
-         _at |
-          1  |   .0091259   .0071961     1.27   0.205    -.0050213    .0232731
-          2  |   .0090945    .004394     2.07   0.039      .000456    .0177329
-          3  |    .009063   .0030074     3.01   0.003     .0031507    .0149754
-------------------------------------------------------------------------------
-```
-
-## 22. Retransforming a log fit needs care
-
-The exponential of an average log is not the average level.
-
-Write a log-outcome model as log Y equals m of X plus u. Here m of X is the fitted or population linear log relationship and u is the remaining log error. Exponentiating both sides gives Y equal to exp of m times exp of u. At a fixed X, taking the average therefore gives exp of m times the conditional average of exp of u.
-
-Even a mean-zero log error does not generally make that last average equal to one. The one-and-nine example showed the reason: exponentiation changes how spread contributes to an average. To estimate an arithmetic mean in levels, we need a suitable estimate of this retransformation factor. To interpret a ratio between groups as a mean ratio, we need the factors to cancel or to be modeled. State the target before selecting a correction.
-
-\(\log Y=m(X)+u\)
-
-\(E(Y\mid X)=\exp\{m(X)\}\,E\{\exp(u)\mid X\}\)
-
-The retransformation factor need not be one or constant across X.
-
-## 23. Zeros and negative values are substantive information
-
-Do not hide them through an automatic log transformation.
-
-The natural log is defined only for positive values. Dropping nonpositive records changes the sample; adding an arbitrary constant changes the interpretation of the fitted relation. Neither step should be treated as a harmless software repair.
-
-In this retail application, the analysis explicitly requires positive observed price and income. In an application with genuine zero spending or zero employment, a different outcome model may be more useful. Explain the economic meaning of the zeros and the target population before selecting a transformation. Always report the sample restriction that the command actually used.
-
-The natural log is defined only for positive values.
-
-In this retail application, the analysis explicitly requires positive observed price and income.
-
-## 24. Choose a form for a decision-sized comparison
-
-Keep fit, interpretation and design connected.
-
-An analyst studying affordability may want dollar price differences. A demand study may naturally focus on elasticities. A study of diminishing gains may need a changing slope. These choices follow the economic question rather than a competition to maximise R-squared across incompatible outcome scales.
-
-Use graphs and stated prediction contrasts to communicate the model. Identify which comparisons are within the observed data and which rely on extrapolation. Then carry forward the same identification and uncertainty questions used in the linear model. Transforming variables can improve the representation of a relationship, but it does not itself make the regressor exogenous.
-
-An analyst studying affordability may want dollar price differences.
-
-Use graphs and stated prediction contrasts to communicate the model.
-
-## 25. Transforming the variables does not close a backdoor
-
-A better scale and a credible comparison answer different questions.
-
-Suppose neighbourhood characteristics C influence both local income X and retail prices Y. That common-cause route is present whether we fit prices in dollars or log prices. Logging an observed variable changes its numerical scale; it does not remove the neighbourhood mechanism or turn an observational income comparison into a policy experiment.
-
-The diagram describes the economic variables before transformation. Choose a functional form that gives a useful local or finite contrast, and separately explain what adjustment or design addresses the alternative route. A curved line can fit the observed prices well while still mixing the income relationship with omitted local characteristics.
-
-This also works in the other direction: a defensible causal design still needs a meaningful numerical specification. We need both pieces. State the comparison the graph supports and the quantity the equation reports, rather than asking R-squared or a logarithm to do the work of identification.
-
-Functional form chooses the scale and shape.
-
-Identification addresses the alternative causal explanations.
-
-## 26. DAG practice: logs and a common cause
-
-Trace the routes before choosing a control.
-
-Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
-
-## 27. DAG practice: logs and a common cause: explanation
-
-Explain what conditioning changes in this stated graph.
-
-The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation.
-
-The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
-
-The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation. The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
-
-## 28. Translate retail coefficients into a useful contrast
+## 01. School staffing: reproduce and explain
 
 Reproduce the evidence, then explain its economic meaning.
 
-Run meeting_05.do using retail.csv. In the level model, calculate the fitted soda-price contrast for a 20,000-dollar income difference. In the log–log model, calculate the exact contrast for a ten-percent income increase. State the units and the prediction quantity in each answer.
+Open schools.csv and run lab_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
 
-Change the income comparison from 30,000 to 50,000 dollars. Report the level-model dollar contrast and the exact exponentiated-log percentage contrast. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-**Practice:** Change the income comparison from 30,000 to 50,000 dollars. Report the level-model dollar contrast and the exact exponentiated-log percentage contrast. Keep your commands, log, output and interpretation.
+**Practice:** Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Keep your commands, log, output and interpretation.
 
-## 29. Translate retail coefficients into a useful contrast: explanation
+## 02. School staffing: reproduce and explain: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
-Income is rescaled by 10,000 in the level model, so the proposed change is two units. The fitted price contrast is two times 0.009073, or 0.018147 dollars. Treating the coefficient as dollars per one dollar of income would give the wrong magnitude.
+The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change.
 
-The log–log income slope is 0.037475. A ten-percent income rise multiplies the exponentiated fitted log price by 1.1 raised to that slope, giving 0.3578 percent. This is a contrast in exponentiated fitted log values. A claim about arithmetic mean prices also requires the retransformation factor to be handled appropriately. These local-income associations do not identify a causal income effect.
+A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
 
-The level contrast is 0.018147 dollars; the log-log contrast is 1.932756 percent because the income ratio is 5/3. These describe different fitted quantities; an arithmetic-mean price claim requires a suitable retransformation treatment.
+The income-adjusted gain is 0.137551 points with robust SE 0.580319 on 420 districts. It remains an adjusted association.
 
-A 20,000-dollar income difference gives a 0.018147-dollar level-model contrast.
+Original two-student fitted gains: +4.56 and +2.20 points.
 
-From 30,000 to 50,000: exponentiated-log contrast 1.932756%.
+With income: gain \(0.137551\), robust SE \(0.580319\).
 
-A fitted log-value ratio needs extra assumptions to be an arithmetic-mean ratio.
+The smaller adjusted association does not establish a causal intervention effect.
 
-## 30. Connect functional form with the next data-quality question
+## 03. Is the staffing relationship large enough to matter?
 
-A better curve cannot repair every data problem.
+A decision needs magnitude and uncertainty.
 
-We can now translate coefficients in levels, logs and quadratic models into meaningful changes. The key habit is to define the scale, write the requested comparison and evaluate the fitted equation at the stated values. Small-change rules and exact finite contrasts then have clear roles.
+Suppose a ministry would consider a staffing change worthwhile only if it improved learning by a meaningful amount relative to its cost. A fitted coefficient alone cannot say how accurately the sample measures that amount. Another comparable sample could give a different estimate. Statistical inference uses the sample and stated assumptions to quantify that uncertainty and assess claims about a population quantity.
 
-The next lesson asks what happens when we collect more observations while the design or measurements remain imperfect. We will use simulations with known population values to distinguish less sampling noise from less bias. This will clarify why a precise fitted curve can still answer the wrong empirical question.
+We continue with the same staffing contrast and outcome units, then build a standard error, an interval and a test in that order of reasoning. An interval helps describe which magnitudes remain compatible with the estimated uncertainty. A test evaluates a specific proposed coefficient under a reference model. The decision also needs a credible causal comparison and a practical benefit threshold; neither is supplied by the software's uncertainty columns.
 
-We can now translate coefficients in levels, logs and quadratic models into meaningful changes.
+Question: how accurately does the sample measure the relevant magnitude?
 
-The next lesson asks what happens when we collect more observations while the design or measurements remain imperfect.
+Inference adds an uncertainty argument to the fitted estimate.
+
+## 04. Recall which coefficient the model estimates
+
+Keep its units and adjustment fixed.
+
+The adjusted staffing slope is -1.101 points per additional student per teacher. It describes a linear comparison at fixed English-learner share. A reduction of two in the ratio changes the fitted score by minus two times this coefficient.
+
+Before calculating a test, state the exact target. Testing whether the population slope is zero differs from testing whether it equals minus one point per student per teacher. A policy decision might also concern a two-student change rather than a one-unit slope. Inference becomes easier to interpret when the comparison is specified before the output is examined.
+
+The adjusted staffing slope is -1.101 points per additional student per teacher.
+
+Before calculating a test, state the exact target.
+
+## 05. State a null before calculating a p-value
+
+The evidence is evaluated under a specific claim.
+
+A null hypothesis is a specific claim to evaluate, such as a staffing slope of zero. The alternative here is that the slope differs from zero in either direction. Write the null before examining whether the estimate looks surprising. Subtract the proposed value from the estimate, then divide by its standard error. This t statistic measures the gap in estimated standard-error units.
+
+Under the null and the maintained inference assumptions, compare that statistic with its reference distribution. The two-sided p-value is the probability of a statistic at least as far from zero in either direction as the one observed. It is not the probability that the null is true. With the robust slope near minus 1.101 and SE near 0.433, the statistic for zero is about minus 2.54. Its interpretation depends on the reference approximation and sampling assumptions.
+
+\(H_0:\beta_1=0\), \(H_1:\beta_1\ne0\)
+
+\(t=(\widehat\beta_1-\beta_{1,0})/SE(\widehat\beta_1)\)
+
+p-value: a tail probability under the null and reference assumptions.
+
+## 06. Normal-error exact inference and robust approximations differ
+
+Know which argument supports the reference distribution.
+
+Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
+
+ Heteroskedasticity-robust inference permits error spread to vary with the regressors. Its usual justification is a large-sample approximation, with suitable sampling and finite variances for the quantities being averaged and no small set of observations dominating the fit. It does not automatically allow errors to be related across districts, states or dates. The reference distribution and the covariance formula are distinct choices, and neither fixes a failure of the model's zero conditional-mean requirement.
+
+Exact conventional t/F: normal, independent, equal-variance errors under the linear model.
+
+Robust: large-sample approximation allowing unequal variance; dependence needs separate treatment.
+
+## 07. State the reference distribution before choosing a critical value
+
+An exact classical t test uses its residual degrees of freedom.
+
+Suppose the conditional error vector is normal with mean zero and covariance sigma squared I, and the design has full column rank. Under these classical conditions, the standardised coefficient using its estimated conventional standard error follows a Student t distribution with n minus p degrees of freedom when the null is true. A critical value is a quantile: a cutoff that leaves a specified probability in a tail of that reference distribution.
+
+For a two-sided five-percent test, choose c so that the chance of a t statistic exceeding c in magnitude is five percent. The corresponding interval is the estimate plus or minus c times its standard error. The familiar 1.96 is a large-sample normal critical value, not an exact value for every t distribution. A robust standard error uses a different, generally approximate, justification developed with large-sample theory and variance corrections.
+
+Under the classical normal-error model and \(H_0:\beta_j=b_j^0\), \(T=(\widehat\beta_j-b_j^0)/SE_j\sim t_{n-p}\).
+
+Choose \(c\) from \(P(|t_{n-p}|>c)=0.05\).
+
+Interval: \(\widehat\beta_j\pm cSE_j\).
+
+## 08. Build a confidence interval step by step
+
+Combine the estimate with a stated reference rule.
+
+A confidence interval is produced by a procedure designed to cover the target coefficient at a stated rate across repeated comparable samples. With a suitable large-sample normal approximation, a 95% interval is the estimate plus or minus 1.96 SEs. The procedure, not the fixed unknown coefficient, is what has the repeated-sample coverage property.
+
+For an illustrative estimate of 0.30 with SE 0.12, the margin is 0.2352 and the interval is [0.0648, 0.5352]. These are teaching numbers. The interval describes uncertainty under its assumptions; it does not account for every possible source of bias in the empirical design.
+
+\(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
+
+## 09. Confidence interval
+
+Try the comparison before opening the explanation.
+
+An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
+
+First calculate the estimate plus and minus 1.96 standard errors. For a zero null and a two-sided five-percent normal-reference test, check whether zero lies inside that same interval.
+
+**Practice:** An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
+
+## 10. Confidence interval: explanation
+
+Follow the calculation and interpret its units.
+
+\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
+
+\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
+
+## 11. A rejection is not an effect-size statement
+
+Statistical significance and practical value answer different questions.
+
+A statistically significant result passes a chosen testing threshold. A practically important result is large enough, in its application, to matter for a decision. A tiny effect can be estimated very precisely in a large sample; a meaningful effect can remain uncertain in a noisy sample.
+
+For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives. Report an interval as well as the point estimate. The policy reader should be able to see both the range of values consistent with the model and the scale of the decision being considered.
+
+A statistically significant result passes a chosen testing threshold.
+
+For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives.
+
+## 12. One-sided alternatives must express a prior scientific question
+
+The direction of the alternative changes the tail probability.
+
+A two-sided alternative asks whether a coefficient differs from a stated value in either direction. A one-sided alternative asks whether it is greater, or whether it is smaller. For a greater-than alternative, a large positive test statistic is evidence against the null; a large negative statistic is not evidence in the proposed direction.
+
+Specify that direction before observing the estimated sign. The p-value is the appropriate reference-distribution tail probability under the null, not the probability that the null is true. Under a symmetric continuous reference, a correctly directed one-sided p-value is half the two-sided value; a statistic in the opposite direction has a large one-sided p-value. The economic meaning of the tested value and the model's assumptions remain part of the result.
+
+Two-sided: \(H_1:\beta_j\ne b_j^0\); upper-sided: \(H_1:\beta_j>b_j^0\).
+
+Upper-sided p-value: \(P(T\ge t_{obs}\mid H_0)\).
+
+Choose the direction before inspecting the estimate.
+
+## 13. Test a substantively meaningful value
+
+A zero null is not the only relevant question.
+
+Suppose one score point per additional student per teacher is an important benchmark. The null is now that the staffing slope equals minus one, not zero. The estimate's distance from minus one is much smaller than its distance from zero.
+
+Use Stata's test command to evaluate that stated restriction. A coefficient can differ detectably from zero while remaining quite compatible with another meaningful benchmark. Explaining this comparison helps a decision-maker understand the range of plausible magnitudes rather than interpret a rejection as proof of one exact effect.
+
+```text
+. test str=-1
+
+ ( 1)  str = -1
+
+       F(  1,   417) =    0.05
+            Prob > F =    0.8151
+```
+
+## 14. Compute uncertainty for the policy contrast
+
+Scale the SE along with the estimate.
+
+For a two-student reduction, the fitted change is minus two times the staffing slope. Its SE is twice the slope SE, because multiplying a random estimate by a constant multiplies its standard deviation by the constant's absolute value.
+
+The lincom output supplies the contrast, SE and interval together. State that the result is in score points, with the included language composition held fixed. In interaction models, a contrast can combine several coefficients and its variance will also depend on their covariance. Using the model's covariance information avoids shortcuts such as adding standard errors.
+
+\(\operatorname{SE}(-2\widehat\beta_1)=2\operatorname{SE}(\widehat\beta_1)\)
+
+```text
+. lincom -2*str
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
+------------------------------------------------------------------------------
+```
+
+## 15. A linear contrast uses cross-coefficient covariance
+
+Combine coefficients in the units of the intended fitted comparison.
+
+Let b be the vector of estimated coefficients and let a be a fixed vector specifying a comparison. A linear contrast is a prime b: a weighted sum of those coefficients. Call its population value theta and its estimated value theta hat. In the district model, reducing staffing by two and increasing language share by five percentage points gives the fitted score contrast minus two times the staffing slope plus five times the language-share slope, with other inputs fixed.
+
+If V hat estimates the coefficient covariance, the contrast's estimated variance is a prime V hat a. Its cross terms matter because coefficients estimated from the same observations move together. To test that the contrast equals a stated value c, divide its difference from c by the square root of that variance and use a reference justified by the model. Stata's lincom carries out this calculation. This describes a fitted comparison; changing both inputs causally needs its own intervention argument.
+
+\(\widehat\theta=a\prime b\); example: \(\widehat\theta=-2b_{str}+5b_{el}\).
+
+\(\widehat{\operatorname{Var}}(\widehat\theta)=a\prime\widehat Va\), including cross-coefficient covariance.
+
+Test \(H_0:\theta=c\) with \(t=(\widehat\theta-c)/\sqrt{a\prime\widehat Va}\), under the appropriate reference.
+
+## 16. A confidence interval can contain an important effect
+
+Failing to reject is not proof of no effect.
+
+If an interval includes zero and also includes effects large enough to matter, the evidence may be too imprecise for the decision. It is inaccurate to report that the study established no relationship. It is also inaccurate to select a large value from the interval and present it as the estimated effect.
+
+Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision. This distinguishes an uninformative result from evidence that any meaningful effect is small. Both conclusions can be useful, but they require different evidence.
+
+If an interval includes zero and also includes effects large enough to matter, the evidence may be too imprecise for the decision.
+
+Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision.
+
+## 17. Economic versus statistical size
+
+Try the comparison before opening the explanation.
+
+A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
+
+Use the outcome units and the decision threshold. A small p-value and a worthwhile policy benefit are different claims.
+
+**Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
+
+## 18. Economic versus statistical size: explanation
+
+Follow the calculation and interpret its units.
+
+No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+
+No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+
+## 19. More observations help only under the relevant conditions
+
+The information gain depends on what the observations add.
+
+With independent, suitably informative observations and stable variance, sampling uncertainty often decreases at a square-root rate as sample size grows. Roughly quadrupling the sample can halve an SE in that setting. This is an approximation, not a promise for any enlarged database.
+
+Repeating highly dependent information may add less precision. Increasing observations while leaving a regressor endogenous can make an estimate concentrate around the wrong value. The next large-sample lesson will separate these ideas explicitly. For today, tie any proposed sample expansion to the sampling structure and the comparison it improves.
+
+Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
+
+## 20. Avoid repeated specification searches for a preferred p-value
+
+The search changes what an isolated test can mean.
+
+If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search. Even under no relationship, enough attempts can produce apparently unusual results.
+
+Keep a clear account of the main question and intended specification. Treat additional analyses as exploration and explain their role. This is especially useful in an applied master's project, where learning from data is legitimate but a final report should distinguish a planned test from a pattern noticed after many trials. Transparent reasoning is more informative than a table selected solely for stars.
+
+If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search.
+
+Keep a clear account of the main question and intended specification.
+
+## 21. Write an uncertainty statement for a policy reader
+
+Include the comparison, units and conditions.
+
+A concise result sentence names the adjusted comparison, gives a feasible policy contrast and reports its uncertainty method. A second sentence explains the design limitation most relevant to causal interpretation. Neither should require the reader to decode a software table.
+
+For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points. Then explain that staffing may still respond to unmeasured learning needs. This keeps inference and identification connected to the same application while showing clearly which argument supports each claim.
+
+A concise result sentence names the adjusted comparison, gives a feasible policy contrast and reports its uncertainty method.
+
+For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points.
+
+## 22. Check the reference distribution and scale
+
+An interval is meaningful only for a defined quantity.
+
+Before interpreting an interval, identify whether it concerns a coefficient, a fitted contrast, an average outcome or an individual prediction. These quantities have different uncertainty calculations. A confidence interval for an average fitted score is not an interval for every district's score.
+
+Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations. Small rounding differences in endpoints can arise from the reference rule. The important interpretation still depends on the coefficient target, units, sampling conditions and design.
+
+Before interpreting an interval, identify whether it concerns a coefficient, a fitted contrast, an average outcome or an individual prediction.
+
+Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations.
+
+## 23. Use the evidence to identify the next useful step
+
+Precision, fit and design can require different improvements.
+
+An imprecise but credible comparison may benefit from more informative observations. A precise but confounded comparison may require better measurement or a different design. A poor functional form may require a model that represents nonlinear relationships more adequately.
+
+These are different diagnoses. Explain why a proposed next step addresses the concern you have actually observed. This habit helps an empirical report remain useful even when the first regression does not settle the policy question. A statistically significant coefficient is not the only possible contribution of an applied analysis.
+
+An imprecise but credible comparison may benefit from more informative observations.
+
+These are different diagnoses.
+
+## 24. DAG practice: uncertainty is not adjustment
+
+Trace the routes before choosing a control.
+
+Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
+
+## 25. DAG practice: uncertainty is not adjustment: explanation
+
+Explain what conditioning changes in this stated graph.
+
+The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them.
+
+On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
+
+The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them. On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
+
+## 26. Report magnitude and uncertainty together
+
+Reproduce the evidence, then explain its economic meaning.
+
+Run lab_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
+
+Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Keep your commands, log, output and interpretation.
+
+## 27. Report magnitude and uncertainty together: explanation
+
+A reproducible result needs both a calculation and an interpretation.
+
+The robust staffing estimate is -1.101296, with SE 0.432847. The approximate interval is [-1.9497, -0.2529] score points per additional student per teacher. Multiplying the slope by minus two gives 2.2026 points; its SE is 0.8657, because scaling by a constant scales the SE by its absolute value.
+
+These calculations quantify uncertainty under the model and inference assumptions. Stata's finite-degree-of-freedom interval can differ slightly from the 1.96 approximation. A recommendation also needs a credible causal comparison, the outcome's educational importance, staffing costs and the relevant population. Rejecting a zero slope does not supply those additional pieces of the decision.
+
+The ratio is (2.202592-1)/0.865694=1.389164. The result does not reject a one-point fitted gain using the approximate two-sided 1.96 rule. This is distinct from the zero-slope question and still needs credible identification for a causal claim.
+
+Two-student gain: \(2.202592\), robust SE \(0.865694\).
+
+Null gain of one: \((2.202592-1)/0.865694=1.389164\).
+
+Separate a policy-relevant magnitude from a test against zero.
+
+## 28. From finite-sample inference to large-sample reasoning
+
+From finite-sample inference to large-sample reasoning
+
+A test begins with a stated population restriction and an uncertainty estimate that matches the sampling model. A confidence interval expresses the precision of the coefficient, while its units and a decision-sized contrast express economic magnitude.
+
+Exact classical reference distributions required strong error assumptions. Next we study what larger samples can justify when those assumptions are relaxed, and why a larger dataset does not repair a systematically misleading comparison.
+
+From finite-sample inference to large-sample reasoning
+
+## 29. A joint hypothesis asks whether several restrictions hold together
+
+One coefficient test cannot replace the combined question.
+
+A joint hypothesis places several restrictions on the population coefficients at once. In the district model, we could ask whether language share and district income both have zero conditional-mean coefficients, holding staffing in the equation. Checking two separate p-values does not create a single test with the intended overall rejection probability.
+
+The restricted model imposes both zero coefficients; the unrestricted model includes both variables. Under the classical normal-error assumptions, an F test compares their loss of fit relative to the unrestricted error-variance estimate. Both fits must use the same observations and outcome. Unequal-variance robust joint testing requires an appropriate covariance construction, developed in the variance block.
+
+Example joint null: \(H_0:\beta_{el}=0,\ \beta_{income}=0\).
+
+Estimate the restricted and unrestricted models on the same observations.
+
+Use the reference distribution justified by the covariance assumptions.
+
+```text
+. test 1.high 1.high#c.str
+
+ ( 1)  1.high = 0
+ ( 2)  1.high#c.str = 0
+
+       F(  2,   415) =   98.88
+            Prob > F =    0.0000
+```
+
+## 30. Classical fit-loss F tests require matched models
+
+Restricted and unrestricted fits must answer one nested comparison.
+
+The restricted model imposes the null equalities; the unrestricted model allows the corresponding coefficients to vary. Both must use the same outcome and observations. SSR is the sum of squared residuals. For a constructed example, let restricted SSR be 110, unrestricted SSR be 100, and let two restrictions remove two parameters. With 100 observations and five unrestricted coefficients, divide the SSR increase per restriction, five, by unrestricted SSR per residual degree of freedom, 100 divided by 95. The F statistic is 4.75.
+
+The general formula uses q for the number of restrictions and k subscript U for all unrestricted coefficients, including the intercept. The classical F reference needs the conventional model assumptions. With unequal variance or dependence, use an appropriately estimated covariance and a justified joint test rather than treating a mechanical SSR calculation as universally valid.
+
+\(F=\dfrac{(SSR_R-SSR_U)/q}{SSR_U/(n-k_U)}\)
+
+Example: \(F=\dfrac{(110-100)/2}{100/(100-5)}=4.75\)
 

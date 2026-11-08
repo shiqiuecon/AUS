@@ -2,11 +2,21 @@ import {dagSVG,dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e
 import {data,escapeHTML as e,typeset} from './common.mjs?v=28599d1f2c26';
 const $=s=>document.querySelector(s),select=$('#week-filter'),initial=new URLSearchParams(location.search).get('week'),storageKey='eco603-practice-v1';
 if([...select.options].some(o=>o.value===initial))select.value=initial;
-let notes={},reviewed={},index=0;const dagStates=new Map();
-try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}');notes=saved.notes||{};reviewed=saved.reviewed||{};}catch{}
+let notes={},reviewed={},index=0,migrationApplied=false;const dagStates=new Map();
+try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}');notes=saved.notes||{};reviewed=saved.reviewed||{};migrationApplied=saved.syllabusMigration===1;}catch{}
 const id=q=>`${q.week}:${q.title}`;
+let migrated=false;
+if(!migrationApplied)for(const q of data.practice){
+ if(q.origin_week===undefined)continue;
+ const previous=`${q.origin_week}:${q.origin_title||q.title}`,current=id(q);
+ if(previous!==current){
+  if(!(current in notes)&&previous in notes){notes[current]=notes[previous];migrated=true;}
+  if(!(current in reviewed)&&previous in reviewed){reviewed[current]=reviewed[previous];migrated=true;}
+ }
+}
+if(!migrationApplied)try{localStorage.setItem(storageKey,JSON.stringify({notes,reviewed,syllabusMigration:1}));}catch{}
 const questions=()=>data.practice.filter(q=>select.value==='all'||q.week===Number(select.value)).sort((a,b)=>a.week-b.week);
-function save(){try{localStorage.setItem(storageKey,JSON.stringify({notes,reviewed}));$('#save-state').textContent='Notes and review marks saved on this device.';}catch{$('#save-state').textContent='Notes and review marks stay in this page.';}}
+function save(){try{localStorage.setItem(storageKey,JSON.stringify({notes,reviewed,syllabusMigration:1}));$('#save-state').textContent='Notes and review marks saved on this device.';}catch{$('#save-state').textContent='Notes and review marks stay in this page.';}}
 function progress(){const qs=questions();$('#practice-count').textContent=`${qs.length} questions · ${qs.filter(q=>reviewed[id(q)]).length} reviewed`;}
 function render(){
  const qs=questions(),all=$('#practice-view').value==='all';index=Math.max(0,Math.min(qs.length-1,index));

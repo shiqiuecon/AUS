@@ -1,0 +1,145 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN pooled
+. regress fatality beertax i.year, vce(cluster state)
+
+Linear regression                               Number of obs     =        336
+                                                F(7, 47)          =       6.53
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0986
+                                                Root MSE          =     .54709
+
+                                 (Std. err. adjusted for 48 clusters in state)
+------------------------------------------------------------------------------
+             |               Robust
+    fatality | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     beertax |   .3663358   .1213982     3.02   0.004     .1221141    .6105575
+             |
+        year |
+       1983  |  -.0820359    .034779    -2.36   0.023    -.1520021   -.0120696
+       1984  |  -.0717331   .0453962    -1.58   0.121    -.1630584    .0195922
+       1985  |  -.1105458   .0477362    -2.32   0.025    -.2065787   -.0145129
+       1986  |  -.0161185   .0598606    -0.27   0.789    -.1365425    .1043056
+       1987  |  -.0155355   .0663027    -0.23   0.816    -.1489194    .1178484
+       1988  |  -.0010271   .0648845    -0.02   0.987    -.1315578    .1295036
+             |
+       _cons |   1.894848   .1413218    13.41   0.000     1.610545    2.179151
+------------------------------------------------------------------------------
+
+. * END pooled
+. record pooled beertax
+
+. * BEGIN fixed
+. xtreg fatality beertax i.year, fe vce(cluster state)
+
+Fixed-effects (within) regression               Number of obs     =        336
+Group variable: state                           Number of groups  =         48
+
+R-squared:                                      Obs per group:
+     Within  = 0.0803                                         min =          7
+     Between = 0.1101                                         avg =        7.0
+     Overall = 0.0876                                         max =          7
+
+                                                F(7, 47)          =       4.36
+corr(u_i, Xb) = -0.6781                         Prob > F          =     0.0009
+
+                                 (Std. err. adjusted for 48 clusters in state)
+------------------------------------------------------------------------------
+             |               Robust
+    fatality | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     beertax |  -.6399799   .3570783    -1.79   0.080    -1.358329     .078369
+             |
+        year |
+       1983  |  -.0799029   .0350861    -2.28   0.027    -.1504869   -.0093188
+       1984  |  -.0724206   .0438809    -1.65   0.106    -.1606975    .0158564
+       1985  |  -.1239763   .0460559    -2.69   0.010    -.2166288   -.0313238
+       1986  |  -.0378645   .0570604    -0.66   0.510    -.1526552    .0769262
+       1987  |  -.0509021   .0636084    -0.80   0.428    -.1788656    .0770615
+       1988  |  -.0518038   .0644023    -0.80   0.425    -.1813644    .0777568
+             |
+       _cons |    2.42847   .2016884    12.04   0.000     2.022725    2.834215
+-------------+----------------------------------------------------------------
+     sigma_u |  .70945965
+     sigma_e |  .18788295
+         rho |  .93446372   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. * END fixed
+. record fixed beertax
+
+. * BEGIN policy
+. lincom .10*beertax
+
+ ( 1)  .1*beertax = 0
+
+------------------------------------------------------------------------------
+    fatality | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   -.063998   .0357078    -1.79   0.080    -.1358329    .0078369
+------------------------------------------------------------------------------
+
+. * END policy
+. preserve
+
+. keep if inlist(year,1982,1988)
+(240 observations deleted)
+
+. keep state year fatality beertax
+
+. reshape wide fatality beertax, i(state) j(year)
+(j = 1982 1988)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations               96   ->   48          
+Number of variables                   4   ->   5           
+j variable (2 values)              year   ->   (dropped)
+xij variables:
+                               fatality   ->   fatality1982 fatality1988
+                                beertax   ->   beertax1982 beertax1988
+-----------------------------------------------------------------------------
+
+. generate double dy=fatality1988-fatality1982
+
+. generate double dx=beertax1988-beertax1982
+
+. * BEGIN differences
+. regress dy dx, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(1, 46)          =       8.60
+                                                Prob > F          =     0.0052
+                                                R-squared         =     0.1192
+                                                Root MSE          =     .39402
+
+------------------------------------------------------------------------------
+             |               Robust
+          dy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          dx |  -1.040973   .3550061    -2.93   0.005    -1.755563   -.3263823
+       _cons |  -.0720371   .0653552    -1.10   0.276    -.2035903    .0595161
+------------------------------------------------------------------------------
+
+. * END differences
+. record difference dx
+
+. restore
+
+. export delimited state year fatality beertax using "output/meeting_13_data.csv", replace
+(file output/meeting_13_data.csv not found)
+file output/meeting_13_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_13_estimates.dta", clear
+
+. export delimited using "output/meeting_13_estimates.csv", replace
+(file output/meeting_13_estimates.csv not found)
+file output/meeting_13_estimates.csv saved
+
+. display "ECO603_MEETING_13_COMPLETE"
+ECO603_MEETING_13_COMPLETE
+

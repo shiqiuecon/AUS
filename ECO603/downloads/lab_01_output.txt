@@ -1,0 +1,108 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. regress score str, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(1, 418)         =      19.26
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0512
+                                                Root MSE          =     18.581
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -2.279808   .5194892    -4.39   0.000    -3.300945   -1.258671
+       _cons |    698.933   10.36436    67.44   0.000     678.5602    719.3057
+------------------------------------------------------------------------------
+
+. * END simple
+. scalar simple_b = _b[str]
+
+. scalar simple_se = _se[str]
+
+. scalar simple_a = _b[_cons]
+
+. * BEGIN contrast
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   4.559617   1.038978     4.39   0.000     2.517343     6.60189
+------------------------------------------------------------------------------
+
+. * END contrast
+. * BEGIN adjusted
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END adjusted
+. scalar adjusted_b = _b[str]
+
+. scalar adjusted_se = _se[str]
+
+. scalar adjusted_a = _b[_cons]
+
+. scalar el_b = _b[el]
+
+. * Same observations: the coefficient change is not a sample change.
+. assert e(N)==420
+
+. * BEGIN adjusted_contrast
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
+------------------------------------------------------------------------------
+
+. * END adjusted_contrast
+. * Independent numerical checks of the OLS normal equations.
+. predict double residual, residuals
+
+. quietly summarize residual
+
+. assert abs(r(mean)) < 1e-8
+
+. generate double orth = residual*str
+
+. quietly summarize orth
+
+. assert abs(r(mean)) < 1e-6
+
+. export delimited score str el using "output/schools.csv", replace
+file output/schools.csv saved
+
+. file open stats using "output/schools_stats.csv", write replace
+
+. file write stats "model,intercept,slope,se,el_slope,n" _n
+
+. file write stats "simple," (simple_a) "," (simple_b) "," (simple_se) ",0,420" _n
+
+. file write stats "adjusted," (adjusted_a) "," (adjusted_b) "," (adjusted_se) "," (el_b) ",420" _n
+
+. file close stats
+
+. display "ECO603_MEETING_01_COMPLETE"
+ECO603_MEETING_01_COMPLETE
+

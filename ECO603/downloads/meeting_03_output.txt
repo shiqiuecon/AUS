@@ -1,5 +1,220 @@
 Actual StataMP numerical output. Log header and machine paths omitted.
 
+. regress score str, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(1, 418)         =      19.26
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0512
+                                                Root MSE          =     18.581
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -2.279808   .5194892    -4.39   0.000    -3.300945   -1.258671
+       _cons |    698.933   10.36436    67.44   0.000     678.5602    719.3057
+------------------------------------------------------------------------------
+
+. * END simple
+. scalar simple_b = _b[str]
+
+. scalar simple_se = _se[str]
+
+. scalar simple_a = _b[_cons]
+
+. * BEGIN contrast
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   4.559617   1.038978     4.39   0.000     2.517343     6.60189
+------------------------------------------------------------------------------
+
+. * END contrast
+. * BEGIN adjusted
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END adjusted
+. scalar adjusted_b = _b[str]
+
+. scalar adjusted_se = _se[str]
+
+. scalar adjusted_a = _b[_cons]
+
+. scalar el_b = _b[el]
+
+. * Same observations: the coefficient change is not a sample change.
+. assert e(N)==420
+
+. * BEGIN adjusted_contrast
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
+------------------------------------------------------------------------------
+
+. * END adjusted_contrast
+. * Independent numerical checks of the OLS normal equations.
+. predict double residual, residuals
+
+. quietly summarize residual
+
+. assert abs(r(mean)) < 1e-8
+
+. generate double orth = residual*str
+
+. quietly summarize orth
+
+. assert abs(r(mean)) < 1e-6
+
+. export delimited score str el using "output/schools.csv", replace
+file output/schools.csv saved
+
+. file open stats using "output/schools_stats.csv", write replace
+
+. file write stats "model,intercept,slope,se,el_slope,n" _n
+
+. file write stats "simple," (simple_a) "," (simple_b) "," (simple_se) ",0,420" _n
+
+. file write stats "adjusted," (adjusted_a) "," (adjusted_b) "," (adjusted_se) "," (el_b) ",420" _n
+
+. file close stats
+
+. display "ECO603_MEETING_01_COMPLETE"
+ECO603_MEETING_01_COMPLETE
+
+
+
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN short
+. regress score str, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(1, 418)         =      19.26
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0512
+                                                Root MSE          =     18.581
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -2.279808   .5194892    -4.39   0.000    -3.300945   -1.258671
+       _cons |    698.933   10.36436    67.44   0.000     678.5602    719.3057
+------------------------------------------------------------------------------
+
+. * END short
+. record short str
+
+. * BEGIN long
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END long
+. record long str
+
+. record language el
+
+. * BEGIN auxiliary
+. regress el str
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(1, 418)       =     15.25
+       Model |  4932.98526         1  4932.98526   Prob > F        =    0.0001
+    Residual |    135170.2       418  323.373684   R-squared       =    0.0352
+-------------+----------------------------------   Adj R-squared   =    0.0329
+       Total |  140103.185       419  334.375143   Root MSE        =    17.983
+
+------------------------------------------------------------------------------
+          el | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |   1.813719   .4643735     3.91   0.000     .9009206    2.726517
+       _cons |  -19.85405   9.162604    -2.17   0.031    -37.86458   -1.843531
+------------------------------------------------------------------------------
+
+. * END auxiliary
+. record auxiliary str
+
+. * BEGIN income
+. regress score str el income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     299.03
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7072
+                                                Root MSE          =     10.347
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
+          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
+      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
+       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
+------------------------------------------------------------------------------
+
+. * END income
+. record income str
+
+. export delimited score str el income using "output/meeting_02_data.csv", replace
+(file output/meeting_02_data.csv not found)
+file output/meeting_02_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_02_estimates.dta", clear
+
+. export delimited using "output/meeting_02_estimates.csv", replace
+(file output/meeting_02_estimates.csv not found)
+file output/meeting_02_estimates.csv saved
+
+. display "ECO603_MEETING_02_COMPLETE"
+ECO603_MEETING_02_COMPLETE
+
+
+
+Actual StataMP numerical output. Log header and machine paths omitted.
+
 . * BEGIN full
 . regress score str el income, vce(robust)
 
@@ -82,4 +297,388 @@ file output/meeting_03_estimates.csv saved
 
 . display "ECO603_MEETING_03_COMPLETE"
 ECO603_MEETING_03_COMPLETE
+
+
+
+Actual StataMP numerical output; machine-specific log header omitted.
+
+. * BEGIN audit
+. count
+  420
+
+. summarize score str el income
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+       score |        420    654.1565    19.05335     605.55     706.75
+         str |        420    19.64043    1.891812         14       25.8
+          el |        420    15.76816    18.28593          0   85.53972
+      income |        420    15.31659     7.22589      5.335     55.328
+
+. count if el>20
+  118
+
+. * END audit
+. * BEGIN normal_equations
+. regress score str
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(1, 418)       =     22.58
+       Model |  7794.11004         1  7794.11004   Prob > F        =    0.0000
+    Residual |  144315.484       418  345.252353   R-squared       =    0.0512
+-------------+----------------------------------   Adj R-squared   =    0.0490
+       Total |  152109.594       419  363.030056   Root MSE        =    18.581
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -2.279808   .4798256    -4.75   0.000     -3.22298   -1.336637
+       _cons |    698.933   9.467491    73.82   0.000     680.3231    717.5428
+------------------------------------------------------------------------------
+
+. predict double fitted, xb
+
+. predict double residual, residuals
+
+. generate double xu=str*residual
+
+. summarize residual xu
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+    residual |        420    6.28e-14    18.55878  -47.72669   48.54041
+          xu |        420    1.23e-12     361.342  -954.3068   867.0591
+
+. quietly summarize score
+
+. scalar ybar=r(mean)
+
+. generate double total_sq=(score-ybar)^2
+
+. generate double resid_sq=residual^2
+
+. quietly summarize total_sq, meanonly
+
+. scalar sst=r(sum)
+
+. quietly summarize resid_sq, meanonly
+
+. scalar ssr=r(sum)
+
+. display "R2 reconstructed = " %12.9f 1-ssr/sst
+R2 reconstructed =  0.051240095
+
+. assert abs(1-ssr/sst-e(r2))<1e-9
+
+. * END normal_equations
+. * BEGIN precision
+. regress score str el income
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(3, 416)       =    334.89
+       Model |  107568.862         3  35856.2873   Prob > F        =    0.0000
+    Residual |  44540.7318       416  107.069067   R-squared       =    0.7072
+-------------+----------------------------------   Adj R-squared   =    0.7051
+       Total |  152109.594       419  363.030056   Root MSE        =    10.347
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2769078    -0.25   0.804    -.6130885    .4755375
+          el |  -.4882667   .0292832   -16.67   0.000    -.5458283   -.4307052
+      income |   1.494517   .0748334    19.97   0.000     1.347418    1.641616
+       _cons |   640.3155   5.774885   110.88   0.000     628.9639    651.6671
+------------------------------------------------------------------------------
+
+. scalar full_b=_b[str]
+
+. scalar df=e(df_r)
+
+. scalar s2=e(rss)/df
+
+. display "Observations = " e(N) "  parameters including intercept = " e(rank)
+Observations = 420  parameters including intercept = 4
+
+. display "Residual degrees of freedom = " df "  s-squared = " s2
+Residual degrees of freedom = 416  s-squared = 107.06907
+
+. estat vif
+
+    Variable |       VIF       1/VIF  
+-------------+----------------------
+      income |      1.14    0.873929
+          el |      1.12    0.891206
+         str |      1.07    0.931159
+-------------+----------------------
+    Mean VIF |      1.11
+
+. * END precision
+. * BEGIN linear_contrast
+. lincom -2*str+5*el
+
+ ( 1)  - 2*str + 5*el = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -2.303783   .5903562    -3.90   0.000    -3.464236    -1.14333
+------------------------------------------------------------------------------
+
+. * END linear_contrast
+. quietly regress score el income
+
+. predict double ry, residuals
+
+. quietly regress str el income
+
+. predict double rx, residuals
+
+. quietly regress ry rx, noconstant
+
+. assert abs(_b[rx]-full_b)<1e-9
+
+. * BEGIN sample_size
+. set seed 6032711
+
+. generate double subset_draw=runiform()
+
+. sort subset_draw observat
+
+. regress score str el if _n<=105, vce(robust)
+
+Linear regression                               Number of obs     =        105
+                                                F(2, 102)         =      66.11
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4453
+                                                Root MSE          =     14.315
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.1764537   .6896493    -0.26   0.799     -1.54437    1.191462
+          el |  -.6936553   .0606742   -11.43   0.000    -.8140022   -.5733083
+       _cons |   667.5091   14.19835    47.01   0.000     639.3467    695.6715
+------------------------------------------------------------------------------
+
+. scalar small_b=_b[str]
+
+. scalar small_se=_se[str]
+
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. scalar full_se=_se[str]
+
+. display "Observed SE ratio (105 / 420) = " small_se/full_se
+Observed SE ratio (105 / 420) = 1.5932859
+
+. * END sample_size
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. generate double smaller_b=scalar(small_b)
+
+. generate double smaller_se=scalar(small_se)
+
+. generate double full_se=scalar(full_se)
+
+. export delimited using "output/overleaf_samples.csv", replace
+file output/overleaf_samples.csv saved
+
+. 
+. do "setup.do" traffic
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+
+Time variable: month_id, 1981m1 to 1989m12
+        Delta: 1 month
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. * BEGIN dynamic
+. regress logacc L.logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
+
+Linear regression                               Number of obs     =        107
+                                                F(17, 89)         =      67.48
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9283
+                                                Root MSE          =     .03179
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      logacc |
+         L1. |   .3326578    .090942     3.66   0.000      .151958    .5133577
+             |
+       trend |   .0008893   .0002165     4.11   0.000      .000459    .0013195
+             |
+       month |
+          2  |   .0146527   .0228309     0.64   0.523    -.0307119    .0600172
+          3  |   .1430085   .0236012     6.06   0.000     .0961134    .1899037
+          4  |    .038098   .0182453     2.09   0.040      .001845     .074351
+          5  |    .072244    .020017     3.61   0.001     .0324707    .1120174
+          6  |    .062745   .0195854     3.20   0.002     .0238293    .1016607
+          7  |   .0893948   .0201297     4.44   0.000     .0493976    .1293921
+          8  |   .0938234   .0185598     5.06   0.000     .0569454    .1307013
+          9  |   .0761947   .0175797     4.33   0.000     .0412643    .1111252
+         10  |   .1188968   .0212805     5.59   0.000     .0766128    .1611807
+         11  |   .0991803   .0195533     5.07   0.000     .0603283    .1380323
+         12  |   .1255027    .020455     6.14   0.000      .084859    .1661464
+             |
+        unem |  -.0125834   .0036327    -3.46   0.001    -.0198015   -.0053653
+      spdlaw |  -.0414191   .0117486    -3.53   0.001    -.0647634   -.0180748
+     beltlaw |   .0652123   .0140206     4.65   0.000     .0373537    .0930709
+      wkends |   .0032099   .0035067     0.92   0.362    -.0037578    .0101777
+       _cons |   7.018421   .9794514     7.17   0.000     5.072272     8.96457
+------------------------------------------------------------------------------
+
+. * END dynamic
+. * BEGIN diagnostics
+. regress logacc trend i.month unem spdlaw beltlaw wkends
+
+      Source |       SS           df       MS      Number of obs   =       108
+-------------+----------------------------------   F(16, 91)       =     57.61
+       Model |  1.14490873        16  .071556796   Prob > F        =    0.0000
+    Residual |  .113028314        91  .001242069   R-squared       =    0.9101
+-------------+----------------------------------   Adj R-squared   =    0.8943
+       Total |  1.25793704       107  .011756421   Root MSE        =    .03524
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0002579     4.27   0.000     .0005889    .0016133
+             |
+       month |
+          2  |  -.0338346   .0177683    -1.90   0.060    -.0691291    .0014599
+          3  |    .076953   .0167941     4.58   0.000     .0435936    .1103123
+          4  |   .0104562   .0170469     0.61   0.541    -.0234053    .0443178
+          5  |   .0237075   .0169389     1.40   0.165    -.0099395    .0573546
+          6  |   .0219334   .0172149     1.27   0.206    -.0122619    .0561288
+          7  |   .0499292   .0167036     2.99   0.004     .0167496    .0831088
+          8  |   .0559523   .0168173     3.33   0.001     .0225468    .0893578
+          9  |   .0420694   .0172819     2.43   0.017     .0077411    .0763977
+         10  |    .081717   .0169554     4.82   0.000     .0480372    .1153968
+         11  |   .0768721   .0172455     4.46   0.000     .0426161    .1111282
+         12  |   .0990862   .0170705     5.80   0.000     .0651778    .1329947
+             |
+        unem |  -.0212173   .0033974    -6.25   0.000    -.0279659   -.0144688
+      spdlaw |  -.0537593   .0126036    -4.27   0.000    -.0787948   -.0287238
+     beltlaw |   .0954526    .014235     6.71   0.000     .0671765    .1237288
+      wkends |   .0033333   .0037761     0.88   0.380    -.0041675    .0108342
+       _cons |   10.63986   .0630859   168.66   0.000     10.51455    10.76518
+------------------------------------------------------------------------------
+
+. estat dwatson
+
+Durbin–Watson d-statistic( 17,   108) =  1.200475
+
+. estat bgodfrey, lags(1 4)
+
+Breusch–Godfrey LM test for autocorrelation
+---------------------------------------------------------------------------
+    lags(p)  |          chi2               df                 Prob > chi2
+-------------+-------------------------------------------------------------
+       1     |         13.010               1                   0.0003
+       4     |         16.907               4                   0.0020
+---------------------------------------------------------------------------
+                        H0: no serial correlation
+
+. * END diagnostics
+. * BEGIN arch
+. estat archlm, lags(1)
+LM test for autoregressive conditional heteroskedasticity (ARCH)
+---------------------------------------------------------------------------
+    lags(p)  |          chi2               df                 Prob > chi2
+-------------+-------------------------------------------------------------
+       1     |          0.350               1                   0.5540
+---------------------------------------------------------------------------
+         H0: no ARCH effects      vs.  H1: ARCH(p) disturbance
+
+. * END arch
+. display "ECO603_OVERLEAF_TECHNICAL_COMPLETE"
+ECO603_OVERLEAF_TECHNICAL_COMPLETE
 

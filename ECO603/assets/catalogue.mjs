@@ -7,7 +7,8 @@ if(params.has('meeting')||params.has('slide')){
  const first=String(data.course[0].week).padStart(2,'0');
  const key=(params.get('meeting')||first).padStart(2,'0');
  if(Object.hasOwn(data.lessons,key)){
-  params.set('meeting',key);params.set('v',data.revision);
+  const legacy=data.previousRevision===params.get('v')?data.bookmarks?.[`${key}:${params.get('slide')||1}`]:null;
+  params.set('meeting',legacy?.meeting||key);if(legacy)params.set('slide',legacy.slide);params.set('v',data.revision);
   location.replace(url(`lesson.html?${params}${location.hash}`));
  }
 }

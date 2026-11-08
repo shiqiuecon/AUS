@@ -1,30 +1,178 @@
-# 04. Uncertainty, tests and robust inference
+# 04. Multiple regression: OLS properties and partialling out
 
-## 01. Is the staffing relationship large enough to matter?
+## 01. What makes an OLS comparison informative and precise?
 
-A decision needs magnitude and uncertainty.
+What makes an OLS comparison informative and precise?
 
-Suppose a ministry would consider a staffing change worthwhile only if it improved learning by a meaningful amount relative to its cost. A fitted coefficient alone cannot say how accurately the sample measures that amount. Another comparable sample could give a different estimate. Statistical inference uses the sample and stated assumptions to quantify that uncertainty and assess claims about a population quantity.
+The multiple-regression fit has already supplied a staffing coefficient and a control set. We now ask two separate questions: which sample variation determines that coefficient, and which assumptions describe its behaviour across repeated samples? The partialling-out calculation answers the first; conditional means and variances answer the second.
 
-We continue with the same staffing contrast and outcome units, then build a standard error, an interval and a test in that order of reasoning. An interval helps describe which magnitudes remain compatible with the estimated uncertainty. A test evaluates a specific proposed coefficient under a reference model. The decision also needs a credible causal comparison and a practical benefit threshold; neither is supplied by the software's uncertainty columns.
+We retain the same district data and the same coefficient. After following the residualised variables, we use compact matrix notation to prove the coefficient identity and derive unbiasedness and precision. Each additional assumption will have a stated role, so a computational equality will not be mistaken for a causal or uncertainty result. A heteroskedasticity-robust standard error permits unequal error variances across independent observations; we keep that distinction explicit when comparing it with the conventional variance formula.
 
-Question: how accurately does the sample measure the relevant magnitude?
+Same school application; separate the OLS calculation, identification argument and repeated-sample properties.
 
-Inference adds an uncertainty argument to the fitted estimate.
+Scalar residualisation first; matrix proof and precision second.
 
-## 02. Recall which coefficient the model estimates
+## 02. Residual versus error
 
-Keep its units and adjustment fixed.
+Try the comparison before opening the explanation.
 
-The adjusted staffing slope is -1.101 points per additional student per teacher. It describes a linear comparison at fixed English-learner share. A reduction of two in the ratio changes the fitted score by minus two times this coefficient.
+OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
 
-Before calculating a test, state the exact target. Testing whether the population slope is zero differs from testing whether it equals minus one point per student per teacher. A policy decision might also concern a two-student change rather than a one-unit slope. Inference becomes easier to interpret when the comparison is specified before the output is examined.
+Use what is observed after fitting to distinguish a residual from the unobserved population error.
 
-The adjusted staffing slope is -1.101 points per additional student per teacher.
+**Practice:** OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
 
-Before calculating a test, state the exact target.
+## 03. Residual versus error: explanation
 
-## 03. An outcome distribution is not a sampling distribution
+Follow the calculation and interpret its units.
+
+No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
+
+No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
+
+## 04. First remove controls from the outcome
+
+Save the score differences the controls do not predict.
+
+To isolate the score variation beyond the controls, first fit score using language share, income and an intercept, leaving staffing out. For each district, subtract this fitted score from its observed score. Call the resulting score remainder rY. It is measured in score points and can be positive or negative.
+
+The hat over the linear prediction in the displayed notation means an estimated value from that supporting regression. It does not claim that every feature of the true conditional mean is exactly linear. This first subtraction removes the part that the specified control columns reproduce in the sample. We next perform a matching subtraction for staffing; both must use the same observations and controls.
+
+Fit score on the control columns; save \(rY_i=Y_i-\widehat Y_{i,controls}\).
+
+rY remains in score points.
+
+## 05. Then remove the same controls from staffing
+
+An adjusted outcome must be compared with an adjusted regressor.
+
+Regress X on the same intercept, Z and W and save rX. It tells us whether a district has more or fewer students per teacher than those controls predict. The controls, observations and linear fitting rule must match those used to residualise Y.
+
+Removing controls only from Y is not the same calculation. The raw X still contains its relationships with Z and W. The adjusted slope uses the part of X left after those relationships are accounted for. This step explains why 'controlling for income' does more than subtract one fitted number from the outcome.
+
+\(rX_i=X_i-\widehat E_{\mathrm{linear}}(X_i\mid Z_i,W_i)\)
+
+## 06. Follow one district through both subtractions
+
+The residual plot uses actual score points and staffing units.
+
+Use the first district in the exported data. Its observed score is 690.80 and its staffing ratio is 17.89. The regression on language share, income and an intercept predicts a score of 672.92. Subtracting gives a score remainder rY of about 17.88 points. A separate regression of staffing on those same controls predicts a ratio of 19.06; subtracting gives rX of about -1.17 students per teacher. These displayed values are rounded; the stored calculations retain full precision.
+
+That district appears on the residual plot at horizontal coordinate -1.17 and vertical coordinate 17.88. It has fewer students per teacher and a higher score than its controls predict. Zero on either residual axis means equal to the control-based prediction, not a zero score or no teachers. We now fit the relationship between the two remainders, using all districts.
+
+Actual first district: \(rY\approx690.80-672.92=17.88\) score points.
+
+\(rX\approx17.89-19.06=-1.17\) students per teacher.
+
+## 07. Regress the two remainders on each other
+
+The partialled slope equals the full-model staffing slope.
+
+Now regress rY on rX without an intercept. The Frisch–Waugh–Lovell theorem, usually abbreviated FWL, states that this slope equals the coefficient on X in the full regression with the same controls and observations. Both residual series already have mean zero because their supporting regressions included intercepts.
+
+The theorem is an estimation identity. It shows that the staffing coefficient is driven by covariation between outcome and staffing after their fitted control contributions are removed. It does not say the remaining staffing variation is random. Draw the residual scatterplot and compare its slope with the raw staffing-score plot to see how the available comparison has changed.
+
+\(\widehat\beta_1=\dfrac{\sum_i rX_i rY_i}{\sum_i rX_i^2}\)
+
+## 08. Matrix notation stacks the same regression equations
+
+Define dimensions and operations before using the compact estimator.
+
+Stack the n observed scores into a column vector y. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
+
+Full column rank means no column is an exact linear combination of the others. It makes X prime X invertible: its inverse undoes multiplication by that square matrix. The displayed estimator solves the same OLS normal equations as the scalar formulas. Matrix notation keeps the bookkeeping compact; it introduces no additional causal assumption.
+
+\(y=X\beta+u\); \(X:n\times p\), \(\beta:p\times1\), \(p=k+1\).
+
+Normal equations: \(X\prime(y-X\widehat\beta)=0\).
+
+Under full column rank, \(\widehat\beta=(X\prime X)^{-1}X\prime y\).
+
+## 09. The residual-maker gives a compact FWL proof
+
+Remove the same control space from the outcome and target regressor.
+
+Let x be the staffing column and let Z contain the intercept and the other controls. The projection matrix P sub Z maps a vector to its fitted values from OLS on Z. The residual-maker M sub Z is the identity matrix I minus that projection. I leaves a vector unchanged, so M sub Z keeps the remainder after fitting on Z.
+
+The residual-maker is symmetric, meaning its transpose equals itself, and idempotent, meaning that applying it twice changes nothing further. It also removes Z exactly. Minimising the full squared-error criterion over the coefficients on Z therefore leaves a criterion using M sub Z times y and M sub Z times x. Its one-regressor normal equation gives the displayed FWL coefficient. This proves the coefficient identity, while uncertainty still needs the full model's covariance calculation and degrees of freedom.
+
+\(P_Z=Z(Z\prime Z)^{-1}Z\prime\), \(M_Z=I-P_Z\); \(M_ZZ=0\).
+
+\(M_Z\prime=M_Z\), \(M_Z^2=M_Z\).
+
+\(\widehat\beta_x=(x\prime M_Zx)^{-1}x\prime M_Zy\).
+
+## 10. Read the full regression first
+
+Compare coefficients on the same observations and controls.
+
+With staffing, language share and income in the same model, the staffing slope is about minus 0.069 score points per student per teacher. The coefficient-only display lets us compare this with the result from the two residual variables. Check that the control list and the sample are identical before comparing the numbers.
+
+The estimate is close to zero in this specification. This describes the adjusted observational comparison in these data. It does not show that every teacher-hiring intervention has zero effect: the causal interpretation still depends on the assignment argument and on the population to which the question applies. The purpose of the next calculation is to reproduce this particular coefficient from its underlying variation.
+
+Full-model staffing coefficient: \(-0.068776\)
+
+Controls: language share, income and an intercept.
+
+```text
+. quietly regress score str el income
+
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,4]
+           str          el      income       _cons
+y1   -0.068776   -0.488267    1.494517  640.315497
+```
+
+## 11. Verify the FWL identity in Stata
+
+The slopes agree to numerical precision.
+
+The residual-on-residual coefficient matches the staffing coefficient in the full regression. This is the Frisch–Waugh–Lovell result, usually abbreviated FWL. It is an exact least-squares identity when both subtractions use the same observations and control columns as the full fit. The residual regression needs no extra intercept because both remainders already have zero means.
+
+ The identity concerns the coefficient. A separate manual residual regression can print a different standard error because it can use different assumptions about error spread and a different count of fitted coefficients. A standard error describes uncertainty across repeated samples; we teach that calculation in the next meeting. For now, verify the coefficient identity and explain the two residual axes. Use the full fitted model when later requesting its uncertainty estimates.
+
+FWL: the same adjusted coefficient from compatible residuals.
+
+A coefficient identity does not make every printed uncertainty calculation identical.
+
+```text
+. quietly regress ry rx, noconstant
+
+. matrix list e(b), format(%10.6f)
+
+symmetric e(b)[1,1]
+           rx
+y1  -0.068776
+```
+
+## 12. Read the residual axes in real units
+
+They are deviations, not new measurements.
+
+The horizontal axis measures students per teacher above or below the level predicted by the controls. The vertical axis measures score points above or below its predicted baseline. A point at zero on one axis does not mean the district has zero students or a zero test score.
+
+The fitted line summarises how these adjusted deviations move together. Its slope retains units of score points per additional student per teacher. Use the graph to explain which variation the full coefficient uses, then ask whether that variation is plausibly unrelated to omitted learning determinants. The residual plot makes the question visible but does not answer it automatically.
+
+## 13. Partialling out
+
+Try the comparison before opening the explanation.
+
+To estimate the schooling coefficient controlling for experience, describe the FWL procedure in words.
+
+Name both variables that are residualised and list the identical controls used in both subtractions.
+
+**Practice:** To estimate the schooling coefficient controlling for experience, describe the FWL procedure in words.
+
+## 14. Partialling out: explanation
+
+Follow the calculation and interpret its units.
+
+Regress wages on an intercept and experience and save the residuals. Regress schooling on the same intercept and experience and save those residuals. Regress wage residuals on schooling residuals without another intercept. Its slope equals the schooling coefficient in the full regression on the same observations. Both subtractions must remove exactly the same control columns.
+
+Regress wages on an intercept and experience and save the residuals. Regress schooling on the same intercept and experience and save those residuals. Regress wage residuals on schooling residuals without another intercept. Its slope equals the schooling coefficient in the full regression on the same observations. Both subtractions must remove exactly the same control columns.
+
+## 15. An outcome distribution is not a sampling distribution
 
 The random object changes.
 
@@ -36,7 +184,7 @@ A distribution describes the possible values of a random quantity and how often 
 
 These are different objects.
 
-## 04. Describe spread before estimating uncertainty
+## 16. Describe spread before estimating uncertainty
 
 Variance and standard deviation summarize different kinds of variation.
 
@@ -50,7 +198,7 @@ Standard deviation: \(\sqrt{2/3}\approx0.816\)
 
 Residual degrees of freedom: \(n-k\)
 
-## 05. A standard error estimates the estimator’s spread
+## 17. A standard error estimates the estimator’s spread
 
 It is not the standard deviation of the outcome.
 
@@ -62,460 +210,249 @@ SE: estimated repeated-sample standard deviation of the coefficient.
 
 Normal reference: about 95% between \(-1.96\) and \(1.96\).
 
-## 06. State a null before calculating a p-value
+## 18. Unbiasedness concerns repeated samples
 
-The evidence is evaluated under a specific claim.
+It does not promise an accurate estimate in every sample.
 
-A null hypothesis is a specific claim to evaluate, such as a staffing slope of zero. The alternative here is that the slope differs from zero in either direction. Write the null before examining whether the estimate looks surprising. Subtract the proposed value from the estimate, then divide by its standard error. This t statistic measures the gap in estimated standard-error units.
+Imagine repeating the sampling process and estimating the same target each time. An estimator is unbiased if its average over these repetitions equals the target. It does not have to equal the target in any particular sample. Consider a target of one. Suppose one estimator produces 0.7, 1.0 and 1.3 equally often, while another produces zero, one and two equally often. Both average to one.
 
-Under the null and the maintained inference assumptions, compare that statistic with its reference distribution. The two-sided p-value is the probability of a statistic at least as far from zero in either direction as the one observed. It is not the probability that the null is true. With the robust slope near minus 1.101 and SE near 0.433, the statistic for zero is about minus 2.54. Its interpretation depends on the reference approximation and sampling assumptions.
+The first estimator varies less. Its variance, the average squared deviation from its mean, is 0.06; the second variance is two thirds. Precision refers to this spread, so two unbiased estimators can have different precision. Under independent sampling, a correctly specified linear mean, sufficient separate regressor variation and a zero conditional-mean error, OLS is unbiased. These assumptions concern the population and sampling process rather than the fitted residual identities.
 
-\(H_0:\beta_1=0\), \(H_1:\beta_1\ne0\)
+Unbiased: repeated-sample average equals the target.
 
-\(t=(\widehat\beta_1-\beta_{1,0})/SE(\widehat\beta_1)\)
+Variance: average squared distance from that average.
 
-p-value: a tail probability under the null and reference assumptions.
+Two unbiased procedures can have different precision.
 
-## 07. Build a confidence interval step by step
+## 19. The estimator-error identity shows where unbiasedness comes from
 
-Combine the estimate with a stated reference rule.
+Separate the algebra from the conditional-mean assumption.
 
-A confidence interval is produced by a procedure designed to cover the target coefficient at a stated rate across repeated comparable samples. With a suitable large-sample normal approximation, a 95% interval is the estimate plus or minus 1.96 SEs. The procedure, not the fixed unknown coefficient, is what has the repeated-sample coverage property.
+Substitute y equals X beta plus u into the OLS formula. The result is the true coefficient vector plus X prime X inverse times X prime u. Conditional on the entire design matrix, the matrix weights are fixed. If the error vector has conditional mean zero, the added term averages to zero, giving conditional unbiasedness.
 
-For an illustrative estimate of 0.30 with SE 0.12, the margin is 0.2352 and the interval is [0.0648, 0.5352]. These are teaching numbers. The interval describes uncertainty under its assumptions; it does not account for every possible source of bias in the empirical design.
+This conclusion requires full rank and the stated sampling and mean assumptions. It does not require normally distributed errors or equal error variances. The weights multiply the observed outcomes linearly, which is the meaning of linear estimator in the later efficiency result. A model can be linear in unknown coefficients even when its regressors contain logs, squares or products.
 
-\(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
+\(\widehat\beta-\beta=(X\prime X)^{-1}X\prime u\).
 
-## 08. Confidence interval
+\(E[u\mid X]=0\Rightarrow E[\widehat\beta\mid X]=\beta\).
+
+Linearity of the estimator in outcomes and linearity of the model in parameters are distinct statements.
+
+## 20. The conventional variance formula uses usable regressor variation
+
+Make the assumptions behind the precision calculation explicit.
+
+Suppose errors have conditional variance sigma squared, are uncorrelated across observations, and have zero mean conditional on the design. Equal conditional variances are called homoskedasticity. The covariance matrix of OLS is then sigma squared times X prime X inverse. For a particular regressor j, its variance can also be written using its total centred variation and the R squared from regressing it on the other inputs.
+
+As that auxiliary R squared approaches one, less separate variation remains and the coefficient becomes less precise. Estimate sigma squared by residual sum of squares divided by n minus p, where p counts every fitted coefficient including the intercept. The conventional standard error is the square root of the corresponding estimated variance. Later, unequal variance and dependence will change this covariance formula.
+
+If \(\operatorname{Var}(u\mid X)=\sigma^2I\), \(\operatorname{Var}(\widehat\beta\mid X)=\sigma^2(X\prime X)^{-1}\).
+
+\(\operatorname{Var}(\widehat\beta_j\mid X)=\dfrac{\sigma^2}{SST_j(1-R_j^2)}\), \(SST_j=\sum_i(X_{ij}-\overline X_j)^2\).
+
+\(s^2=SSR/(n-p)\), \(SE_j=\sqrt{s^2[(X\prime X)^{-1}]_{jj}}\).
+
+## 21. Precision depends on usable regressor variation
+
+Little variation after adjustment means a weak comparison.
+
+Suppose most staffing variation is already predicted by income and language composition. Then rX has little variation. The FWL slope divides by the sum of squared rX values, so small remaining variation can make the estimate sensitive to outcome noise.
+
+This is one reason a control may increase an SE even when it helps address confounding. The analyst is asking a more specific comparison and may have fewer independent differences available to answer it. Precision and credibility can move in different directions. Explain that trade-off instead of dropping a substantively needed control solely to obtain a smaller SE.
+
+Usable variation: \(\sum_i rX_i^2\)
+
+## 22. Multicollinearity reduces separate information
+
+High correlation is different from exact dependence.
+
+Multicollinearity describes strong linear relationships among regressors. With exact dependence, separate coefficients cannot be estimated. With strong but imperfect relationships, OLS can still be unbiased under exogeneity, but some coefficients may be imprecise because little independent variation remains.
+
+For example, including income measured in dollars and the same income divided by one thousand creates exact dependence. Including income and a related but distinct education measure creates a different issue. The first is a redundant equation; the second may be a legitimate but demanding comparison. Always connect the numerical diagnostic to the variables' definitions.
+
+Multicollinearity describes strong linear relationships among regressors.
+
+For example, including income measured in dollars and the same income divided by one thousand creates exact dependence.
+
+## 23. Efficiency needs additional error assumptions
+
+Small variance is a comparison among estimators.
+
+To compare precision, specify which estimators and assumptions are being compared. In the Gauss–Markov result, linear estimators are weighted sums of the observed outcomes, with weights determined by the regressors. Unbiased means that their repeated-sample averages equal the coefficient target. Among this class, OLS has the smallest variance under the theorem's assumptions.
+
+Those assumptions include the correct linear mean and zero conditional-mean error, nonredundant regressor columns, and errors that are uncorrelated with each other and have the same variance given the regressors. Equal conditional error variance is called homoskedasticity. The theorem does not compare every possible estimator, establish a causal interpretation or make unequal-variance OLS coefficients automatically biased. We next study how to estimate uncertainty when the equal-variance condition is doubtful.
+
+Linear unbiased estimators: weighted outcome sums with correct repeated-sample means.
+
+Gauss–Markov adds equal error variance and no cross-observation error correlation.
+
+## 24. Best linear unbiased has a precise comparison class
+
+An efficiency theorem is conditional on a model and a class of estimators.
+
+The Gauss–Markov result compares OLS with other estimators that are linear combinations of the observed outcomes and unbiased conditional on the design matrix. Under zero conditional mean, full rank and error covariance sigma squared I, OLS has the smallest conditional variance in that class. BLUE abbreviates best linear unbiased estimator.
+
+The result does not compare every conceivable biased or nonlinear procedure, and it does not establish the causal validity of the coefficient. With unequal error variances, OLS can remain unbiased while losing this efficiency guarantee. The appropriate response depends on whether we want a covariance correction or have a credible variance model for weighting. A smaller reported standard error does not by itself validate either choice.
+
+BLUE: best linear unbiased estimator under the stated mean, rank and covariance assumptions.
+
+“Best” means minimum conditional variance within the linear unbiased class.
+
+Normality is not needed for this theorem.
+
+## 25. Reconstruct precision and the degrees of freedom
 
 Try the comparison before opening the explanation.
 
-An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
+Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
 
-First calculate the estimate plus and minus 1.96 standard errors. For a zero null and a two-sided five-percent normal-reference test, check whether zero lies inside that same interval.
+State the assumptions and units alongside the calculation.
 
-**Practice:** An estimate is 0.30 with robust SE 0.12. Use the large-sample 1.96 rule to form a 95% interval and test a zero effect.
+**Practice:** Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
 
-## 09. Confidence interval: explanation
+## 26. Reconstruct precision and the degrees of freedom: explanation
 
 Follow the calculation and interpret its units.
 
-\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
+The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
 
-\(0.30\pm1.96\times0.12\) gives [0.0648,0.5352]. The t ratio is 2.5, so reject zero at approximately 5% under the relevant large-sample assumptions. This says nothing by itself about the economic importance or causal validity of the estimate.
+The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
 
-## 10. A rejection is not an effect-size statement
+## 27. Use VIF as a description, not a decision rule
 
-Statistical significance and practical value answer different questions.
+It measures linear overlap among included regressors.
 
-A statistically significant result passes a chosen testing threshold. A practically important result is large enough, in its application, to matter for a decision. A tiny effect can be estimated very precisely in a large sample; a meaningful effect can remain uncertain in a noisy sample.
+The variance inflation factor, VIF, describes how much a regressor overlaps linearly with the other included regressors. Choose regressor j, predict it from the other regressors and an intercept, and call that supporting regression's fit R subscript j squared. The factor is one divided by one minus that R squared. A value near one indicates little overlap; it grows when the other columns predict most of the regressor's variation.
 
-For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives. Report an interval as well as the point estimate. The policy reader should be able to see both the range of values consistent with the model and the scale of the decision being considered.
+In the conventional equal-error-variance formula, this overlap inflates the coefficient's variance relative to otherwise comparable separate regressor variation. It is not a universal model-selection threshold. Removing a needed common-cause control because its VIF is large can make the causal comparison worse. Use the diagnostic to explain limited separate information, then consider more informative data or another design.
 
-A statistically significant result passes a chosen testing threshold.
+\(VIF_j=1/(1-R_j^2)\)
 
-For a staffing decision, translate the slope into a feasible ratio change and compare the implied learning difference with costs and relevant alternatives.
+\(R_j^2\): fit from predicting regressor \(j\) with the other control columns.
 
-## 11. Normal-error exact inference and robust approximations differ
-
-Know which argument supports the reference distribution.
-
-Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
-
- Heteroskedasticity-robust inference permits error spread to vary with the regressors. Its usual justification is a large-sample approximation, with suitable sampling and finite variances for the quantities being averaged and no small set of observations dominating the fit. It does not automatically allow errors to be related across districts, states or dates. The reference distribution and the covariance formula are distinct choices, and neither fixes a failure of the model's zero conditional-mean requirement.
-
-Exact conventional t/F: normal, independent, equal-variance errors under the linear model.
-
-Robust: large-sample approximation allowing unequal variance; dependence needs separate treatment.
-
-## 12. Unequal error spread is heteroskedasticity
-
-It concerns the error variance at different regressor values.
-
-Heteroskedasticity means that the conditional error variance differs across observations. For example, districts with similar observed staffing can still have different degrees of score variation depending on their size or background. The constant-variance alternative is homoskedasticity.
-
-Unequal variance does not by itself invalidate the OLS coefficient under exogeneity. It changes the conventional variance calculation and the classical efficiency comparison. This is why we need to separate an assumption about the average error from an assumption about its spread. An inference correction cannot repair an incorrect conditional mean or an endogenous policy variable.
-
-\(E(u_i\mid X_i)=0\) concerns the mean
-
-\(\operatorname{Var}(u_i\mid X_i)\) concerns spread
-
-## 13. Look for a variance pattern before choosing a remedy
-
-A squared residual is an observable clue about error spread.
-
-The population error is not observed. After fitting the staffing equation, we can examine residuals, the observed scores minus their fitted predictions. Squaring a residual records its size without cancelling positive and negative errors. The plot shows these squared residuals against language composition in the actual district data.
-
-The gold points average squared residuals within five ranges of language share. A changing pattern motivates a variance question, but it does not prove the proposed mean equation is correct. An omitted nonlinear mean can also create a residual pattern. Check the economic specification, then use a formal diagnostic to state precisely which variance restriction is being examined.
-
-Residual: observed outcome minus fitted outcome.
-
-Squared residual: \(\widehat u_i^2\).
-
-Gold: average squared residual within each of five language-share ranges.
-
-## 14. Breusch–Pagan turns the variance question into a test
-
-The null is constant conditional error variance, given the chosen mean model.
-
-The Breusch–Pagan test asks whether error variance changes with specified explanatory variables. Here we use staffing and language share. An auxiliary regression is a supporting regression: we regress the squared OLS residuals on an intercept and those two variables. Its R squared measures how much of their observed variation this equation explains.
-
-The version selected by Stata's iid option multiplies that R squared by the sample size. Assuming a correctly specified mean, independent observations and finite variances for the quantities used in this calculation, the large-sample null approximation compares the statistic with a chi-squared distribution with two degrees of freedom. It relaxes the original test's normal-error assumption. The actual statistic is 29.50, with a p-value below 0.001. This is evidence against constant variance under this specification; it is not a test of whether staffing is exogenous.
-
-\(H_0:\operatorname{Var}(u_i\mid X_i)=\sigma^2\): constant variance; \(X_i\) denotes the included regressors.
-
-Regress \(\widehat u_i^2\) on a constant, staffing and language share.
-
-Test statistic: \(nR^2_{\mathrm{aux}}\), compared with \(\chi^2_2\).
+No universal VIF cutoff certifies a causal model.
 
 ```text
-. estat hettest str el, iid
+. quietly regress score str el income
 
-Breusch–Pagan/Cook–Weisberg test for heteroskedasticity 
-Assumption: i.i.d. error terms
-Variables: str el
+. estat vif
 
-H0: Constant variance
-
-    chi2(2) =  29.50
-Prob > chi2 = 0.0000
+    Variable |       VIF       1/VIF  
+-------------+----------------------
+      income |      1.14    0.873929
+          el |      1.12    0.891206
+         str |      1.07    0.931159
+-------------+----------------------
+    Mean VIF |      1.11
 ```
 
-## 15. White allows a broader variance pattern
-
-Squares and products expand the auxiliary variance regression.
-
-The White test uses the original regressors, their squares and their pairwise products to look for a broader pattern in squared residuals. With staffing and language share, this adds staffing squared, language share squared and their product. There are five auxiliary slopes to test jointly. Their units differ, but the joint null is that every slope is zero.
-
-The actual White statistic is 42.46, again with a p-value below 0.001. The first White-test block is our target; Stata also prints a separate decomposition involving other error properties. More flexible diagnostics use more degrees of freedom and can have low power in small samples. A failure to reject would not establish equal variance, and a rejection need not reveal the correct variance formula. An appropriate uncertainty procedure can be specified in advance rather than switched on only after a significant diagnostic.
-
-Auxiliary columns: staffing, language share, their squares and their product.
-
-White statistic: \(nR^2_{\mathrm{aux}}\), compared with \(\chi^2_5\).
-
-Distinguish a variance diagnostic from a test of the causal comparison.
-
-**Practice:** Why do BP and White have different degrees of freedom here?
-
-**Explanation:** BP uses two auxiliary slopes; White adds two squares and one product, giving five.
-
-```text
-. estat imtest, white
-
-White's test
-H0: Homoskedasticity
-Ha: Unrestricted heteroskedasticity
-
-    chi2(5) =  42.46
-Prob > chi2 = 0.0000
-```
-
-## 16. Weighted least squares changes how the line is fitted
-
-Give less weight to observations with greater conditional error variance.
-
-Robust OLS changes the uncertainty calculation while keeping the fitted line. Weighted least squares instead changes the fitting objective. Let w for observation i be a positive weight. The method minimises the sum of w times each squared residual. If a correctly specified linear mean has independent errors whose conditional variances are known up to a common scale, inverse-variance weights can improve precision.
-
-Consider a district average. Under a particular model of independent pupil noise, its error variance is proportional to one divided by enrolment. That model suggests enrolment weights. It is a hypothesis, because pupils can share district-level shocks. Multiplying the outcome, every regressor and the constant column by the square root of enrolment gives the same weighted fit. Transform the constant too; an ordinary untransformed intercept would define a different equation.
-
-WLS minimises \(\sum_i w_i(y_i-a-b_1STR_i-b_2EL_i)^2\).
-
-Candidate model: \(\operatorname{Var}(u_i\mid X_i,n_i)=\sigma^2/n_i\Rightarrow w_i=n_i\).
-
-Multiply \(y_i\), every regressor and the constant by \(\sqrt{n_i}\).
-
-## 17. Read a weighted fit without assuming it must be better
-
-A variance model and an economic target both matter.
-
-In the actual school data, enrolment weighting changes the staffing slope from -1.101 to -1.326. The corresponding heteroskedasticity-robust standard errors are 0.433 and 0.661. The weighted estimate is not automatically more precise. The proposed inverse-enrolment variance model can be a poor description of district-level errors.
-
-The enrolment-weighted fit gives larger districts more influence. If the conditional mean is misspecified, it can also change the approximation target. The same weighted coefficient is reproduced by the transformed regression in the do-file. That verifies the calculation, not the variance model or a causal staffing effect. Explain why the weights suit the question, use a justified uncertainty calculation, and report sensitivity to weighting.
-
-OLS and WLS use the same 420 districts.
-
-The transformed regression reproduces the weighted coefficient.
-
-Weighting does not remove an omitted common cause.
-
-**Practice:** Which column is easy to forget when transforming the weighted model?
-
-**Explanation:** Multiply the constant column by the square root of enrolment as well.
-
-```text
-. regress score str el [aw=enrol], vce(robust)
-
-------------------------------------------------------------------------------
-             |               Robust
-       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         str |   -1.32611   .6605944    -2.01   0.045     -2.62462   -.0276004
-          el |  -.6390283   .0408085   -15.66   0.000    -.7192442   -.5588124
-       _cons |   693.1913   13.26319    52.26   0.000     667.1203    719.2624
-------------------------------------------------------------------------------
-```
-
-## 18. Generalised least squares includes variance and dependence
-
-WLS is one special case of a broader transformation idea.
-
-Variance describes each error's spread. Covariance describes how two errors move together. Generalised least squares, or GLS, uses an assumed structure for both to transform the regression into an equation with equal-variance errors and zero covariance between different errors. Weighted least squares is the special case with unequal variances but no cross-observation error covariance.
-
-Feasible GLS first estimates the variance or dependence structure and then performs the transformation. Its precision advantage depends on a credible mean equation, exogeneity and a sufficiently accurate error model; estimating that structure adds uncertainty. For independent districts with uncertain variance patterns, robust OLS is a defensible starting point. For dated errors that move together, a model of that dependence may motivate another transformation. We return to that time-series case later. None of these transformations supplies a missing causal identification argument.
-
-GLS: transform using the assumed error variances and covariances.
-
-Feasible GLS: estimate that error structure before transforming.
-
-Choose separately: mean specification, estimator and uncertainty calculation.
-
-**Practice:** Would weighting remove an omitted cause related to staffing and scores?
-
-**Explanation:** No. Justify the causal comparison separately from the error-variance model.
-
-## 19. A DAG does not encode the size of the noise
-
-Use a mean-zero innovation with a regressor-dependent scale.
-
-An innovation is a new unpredictable disturbance. Let epsilon be independent of X, with mean zero and variance one. In this model, the outcome equals an intercept plus a staffing slope times X, plus sigma of X times epsilon. Sigma of X is a positive scale factor that can change with staffing.
-
-The regression error u is the scaled innovation, so its conditional mean is zero while its conditional variance is sigma of X squared. Unequal spread can therefore coexist with a valid conditional-mean comparison. The DAG shows X and the independent innovation entering the outcome. The equation, rather than the arrow pattern alone, specifies how the noise scale changes.
-
-Compare this with a diagram containing an unmeasured common cause of X and the outcome. That second story threatens identification. Robust SEs address an uncertainty calculation in the first story; they do not make the second story disappear. This distinction is why a causal graph and an error-variance assumption have different jobs.
-
-\(Y=a+bX+\sigma(X)\varepsilon\)
-
-\(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
-
-## 20. Compare conventional and robust output
-
-Same coefficients, different estimated uncertainty.
-
-The conventional staffing SE is 0.380; the heteroskedasticity-robust SE is 0.433. The coefficient is identical because both commands solve the same OLS problem on the same 420 districts.
-
-The robust option changes the estimated covariance matrix, which records the estimated variances of coefficients and how their estimates vary together. We focus on the staffing variance and its square root, the SE. The new calculation allows unequal error spread under suitable conditions. It does not automatically allow observations to share arbitrary dependence, a distinction that will matter in the time-series and panel lessons.
-
-```text
-. regress score str el, vce(robust)
-
-------------------------------------------------------------------------------
-             |               Robust
-       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
-          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
-       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
-------------------------------------------------------------------------------
-```
-
-## 21. Do not choose an SE by the resulting significance
-
-Match it to the sampling and dependence structure.
-
-A robust SE can be larger or smaller than its conventional counterpart. Choosing the smaller one to obtain a preferred conclusion would reverse the reasoning needed for credible inference. First ask how observations were obtained and how their errors might be related.
-
-District-level independent sampling suggests one set of methods; repeated observations on districts or common state-level shocks suggest others. Record the chosen method and its justification in the analysis plan. Then interpret the resulting uncertainty, including an inconvenient or inconclusive result. Statistical uncertainty is part of the evidence, not a nuisance to eliminate by selecting a formula.
-
-Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
-
-## 22. Robust does what?
+## 28. Collinearity
 
 Try the comparison before opening the explanation.
 
-After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
+Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
 
-Keep the regression equation and sample fixed. Separate the fitted coefficient from the covariance calculation used for its uncertainty.
+Ask whether X still changes after the other regressors have been accounted for. Lack of separate variation is the key issue.
 
-**Practice:** After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
+**Practice:** Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
 
-## 23. Robust does what?: explanation
-
-Follow the calculation and interpret its units.
-
-On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
-
-On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
-
-## 24. Test a substantively meaningful value
-
-A zero null is not the only relevant question.
-
-Suppose one score point per additional student per teacher is an important benchmark. The null is now that the staffing slope equals minus one, not zero. The estimate's distance from minus one is much smaller than its distance from zero.
-
-Use Stata's test command to evaluate that stated restriction. A coefficient can differ detectably from zero while remaining quite compatible with another meaningful benchmark. Explaining this comparison helps a decision-maker understand the range of plausible magnitudes rather than interpret a rejection as proof of one exact effect.
-
-```text
-. test str=-1
-
- ( 1)  str = -1
-
-       F(  1,   417) =    0.05
-            Prob > F =    0.8151
-```
-
-## 25. Compute uncertainty for the policy contrast
-
-Scale the SE along with the estimate.
-
-For a two-student reduction, the fitted change is minus two times the staffing slope. Its SE is twice the slope SE, because multiplying a random estimate by a constant multiplies its standard deviation by the constant's absolute value.
-
-The lincom output supplies the contrast, SE and interval together. State that the result is in score points, with the included language composition held fixed. In interaction models, a contrast can combine several coefficients and its variance will also depend on their covariance. Using the model's covariance information avoids shortcuts such as adding standard errors.
-
-\(\operatorname{SE}(-2\widehat\beta_1)=2\operatorname{SE}(\widehat\beta_1)\)
-
-```text
-. lincom -2*str
-
-------------------------------------------------------------------------------
-       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
-------------------------------------------------------------------------------
-```
-
-## 26. A confidence interval can contain an important effect
-
-Failing to reject is not proof of no effect.
-
-If an interval includes zero and also includes effects large enough to matter, the evidence may be too imprecise for the decision. It is inaccurate to report that the study established no relationship. It is also inaccurate to select a large value from the interval and present it as the estimated effect.
-
-Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision. This distinguishes an uninformative result from evidence that any meaningful effect is small. Both conclusions can be useful, but they require different evidence.
-
-If an interval includes zero and also includes effects large enough to matter, the evidence may be too imprecise for the decision.
-
-Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision.
-
-## 27. Economic versus statistical size
-
-Try the comparison before opening the explanation.
-
-A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
-
-Use the outcome units and the decision threshold. A small p-value and a worthwhile policy benefit are different claims.
-
-**Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
-
-## 28. Economic versus statistical size: explanation
+## 29. Collinearity: explanation
 
 Follow the calculation and interpret its units.
 
-No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
 
-No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
+No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
 
-## 29. More observations help only under the relevant conditions
+## 30. A residual is not an automatically valid control
 
-The information gain depends on what the observations add.
+Its construction does not establish a causal role.
 
-With independent, suitably informative observations and stable variance, sampling uncertainty often decreases at a square-root rate as sample size grows. Roughly quadrupling the sample can halve an SE in that setting. This is an approximation, not a promise for any enlarged database.
+Residualisation is a way to calculate an adjusted linear slope. It does not authorise adding any predicted or residual quantity to a causal model. If a control is affected by the policy or selected through a shared consequence, partialling it out may change the target or create an unwanted relationship.
 
-Repeating highly dependent information may add less precision. Increasing observations while leaving a regressor endogenous can make an estimate concentrate around the wrong value. The next large-sample lesson will separate these ideas explicitly. For today, tie any proposed sample expansion to the sampling structure and the comparison it improves.
+Return to the control-selection discussion. First decide which comparison is justified by the economic timing and mechanism. Then use FWL to understand how that specified regression estimates its slope. The order matters: a precise computational identity cannot choose the causal model for us.
 
-Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
+In this separate diagram, R is an observed staffing-allocation rule, while unmeasured learning needs U influence staffing and scores. Removing the fitted R component does not block the route through U. Residualisation is a calculation on the observed variables; it does not certify that the remaining variation is unrelated to every omitted outcome determinant.
 
-## 30. Avoid repeated specification searches for a preferred p-value
+## 31. Explain what the estimate uses
 
-The search changes what an isolated test can mean.
+Describe the remaining comparison in ordinary language.
 
-If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search. Even under no relationship, enough attempts can produce apparently unusual results.
+For the school application, say that the staffing coefficient uses variation in student–teacher ratios left after their linear relationships with income and language composition are accounted for. It relates that variation to similarly adjusted scores. This explanation is more informative than saying only that we 'ran a multiple regression'.
 
-Keep a clear account of the main question and intended specification. Treat additional analyses as exploration and explain their role. This is especially useful in an applied master's project, where learning from data is legitimate but a final report should distinguish a planned test from a pattern noticed after many trials. Transparent reasoning is more informative than a table selected solely for stars.
+Then state the remaining assumption: the adjusted staffing variation must not be related to relevant unobserved determinants in the way ruled out by the chosen error restriction. Readers can now distinguish the calculation from the design claim. They can also see why a small amount of remaining variation may limit precision.
 
-If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search.
+For the school application, say that the staffing coefficient uses variation in student–teacher ratios left after their linear relationships with income and language composition are accounted for.
 
-Keep a clear account of the main question and intended specification.
+Then state the remaining assumption: the adjusted staffing variation must not be related to relevant unobserved determinants in the way ruled out by the chosen error restriction.
 
-## 31. Write an uncertainty statement for a policy reader
+## 32. Make the computation reproducible
 
-Include the comparison, units and conditions.
+The same sample and control set are essential.
 
-A concise result sentence names the adjusted comparison, gives a feasible policy contrast and reports its uncertainty method. A second sentence explains the design limitation most relevant to causal interpretation. Neither should require the reader to decode a software table.
+The do-file fits the full model, saves the staffing coefficient, creates both supporting-regression residuals and checks the final slope. Use the same controls and observations in every step. A different missing-value sample would change the identity being checked. Name the saved residual variables so that another reader can tell which predictors were removed.
 
-For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points. Then explain that staffing may still respond to unmeasured learning needs. This keeps inference and identification connected to the same application while showing clearly which argument supports each claim.
+For a reproducible coefficient calculation, retain the data definitions, sample, equation and exact commands. For a causal interpretation, add the separate argument about why the remaining staffing variation is comparable. The next meeting adds uncertainty calculations to this record. A reader should be able to reproduce the arithmetic and distinguish it from the assumptions supplied by the researcher.
 
-A concise result sentence names the adjusted comparison, gives a feasible policy contrast and reports its uncertainty method.
+Record the sample, control columns, residual definitions and coefficient check.
 
-For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points.
+Reproducibility of a calculation does not establish its causal assumptions.
 
-## 32. Check the reference distribution and scale
-
-An interval is meaningful only for a defined quantity.
-
-Before interpreting an interval, identify whether it concerns a coefficient, a fitted contrast, an average outcome or an individual prediction. These quantities have different uncertainty calculations. A confidence interval for an average fitted score is not an interval for every district's score.
-
-Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations. Small rounding differences in endpoints can arise from the reference rule. The important interpretation still depends on the coefficient target, units, sampling conditions and design.
-
-Before interpreting an interval, identify whether it concerns a coefficient, a fitted contrast, an average outcome or an individual prediction.
-
-Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations.
-
-## 33. Use the evidence to identify the next useful step
-
-Precision, fit and design can require different improvements.
-
-An imprecise but credible comparison may benefit from more informative observations. A precise but confounded comparison may require better measurement or a different design. A poor functional form may require a model that represents nonlinear relationships more adequately.
-
-These are different diagnoses. Explain why a proposed next step addresses the concern you have actually observed. This habit helps an empirical report remain useful even when the first regression does not settle the policy question. A statistically significant coefficient is not the only possible contribution of an applied analysis.
-
-An imprecise but credible comparison may benefit from more informative observations.
-
-These are different diagnoses.
-
-## 34. DAG practice: uncertainty is not adjustment
+## 33. DAG practice: partialling out and hidden needs
 
 Trace the routes before choosing a control.
 
-Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
+The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-**Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
+**Practice:** The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
 
-## 35. DAG practice: uncertainty is not adjustment: explanation
+## 34. DAG practice: partialling out and hidden needs: explanation
 
 Explain what conditioning changes in this stated graph.
 
-The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them.
+The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains.
 
-On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
+Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
 
-The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them. On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
+The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains. Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
 
-## 36. Report magnitude and uncertainty together
+## 35. Verify partialling out without misusing its SE
 
 Reproduce the evidence, then explain its economic meaning.
 
-Run meeting_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
+Run the partialling-out code and compare the full-model staffing coefficient with the coefficient from regressing rY on rX. Then describe what one point on the residual plot measures. Both subtractions must use language share, income and an intercept on the same districts.
 
-Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+The full log also prints standard errors. Treat them as estimates of repeated-sample spread, which the next meeting develops. The FWL exercise establishes an algebraic identity for the coefficient, not permission to use any manual regression's uncertainty calculation for the full model. Record the matching coefficients and state why residualisation does not remove an unobserved common cause.
 
-**Practice:** Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Keep your commands, log, output and interpretation.
+Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-## 37. Report magnitude and uncertainty together: explanation
+**Practice:** Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Keep your commands, log, output and interpretation.
+
+## 36. Verify partialling out without misusing its SE: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
-The robust staffing estimate is -1.101296, with SE 0.432847. The approximate interval is [-1.9497, -0.2529] score points per additional student per teacher. Multiplying the slope by minus two gives 2.2026 points; its SE is 0.8657, because scaling by a constant scales the SE by its absolute value.
+The residual staffing coefficient and the full-model staffing coefficient both equal about −0.068776 on the same observations. rx measures staffing minus its fitted prediction from the controls; ry measures score minus its prediction from those same controls.
 
-These calculations quantify uncertainty under the model and inference assumptions. Stata's finite-degree-of-freedom interval can differ slightly from the 1.96 approximation. A recommendation also needs a credible causal comparison, the outcome's educational importance, staffing costs and the relevant population. Rejecting a zero slope does not supply those additional pieces of the decision.
+The manual fit prints standard error 0.275915, while the full fit prints 0.290160. These use different uncertainty procedures. A standard error estimates repeated-sample spread; FWL guarantees the coefficient identity without guaranteeing that every manual spread calculation matches. Use the complete model’s justified uncertainty calculation when reporting that model. Neither matching coefficients nor small residuals establish a causal staffing comparison.
 
-The ratio is (2.202592-1)/0.865694=1.389164. The result does not reject a one-point fitted gain using the approximate two-sided 1.96 rule. This is distinct from the zero-slope question and still needs credible identification for a causal claim.
+The full and partialled staffing slopes both equal -0.385338 on 420 districts. The full-model robust SE is 0.289855. Removing different control columns would not be the same FWL calculation.
 
-Two-student gain: \(2.202592\), robust SE \(0.865694\).
+Original staffing slope: \(-0.068776\).
 
-Null gain of one: \((2.202592-1)/0.865694=1.389164\).
+Using log income: \(-0.385338\), full-model robust SE \(0.289855\).
 
-Separate a policy-relevant magnitude from a test against zero.
+FWL requires the same control columns in both residualising fits.
 
-## 38. Next, let the model represent percentages and curvature
+## 37. From OLS properties to statistical inference
 
-The interpretation depends on how variables enter.
+From OLS properties to statistical inference
 
-We have connected a coefficient with its uncertainty and separated detectability from practical size. We also saw why robust SEs change inference while leaving the OLS fit fixed on the same model and sample.
+We can now separate the calculation of an OLS coefficient from its repeated-sample properties. Full rank makes the sample solution unique, zero conditional mean supports unbiasedness, and additional variance assumptions determine the conventional precision formula.
 
-The next lesson changes the equation itself. Income, prices and outcomes may relate through percentages or changing slopes rather than constant level differences. We will define logarithms and polynomial terms before interpreting them, then compare fitted predictions over the observed data range. The uncertainty tools from today will remain useful for those more meaningful contrasts.
+The next meeting uses these ideas for confidence intervals and hypothesis tests. A causal interpretation still needs the earlier argument about the economic comparison; an interval describes uncertainty around the coefficient in a specified model.
 
-We have connected a coefficient with its uncertainty and separated detectability from practical size.
-
-The next lesson changes the equation itself.
+From OLS properties to statistical inference
 

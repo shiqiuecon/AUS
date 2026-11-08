@@ -1,10 +1,10 @@
-* ECO603 Meeting 01. Run from the folder containing the matching CSV.
+* Reference programs for syllabus week 01. Extract the complete Stata ZIP first.
+* Shared lab programs may contain blocks used in other weeks.
 version 19.0
-clear all
 set more off
-import delimited "schools.csv", clear varnames(1) asdouble
-regress score str, vce(robust)
-lincom -2*str
-regress score str el, vce(robust)
-lincom -2*str
-display "ECO603_MEETING_01_COMPLETE"
+do "lab_01.do"
+do "overleaf_technical.do"
+capture log close
+log using "week_01_completion.txt", text replace
+display "ECO603_WEEK_01_COMPLETE"
+log close

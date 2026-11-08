@@ -1,0 +1,85 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN full
+. regress score str el income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     299.03
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7072
+                                                Root MSE          =     10.347
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
+          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
+      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
+       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
+------------------------------------------------------------------------------
+
+. * END full
+. record full str
+
+. scalar full_b=_b[str]
+
+. quietly regress score el income
+
+. predict double ry, residuals
+
+. quietly regress str el income
+
+. predict double rx, residuals
+
+. * BEGIN fwl
+. regress ry rx, noconstant
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(1, 419)       =      0.06
+       Model |  6.60482474         1  6.60482474   Prob > F        =    0.8033
+    Residual |  44540.7318       419  106.302463   R-squared       =    0.0001
+-------------+----------------------------------   Adj R-squared   =   -0.0022
+       Total |  44547.3367       420  106.065087   Root MSE        =     10.31
+
+------------------------------------------------------------------------------
+          ry | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          rx |  -.0687755   .2759147    -0.25   0.803    -.6111251     .473574
+------------------------------------------------------------------------------
+
+. * END fwl
+. record partial rx
+
+. assert abs(_b[rx]-full_b)<1e-8
+
+. * BEGIN vif
+. quietly regress score str el income
+
+. estat vif
+
+    Variable |       VIF       1/VIF  
+-------------+----------------------
+      income |      1.14    0.873929
+          el |      1.12    0.891206
+         str |      1.07    0.931159
+-------------+----------------------
+    Mean VIF |      1.11
+
+. * END vif
+. export delimited score str el income rx ry using "output/meeting_03_data.csv", replace
+(file output/meeting_03_data.csv not found)
+file output/meeting_03_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_03_estimates.dta", clear
+
+. export delimited using "output/meeting_03_estimates.csv", replace
+(file output/meeting_03_estimates.csv not found)
+file output/meeting_03_estimates.csv saved
+
+. display "ECO603_MEETING_03_COMPLETE"
+ECO603_MEETING_03_COMPLETE
+

@@ -1,0 +1,142 @@
+Actual StataMP numerical output. Log header and machine paths omitted.
+
+. * BEGIN ols
+. regress logq logp, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(1, 46)          =      38.86
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4058
+                                                Root MSE          =     .18962
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        logp |  -1.213057   .1945896    -6.23   0.000    -1.604746   -.8213685
+       _cons |   10.33892   .9348202    11.06   0.000     8.457229    12.22062
+------------------------------------------------------------------------------
+
+. * END ols
+. record ols logp
+
+. * BEGIN first
+. regress logp salestax, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(1, 46)          =      40.39
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4710
+                                                Root MSE          =     .09394
+
+------------------------------------------------------------------------------
+             |               Robust
+        logp | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    salestax |   .0307289   .0048354     6.35   0.000     .0209956    .0404621
+       _cons |   4.616546   .0289177   159.64   0.000     4.558338    4.674755
+------------------------------------------------------------------------------
+
+. * END first
+. record first salestax
+
+. scalar first_b=_b[salestax]
+
+. * BEGIN reduced
+. regress logq salestax, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(1, 46)          =      10.54
+                                                Prob > F          =     0.0022
+                                                R-squared         =     0.1525
+                                                Root MSE          =     .22645
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    salestax |  -.0332974   .0102541    -3.25   0.002    -.0539378    -.012657
+       _cons |   4.717449   .0650586    72.51   0.000     4.586493    4.848405
+------------------------------------------------------------------------------
+
+. * END reduced
+. record reduced salestax
+
+. scalar reduced_b=_b[salestax]
+
+. * BEGIN iv
+. ivregress 2sls logq (logp=salestax), vce(robust)
+
+Instrumental-variables 2SLS regression            Number of obs   =         48
+                                                  Wald chi2(1)    =      12.05
+                                                  Prob > chi2     =     0.0005
+                                                  R-squared       =     0.4011
+                                                  Root MSE        =     .18635
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        logp |  -1.083587   .3122036    -3.47   0.001    -1.695495    -.471679
+       _cons |   9.719877   1.496143     6.50   0.000      6.78749    12.65226
+------------------------------------------------------------------------------
+Endogenous: logp
+Exogenous:  salestax
+
+. * END iv
+. record iv logp
+
+. assert abs(_b[logp]-reduced_b/first_b)<1e-9
+
+. * BEGIN controls
+. ivregress 2sls logq logincome (logp=salestax), vce(robust)
+
+Instrumental-variables 2SLS regression            Number of obs   =         48
+                                                  Wald chi2(2)    =      17.47
+                                                  Prob > chi2     =     0.0002
+                                                  R-squared       =     0.4189
+                                                  Root MSE        =     .18355
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        logp |  -1.143375   .3604805    -3.17   0.002    -1.849904   -.4368463
+   logincome |   .2145153   .3018477     0.71   0.477    -.3770953    .8061258
+       _cons |   9.430658   1.219402     7.73   0.000     7.040675    11.82064
+------------------------------------------------------------------------------
+Endogenous: logp
+Exogenous:  logincome salestax
+
+. * END controls
+. record controlled logp
+
+. * BEGIN relevance
+. estat firststage
+
+  First-stage regression summary statistics
+  --------------------------------------------------------------------------
+               |            Adjusted      Partial       Robust
+      Variable |   R-sq.       R-sq.        R-sq.       F(1,45)   Prob > F
+  -------------+------------------------------------------------------------
+          logp |  0.6389      0.6228       0.5009       44.7305    0.0000
+  --------------------------------------------------------------------------
+
+
+. * END relevance
+. export delimited logq logp salestax logincome using "output/meeting_14_data.csv", replace
+(file output/meeting_14_data.csv not found)
+file output/meeting_14_data.csv saved
+
+. 
+. postclose results
+
+. use "output/meeting_14_estimates.dta", clear
+
+. export delimited using "output/meeting_14_estimates.csv", replace
+(file output/meeting_14_estimates.csv not found)
+file output/meeting_14_estimates.csv saved
+
+. display "ECO603_MEETING_14_COMPLETE"
+ECO603_MEETING_14_COMPLETE
+

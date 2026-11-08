@@ -2,6 +2,8 @@ import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e6592220
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
 import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=4d2768d6287f';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
+const legacy=data.previousRevision===params.get('v')?data.bookmarks?.[`${params.get('meeting')||first}:${params.get('slide')||1}`]:null;
+if(legacy){params.set('meeting',legacy.meeting);params.set('slide',legacy.slide);params.set('v',data.revision);history.replaceState(null,'',`?${params}`);}
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
 let index=Math.max(0,Math.min(lesson.slides.length-1,(Number(params.get('slide'))||1)-1));
@@ -35,6 +37,8 @@ function updateAudio(relative){
   else if(Number.isFinite(graphEvent.value)){value=graphEvent.value;const control=$('#graph-input');if(control)control.value=value;}
   updateGraph();
  }
+ const point=[...active].reverse().find(ev=>ev.target==='point');
+ if(point&&highlights){document.querySelectorAll('.point-current').forEach(n=>n.classList.remove('point-current'));document.querySelectorAll('#slide-body .concept-line')[point.part]?.classList.add('point-current');}
  document.querySelectorAll('.spoken-row').forEach(n=>n.classList.remove('spoken-row'));
  const row=[...active].reverse().find(ev=>ev.target==='row');
  if(row&&highlights)document.querySelectorAll('.stata-row').forEach(n=>{if(n.textContent.trim().startsWith(row.row))n.classList.add('spoken-row');});
@@ -155,7 +159,7 @@ function render(){
  $('#script-slide-title').textContent=`${index+1}. ${s.title}`;
  for(const sel of ['#full-script','#script-link'])$(sel).href=url(`transcript_${key}.html?v=${data.revision}#slide-${index+1}`);
  $('#slides-pdf').href=url(`downloads/meeting_${key}_slides.pdf?v=${data.revision}`);
- $('#download-offline').href=url(`downloads/meeting_${key}_offline.html?v=${data.revision}`);$('#download-offline').download=`ECO603_${key}_Offline.html`;
+ $('#download-offline').href=url(`downloads/meeting_${key}_offline.zip?v=${data.revision}`);$('#download-offline').download=`ECO603_${key}_Offline.zip`;
  $('#topic-practice').href=url(`practice.html?week=${Number(key)}&v=${data.revision}`);$('#do-file').href=url(`downloads/meeting_${key}.do?v=${data.revision}`);
  for(const [top,option] of [['#lesson-pdf','#slides-pdf'],['#lesson-offline','#download-offline'],['#lesson-practice','#topic-practice']])$(top).href=$(option).href;
  try{history.replaceState(null,'',`?meeting=${key}&slide=${index+1}&v=${data.revision}`);}catch{}

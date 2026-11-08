@@ -1,4 +1,4 @@
-# 09. Time-series regression, trends and seasonality
+# 09. Time series: basic regression and distributed lags
 
 ## 01. Did a traffic law change accidents, or did the calendar change?
 
@@ -8,17 +8,17 @@ Traffic accidents can change after a law for several reasons: policy, travel vol
 
 Our data are monthly California accident totals from January 1981 through December 1989. We will identify trend and seasonality, write an equation with explicit timing and inspect actual output. The main question is what the controls explain and what assumption is still needed to describe a policy effect. The calendar must be understood before a coefficient is interpreted.
 
-## 02. Recall the problem of a time-only policy variable
+## 02. A time-only policy variable compares dates
 
 Time controls can remove useful variation as well as confounding.
 
-The previous block showed that unrestricted year indicators absorb any variable with one common value in each year. In a single monthly series, a separate indicator for every observation date would similarly leave no variation for other time-only regressors.
+A dated policy indicator takes the same value for every observation at a particular date. In a single monthly series, its coefficient compares dates before and after the change, conditional on the other included inputs. Other events occurring at the same dates can therefore be mixed into that coefficient.
 
-We therefore need to distinguish seasonal indicators, which repeat by calendar month, from an indicator for every unique month-year. January effects across nine years are not the same as 108 separate date effects. This distinction determines whether the written policy coefficient can be estimated. It also makes clear that the time pattern we choose to control is an assumption about the comparison.
+A calendar specification chooses which common changes are represented, such as a gradual trend or a recurring seasonal pattern. It cannot identify a policy effect merely by naming a date. Later panel comparisons add units as well as dates and require us to check which policy variation survives the chosen controls.
 
-The previous block showed that unrestricted year indicators absorb any variable with one common value in each year.
+A date-based policy contrast can mix several simultaneous changes.
 
-We therefore need to distinguish seasonal indicators, which repeat by calendar month, from an indicator for every unique month-year.
+Calendar controls and an identification argument have distinct roles.
 
 ## 03. Define the monthly unit and time index
 
@@ -32,142 +32,7 @@ The do-file checks the reconstructed date against the original year, sequential 
 
 January 1981 through December 1989
 
-## 04. An index number compares a level with a base period
-
-A value of 125 on a base-100 index means 25 percent above its base.
-
-A dated monetary series can rise because quantities or prices change. An index number expresses a level relative to a chosen base period. Divide the current level by its base-period level and multiply by 100. The base value is therefore 100; an index of 125 means that the indexed level is 25 percent above its base.
-
-A price index summarises a specified basket of prices. It does not measure every household's exact cost of living. Changing the base rescales the index without changing its proportional growth rates. An increase from 120 to 125 is five index points but about 4.17 percent, because the percentage change divides by the starting 120. Distinguish those units before using an index in a regression.
-
-\(I_t=100\,P_t/P_0\); \(P_0\) is the base-period price level.
-
-\(120\rightarrow125:\quad100(125/120-1)\approx4.17\%\).
-
-Index points and percentage changes answer different questions.
-
-## 05. Convert nominal money to a common purchasing-power scale
-
-Deflation separates a monetary level from the price scale used to express it.
-
-Nominal income is the amount of money recorded at that date's prices. Real income expresses purchasing power using a common price scale. With a base-100 price index, divide nominal income by the index divided by 100. Deflation is the name for this conversion; it does not mean that the amount of money actually paid changes.
-
-In the constructed example, income rises from 100 to 110 thousand dirhams while the price index rises from 100 to 125. The later real income is 88 thousand base-period dirhams: nominal income rose ten percent, but purchasing power fell twelve percent. These are teaching values, not current UAE statistics. The cigarette-demand application later divides nominal prices by a price index before taking logs. Define that monetary scale before interpreting its elasticity.
-
-Real amount: \(Y_t^{R}=Y_t^{N}/(I_t/100)\); superscripts \(R,N\) denote real and nominal amounts.
-
-Example: \(110/1.25=88\), compared with base-period real income \(100\).
-
-Choose an index suited to the economic quantity and state the base year.
-
-**Practice:** Nominal income is 110 and the base-100 price index is 125. What is real income?
-
-**Explanation:** 110 divided by 1.25 is 88, in base-period monetary units.
-
-## 06. A trend is a gradual time pattern
-
-In a log outcome, a linear trend describes proportional growth.
-
-A deterministic linear trend is a fitted change at a constant rate as the time index increases. In a level outcome, its coefficient is in outcome units per period. In a log outcome, it describes a constant log change per period, approximately a percentage rate for small coefficients.
-
-This is one way to represent gradual changes in exposure, population or reporting, but it does not measure each mechanism separately. A trend control is therefore a modelling assumption. It can help separate a gradual pattern from a policy-date shift only insofar as that pattern is adequately represented by the chosen function.
-
-\(\log A_t=a+gt+u_t\)
-
-Small-change interpretation: about \(100g\)% per month
-
-## 07. Seasonality repeats at the same part of the year
-
-Use a reference month to avoid redundant indicators.
-
-Seasonality is a recurring calendar pattern, such as travel or weather conditions that differ across months. With an intercept, eleven month indicators compare February through December with January. Including all twelve would create an exact linear dependence with the intercept.
-
-These effects need not be the same as a gradual trend. The trend compares the sequence across years, while month indicators allow a repeated annual pattern. A seasonal outcome plot does not by itself prove that the regression errors are serially correlated: the model may explain that seasonal component. We will examine remaining residual dependence separately.
-
-January is the reference category
-
-Eleven recurring month indicators, not 108 unique date indicators
-
-## 08. Frequency and season
-
-Try the comparison before opening the explanation.
-
-An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
-
-Translate each lag into calendar time using the observation frequency. A month effect repeats annually; a linear trend does not repeat.
-
-**Practice:** An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
-
-## 09. Frequency and season: explanation
-
-Follow the calculation and interpret its units.
-
-There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
-
-There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
-
-## 10. Write the policy model with its calendar controls
-
-Make the intervention and units explicit.
-
-Let A denote monthly total accidents, so log A is the outcome. B indicates whether the seat-belt law is in force and S the speed-law state; each is zero or one. U is unemployment and W the weekend count. Lowercase u is the regression error, a different quantity from uppercase U. The intercept is a and g is the linear trend coefficient on the monthly index t.
-
-M subscript m t is one if date t is in calendar month m. The sum includes February through December, each with coefficient gamma subscript m relative to January. January uses the intercept, avoiding a redundant twelfth indicator. The other coefficients describe fitted contrasts at fixed included calendar and economic variables. These controls represent particular patterns; they do not automatically supply the no-law accident path needed for a causal policy effect.
-
-\(\log A_t=a+gt+\sum_{m=2}^{12}\gamma_mM_{mt}+bB_t+cS_t+dU_t+fW_t+u_t\)
-
-\(M_{mt}\): month indicator; January is the reference.
-
-\(U_t\): unemployment; \(u_t\): regression error.
-
-## 11. Inspect the calendar-only regression
-
-Understand the baseline before adding policy variables.
-
-The calendar-only log-accident trend is 0.00275 per month. The month coefficients describe fitted differences from January after accounting for that trend. Read their scale as log differences rather than changes in accident counts.
-
-This baseline helps us see what the policy model is adding. It does not establish that the trend has captured every changing influence or that seasonal differences are fixed permanently. Compare the time plot with the model's assumptions and consider whether a sudden event or changing seasonal pattern could remain outside the equation.
-
-```text
-. regress logacc trend i.month
-
-------------------------------------------------------------------------------
-      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-       trend |   .0027471   .0001611    17.06   0.000     .0024274    .0030669
-             |
-       _cons |   10.46857   .0190028   550.90   0.000     10.43084    10.50629
-------------------------------------------------------------------------------
-```
-
-## 12. A seasonal joint test asks about the whole pattern
-
-One insignificant month does not settle the annual question.
-
-The null for a seasonal joint test is that all eleven calendar-month coefficients are zero, conditional on the other regressors. The alternative is that at least one contributes a difference. This is not the same as selecting whichever month has the largest t statistic.
-
-Use testparm after fitting the intended model to state the grouped restriction. As before, the reference distribution depends on the covariance treatment and assumptions. The test describes evidence for a seasonal component in that fitted model; it does not identify the economic cause of the seasonality or verify the policy comparison.
-
-```text
-. testparm i.month
-
- ( 1)  2.month = 0
- ( 2)  3.month = 0
- ( 3)  4.month = 0
- ( 4)  5.month = 0
- ( 5)  6.month = 0
- ( 6)  7.month = 0
- ( 7)  8.month = 0
- ( 8)  9.month = 0
- ( 9)  10.month = 0
- (10)  11.month = 0
- (11)  12.month = 0
-
-       F( 11,    91) =   10.29
-            Prob > F =    0.0000
-```
-
-## 13. Feedback across dates does not require a causal cycle
+## 04. Feedback across dates does not require a causal cycle
 
 Current accidents can affect the policy chosen next month.
 
@@ -179,7 +44,7 @@ Trace the route from the current unexpected cause to current accidents and then 
 
 Policy at the next date can respond to an unexpected outcome now.
 
-## 14. Contemporaneous exogeneity concerns the current regressor vector
+## 05. Contemporaneous exogeneity concerns the current regressor vector
 
 Current means the variables included for the same date.
 
@@ -191,7 +56,7 @@ This is a statement about the error's mean, not full independence of every varia
 
 Contemporaneous condition: \(E(u_t\mid x_t)=0\)
 
-## 15. Strict and sequential exogeneity condition on different information
+## 06. Strict and sequential exogeneity condition on different information
 
 Future regressors make strict exogeneity demanding.
 
@@ -203,7 +68,7 @@ Strict: \(E(u_t\mid x_1,\ldots,x_T)=0\)
 
 Sequential: \(E(u_t\mid x_1,\ldots,x_t)=0\)
 
-## 16. Past outcomes can contain past errors
+## 07. Past outcomes can contain past errors
 
 Adding dynamics changes the exogeneity question.
 
@@ -215,7 +80,7 @@ A lagged outcome is the outcome from an earlier date.
 
 This is a reason to model timing explicitly rather than assume lagging a variable always makes it safe.
 
-## 17. Strict exogeneity
+## 08. Strict exogeneity
 
 Try the comparison before opening the explanation.
 
@@ -225,7 +90,7 @@ Trace the current-error-to-future-policy route. Compare whether future regressor
 
 **Practice:** Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
 
-## 18. Strict exogeneity: explanation
+## 09. Strict exogeneity: explanation
 
 Follow the calculation and interpret its units.
 
@@ -233,60 +98,7 @@ Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requ
 
 Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
 
-## 19. Read the adjusted accident regression
-
-Connect the coefficient with the actual outcome and controls.
-
-The seat-belt-law coefficient is 0.095, and the unemployment coefficient is -0.021. Both are from the stated log-accident equation with trend, seasonal indicators and observed controls. A positive law coefficient here concerns total reported accidents, not a finding that safety equipment causes fatal injuries.
-
-The result raises useful applied questions. Could travel, risk behaviour, enforcement or reporting have changed near adoption? Does the time pattern represent the data adequately? Which dependence remains in the residuals? A surprising sign should prompt those checks rather than a new outcome definition or a search for a preferred specification.
-
-```text
-. regress logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
-
-------------------------------------------------------------------------------
-             |               Robust
-      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
-       trend |   .0011011   .0002676     4.12   0.000     .0005696    .0016326
-             |
-        unem |  -.0212173   .0038238    -5.55   0.000    -.0288128   -.0136218
-      spdlaw |  -.0537593   .0120059    -4.48   0.000    -.0776076    -.029911
-     beltlaw |   .0954526   .0123682     7.72   0.000     .0708847    .1200206
-      wkends |   .0033333   .0039443     0.85   0.400    -.0045016    .0111682
-       _cons |   10.63986   .0681238   156.18   0.000     10.50454    10.77518
-------------------------------------------------------------------------------
-```
-
-## 20. A date indicator can mix several simultaneous changes
-
-A coefficient needs a counterfactual interpretation.
-
-If a law begins in one month, its indicator distinguishes a period after that date from earlier observations. Any unmeasured persistent change beginning nearby may contribute to the same contrast. Trend and season controls remove only the patterns their equations represent.
-
-For a causal claim, explain what the accident path would have looked like without the law and why the included comparison supports that prediction. An additional comparison region, a credible assignment rule or more detailed exposure data might help in a suitable design. A long series by itself does not make one adoption event equivalent to repeated random assignments.
-
-Earlier accident history and economic conditions can influence both law adoption and later accidents. The diagram shows the two resulting backdoor routes. Toggle the proposed history and economic controls separately. A calendar indicator does not close a route merely because adoption occurred at a known date; the relevant pre-policy causes must be addressed by the design and measured controls.
-
-## 21. Before–after is not enough
-
-Try the comparison before opening the explanation.
-
-Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-Describe the accident path that would have occurred under the specified no-law policy. Ask whether another change at adoption could explain the observed difference.
-
-**Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-## 22. Before–after is not enough: explanation
-
-Follow the calculation and interpret its units.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
-
-## 23. A count and a rate answer different questions
+## 10. A count and a rate answer different questions
 
 Exposure can change while individual risk stays fixed.
 
@@ -298,7 +110,7 @@ Total accidents can rise because there is more driving, even if risk per trip fa
 
 Our current outcome is the recorded statewide count, logged for the fitted comparison.
 
-## 24. Time ordering changes the meaning of a sample
+## 11. Time ordering changes the meaning of a sample
 
 One realised history can contain strongly related observations.
 
@@ -310,31 +122,21 @@ An ordered history can share information across dates.
 
 Justify averaging and uncertainty for the process, rather than treating rows as independent.
 
-## 25. A linear trend does not remove every nonstationary process
+## 12. Finite-sample OLS assumptions apply to the complete regressor path
 
-A straight calendar pattern need not describe accumulated random changes.
+Temporal dependence and regressor-error dependence are different restrictions.
 
-A straight time trend assumes a predictable drift of a constant amount per period. A nonstationary process has statistical features that change with the calendar, such as a growing variance. Some series instead accumulate unexpected changes. If a new disturbance permanently changes the level each month, the path can wander far above or below any fitted straight line. Subtracting a deterministic trend does not remove this accumulation.
+Write the T time-series equations together as y equals X beta plus u. Here X includes all observed dates of every included regressor, not just the row at date t. Full rank gives a unique OLS fit. Strict exogeneity requires mean zero for each error conditional on that entire design.
 
-We introduce stationarity and a random-walk model in the next meeting to describe the distinction precisely. For now, inspect the time plot and ask whether deviations appear to fade or remain. A calendar control addresses only the pattern it represents. It does not by itself justify treating the remaining observations as independent or interpreting a law indicator as the effect of a policy intervention.
+Under this strong conditional-mean condition, the OLS estimator-error identity gives conditional unbiasedness even when errors are serially correlated. Equal conditional variance and zero cross-date error covariance are additional assumptions for the conventional covariance formula. Conditional joint normality adds the classical exact t and F reference distributions. Time-series consistency instead needs a justified law of large numbers and regressor-error moment conditions; unbiasedness alone does not prove it.
 
-A fixed calendar drift and accumulated unexpected changes are different mechanisms.
+\(y=X\beta+u\), with \(X\) containing the complete observed regressor path.
 
-Inspect whether deviations fade before relying on a trend regression.
+Strict exogeneity: \(E[u_t\mid X]=0\), all \(t\).
 
-## 26. Record the time-series specification in words
+Conventional covariance additionally uses \(\operatorname{Var}(u\mid X)=\sigma^2I\).
 
-Dates and frequency are part of reproducibility.
-
-A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls. It states how gaps and lags are handled and which observations are lost when lagged terms are added. Another analyst should be able to reproduce the same sample and equation.
-
-Then explain the proposed economic comparison and its main uncertainty and identification conditions. This is more useful than reporting only a command name or a number of observations. In a time-series setting, the time structure is part of what the model means, not a formatting detail appended after estimation.
-
-A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls.
-
-Then explain the proposed economic comparison and its main uncertainty and identification conditions.
-
-## 27. DAG practice: dated policy feedback
+## 13. DAG practice: dated policy feedback
 
 Trace the routes before choosing a control.
 
@@ -344,7 +146,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
 
-## 28. DAG practice: dated policy feedback: explanation
+## 14. DAG practice: dated policy feedback: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -354,41 +156,215 @@ A sequential mean assumption uses a different information set and can be conside
 
 The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process. A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
 
-## 29. Interpret the traffic-law coefficient with its timing
+## 15. Does unemployment affect accidents only this month?
+
+Allow a relationship to unfold over several periods.
+
+Travel behaviour and economic conditions can adjust gradually. A current unemployment change may be associated with current accidents and with accidents in later months. A model containing only the current regressor assumes away those additional direct lag relationships.
+
+A distributed-lag model includes current and earlier values of an explanatory variable. We will use the monthly accident series to distinguish an immediate coefficient from a sum of lag coefficients. We then add autoregressive persistence, define the conditions for a stable long-run comparison and examine why unrelated trending series can produce misleading regressions.
+
+## 16. Define lags, differences and horizons
+
+They are different operations on ordered observations.
+
+A lag takes an earlier value, such as unemployment in the previous month. A first difference subtracts the previous value from the current value. A horizon counts periods ahead when studying a future response. Monthly and quarterly versions have different calendar meanings.
+
+Declaring the time index lets Stata apply L and D operators consistently with gaps. A lag is not a percent change, and a difference of logs is not the same quantity as a difference of levels. Start with the economic unit and operation before interpreting the resulting coefficient. These definitions will be reused throughout the dynamic applications.
+
+\(LX_t=X_{t-1}\)
+
+\(\Delta X_t=X_t-X_{t-1}\)
+
+## 17. Write a finite distributed-lag model
+
+Every coefficient has an outcome date and a regressor date.
+
+Let Y be log accidents and X be unemployment. A two-lag model includes current X, its previous-month value and its value two months earlier, together with the stated trend and seasonal controls. Beta zero is the impact coefficient, the fitted current association for a one-unit current X difference with the other included X values fixed.
+
+The lag coefficients describe additional dated associations. A causal response interpretation requires that the sequence of X variation and error conditions support it. A lagged regressor is not automatically exogenous because its date is earlier; omitted persistent conditions can connect it with the current error.
+
+\(Y_t=a+\beta_0X_t+\beta_1X_{t-1}+\beta_2X_{t-2}+\text{controls}+u_t\)
+
+## 18. Trace a one-period regressor change
+
+Its outcome responses occur at several dates.
+
+Use a constructed finite-lag model with current-input coefficient 0.2, one-period-lag coefficient 0.1 and two-period-lag coefficient minus 0.05. Raise X by one at a single date and keep all its other dates fixed. The fitted outcome change is 0.2 immediately, 0.1 one period later and minus 0.05 two periods later. It is zero afterward in this specification.
+
+The immediate change is the impact response. Adding the three dated outcome changes gives 0.25, the cumulative response to that imposed temporary input path. It is not the outcome difference at the final date. The input path has been specified externally; if an economic innovation also changes later X values, we must include those additional input changes when tracing its outcome response.
+
+Horizon \(h\): \(0,1,2,3\)
+
+Temporary-input responses: \(0.20,0.10,-0.05,0\)
+
+Cumulative response: \(0.20+0.10-0.05=0.25\)
+
+## 19. A permanent change has another time path
+
+The long-run level effect reaches the lag sum in this model.
+
+Now raise X by one at the starting date and keep it one unit higher at every later date. The current coefficient contributes 0.2 immediately. At the next date, both current and lag-one inputs are higher, so the outcome difference is 0.3. From the third date onward, all three input terms are active and the difference is 0.25.
+
+The same sum of coefficients is now a long-run level contrast, because it describes the outcome difference at each sufficiently late date. In the temporary experiment it was a sum of outcome changes over dates. This numerical equality belongs to this finite distributed-lag model without a lagged outcome. It does not make the two paths equivalent, and a causal interpretation still requires the stated input intervention and exogeneity assumptions.
+
+Permanent-input responses: \(0.20,0.30,0.25,0.25,\ldots\)
+
+Temporary cumulative response and permanent long-run level contrast are different quantities.
+
+## 20. Lag sum
+
+Try the comparison before opening the explanation.
+
+A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit x shock.
+
+Write the temporary and permanent paths separately. State whether the sum refers to responses across dates or the outcome difference at a late date.
+
+**Practice:** A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit x shock.
+
+## 21. Lag sum: explanation
+
+Follow the calculation and interpret its units.
+
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. An autoregressive dependent-variable model has a different multiplier formula.
+
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. An autoregressive dependent-variable model has a different multiplier formula.
+
+## 22. Introduce the uncertainty option before reading the lag table
+
+Newey–West changes the covariance estimate around an unchanged OLS fit.
+
+The lag regression is estimated from repeated months, so its errors may move together across time. We use Newey–West inference, a way to estimate coefficient uncertainty while allowing unequal error spread and limited time dependence under appropriate large-sample conditions. The broader name is heteroskedasticity-and-autocorrelation-consistent covariance estimation, abbreviated HAC. Autocorrelation means correlation between a series and its own values at other dates.
+
+The four-lag option here includes error-related covariance information through four months. It does not insert four outcome lags into the mean equation or change the OLS coefficients. We develop the covariance weights and assumptions in Meeting 13. For this table, read the estimated lag coefficients as the dated fitted associations, and keep the uncertainty choice separate from whether unemployment changes identify a causal effect.
+
+Newey–West/HAC: allow suitable unequal spread and time dependence in uncertainty estimation.
+
+Four covariance lags here mean four months; the mean equation is unchanged.
+
+## 23. Read the observed lag estimates
+
+Let the application determine the pattern.
+
+The estimated current-unemployment coefficient is -0.022, followed by lag coefficients -0.003 and 0.003. Their units are log-accident changes per percentage-point unemployment difference, conditional on the included trend and seasonality. The first two lags leave 106 observations.
+
+These estimates use Newey–West uncertainty with four monthly lags, allowing selected residual time dependence under its assumptions. The coefficient bars are observed fitted estimates, not known causal shock responses. A small or differently signed lag should be interpreted with its uncertainty and the complete specification, rather than forced into an expected economic story.
+
+```text
+. newey logacc unem L(1/2).unem trend i.month, lag(4)
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        unem |
+         --. |  -.0218345   .0073752    -2.96   0.004    -.0364866   -.0071823
+         L1. |  -.0027711   .0075824    -0.37   0.716    -.0178349    .0122927
+         L2. |   .0028242   .0079337     0.36   0.723    -.0129375    .0185858
+             |
+       trend |   .0018359   .0002514     7.30   0.000     .0013365    .0023352
+             |
+       _cons |   10.67207   .0367848   290.12   0.000     10.59899    10.74515
+------------------------------------------------------------------------------
+```
+
+## 24. Estimate uncertainty for the lag sum
+
+The coefficient covariances matter.
+
+The cumulative coefficient is a linear combination of current and lagged unemployment slopes. Its SE depends on the variances of all three estimates and their covariances. Adding their individual SEs would be incorrect.
+
+Lincom calculates the sum using the fitted covariance matrix. State the outcome scale and whether this is the cumulative response to a temporary change or the eventual level contrast for a permanent change in this particular model. Those two interpretations can share a number while describing different paths. Their meaning comes from the equation and the stated scenario.
+
+```text
+. lincom unem+L.unem+L2.unem
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.0217814    .004154    -5.24   0.000    -.0300341   -.0135287
+------------------------------------------------------------------------------
+```
+
+## 25. Testing no dynamic response differs from testing a zero total response
+
+A collection of lag coefficients can cancel in its sum.
+
+In the finite distributed-lag model, let beta zero through beta q be the current and lagged input coefficients. A joint test that all are zero asks whether the input has any modelled response at those horizons. A test that their sum is zero asks whether a permanent one-unit input change has zero eventual fitted effect in this model.
+
+Positive early and negative later coefficients can sum to zero even though there is a substantial temporary response. A scalar sum needs its covariance-based standard error; the joint restriction needs the covariance of the entire coefficient vector. Use the same sample and the uncertainty procedure justified for the dated observations. Neither test independently establishes that the input change was an exogenous intervention.
+
+Any included response: \(H_0:\beta_0=\cdots=\beta_q=0\).
+
+Zero long-run propensity: \(H_0:\sum_{j=0}^q\beta_j=0\).
+
+Different null restrictions answer different empirical questions.
+
+## 26. The sample changes when lags are added
+
+Compare fit and tests on compatible observations.
+
+A two-lag model loses the first two observations if no earlier data are available. Adding more lags can remove still more dates. A comparison between nested models can be distorted if their apparent fit differences also reflect different samples.
+
+Define the common estimation window before comparing models or applying a fit-loss test. Record the number of usable observations after each transformation. This is the time-series version of keeping samples fixed in multiple regression: a numerical model comparison is informative only when we know which history each equation actually uses.
+
+A two-lag model loses the first two observations if no earlier data are available.
+
+Define the common estimation window before comparing models or applying a fit-loss test.
+
+## 27. Explain a dynamic result with a time path
+
+One label such as effect is not enough.
+
+A useful dynamic report states the data frequency, timing of the X change, immediate response, relevant later responses and uncertainty for any sum or multiplier. It says whether the scenario is temporary or permanent and which stability and exogeneity conditions support it.
+
+For the accident application, describe dated unemployment associations rather than a causal experiment unless the design identifies that variation. For a constructed model with a known shock, explain the known assumptions explicitly. This keeps a graph of responses from carrying a stronger interpretation than its source supports.
+
+The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. The finite-lag coefficients describe partial dated-input contrasts; an innovation that changes several future input values requires tracing that entire input path.
+
+## 28. DAG practice: partial lag effect or propagated input change?
+
+Trace the routes before choosing a control.
+
+An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
+
+## 29. DAG practice: partial lag effect or propagated input change?: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process.
+
+For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
+
+Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process. For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
+
+## 30. Trace the actual monthly lag pattern
 
 Reproduce the evidence, then explain its economic meaning.
 
-Run meeting_09.do using traffic.csv. Verify the monthly date range and sample size. Translate the seat-belt-law coefficient into an exact percentage contrast in exponentiated fitted log accidents. Explain why the trend and month controls do not establish that the law caused this contrast.
+Run lab_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the difference between the sequence after a one-month unit increase and the long-run level contrast after a permanent increase in this finite-lag model.
 
-Refit the traffic model without its linear trend, retaining the same month controls, other regressors and 108 months. Compare the law slopes and explain the changed time-path assumption. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-**Practice:** Refit the traffic model without its linear trend, retaining the same month controls, other regressors and 108 months. Compare the law slopes and explain the changed time-path assumption. Keep your commands, log, output and interpretation.
+**Practice:** Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Keep your commands, log, output and interpretation.
 
-## 30. Interpret the traffic-law coefficient with its timing: explanation
+## 31. Trace the actual monthly lag pattern: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
-The series has 108 months, January 1981 through December 1989. Its seat-belt-law coefficient is 0.095453. The exact fitted multiplicative contrast is 10.0157 percent. It concerns total accidents, rather than deaths or accidents per distance travelled.
+The three coefficients are -0.021834, -0.002771 and 0.002824. Their sum is -0.021781 in log-accident units per unemployment-rate unit. The covariance among estimates matters for the SE of that sum, which is why lincom is useful.
 
-The result compares law states after accounting for the specified trend, seasonal pattern and other included variables. Adoption could coincide with unmeasured enforcement, reporting, exposure or other policy changes. Controlling for the calendar addresses the pattern represented by those controls. A causal statement needs a credible argument about the remaining counterfactual accident path, rather than relying on the law indicator's p-value.
+A one-month unit increase has those dated fitted responses, then no further direct effect in this finite two-lag specification. Their sum is the cumulative log-outcome response. A permanent unit increase eventually activates all three terms at once, giving the same sum as a long-run level contrast. An equation with a lagged outcome needs a different multiplier calculation and stability assumptions.
 
-The law slope is 0.095453 with a trend and 0.130158 without it. These are log-accident associations under different time specifications. A more attractive sign or p-value is not a reason to select the counterfactual trend.
+On the common 105 months, the two-lag sum is -0.018658 (SE 0.003752) and the three-lag sum is -0.018684 (SE 0.003761). Common-sample comparison separates changed lag specification from the loss of another initial observation.
 
-Law slope with trend: \(0.095453\); without trend: \(0.130158\).
+Common 105 months: two-lag sum \(-0.018658\); three-lag sum \(-0.018684\).
 
-Same 108 months and remaining regressors.
+Corresponding robust SEs: \(0.003752\) and \(0.003761\).
 
-The models impose different time-path assumptions.
-
-## 31. Next, ask how long a shock lasts
-
-Persistence determines useful dynamics and long-run comparisons.
-
-We have separated trend, recurring seasonality and remaining errors, and we have defined exogeneity with its time information. The next question is whether a change disappears quickly, persists for several periods or accumulates without fading.
-
-We will use autoregressive and distributed-lag models to make those possibilities explicit. We will also distinguish an immediate effect, a cumulative response to a temporary change and the eventual response to a permanent change. Keeping the date frequency and equation visible will prevent these different quantities from being given the same interpretation.
-
-We have separated trend, recurring seasonality and remaining errors, and we have defined exogeneity with its time information.
-
-We will use autoregressive and distributed-lag models to make those possibilities explicit.
+Fixing the sample isolates the change in lag specification.
 
