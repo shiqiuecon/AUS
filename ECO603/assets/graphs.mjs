@@ -1,5 +1,5 @@
 import {dagSVG} from './dag.mjs?v=50e65922206d';
-import {data,escapeHTML as e} from './common.mjs?v=f31c2011ad1e';
+import {data,escapeHTML as e} from './common.mjs?v=28599d1f2c26';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
 const X=(v,lo,hi)=>85+(v-lo)/(hi-lo)*765;

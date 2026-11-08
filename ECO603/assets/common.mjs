@@ -7,7 +7,7 @@ export function typeset(root=document.body){
 }
 export function setupMap(){
  const dialog=document.querySelector('#map-dialog'),list=document.querySelector('#map-list');
- list.innerHTML=data.course.map(c=>{const k=String(c.week).padStart(2,'0');return `<div class="map-row"><span>${k}</span><div><h3><a href="${url(`index.html?meeting=${k}&v=${data.revision}`)}">${escapeHTML(c.title)}</a></h3><p>${escapeHTML(c.question)}</p><p class="map-links"><a href="${url(`downloads/meeting_${k}_slides.pdf?v=${data.revision}`)}" download>Slides PDF</a> · <a href="${url(`transcript_${k}.html?v=${data.revision}`)}">Transcript</a> · <a href="${url(`practice.html?week=${c.week}&v=${data.revision}`)}">Practice</a></p></div><a href="${url(`index.html?meeting=${k}&v=${data.revision}`)}">Open lesson</a></div>`;}).join('');
+ list.innerHTML=data.course.map(c=>{const k=String(c.week).padStart(2,'0');return `<div class="map-row"><span>${k}</span><div><h3><a href="${url(`lesson.html?meeting=${k}&v=${data.revision}`)}">${escapeHTML(c.title)}</a></h3><p>${escapeHTML(c.question)}</p><p class="map-links"><a href="${url(`downloads/meeting_${k}_slides.pdf?v=${data.revision}`)}" download>Slides PDF</a> · <a href="${url(`transcript_${k}.html?v=${data.revision}`)}">Transcript</a> · <a href="${url(`practice.html?week=${c.week}&v=${data.revision}`)}">Practice</a></p></div><a href="${url(`lesson.html?meeting=${k}&v=${data.revision}`)}">Open lesson</a></div>`;}).join('');
  document.querySelector('#course-map').addEventListener('click',()=>dialog.showModal());
  document.querySelector('#close-map').addEventListener('click',()=>dialog.close());
  const toggle=document.querySelector('#transcript-toggle');

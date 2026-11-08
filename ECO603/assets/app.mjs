@@ -1,6 +1,6 @@
 import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e65922206d';
-import {data,escapeHTML as e,typeset,url} from './common.mjs?v=f31c2011ad1e';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=69bc3c9120da';
+import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=c744db12448f';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
@@ -185,7 +185,7 @@ $('#audio-seek').oninput=()=>seekAudio(Number($('#audio-seek').value));
 $('#voice-enabled').onchange=()=>{stopReading();$('.audio-progress').hidden=!voiceMode();$('#audio-seek').disabled=!voiceMode();if(voiceMode())seekAudio(current().narration.cues[paragraph].time);stopReading();};
 $('#slide-picker').innerHTML=lesson.slides.map((s,i)=>`<option value="${i}">${i+1}. ${e(s.title)}</option>`).join('');$('#slide-picker').onchange=()=>goTo(Number($('#slide-picker').value));
 $('#slide-seek').max=lesson.slides.length;$('#slide-seek').oninput=()=>goTo(Number($('#slide-seek').value)-1);
-$('#lesson-picker').innerHTML=data.course.map(c=>`<option value="${String(c.week).padStart(2,'0')}">${String(c.week).padStart(2,'0')}. ${e(c.title)}</option>`).join('');$('#lesson-picker').value=key;$('#lesson-picker').onchange=()=>{location.href=url(`index.html?meeting=${$('#lesson-picker').value}&v=${data.revision}`);};
+$('#lesson-picker').innerHTML=data.course.map(c=>`<option value="${String(c.week).padStart(2,'0')}">${String(c.week).padStart(2,'0')}. ${e(c.title)}</option>`).join('');$('#lesson-picker').value=key;$('#lesson-picker').onchange=()=>{location.href=url(`lesson.html?meeting=${$('#lesson-picker').value}&v=${data.revision}`);};
 $('#toggle-script').onclick=()=>showScript(document.body.classList.contains('focus'));$('#transcript-toggle').onclick=$('#toggle-script').onclick;$('#close-script').onclick=()=>showScript(false);
 $('#follow-script').onchange=()=>{following=$('#follow-script').checked;focusParagraph(paragraph);};$('#point-highlights').onchange=()=>{highlights=$('#point-highlights').checked;focusParagraph(paragraph,false);};
 $('#zoom').onchange=()=>{fitSlide();$('#slide-viewport').scrollTo(0,0);};
