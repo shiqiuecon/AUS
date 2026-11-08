@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Teaching assistant demo · AUS</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17365d;background:#eaf0f5;line-height:1.55}*{box-sizing:border-box}body{margin:0}header,main,footer{max-width:1100px;margin:auto;padding:24px}header{display:flex;align-items:center;justify-content:space-between;gap:20px}a{color:#146475;text-underline-offset:4px}button,input,select{font:inherit}button,select{cursor:pointer}button{border:1px solid #c7d5df;border-radius:8px;background:#fff;color:#17365d;padding:10px 15px}button:hover{background:#edf5f7}button:disabled{opacity:.55;cursor:default}:focus-visible{outline:3px solid #b28122;outline-offset:3px}.badge{display:inline-block;border:1px solid #d5b569;background:#fff6dc;color:#684b10;border-radius:100px;padding:5px 12px;font-size:13px;font-weight:bold}.hero{padding:8px 0 24px}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:bold;color:#146475}h1{font-size:clamp(32px,5vw,48px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 16px}h2{font-size:19px;margin:0 0 12px}p{margin:0 0 16px}.lead{max-width:730px;color:#526578}.layout{display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}.panel{background:white;border:1px solid #d5dfe8;border-radius:14px;padding:24px}.sidebar{border-top:4px solid #d6a84b}label{display:block;font-weight:bold;font-size:14px;margin-bottom:8px}select{width:100%;padding:10px;border:1px solid #b8c9d5;border-radius:6px;background:white;color:#17365d}.small{font-size:13px;color:#526578}.field{margin-bottom:20px}.examples{display:grid;gap:8px}.examples button{text-align:left;font-size:14px}.divider{border-top:1px solid #d5dfe8;margin-top:22px;padding-top:18px}.chat-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:15px}.chat-head h2{margin:0}.notice{background:#fff7e4;border-radius:8px;color:#684b10;padding:12px 14px;font-size:13px}.messages{min-height:280px;max-height:510px;overflow:auto;padding:6px 4px;margin:12px 0;scroll-behavior:smooth}.message{margin:16px 0;padding:16px;border-radius:10px;background:#f0f5f8;white-space:pre-wrap;overflow-wrap:anywhere}.message.user{background:#e4f2f1;margin-left:32px}.role{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#526578;font-weight:bold;margin-bottom:7px}.compose{display:flex;gap:8px}.compose input{min-width:0;flex:1;padding:12px;border:1px solid #a9becd;border-radius:8px;color:#17365d}.primary{background:#17365d;color:white;border-color:#17365d}.primary:hover{background:#254c79}.quiz{display:grid;gap:8px;margin-top:14px}.quiz button{text-align:left}.feedback{font-weight:bold;margin-top:12px}.privacy{margin:12px 0 0}#status:empty{display:none}.course-link{display:block;margin:10px 0}footer{font-size:13px;color:#526578;padding-top:8px;padding-bottom:36px}noscript{display:block;padding:24px;background:#fff7e4}@media(max-width:750px){.layout{grid-template-columns:1fr}.sidebar{padding:18px}.messages{min-height:230px}header,main,footer{padding:18px}.chat-head{align-items:flex-start}.compose{flex-wrap:wrap}.compose input{flex-basis:70%}}
+</style>
+</head>
+<body>
+<header><a href="../">← AUS course home</a><span class="badge">Visual preview · Not connected</span></header>
+<main>
+<section class="hero"><p class="eyebrow">Shi Qiu · Teaching lab</p><h1>A little help.<br>A deeper understanding.</h1><p class="lead">One welcoming space for course questions, step-by-step guidance, and practice. Explore the layout of your future virtual teaching assistant.</p></section>
+<noscript>Enable JavaScript to explore the interface controls. This visual preview does not connect to an AI service.</noscript>
+<div class="layout">
+<aside class="panel sidebar"><h2>Your study session</h2><div class="field"><label for="course">Course</label><select id="course"><option value="QBA201">QBA201 · Business Analysis</option><option value="ECO351">ECO351 · Econometrics</option><option value="ECO603">ECO603 · Applied Econometrics I</option></select></div><div class="field"><label for="mode">How would you like help?</label><select id="mode"><option value="explain">Explain a concept</option><option value="hint">Give me a hint</option><option value="quiz">Quiz me</option></select></div><p class="small">Not sure where to start? Try a question starter:</p><div class="examples" id="examples"></div><div class="divider"><h2>Keep learning</h2><a id="course-link" class="course-link" href="../QBA201/">Open QBA201 materials →</a><p class="small">These links open the existing materials. This demo does not search, read, or change them.</p></div></aside>
+<section class="panel" aria-label="Teaching assistant preview"><div class="chat-head"><h2>Teaching assistant</h2><button id="reset" type="button">New session</button></div><p class="notice"><strong>Interface preview only.</strong> The assistant is not connected yet. You can explore the controls and compose a question, but nothing is sent and no answers are generated.</p><div class="messages" id="messages" aria-label="Assistant welcome"></div><form id="form"><label for="question">Your question</label><div class="compose"><input id="question" maxlength="600" autocomplete="off" placeholder="What would you like to understand?" required><button class="primary" type="submit">Preview next step</button></div></form><p class="small privacy">No API key or account needed. Your draft is not sent or saved and clears on refresh or New session. Website hosting still uses normal web requests.</p></section>
+</div>
+</main><footer>Visual framework · A live assistant would need a secure backend and a reviewed connection to course sources. Do not enter personal information or graded assessment questions.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const starters={explain:['Help me understand a concept from this week.','Can you explain this idea with a simple example?'],hint:['Help me find the first step without giving away the answer.','What should I think about next?'],quiz:['Help me check my understanding of this topic.','Give me a short practice question when the assistant is connected.']};
+function welcome(){
+ $('messages').replaceChildren();
+ const title=document.createElement('h2');title.textContent='Hi! What are you working on?';title.style.marginTop='30px';
+ const intro=document.createElement('p');intro.textContent='Choose your course and the kind of help you need. Then describe the concept or step you would like to understand.';
+ const steps=document.createElement('ol');
+ ['Ask in your own words.','Get guidance connected to your course materials.','Work through the next step at your own pace.'].forEach(text=>{const item=document.createElement('li');item.textContent=text;item.style.marginBottom='12px';steps.append(item);});
+ const note=document.createElement('p');note.className='small';note.textContent='This is the intended experience, not a working AI conversation. No responses, source retrieval, or grading are enabled in this preview.';
+ $('messages').append(title,intro,steps,note);
+}
+function suggestions(){
+ $('examples').replaceChildren();
+ starters[$('mode').value].forEach(text=>{const button=document.createElement('button');button.type='button';button.textContent=text;button.addEventListener('click',()=>{$('question').value=text;$('status').textContent='Question starter added. Edit it in your own words.';$('question').focus();});$('examples').append(button);});
+}
+function reset(){ $('question').value='';$('status').textContent='';welcome(); }
+const status=document.createElement('p');status.id='status';status.className='notice';status.style.marginTop='16px';status.setAttribute('role','status');$('form').after(status);
+$('form').addEventListener('submit',event=>{event.preventDefault();if(!$('question').value.trim()){$('status').textContent='Add a question or choose a starter to preview the next step.';return;}$('status').textContent='In the connected version, your '+$('course').value+' question would be sent to the teaching assistant for '+$('mode').selectedOptions[0].textContent.toLowerCase()+'. Nothing was sent. Your draft remains in the question box for editing.';});
+$('course').addEventListener('change',()=>{$('course-link').href='../'+$('course').value+'/';$('course-link').textContent='Open '+$('course').value+' materials →';reset();});
+$('mode').addEventListener('change',()=>{suggestions();$('status').textContent='Help style updated. Choose a starter or write your own question.';});
+$('reset').addEventListener('click',()=>{reset();$('question').focus();});suggestions();welcome();
+</script>
+</body>
+</html>
