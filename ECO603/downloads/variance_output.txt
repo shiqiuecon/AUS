@@ -1,0 +1,198 @@
+Actual StataMP numerical output; machine-specific log header omitted.
+
+. * BEGIN ols
+. regress score str el
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =    155.01
+       Model |  64864.3011         2  32432.1506   Prob > F        =    0.0000
+    Residual |  87245.2925       417  209.221325   R-squared       =    0.4264
+-------------+----------------------------------   Adj R-squared   =    0.4237
+       Total |  152109.594       419  363.030056   Root MSE        =    14.464
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .3802783    -2.90   0.004    -1.848797   -.3537945
+          el |  -.6497768   .0393425   -16.52   0.000    -.7271112   -.5724423
+       _cons |   686.0322   7.411312    92.57   0.000     671.4641    700.6004
+------------------------------------------------------------------------------
+
+. * END ols
+. predict double residual, residuals
+
+. predict double fitted, xb
+
+. generate double residual_sq=residual^2
+
+. * BEGIN bp
+. estat hettest str el, iid
+
+Breusch–Pagan/Cook–Weisberg test for heteroskedasticity 
+Assumption: i.i.d. error terms
+Variables: str el
+
+H0: Constant variance
+
+    chi2(2) =  29.50
+Prob > chi2 = 0.0000
+
+. * END bp
+. scalar bp_stat=r(chi2)
+
+. scalar bp_p=r(p)
+
+. * BEGIN white
+. estat imtest, white
+
+White's test
+H0: Homoskedasticity
+Ha: Unrestricted heteroskedasticity
+
+    chi2(5) =  42.46
+Prob > chi2 = 0.0000
+
+Cameron & Trivedi's decomposition of IM-test
+
+--------------------------------------------------
+              Source |       chi2     df         p
+---------------------+----------------------------
+  Heteroskedasticity |      42.46      5    0.0000
+            Skewness |       6.23      2    0.0443
+            Kurtosis |       0.01      1    0.9157
+---------------------+----------------------------
+               Total |      48.70      8    0.0000
+--------------------------------------------------
+
+. * END white
+. * Installed StataMP returns White's result in r(chi2), r(df), r(p).
+. scalar white_stat=r(chi2)
+
+. scalar white_p=r(p)
+
+. generate double staffing_sq=str^2
+
+. generate double language_sq=el^2
+
+. generate double staffing_language=str*el
+
+. quietly regress residual_sq str el
+
+. assert abs(e(N)*e(r2)-bp_stat)<1e-7
+
+. quietly regress residual_sq str el staffing_sq language_sq staffing_language
+
+. assert abs(e(N)*e(r2)-white_stat)<1e-5
+
+. * BEGIN robust
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. * END robust
+. scalar ols_b=_b[str]
+
+. scalar ols_se=_se[str]
+
+. * Candidate variance model: Var(u|X,enrol)=sigma^2/enrol.
+. * This is a substantive hypothesis for district averages, not a fact established
+. * by enrolment or by rejection of a homoskedasticity test. Use robust inference.
+. * BEGIN wls
+. regress score str el [aw=enrol], vce(robust)
+(sum of wgt is 1,104,093)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     162.94
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5408
+                                                Root MSE          =     12.105
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |   -1.32611   .6605944    -2.01   0.045     -2.62462   -.0276004
+          el |  -.6390283   .0408085   -15.66   0.000    -.7192442   -.5588124
+       _cons |   693.1913   13.26319    52.26   0.000     667.1203    719.2624
+------------------------------------------------------------------------------
+
+. * END wls
+. scalar wls_b=_b[str]
+
+. scalar wls_se=_se[str]
+
+. generate double root_n=sqrt(enrol)
+
+. generate double score_star=root_n*score
+
+. generate double staffing_star=root_n*str
+
+. generate double language_star=root_n*el
+
+. * BEGIN transformed
+. regress score_star staffing_star language_star root_n, noconstant vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 417)         >   99999.00
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9997
+                                                Root MSE          =     620.63
+
+-------------------------------------------------------------------------------
+              |               Robust
+   score_star | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+staffing_star |   -1.32611   .6605944    -2.01   0.045     -2.62462   -.0276004
+language_star |  -.6390283   .0408085   -15.66   0.000    -.7192442   -.5588124
+       root_n |   693.1913   13.26319    52.26   0.000     667.1203    719.2624
+-------------------------------------------------------------------------------
+
+. * END transformed
+. assert abs(_b[staffing_star]-wls_b)<1e-8
+
+. export delimited score str el enrol residual residual_sq fitted ///
+>     using "output/variance_plot.csv", replace
+(file output/variance_plot.csv not found)
+file output/variance_plot.csv saved
+
+. clear
+
+. set obs 1
+Number of observations (_N) was 0, now 1.
+
+. generate double bp=bp_stat
+
+. generate double bp_pvalue=bp_p
+
+. generate double white=white_stat
+
+. generate double white_pvalue=white_p
+
+. generate double ols=ols_b
+
+. generate double ols_robust_se=ols_se
+
+. generate double wls=wls_b
+
+. generate double wls_robust_se=wls_se
+
+. export delimited using "output/variance_results.csv", replace
+(file output/variance_results.csv not found)
+file output/variance_results.csv saved
+
+. display "ECO603_VARIANCE_COMPLETE"
+ECO603_VARIANCE_COMPLETE
+

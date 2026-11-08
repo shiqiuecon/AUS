@@ -306,7 +306,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_06.do. Identify the known true coefficient in the first experiment, the short-regression probability limit, and the two estimated coefficients from the 4,000-observation data. Then explain the separate measurement-error result. Use the repeated-sample file to check whether a larger sample narrows the distribution around the correct or incorrect target.
 
-**Practice:** Run meeting_06.do. Identify the known true coefficient in the first experiment, the short-regression probability limit, and the two estimated coefficients from the 4,000-observation data. Then explain the separate measurement-error result. Use the repeated-sample file to check whether a larger sample narrows the distribution around the correct or incorrect target.
+Then use the actual schools.csv data. Fit score on staffing, language share and income; identify the largest Cook distance and compare the staffing slope with and without that district. Cook distance summarises how much omitting a case changes the fitted regression. Report this as sensitivity, not an instruction to delete it. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Then use the actual schools.csv data. Fit score on staffing, language share and income; identify the largest Cook distance and compare the staffing slope with and without that district. Cook distance summarises how much omitting a case changes the fitted regression. Report this as sensitivity, not an instruction to delete it. Keep your commands, log, output and interpretation.
 
 ## 28. Separate simulation truth from estimated evidence: explanation
 
@@ -316,7 +318,13 @@ The first experiment sets the true direct X coefficient to one. Omitting A produ
 
 The measurement-error experiment is generated separately. Its noisy-regressor estimate is 0.517755, compared with an attenuation limit of one half under its stated variances and independence assumptions. In the repeated-sample graphs, larger samples concentrate the short regression near 1.5 and the controlled regression near one. Precision improves around each model's limit; sample size does not change a biased design into a valid one.
 
-The first experiment sets the true direct X coefficient to one. Omitting A produces a probability limit of 1.5. In the generated 4,000-observation dataset, the short estimate is 1.516317 and the controlled estimate is 0.997692. They are estimates, so neither must equal its theoretical target exactly. The measurement-error experiment is generated separately. Its noisy-regressor estimate is 0.517755, compared with an attenuation limit of one half under its stated variances and independence assumptions. In the repeated-sample graphs, larger samples concentrate the short regression near 1.5 and the controlled regression near one. Precision improves around each model's limit; sample size does not change a biased design into a valid one.
+In the real-data follow-up, the full-sample staffing slope is -0.068776 and the slope excluding the most influential case is -0.093391, using 420 and 419 districts. The corresponding robust SEs are 0.290160 and 0.288784. Check coding and population relevance before deciding whether a valid case belongs in the analysis.
+
+Simulation: direct coefficient 1; omitted-factor probability limit 1.5.
+
+Real-data sensitivity: staffing slope \(-0.068776\rightarrow-0.093391\).
+
+420 versus 419 districts; investigate an influential case before deciding whether to exclude it.
 
 ## 29. Next, compare groups without misreading interactions
 

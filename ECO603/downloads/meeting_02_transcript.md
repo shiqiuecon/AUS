@@ -322,7 +322,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_02.do using schools.csv. Record the staffing slopes in the short model and the model with English-learner share. Multiply the longer-model language coefficient by the auxiliary staffing–language slope. Check that this product equals the staffing-coefficient movement, then explain why that identity does not identify a causal language effect.
 
-**Practice:** Run meeting_02.do using schools.csv. Record the staffing slopes in the short model and the model with English-learner share. Multiply the longer-model language coefficient by the auxiliary staffing–language slope. Check that this product equals the staffing-coefficient movement, then explain why that identity does not identify a causal language effect.
+Repeat the omitted-variable decomposition for income, retaining language share in every supporting equation. Verify the staffing-coefficient movement on one common sample. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Repeat the omitted-variable decomposition for income, retaining language share in every supporting equation. Verify the staffing-coefficient movement on one common sample. Keep your commands, log, output and interpretation.
 
 ## 29. Explain an observed omitted-variable contribution: explanation
 
@@ -332,7 +334,13 @@ The short staffing slope is -2.279808 and the language-adjusted slope is -1.1012
 
 The identity describes compatible least-squares fits on the same 420 observations. The negative language association and positive staffing–language association make the short staffing slope more negative. Neither component is automatically causal: language share can stand for measured district composition while other background differences remain unobserved. The numerical identity verifies the regression explanation, while the causal interpretation still requires substantive assumptions.
 
-The short staffing slope is -2.279808 and the language-adjusted slope is -1.101296. Their difference is -1.178512. The product of the language coefficient -0.649777 and auxiliary slope 1.813719 gives the same difference before rounding. The identity describes compatible least-squares fits on the same 420 observations. The negative language association and positive staffing–language association make the short staffing slope more negative. Neither component is automatically causal: language share can stand for measured district composition while other background differences remain unobserved. The numerical identity verifies the regression explanation, while the causal interpretation still requires substantive assumptions.
+Omitting income changes the staffing slope by -1.032520; the full-model income slope times the income-on-staffing auxiliary slope, controlling for language share, gives the same value on 420 districts.
+
+Original language contribution: \(-1.178512\).
+
+Income contribution, retaining language share: \(-1.032520\).
+
+Check compatible models and the same 420 districts.
 
 ## 30. From adjustment to partialling out
 

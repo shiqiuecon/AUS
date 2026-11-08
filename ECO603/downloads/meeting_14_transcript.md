@@ -20,7 +20,11 @@ Let log Q be log cigarette packs sold per person and log P the log real price. T
 
 The error includes omitted demand influences. If price responds to those influences, price is endogenous in the demand equation. The observed OLS slope can then differ from the demand elasticity. Calling an equation structural means it is intended to represent an economic relationship with a specified intervention interpretation; writing that label does not establish identification.
 
+The consumer price index converts the source money prices to a common price scale. This file records its index with a base of one, rather than 100. We therefore divide nominal cents per pack by that recorded index before taking logs. An equivalent base-100 index would be divided by 100 first, just as in the earlier deflation example. Changing a common index base changes a log-price intercept, not the elasticity.
+
 \(\log Q_i=\alpha+\beta\log P_i+u_i\)
+
+Source deflator has base one: real cents per pack equal nominal cents divided by the recorded price index.
 
 ## 03. Relevance is the first instrument requirement
 
@@ -227,7 +231,34 @@ The income adjustment can help with some observed demand differences but does no
 ------------------------------------------------------------------------------
 ```
 
-## 17. School availability illustrates the exclusion question
+## 17. Hold income fixed in both supporting IV regressions
+
+Compatible controls and observations make the controlled ratio meaningful.
+
+Income is a plausible determinant of cigarette demand and can also be related to taxes and prices. Suppose real income is included as an exogenous control under our stated model. It belongs in the price first stage, the quantity reduced form and the structural demand equation. Each regression must use the same 48 states.
+
+After controlling for log real income, the tax-to-log-price slope is 0.027395 and the tax-to-log-quantity slope is -0.031323. Their ratio is -1.143375, matching the dedicated two-stage least-squares estimate. It remains a price elasticity under the log-log model and instrument conditions. Adding income changes the comparison; it does not demonstrate that all tax-related demand determinants have been removed. The do-file prints both stages and verifies the identity before reporting IV uncertainty.
+
+Use the same exogenous income control and 48 states in every supporting equation.
+
+Controlled ratio: \(\widehat\beta=\widehat r_Z/\widehat\pi_Z\).
+
+Read the dedicated IV result for its uncertainty.
+
+```text
+. ivregress 2sls logq logincome (logp=salestax), vce(robust)
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        logp |  -1.143375   .3604805    -3.17   0.002    -1.849904   -.4368463
+   logincome |   .2145153   .3018477     0.71   0.477    -.3770953    .8061258
+       _cons |   9.430658   1.219402     7.73   0.000     7.040675    11.82064
+------------------------------------------------------------------------------
+```
+
+## 18. School availability illustrates the exclusion question
 
 A plausible first stage can still leave another route to the outcome.
 
@@ -239,7 +270,7 @@ Suppose nearby single-sex school availability predicts attendance at that school
 
 Residential choice, local resources or school competition may create other relationships.
 
-## 18. Unexpected first-stage sign
+## 19. Unexpected first-stage sign
 
 Try the comparison before opening the explanation.
 
@@ -249,7 +280,7 @@ In this separate school-attendance example, relevance asks for a nonzero slope. 
 
 **Practice:** School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
 
-## 19. Unexpected first-stage sign: explanation
+## 20. Unexpected first-stage sign: explanation
 
 Follow the calculation and interpret its units.
 
@@ -257,7 +288,7 @@ No. Relevance requires a nonzero first stage, not a prescribed positive sign. An
 
 No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
 
-## 20. Whose treatment changes when encouragement changes?
+## 21. Whose treatment changes when encouragement changes?
 
 A binary encouragement example introduces the treatment-response groups.
 
@@ -271,7 +302,7 @@ Monotonicity: the offer does not reduce any individual’s attendance.
 
 Constructed ratio: \(0.90/(0.60-0.30)=3\) score points.
 
-## 21. With heterogeneous effects, say whose response IV identifies
+## 22. With heterogeneous effects, say whose response IV identifies
 
 A constant coefficient can hide a local treatment comparison.
 
@@ -283,7 +314,7 @@ LATE: average treatment effect for compliers under the binary-IV assumptions.
 
 An IV population is determined by the instrument and the maintained model.
 
-## 22. Weak instruments make the ratio fragile
+## 23. Weak instruments make the ratio fragile
 
 A near-zero first stage magnifies uncertainty.
 
@@ -307,7 +338,37 @@ Strength and validity are different requirements.
   --------------------------------------------------------------------------
 ```
 
-## 23. A larger instrument set adds assumptions as well as information
+## 24. A weak-instrument-robust test asks a stated coefficient question
+
+Protecting inference from a weak first stage does not validate the instrument.
+
+An ordinary IV interval can be unreliable when the instrument barely shifts the endogenous regressor. A weak-instrument-robust test is designed to remain valid for its coefficient null without assuming that first-stage relevance is strong, while retaining the other identification and sampling requirements.
+
+The Anderson–Rubin idea can be seen by proposing a price elasticity of minus one. Under that null, move minus one times log price out of the quantity equation. A valid excluded instrument should not predict the remaining adjusted outcome after the included controls. Our model has one excluded instrument for one endogenous regressor; this is called just identified. Stata performs the appropriate test. Its p-value is about 0.691, so this test does not reject an elasticity of minus one. This is not evidence that exclusion holds or that the null is true. Weak-robust inference and instrument validity address different questions.
+
+For a proposed \(\beta_0=-1\), consider \(\log Q-\beta_0\log P=\log Q+\log P\).
+
+Anderson–Rubin: test the instrument restriction under the proposed coefficient.
+
+Validity still requires exogeneity, exclusion and justified sampling/inference conditions.
+
+```text
+. estat weakrobust, betanull(-1)
+
+Test robust to weak instruments
+Model VCE: Robust
+
+ ( 1)  logp = -1
+
+Anderson–Rubin chi2(1) =   0.16
+           Prob > chi2 = 0.6914
+
+Note: Anderson–Rubin test reported by
+      default because model is just
+      identified.
+```
+
+## 25. A larger instrument set adds assumptions as well as information
 
 More instruments are not automatically a better design.
 
@@ -319,7 +380,7 @@ Overidentified: more excluded instruments than endogenous regressors.
 
 A compatibility test cannot certify all substantive instrument assumptions.
 
-## 24. Instrument scaling does not change the simple ratio
+## 26. Instrument scaling does not change the simple ratio
 
 Consistent numerator and denominator transformations cancel.
 
@@ -329,7 +390,7 @@ Scaling does not solve a weak or invalid instrument. It changes labels and coeff
 
 \(\dfrac{\widehat\rho/c}{\widehat\pi_1/c}=\dfrac{\widehat\rho}{\widehat\pi_1}\) for nonzero \(c\)
 
-## 25. Write the IV argument as a chain of evidence
+## 27. Write the IV argument as a chain of evidence
 
 Separate relevance, exclusion, estimation and inference.
 
@@ -341,7 +402,25 @@ Begin with the endogenous comparison and the omitted forces that threaten OLS.
 
 This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality.
 
-## 26. DAG practice: challenge exclusion with one extra arrow
+## 28. How sensitive is IV to an excluded tax channel?
+
+Treat an assumed exclusion violation as a sensitivity scenario, not an estimate.
+
+The IV DAG rules out a direct tax-to-quantity route that bypasses price. For a sensitivity exercise, let gamma be the quantity-equation slope of that extra tax channel. Let pi be the controlled tax-to-log-price slope and r the controlled reduced-form quantity slope. Under this additive extension, the reduced form combines beta times pi with gamma.
+
+If gamma is zero, division gives the original controlled elasticity, about -1.143. If we instead assume gamma is 0.005 log-quantity units per real cent of tax, subtract that channel before dividing, giving about -1.326. Move the control to compare such assumptions. Gamma is not estimated by this calculation. The graph shows how a direct channel would change the interpretation while leaving the first stage strong; it does not cover every possible threat to instrument exogeneity.
+
+Extended reduced form: \(r=\beta\pi+\gamma\).
+
+Assumption-based sensitivity: \(\beta(\gamma)=(r-\gamma)/\pi\).
+
+The direct-channel value is assumed; the supporting regression slopes are actual estimates.
+
+**Practice:** Is the direct-channel value gamma estimated by this exercise?
+
+**Explanation:** No. It is an explicitly assumed sensitivity value.
+
+## 29. DAG practice: challenge exclusion with one extra arrow
 
 Trace the routes before choosing a control.
 
@@ -351,7 +430,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
 
-## 27. DAG practice: challenge exclusion with one extra arrow: explanation
+## 30. DAG practice: challenge exclusion with one extra arrow: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -361,15 +440,17 @@ The reduced-form instrument association would combine the price channel and that
 
 The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price. The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
 
-## 28. Reconstruct IV and assess the instrument separately
+## 31. Reconstruct IV and assess the instrument separately
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_14.do using cigarettes.csv. Divide the reduced-form tax slope by the first-stage price slope and compare the ratio with ivregress. Explain the coefficient in elasticity units. Then name one concrete exclusion threat that a strong first stage cannot rule out.
 
-**Practice:** Run meeting_14.do using cigarettes.csv. Divide the reduced-form tax slope by the first-stage price slope and compare the ratio with ivregress. Explain the coefficient in elasticity units. Then name one concrete exclusion threat that a strong first stage cannot rule out.
+Add log real income to the first stage, reduced form and IV equation, using the same 48 states. Verify the controlled ratio and compare the elasticity with the original no-income result. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-## 29. Reconstruct IV and assess the instrument separately: explanation
+**Practice:** Add log real income to the first stage, reduced form and IV equation, using the same 48 states. Verify the controlled ratio and compare the elasticity with the original no-income result. Keep your commands, log, output and interpretation.
+
+## 32. Reconstruct IV and assess the instrument separately: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -377,9 +458,15 @@ The reduced-form slope is -0.033297 and the first-stage slope is 0.030729. Their
 
 The ratio uses the same observations, instrument and controls in both supporting regressions. The first stage addresses relevance. Tax policy could still be associated with smoking attitudes or other tobacco policies, or affect consumption through other price channels. Those are substantive exogeneity or exclusion threats. Report the dedicated IV estimator's uncertainty rather than ordinary second-stage OLS SEs.
 
-The reduced-form slope is -0.033297 and the first-stage slope is 0.030729. Their ratio is -1.083587, matching the simple IV price coefficient. In this log–log specification it is an elasticity: a small one-percent price increase corresponds to roughly 1.08 percent lower quantity under the model and identifying assumptions. The ratio uses the same observations, instrument and controls in both supporting regressions. The first stage addresses relevance. Tax policy could still be associated with smoking attitudes or other tobacco policies, or affect consumption through other price channels. Those are substantive exogeneity or exclusion threats. Report the dedicated IV estimator's uncertainty rather than ordinary second-stage OLS SEs.
+The controlled ratio and dedicated IV estimate are both -1.143375, with dedicated robust SE 0.360481. The compatible first-stage and reduced-form slopes are 0.027395 and -0.031323. Income adjustment does not establish exclusion.
 
-## 30. Next, change the outcome from a level to a probability
+Original IV elasticity: \(-1.083587\).
+
+Income-controlled IV: \(-1.143375\), robust SE \(0.360481\).
+
+Both stages need the same controls and states; exclusion remains a substantive argument.
+
+## 33. Next, change the outcome from a level to a probability
 
 A binary response requires a different interpretation of the fitted function.
 

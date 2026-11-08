@@ -328,7 +328,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the difference between the sequence after a one-month unit increase and the long-run level contrast after a permanent increase in this finite-lag model.
 
-**Practice:** Run meeting_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the difference between the sequence after a one-month unit increase and the long-run level contrast after a permanent increase in this finite-lag model.
+Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Keep your commands, log, output and interpretation.
 
 ## 28. Trace the actual monthly lag pattern: explanation
 
@@ -338,7 +340,13 @@ The three coefficients are -0.021834, -0.002771 and 0.002824. Their sum is -0.02
 
 A one-month unit increase has those dated fitted responses, then no further direct effect in this finite two-lag specification. Their sum is the cumulative log-outcome response. A permanent unit increase eventually activates all three terms at once, giving the same sum as a long-run level contrast. An equation with a lagged outcome needs a different multiplier calculation and stability assumptions.
 
-The three coefficients are -0.021834, -0.002771 and 0.002824. Their sum is -0.021781 in log-accident units per unemployment-rate unit. The covariance among estimates matters for the SE of that sum, which is why lincom is useful. A one-month unit increase has those dated fitted responses, then no further direct effect in this finite two-lag specification. Their sum is the cumulative log-outcome response. A permanent unit increase eventually activates all three terms at once, giving the same sum as a long-run level contrast. An equation with a lagged outcome needs a different multiplier calculation and stability assumptions.
+On the common 105 months, the two-lag sum is -0.018658 (SE 0.003752) and the three-lag sum is -0.018684 (SE 0.003761). Common-sample comparison separates changed lag specification from the loss of another initial observation.
+
+Common 105 months: two-lag sum \(-0.018658\); three-lag sum \(-0.018684\).
+
+Corresponding robust SEs: \(0.003752\) and \(0.003761\).
+
+Fixing the sample isolates the change in lag specification.
 
 ## 29. Next, examine what the fitted errors still remember
 

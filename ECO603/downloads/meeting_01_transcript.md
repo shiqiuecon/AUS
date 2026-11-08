@@ -526,7 +526,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Open schools.csv and run meeting_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
 
-**Practice:** Open schools.csv and run meeting_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
+Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Keep your commands, log, output and interpretation.
 
 ## 38. School staffing: reproduce and explain: explanation
 
@@ -536,7 +538,13 @@ The file has 420 districts. Score is measured in points and str in students per 
 
 A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
 
-The file has 420 districts. Score is measured in points and str in students per teacher. A reduction of two students per teacher has a fitted contrast of about +4.56 points in the short regression and +2.20 after adjustment for language composition. Both fits use the same districts, so the movement is a model change. A suitable ministry statement reports these as adjusted or unadjusted associations. It explains that districts may differ in resources or learning needs that also affect teacher recruitment. A credible intervention comparison would need to address that source of staffing selection. The smaller adjusted estimate does not establish that all remaining selection has been removed.
+The income-adjusted gain is 0.137551 points with robust SE 0.580319 on 420 districts. It remains an adjusted association.
+
+Original two-student fitted gains: +4.56 and +2.20 points.
+
+With income: gain \(0.137551\), robust SE \(0.580319\).
+
+The smaller adjusted association does not establish a causal intervention effect.
 
 ## 39. Exit check: explain one result carefully
 

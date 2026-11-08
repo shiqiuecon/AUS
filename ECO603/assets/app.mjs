@@ -1,6 +1,6 @@
 import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e65922206d';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=c744db12448f';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=4d2768d6287f';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
@@ -9,7 +9,7 @@ let step=0,value=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,
 const current=()=>lesson.slides[index];
 const audio=lesson.narration?new Audio():null;
 let audioFrame=0,audioRequest=0,desiredTime=0,eventSignature='',finishing=false;
-if(audio){audio.preload='metadata';audio.src=lesson.narration.src.startsWith('data:')?lesson.narration.src:url(`${lesson.narration.src}?v=${data.revision}`);audio.preservesPitch=true;}
+if(audio){audio.preload='metadata';audio.src=/^(data:|blob:)/.test(lesson.narration.src)?lesson.narration.src:url(`${lesson.narration.src}?v=${data.revision}`);audio.preservesPitch=true;}
 const voiceMode=()=>!!audio&&!!current().narration&&!!$('#voice-enabled')?.checked;
 const clock=t=>`${Math.floor(Math.max(0,t)/60)}:${String(Math.floor(Math.max(0,t)%60)).padStart(2,'0')}`;
 function seekAudio(relative){
@@ -32,6 +32,7 @@ function updateAudio(relative){
  if(graphEvent){
   const limit=stepLimit();step=Math.min(limit,graphEvent.dag?.step??graphEvent.step);
   if(graphEvent.dag){value={conditioned:[...graphEvent.dag.conditioned],extra:graphEvent.dag.extra};$('#visual').querySelectorAll('[data-condition]').forEach(n=>n.checked=value.conditioned.includes(n.dataset.condition));const extra=$('#visual [data-dag-extra]');if(extra)extra.checked=value.extra;}
+  else if(Number.isFinite(graphEvent.value)){value=graphEvent.value;const control=$('#graph-input');if(control)control.value=value;}
   updateGraph();
  }
  document.querySelectorAll('.spoken-row').forEach(n=>n.classList.remove('spoken-row'));

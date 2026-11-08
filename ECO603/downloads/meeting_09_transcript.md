@@ -32,7 +32,39 @@ The do-file checks the reconstructed date against the original year, sequential 
 
 January 1981 through December 1989
 
-## 04. A trend is a gradual time pattern
+## 04. An index number compares a level with a base period
+
+A value of 125 on a base-100 index means 25 percent above its base.
+
+A dated monetary series can rise because quantities or prices change. An index number expresses a level relative to a chosen base period. Divide the current level by its base-period level and multiply by 100. The base value is therefore 100; an index of 125 means that the indexed level is 25 percent above its base.
+
+A price index summarises a specified basket of prices. It does not measure every household's exact cost of living. Changing the base rescales the index without changing its proportional growth rates. An increase from 120 to 125 is five index points but about 4.17 percent, because the percentage change divides by the starting 120. Distinguish those units before using an index in a regression.
+
+\(I_t=100\,P_t/P_0\); \(P_0\) is the base-period price level.
+
+\(120\rightarrow125:\quad100(125/120-1)\approx4.17\%\).
+
+Index points and percentage changes answer different questions.
+
+## 05. Convert nominal money to a common purchasing-power scale
+
+Deflation separates a monetary level from the price scale used to express it.
+
+Nominal income is the amount of money recorded at that date's prices. Real income expresses purchasing power using a common price scale. With a base-100 price index, divide nominal income by the index divided by 100. Deflation is the name for this conversion; it does not mean that the amount of money actually paid changes.
+
+In the constructed example, income rises from 100 to 110 thousand dirhams while the price index rises from 100 to 125. The later real income is 88 thousand base-period dirhams: nominal income rose ten percent, but purchasing power fell twelve percent. These are teaching values, not current UAE statistics. The cigarette-demand application later divides nominal prices by a price index before taking logs. Define that monetary scale before interpreting its elasticity.
+
+Real amount: \(Y_t^{R}=Y_t^{N}/(I_t/100)\); superscripts \(R,N\) denote real and nominal amounts.
+
+Example: \(110/1.25=88\), compared with base-period real income \(100\).
+
+Choose an index suited to the economic quantity and state the base year.
+
+**Practice:** Nominal income is 110 and the base-100 price index is 125. What is real income?
+
+**Explanation:** 110 divided by 1.25 is 88, in base-period monetary units.
+
+## 06. A trend is a gradual time pattern
 
 In a log outcome, a linear trend describes proportional growth.
 
@@ -44,7 +76,7 @@ This is one way to represent gradual changes in exposure, population or reportin
 
 Small-change interpretation: about \(100g\)% per month
 
-## 05. Seasonality repeats at the same part of the year
+## 07. Seasonality repeats at the same part of the year
 
 Use a reference month to avoid redundant indicators.
 
@@ -56,7 +88,7 @@ January is the reference category
 
 Eleven recurring month indicators, not 108 unique date indicators
 
-## 06. Frequency and season
+## 08. Frequency and season
 
 Try the comparison before opening the explanation.
 
@@ -66,7 +98,7 @@ Translate each lag into calendar time using the observation frequency. A month e
 
 **Practice:** An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
 
-## 07. Frequency and season: explanation
+## 09. Frequency and season: explanation
 
 Follow the calculation and interpret its units.
 
@@ -74,7 +106,7 @@ There are \(9\times12=108\) observations. Eleven indicators compare months with 
 
 There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
 
-## 08. Write the policy model with its calendar controls
+## 10. Write the policy model with its calendar controls
 
 Make the intervention and units explicit.
 
@@ -88,7 +120,7 @@ M subscript m t is one if date t is in calendar month m. The sum includes Februa
 
 \(U_t\): unemployment; \(u_t\): regression error.
 
-## 09. Inspect the calendar-only regression
+## 11. Inspect the calendar-only regression
 
 Understand the baseline before adding policy variables.
 
@@ -108,7 +140,7 @@ This baseline helps us see what the policy model is adding. It does not establis
 ------------------------------------------------------------------------------
 ```
 
-## 10. A seasonal joint test asks about the whole pattern
+## 12. A seasonal joint test asks about the whole pattern
 
 One insignificant month does not settle the annual question.
 
@@ -135,7 +167,7 @@ Use testparm after fitting the intended model to state the grouped restriction. 
             Prob > F =    0.0000
 ```
 
-## 11. Feedback across dates does not require a causal cycle
+## 13. Feedback across dates does not require a causal cycle
 
 Current accidents can affect the policy chosen next month.
 
@@ -147,7 +179,7 @@ Trace the route from the current unexpected cause to current accidents and then 
 
 Policy at the next date can respond to an unexpected outcome now.
 
-## 12. Contemporaneous exogeneity concerns the current regressor vector
+## 14. Contemporaneous exogeneity concerns the current regressor vector
 
 Current means the variables included for the same date.
 
@@ -159,7 +191,7 @@ This is a statement about the error's mean, not full independence of every varia
 
 Contemporaneous condition: \(E(u_t\mid x_t)=0\)
 
-## 13. Strict and sequential exogeneity condition on different information
+## 15. Strict and sequential exogeneity condition on different information
 
 Future regressors make strict exogeneity demanding.
 
@@ -171,7 +203,7 @@ Strict: \(E(u_t\mid x_1,\ldots,x_T)=0\)
 
 Sequential: \(E(u_t\mid x_1,\ldots,x_t)=0\)
 
-## 14. Past outcomes can contain past errors
+## 16. Past outcomes can contain past errors
 
 Adding dynamics changes the exogeneity question.
 
@@ -183,7 +215,7 @@ A lagged outcome is the outcome from an earlier date.
 
 This is a reason to model timing explicitly rather than assume lagging a variable always makes it safe.
 
-## 15. Strict exogeneity
+## 17. Strict exogeneity
 
 Try the comparison before opening the explanation.
 
@@ -193,7 +225,7 @@ Trace the current-error-to-future-policy route. Compare whether future regressor
 
 **Practice:** Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
 
-## 16. Strict exogeneity: explanation
+## 18. Strict exogeneity: explanation
 
 Follow the calculation and interpret its units.
 
@@ -201,7 +233,7 @@ Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requ
 
 Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
 
-## 17. Read the adjusted accident regression
+## 19. Read the adjusted accident regression
 
 Connect the coefficient with the actual outcome and controls.
 
@@ -226,7 +258,7 @@ The result raises useful applied questions. Could travel, risk behaviour, enforc
 ------------------------------------------------------------------------------
 ```
 
-## 18. A date indicator can mix several simultaneous changes
+## 20. A date indicator can mix several simultaneous changes
 
 A coefficient needs a counterfactual interpretation.
 
@@ -236,7 +268,7 @@ For a causal claim, explain what the accident path would have looked like withou
 
 Earlier accident history and economic conditions can influence both law adoption and later accidents. The diagram shows the two resulting backdoor routes. Toggle the proposed history and economic controls separately. A calendar indicator does not close a route merely because adoption occurred at a known date; the relevant pre-policy causes must be addressed by the design and measured controls.
 
-## 19. Before–after is not enough
+## 21. Before–after is not enough
 
 Try the comparison before opening the explanation.
 
@@ -246,7 +278,7 @@ Describe the accident path that would have occurred under the specified no-law p
 
 **Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
 
-## 20. Before–after is not enough: explanation
+## 22. Before–after is not enough: explanation
 
 Follow the calculation and interpret its units.
 
@@ -254,7 +286,7 @@ Traffic volume, seasonality, fuel prices, enforcement, reporting or other polici
 
 Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
 
-## 21. A count and a rate answer different questions
+## 23. A count and a rate answer different questions
 
 Exposure can change while individual risk stays fixed.
 
@@ -266,7 +298,7 @@ Total accidents can rise because there is more driving, even if risk per trip fa
 
 Our current outcome is the recorded statewide count, logged for the fitted comparison.
 
-## 22. Time ordering changes the meaning of a sample
+## 24. Time ordering changes the meaning of a sample
 
 One realised history can contain strongly related observations.
 
@@ -278,7 +310,7 @@ An ordered history can share information across dates.
 
 Justify averaging and uncertainty for the process, rather than treating rows as independent.
 
-## 23. A linear trend does not remove every nonstationary process
+## 25. A linear trend does not remove every nonstationary process
 
 A straight calendar pattern need not describe accumulated random changes.
 
@@ -290,7 +322,7 @@ A fixed calendar drift and accumulated unexpected changes are different mechanis
 
 Inspect whether deviations fade before relying on a trend regression.
 
-## 24. Record the time-series specification in words
+## 26. Record the time-series specification in words
 
 Dates and frequency are part of reproducibility.
 
@@ -302,7 +334,7 @@ A useful description gives the date range, monthly frequency, outcome scale, pol
 
 Then explain the proposed economic comparison and its main uncertainty and identification conditions.
 
-## 25. DAG practice: dated policy feedback
+## 27. DAG practice: dated policy feedback
 
 Trace the routes before choosing a control.
 
@@ -312,7 +344,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
 
-## 26. DAG practice: dated policy feedback: explanation
+## 28. DAG practice: dated policy feedback: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -322,15 +354,17 @@ A sequential mean assumption uses a different information set and can be conside
 
 The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process. A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
 
-## 27. Interpret the traffic-law coefficient with its timing
+## 29. Interpret the traffic-law coefficient with its timing
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_09.do using traffic.csv. Verify the monthly date range and sample size. Translate the seat-belt-law coefficient into an exact percentage contrast in exponentiated fitted log accidents. Explain why the trend and month controls do not establish that the law caused this contrast.
 
-**Practice:** Run meeting_09.do using traffic.csv. Verify the monthly date range and sample size. Translate the seat-belt-law coefficient into an exact percentage contrast in exponentiated fitted log accidents. Explain why the trend and month controls do not establish that the law caused this contrast.
+Refit the traffic model without its linear trend, retaining the same month controls, other regressors and 108 months. Compare the law slopes and explain the changed time-path assumption. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-## 28. Interpret the traffic-law coefficient with its timing: explanation
+**Practice:** Refit the traffic model without its linear trend, retaining the same month controls, other regressors and 108 months. Compare the law slopes and explain the changed time-path assumption. Keep your commands, log, output and interpretation.
+
+## 30. Interpret the traffic-law coefficient with its timing: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -338,9 +372,15 @@ The series has 108 months, January 1981 through December 1989. Its seat-belt-law
 
 The result compares law states after accounting for the specified trend, seasonal pattern and other included variables. Adoption could coincide with unmeasured enforcement, reporting, exposure or other policy changes. Controlling for the calendar addresses the pattern represented by those controls. A causal statement needs a credible argument about the remaining counterfactual accident path, rather than relying on the law indicator's p-value.
 
-The series has 108 months, January 1981 through December 1989. Its seat-belt-law coefficient is 0.095453. The exact fitted multiplicative contrast is 10.0157 percent. It concerns total accidents, rather than deaths or accidents per distance travelled. The result compares law states after accounting for the specified trend, seasonal pattern and other included variables. Adoption could coincide with unmeasured enforcement, reporting, exposure or other policy changes. Controlling for the calendar addresses the pattern represented by those controls. A causal statement needs a credible argument about the remaining counterfactual accident path, rather than relying on the law indicator's p-value.
+The law slope is 0.095453 with a trend and 0.130158 without it. These are log-accident associations under different time specifications. A more attractive sign or p-value is not a reason to select the counterfactual trend.
 
-## 29. Next, ask how long a shock lasts
+Law slope with trend: \(0.095453\); without trend: \(0.130158\).
+
+Same 108 months and remaining regressors.
+
+The models impose different time-path assumptions.
+
+## 31. Next, ask how long a shock lasts
 
 Persistence determines useful dynamics and long-run comparisons.
 

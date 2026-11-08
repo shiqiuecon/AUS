@@ -1,0 +1,514 @@
+Actual StataMP numerical output; machine-specific log header omitted.
+
+. regress score `base' if training
+
+      Source |       SS           df       MS      Number of obs   =       280
+-------------+----------------------------------   F(3, 276)       =    234.71
+       Model |  78050.1439         3  26016.7146   Prob > F        =    0.0000
+    Residual |  30593.7534       276  110.846932   R-squared       =    0.7184
+-------------+----------------------------------   Adj R-squared   =    0.7153
+       Total |  108643.897       279   389.40465   Root MSE        =    10.528
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0076283    .339974    -0.02   0.982    -.6768999    .6616434
+          el |  -.4984286    .036191   -13.77   0.000    -.5696741   -.4271832
+      income |   1.468514   .0890362    16.49   0.000     1.293238     1.64379
+       _cons |   639.7712   6.961748    91.90   0.000     626.0663     653.476
+------------------------------------------------------------------------------
+
+. assert e(N)==280
+
+. predict double pred_ols3, xb
+
+. estimates store ols3
+
+. 
+. regress score `expanded' if training
+
+      Source |       SS           df       MS      Number of obs   =       280
+-------------+----------------------------------   F(9, 270)       =     92.75
+       Model |  82090.4318         9  9121.15909   Prob > F        =    0.0000
+    Residual |  26553.4655       270  98.3461685   R-squared       =    0.7556
+-------------+----------------------------------   Adj R-squared   =    0.7474
+       Total |  108643.897       279   389.40465   Root MSE        =     9.917
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |   4.817966   4.460881     1.08   0.281    -3.964568     13.6005
+          el |  -.4704265   .4104836    -1.15   0.253    -1.278582     .337729
+      income |    4.74436   1.225289     3.87   0.000     2.332024    7.156696
+ staffing_sq |  -.0942755   .1108405    -0.85   0.396     -.312497     .123946
+         el2 |   .0058081   .0017543     3.31   0.001     .0023543    .0092619
+     income2 |  -.0361519   .0079366    -4.56   0.000    -.0517775   -.0205264
+      str_el |  -.0131415   .0188229    -0.70   0.486    -.0501998    .0239169
+  str_income |  -.0823057   .0547105    -1.50   0.134    -.1900191    .0254078
+   el_income |  -.0061273   .0086849    -0.71   0.481    -.0232259    .0109714
+       _cons |   567.9634   46.18677    12.30   0.000     477.0314    658.8954
+------------------------------------------------------------------------------
+
+. assert e(N)==280
+
+. predict double pred_ols9, xb
+
+. estimates store ols9
+
+. 
+. * Stata's built-in penalty scaling/standardisation uses the estimation sample.
+. * alpha(0) is ridge. The intercept is not penalised.
+. * CV means validation folds inside the training data, not the held-out test set.
+. * The initial default ridge grid selected its smallest value. Widen the grid
+. * because of that TRAINING-CV boundary, not because of held-out performance.
+. elasticnet linear score `expanded' if training, alpha(0) ///
+>     selection(cv, folds(5)) rseed(6032027) grid(200, ratio(1e-8))
+
+Evaluating up to 200 lambdas in grid ...
+Grid value 1:     lambda = 1.42e+09   no. of nonzero coef. = 9
+Grid value 2:     lambda = 12956.59   no. of nonzero coef. = 9
+Grid value 3:     lambda = 11811.09   no. of nonzero coef. = 9
+Grid value 4:     lambda = 10766.86   no. of nonzero coef. = 9
+Grid value 5:     lambda = 9814.945   no. of nonzero coef. = 9
+Grid value 6:     lambda = 8947.194   no. of nonzero coef. = 9
+Grid value 7:     lambda = 8156.162   no. of nonzero coef. = 9
+Grid value 8:     lambda = 7435.066   no. of nonzero coef. = 9
+Grid value 9:     lambda = 6777.723   no. of nonzero coef. = 9
+Grid value 10:    lambda = 6178.497   no. of nonzero coef. = 9
+Grid value 11:    lambda = 5632.249   no. of nonzero coef. = 9
+Grid value 12:    lambda = 5134.295   no. of nonzero coef. = 9
+Grid value 13:    lambda = 4680.366   no. of nonzero coef. = 9
+Grid value 14:    lambda = 4266.569   no. of nonzero coef. = 9
+Grid value 15:    lambda = 3889.357   no. of nonzero coef. = 9
+Grid value 16:    lambda = 3545.494   no. of nonzero coef. = 9
+Grid value 17:    lambda = 3232.033   no. of nonzero coef. = 9
+Grid value 18:    lambda = 2946.285   no. of nonzero coef. = 9
+Grid value 19:    lambda = 2685.801   no. of nonzero coef. = 9
+Grid value 20:    lambda = 2448.346   no. of nonzero coef. = 9
+Grid value 21:    lambda = 2231.885   no. of nonzero coef. = 9
+Grid value 22:    lambda = 2034.561   no. of nonzero coef. = 9
+Grid value 23:    lambda = 1854.683   no. of nonzero coef. = 9
+Grid value 24:    lambda = 1690.709   no. of nonzero coef. = 9
+Grid value 25:    lambda = 1541.231   no. of nonzero coef. = 9
+Grid value 26:    lambda = 1404.969   no. of nonzero coef. = 9
+Grid value 27:    lambda = 1280.754   no. of nonzero coef. = 9
+Grid value 28:    lambda = 1167.521   no. of nonzero coef. = 9
+Grid value 29:    lambda = 1064.299   no. of nonzero coef. = 9
+Grid value 30:    lambda = 970.2033   no. of nonzero coef. = 9
+Grid value 31:    lambda = 884.4265   no. of nonzero coef. = 9
+Grid value 32:    lambda = 806.2333   no. of nonzero coef. = 9
+Grid value 33:    lambda = 734.9533   no. of nonzero coef. = 9
+Grid value 34:    lambda = 669.9752   no. of nonzero coef. = 9
+Grid value 35:    lambda = 610.7419   no. of nonzero coef. = 9
+Grid value 36:    lambda = 556.7455   no. of nonzero coef. = 9
+Grid value 37:    lambda =  507.523   no. of nonzero coef. = 9
+Grid value 38:    lambda = 462.6523   no. of nonzero coef. = 9
+Grid value 39:    lambda = 421.7486   no. of nonzero coef. = 9
+Grid value 40:    lambda = 384.4614   no. of nonzero coef. = 9
+Grid value 41:    lambda = 350.4707   no. of nonzero coef. = 9
+Grid value 42:    lambda = 319.4852   no. of nonzero coef. = 9
+Grid value 43:    lambda = 291.2391   no. of nonzero coef. = 9
+Grid value 44:    lambda = 265.4903   no. of nonzero coef. = 9
+Grid value 45:    lambda =  242.018   no. of nonzero coef. = 9
+Grid value 46:    lambda = 220.6209   no. of nonzero coef. = 9
+Grid value 47:    lambda = 201.1156   no. of nonzero coef. = 9
+Grid value 48:    lambda = 183.3347   no. of nonzero coef. = 9
+Grid value 49:    lambda = 167.1259   no. of nonzero coef. = 9
+Grid value 50:    lambda = 152.3501   no. of nonzero coef. = 9
+Grid value 51:    lambda = 138.8806   no. of nonzero coef. = 9
+Grid value 52:    lambda =  126.602   no. of nonzero coef. = 9
+Grid value 53:    lambda =  115.409   no. of nonzero coef. = 9
+Grid value 54:    lambda = 105.2055   no. of nonzero coef. = 9
+Grid value 55:    lambda =  95.9042   no. of nonzero coef. = 9
+Grid value 56:    lambda =  87.4252   no. of nonzero coef. = 9
+Grid value 57:    lambda = 79.69583   no. of nonzero coef. = 9
+Grid value 58:    lambda = 72.64983   no. of nonzero coef. = 9
+Grid value 59:    lambda = 66.22677   no. of nonzero coef. = 9
+Grid value 60:    lambda = 60.37159   no. of nonzero coef. = 9
+Grid value 61:    lambda = 55.03406   no. of nonzero coef. = 9
+Grid value 62:    lambda = 50.16844   no. of nonzero coef. = 9
+Grid value 63:    lambda = 45.73299   no. of nonzero coef. = 9
+Grid value 64:    lambda = 41.68968   no. of nonzero coef. = 9
+Grid value 65:    lambda = 38.00385   no. of nonzero coef. = 9
+Grid value 66:    lambda = 34.64388   no. of nonzero coef. = 9
+Grid value 67:    lambda = 31.58098   no. of nonzero coef. = 9
+Grid value 68:    lambda = 28.78887   no. of nonzero coef. = 9
+Grid value 69:    lambda = 26.24361   no. of nonzero coef. = 9
+Grid value 70:    lambda = 23.92338   no. of nonzero coef. = 9
+Grid value 71:    lambda = 21.80829   no. of nonzero coef. = 9
+Grid value 72:    lambda = 19.88019   no. of nonzero coef. = 9
+Grid value 73:    lambda = 18.12256   no. of nonzero coef. = 9
+Grid value 74:    lambda = 16.52032   no. of nonzero coef. = 9
+Grid value 75:    lambda = 15.05974   no. of nonzero coef. = 9
+Grid value 76:    lambda = 13.72829   no. of nonzero coef. = 9
+Grid value 77:    lambda = 12.51456   no. of nonzero coef. = 9
+Grid value 78:    lambda = 11.40813   no. of nonzero coef. = 9
+Grid value 79:    lambda = 10.39952   no. of nonzero coef. = 9
+Grid value 80:    lambda = 9.480091   no. of nonzero coef. = 9
+Grid value 81:    lambda = 8.641945   no. of nonzero coef. = 9
+Grid value 82:    lambda =   7.8779   no. of nonzero coef. = 9
+Grid value 83:    lambda = 7.181406   no. of nonzero coef. = 9
+Grid value 84:    lambda = 6.546489   no. of nonzero coef. = 9
+Grid value 85:    lambda = 5.967707   no. of nonzero coef. = 9
+Grid value 86:    lambda = 5.440095   no. of nonzero coef. = 9
+Grid value 87:    lambda =  4.95913   no. of nonzero coef. = 9
+Grid value 88:    lambda = 4.520687   no. of nonzero coef. = 9
+Grid value 89:    lambda = 4.121008   no. of nonzero coef. = 9
+Grid value 90:    lambda = 3.756665   no. of nonzero coef. = 9
+Grid value 91:    lambda = 3.424534   no. of nonzero coef. = 9
+Grid value 92:    lambda = 3.121767   no. of nonzero coef. = 9
+Grid value 93:    lambda = 2.845768   no. of nonzero coef. = 9
+Grid value 94:    lambda =  2.59417   no. of nonzero coef. = 9
+Grid value 95:    lambda = 2.364816   no. of nonzero coef. = 9
+Grid value 96:    lambda =  2.15574   no. of nonzero coef. = 9
+Grid value 97:    lambda = 1.965149   no. of nonzero coef. = 9
+Grid value 98:    lambda = 1.791408   no. of nonzero coef. = 9
+Grid value 99:    lambda = 1.633027   no. of nonzero coef. = 9
+Grid value 100:   lambda = 1.488649   no. of nonzero coef. = 9
+Grid value 101:   lambda = 1.357036   no. of nonzero coef. = 9
+Grid value 102:   lambda = 1.237059   no. of nonzero coef. = 9
+Grid value 103:   lambda = 1.127689   no. of nonzero coef. = 9
+Grid value 104:   lambda = 1.027989   no. of nonzero coef. = 9
+Grid value 105:   lambda = .9371031   no. of nonzero coef. = 9
+Grid value 106:   lambda = .8542527   no. of nonzero coef. = 9
+Grid value 107:   lambda = .7787272   no. of nonzero coef. = 9
+Grid value 108:   lambda =  .709879   no. of nonzero coef. = 9
+Grid value 109:   lambda = .6471178   no. of nonzero coef. = 9
+Grid value 110:   lambda = .5899054   no. of nonzero coef. = 9
+Grid value 111:   lambda = .5377511   no. of nonzero coef. = 9
+Grid value 112:   lambda = .4902079   no. of nonzero coef. = 9
+Grid value 113:   lambda = .4468681   no. of nonzero coef. = 9
+Grid value 114:   lambda = .4073599   no. of nonzero coef. = 9
+Grid value 115:   lambda = .3713448   no. of nonzero coef. = 9
+Grid value 116:   lambda = .3385137   no. of nonzero coef. = 9
+Grid value 117:   lambda = .3085854   no. of nonzero coef. = 9
+Grid value 118:   lambda =  .281303   no. of nonzero coef. = 9
+Grid value 119:   lambda = .2564326   no. of nonzero coef. = 9
+Grid value 120:   lambda = .2337611   no. of nonzero coef. = 9
+Grid value 121:   lambda =  .213094   no. of nonzero coef. = 9
+Grid value 122:   lambda = .1942541   no. of nonzero coef. = 9
+Grid value 123:   lambda = .1770799   no. of nonzero coef. = 9
+Grid value 124:   lambda = .1614241   no. of nonzero coef. = 9
+Grid value 125:   lambda = .1471524   no. of nonzero coef. = 9
+Grid value 126:   lambda = .1341425   no. of nonzero coef. = 9
+Grid value 127:   lambda = .1222828   no. of nonzero coef. = 9
+Grid value 128:   lambda = .1114716   no. of nonzero coef. = 9
+Grid value 129:   lambda = .1016163   no. of nonzero coef. = 9
+Grid value 130:   lambda = .0926323   no. of nonzero coef. = 9
+Grid value 131:   lambda = .0844425   no. of nonzero coef. = 9
+Grid value 132:   lambda = .0769769   no. of nonzero coef. = 9
+Grid value 133:   lambda = .0701713   no. of nonzero coef. = 9
+Grid value 134:   lambda = .0639673   no. of nonzero coef. = 9
+Grid value 135:   lambda = .0583119   no. of nonzero coef. = 9
+Grid value 136:   lambda = .0531565   no. of nonzero coef. = 9
+Grid value 137:   lambda = .0484569   no. of nonzero coef. = 9
+Grid value 138:   lambda = .0441727   no. of nonzero coef. = 9
+Grid value 139:   lambda = .0402674   no. of nonzero coef. = 9
+Grid value 140:   lambda = .0367073   no. of nonzero coef. = 9
+Grid value 141:   lambda = .0334619   no. of nonzero coef. = 9
+Grid value 142:   lambda = .0305035   no. of nonzero coef. = 9
+Grid value 143:   lambda = .0278067   no. of nonzero coef. = 9
+Grid value 144:   lambda = .0253483   no. of nonzero coef. = 9
+Grid value 145:   lambda = .0231072   no. of nonzero coef. = 9
+Grid value 146:   lambda = .0210643   no. of nonzero coef. = 9
+Grid value 147:   lambda = .0192019   no. of nonzero coef. = 9
+Grid value 148:   lambda = .0175043   no. of nonzero coef. = 9
+Grid value 149:   lambda = .0159567   no. of nonzero coef. = 9
+Grid value 150:   lambda =  .014546   no. of nonzero coef. = 9
+Grid value 151:   lambda = .0132599   no. of nonzero coef. = 9
+Grid value 152:   lambda = .0120876   no. of nonzero coef. = 9
+Grid value 153:   lambda = .0110189   no. of nonzero coef. = 9
+Grid value 154:   lambda = .0100447   no. of nonzero coef. = 9
+Grid value 155:   lambda = .0091567   no. of nonzero coef. = 9
+Grid value 156:   lambda = .0083471   no. of nonzero coef. = 9
+Grid value 157:   lambda = .0076091   no. of nonzero coef. = 9
+Grid value 158:   lambda = .0069364   no. of nonzero coef. = 9
+Grid value 159:   lambda = .0063231   no. of nonzero coef. = 9
+Grid value 160:   lambda = .0057641   no. of nonzero coef. = 9
+Grid value 161:   lambda = .0052545   no. of nonzero coef. = 9
+Grid value 162:   lambda = .0047899   no. of nonzero coef. = 9
+Grid value 163:   lambda = .0043665   no. of nonzero coef. = 9
+Grid value 164:   lambda = .0039804   no. of nonzero coef. = 9
+Grid value 165:   lambda = .0036285   no. of nonzero coef. = 9
+Grid value 166:   lambda = .0033077   no. of nonzero coef. = 9
+Grid value 167:   lambda = .0030153   no. of nonzero coef. = 9
+Grid value 168:   lambda = .0027487   no. of nonzero coef. = 9
+Grid value 169:   lambda = .0025057   no. of nonzero coef. = 9
+Grid value 170:   lambda = .0022841   no. of nonzero coef. = 9
+Grid value 171:   lambda = .0020822   no. of nonzero coef. = 9
+Grid value 172:   lambda = .0018981   no. of nonzero coef. = 9
+Grid value 173:   lambda = .0017303   no. of nonzero coef. = 9
+Grid value 174:   lambda = .0015773   no. of nonzero coef. = 9
+Grid value 175:   lambda = .0014379   no. of nonzero coef. = 9
+Grid value 176:   lambda = .0013107   no. of nonzero coef. = 9
+Grid value 177:   lambda = .0011949   no. of nonzero coef. = 9
+Grid value 178:   lambda = .0010892   no. of nonzero coef. = 9
+Grid value 179:   lambda = .0009929   no. of nonzero coef. = 9
+Grid value 180:   lambda = .0009051   no. of nonzero coef. = 9
+Grid value 181:   lambda = .0008251   no. of nonzero coef. = 9
+Grid value 182:   lambda = .0007522   no. of nonzero coef. = 9
+Grid value 183:   lambda = .0006857   no. of nonzero coef. = 9
+Grid value 184:   lambda =  .000625   no. of nonzero coef. = 9
+Grid value 185:   lambda = .0005698   no. of nonzero coef. = 9
+Grid value 186:   lambda = .0005194   no. of nonzero coef. = 9
+Grid value 187:   lambda = .0004735   no. of nonzero coef. = 9
+Grid value 188:   lambda = .0004316   no. of nonzero coef. = 9
+Grid value 189:   lambda = .0003935   no. of nonzero coef. = 9
+Grid value 190:   lambda = .0003587   no. of nonzero coef. = 9
+Grid value 191:   lambda =  .000327   no. of nonzero coef. = 9
+Grid value 192:   lambda = .0002981   no. of nonzero coef. = 9
+Grid value 193:   lambda = .0002717   no. of nonzero coef. = 9
+Grid value 194:   lambda = .0002477   no. of nonzero coef. = 9
+Grid value 195:   lambda = .0002258   no. of nonzero coef. = 9
+Grid value 196:   lambda = .0002058   no. of nonzero coef. = 9
+Grid value 197:   lambda = .0001876   no. of nonzero coef. = 9
+Grid value 198:   lambda =  .000171   no. of nonzero coef. = 9
+Grid value 199:   lambda = .0001559   no. of nonzero coef. = 9
+... change in deviance stopping tolerance reached
+
+5-fold cross-validation with 199 lambdas ...
+Fold  1 of  5:  10....20....30....40....50....60....70....80....90....100....
+                110....120....130....140....150....160....170....180....190....
+Fold  2 of  5:  10....20....30....40....50....60....70....80....90....100....
+                110....120....130....140....150....160....170....180....190....
+Fold  3 of  5:  10....20....30....40....50....60....70....80....90....100....
+                110....120....130....140....150....160....170....180....190....
+Fold  4 of  5:  10....20....30....40....50....60....70....80....90....100....
+                110....120....130....140....150....160....170....180....190....
+Fold  5 of  5:  10....20....30....40....50....60....70....80....90....100....
+                110....120....130....140....150....160....170....180....190....
+... cross-validation complete
+
+Elastic net linear model                         No. of obs        =        280
+                                                 No. of covariates =          9
+Selection: Cross-validation                      No. of CV folds   =          5
+
+-------------------------------------------------------------------------------
+               |                               No. of      Out-of-      CV mean
+               |                              nonzero       sample   prediction
+alpha       ID |     Description      lambda    coef.    R-squared        error
+---------------+---------------------------------------------------------------
+0.000          |
+             1 |    first lambda     14213.2        9      -0.0077     391.0113
+           186 |   lambda before    .0005194        9       0.7322     103.8969
+         * 187 | selected lambda    .0004735        9       0.7322     103.8962
+           188 |    lambda after    .0004316        9       0.7322     103.8966
+           199 |     last lambda    .0001559        9       0.7321     103.9321
+-------------------------------------------------------------------------------
+* alpha and lambda selected by cross-validation.
+
+. assert e(N)==280
+
+. predict double pred_ridge, xb
+(option penalized assumed; linear prediction with penalized coefficients)
+
+. lassocoef
+
+------------------------
+             |  active  
+-------------+----------
+         str |     x    
+          el |     x    
+      income |     x    
+ staffing_sq |     x    
+         el2 |     x    
+     income2 |     x    
+      str_el |     x    
+  str_income |     x    
+   el_income |     x    
+       _cons |     x    
+------------------------
+Legend:
+  b - base level
+  e - empty cell
+  o - omitted
+  x - estimated
+
+. estimates store ridge
+
+. scalar ridge_lambda=e(lambda_sel)
+
+. 
+. lasso linear score `expanded' if training, ///
+>     selection(cv, folds(5)) rseed(6032027)
+
+5-fold cross-validation with 100 lambdas ...
+Grid value 1:     lambda =  14.2132   no. of nonzero coef. = 0
+Folds: 1...5   CVF = 387.1425
+Grid value 2:     lambda = 12.95054   no. of nonzero coef. = 1
+Folds: 1...5   CVF = 363.1466
+Grid value 3:     lambda = 11.80005   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 329.5324
+Grid value 4:     lambda = 10.75177   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 293.0572
+Grid value 5:     lambda = 9.796608   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 262.3757
+Grid value 6:     lambda = 8.926304   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 236.9295
+Grid value 7:     lambda = 8.133316   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 215.8274
+Grid value 8:     lambda = 7.410775   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 198.3324
+Grid value 9:     lambda = 6.752422   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 183.9027
+Grid value 10:    lambda = 6.152555   no. of nonzero coef. = 3
+Folds: 1...5   CVF =  172.008
+Grid value 11:    lambda = 5.605979   no. of nonzero coef. = 3
+Folds: 1...5   CVF =   162.16
+Grid value 12:    lambda = 5.107959   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 154.0063
+Grid value 13:    lambda = 4.654182   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 147.2582
+Grid value 14:    lambda = 4.240718   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 141.6699
+Grid value 15:    lambda = 3.863984   no. of nonzero coef. = 3
+Folds: 1...5   CVF = 137.0061
+Grid value 16:    lambda = 3.520718   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 133.1495
+Grid value 17:    lambda = 3.207947   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 129.9615
+Grid value 18:    lambda = 2.922962   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 127.3275
+Grid value 19:    lambda = 2.663294   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 125.1522
+Grid value 20:    lambda = 2.426695   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 123.3568
+Grid value 21:    lambda = 2.211114   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 121.8759
+Grid value 22:    lambda = 2.014684   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 120.6551
+Grid value 23:    lambda = 1.835705   no. of nonzero coef. = 4
+Folds: 1...5   CVF =   119.64
+Grid value 24:    lambda = 1.672626   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 118.7896
+Grid value 25:    lambda = 1.524035   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 118.0892
+Grid value 26:    lambda = 1.388644   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 117.5127
+Grid value 27:    lambda = 1.265281   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 117.0387
+Grid value 28:    lambda = 1.152877   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 116.6494
+Grid value 29:    lambda = 1.050458   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 116.3533
+Grid value 30:    lambda = .9571383   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 116.1422
+Grid value 31:    lambda = .8721088   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 115.9807
+Grid value 32:    lambda = .7946331   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 115.8579
+Grid value 33:    lambda = .7240401   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 115.7662
+Grid value 34:    lambda = .6597183   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 115.6975
+Grid value 35:    lambda = .6011108   no. of nonzero coef. = 4
+Folds: 1...5   CVF = 115.7184
+Grid value 36:    lambda = .5477098   no. of nonzero coef. = 5
+Folds: 1...5   CVF = 115.8811
+Grid value 37:    lambda = .4990527   no. of nonzero coef. = 5
+Folds: 1...5   CVF = 116.0521
+Grid value 38:    lambda = .4547183   no. of nonzero coef. = 5
+Folds: 1...5   CVF = 116.2525
+... cross-validation complete ... minimum found
+
+Lasso linear model                          No. of obs        =        280
+                                            No. of covariates =          9
+Selection: Cross-validation                 No. of CV folds   =          5
+
+--------------------------------------------------------------------------
+         |                                No. of      Out-of-      CV mean
+         |                               nonzero       sample   prediction
+      ID |     Description      lambda     coef.    R-squared        error
+---------+----------------------------------------------------------------
+       1 |    first lambda     14.2132         0       0.0022     387.1425
+      33 |   lambda before    .7240401         4       0.7016     115.7662
+    * 34 | selected lambda    .6597183         4       0.7018     115.6975
+      35 |    lambda after    .6011108         4       0.7018     115.7184
+      38 |     last lambda    .4547183         5       0.7004     116.2525
+--------------------------------------------------------------------------
+* lambda selected by cross-validation.
+
+. assert e(N)==280
+
+. predict double pred_lasso, xb
+(option penalized assumed; linear prediction with penalized coefficients)
+
+. lassocoef
+
+------------------------
+             |  active  
+-------------+----------
+          el |     x    
+      income |     x    
+      str_el |     x    
+  str_income |     x    
+       _cons |     x    
+------------------------
+Legend:
+  b - base level
+  e - empty cell
+  o - omitted
+  x - estimated
+
+. estimates store lasso
+
+. scalar lasso_lambda=e(lambda_sel)
+
+. 
+. * Score each frozen model on the identical training and test districts.
+. * RMSE is sqrt(mean squared prediction error), in score points.
+. tempname results
+
+. postfile `results' str12 model double train_rmse test_rmse ///
+>     int train_n test_n double lambda using "output/prediction_results.dta", replace
+(file output/prediction_results.dta not found)
+
+. foreach model in ols3 ols9 ridge lasso {
+  2.     assert !missing(pred_`model')
+  3.     generate double squared_error=(score-pred_`model')^2
+  4.     quietly summarize squared_error if training, meanonly
+  5.     scalar train_error=sqrt(r(mean))
+  6.     quietly summarize squared_error if !training, meanonly
+  7.     scalar test_error=sqrt(r(mean))
+  8.     scalar penalty=.
+  9.     if "`model'"=="ridge" scalar penalty=ridge_lambda
+ 10.     if "`model'"=="lasso" scalar penalty=lasso_lambda
+ 11.     post `results' ("`model'") (train_error) (test_error) (280) (140) (penalty)
+ 12.     drop squared_error
+ 13. }
+
+. postclose `results'
+
+. export delimited observat training score pred_* ///
+>     using "output/prediction_predictions.csv", replace
+(file output/prediction_predictions.csv not found)
+file output/prediction_predictions.csv saved
+
+. use "output/prediction_results.dta", clear
+
+. format train_rmse test_rmse %9.5f
+
+. list, noobs abbreviate(16)
+
+  +---------------------------------------------------------------+
+  | model   train_rmse   test_rmse   train_n   test_n      lambda |
+  |---------------------------------------------------------------|
+  |  ols3     10.45291     9.99205       280      140           . |
+  |  ols9      9.73827     9.90645       280      140           . |
+  | ridge      9.74346     9.88626       280      140   .00047348 |
+  | lasso     10.46163     9.99128       280      140   .65971833 |
+  +---------------------------------------------------------------+
+
+. export delimited using "output/prediction_results.csv", replace
+(file output/prediction_results.csv not found)
+file output/prediction_results.csv saved
+
+. display "Compare held-out errors; do not assume a penalty must outperform OLS."
+Compare held-out errors; do not assume a penalty must outperform OLS.
+
+. display "This prediction comparison does not identify the causal staffing effect."
+This prediction comparison does not identify the causal staffing effect.
+
+. display "ECO603_PREDICTION_COMPLETE"
+ECO603_PREDICTION_COMPLETE
+

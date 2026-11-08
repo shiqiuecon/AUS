@@ -369,7 +369,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_15.do using mortgages.csv. Read the fitted probit denial probabilities at payment-to-income ratios 0.30 and 0.40, and calculate their difference in percentage points. Explain why multiplying the probit coefficient by 0.10 does not generally give this change. State whether the result measures a causal lending response.
 
-**Practice:** Run meeting_15.do using mortgages.csv. Read the fitted probit denial probabilities at payment-to-income ratios 0.30 and 0.40, and calculate their difference in percentage points. Explain why multiplying the probit coefficient by 0.10 does not generally give this change. State whether the result measures a causal lending response.
+Add squared payment burden to the probit index. Recalculate the 0.30-to-0.40 fitted probability difference on the same observations and compare it with the original fit. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Add squared payment burden to the probit index. Recalculate the 0.30-to-0.40 fitted probability difference on the same observations and compare it with the original fit. Keep your commands, log, output and interpretation.
 
 ## 29. Compare probabilities on one common scale: explanation
 
@@ -379,7 +381,13 @@ The fitted probit probabilities are 0.096153 at 0.30 and 0.156968 at 0.40. Their
 
 The probit coefficient multiplies the linear index. The probability change also depends on the nonlinear cumulative-normal function and the starting index, so a coefficient-times-change shortcut does not give the finite probability contrast. These predictions use the stated one-regressor historical sample model. Without a credible account of borrower selection and other omitted lending determinants, report a descriptive prediction contrast rather than a causal response to changing an applicant's burden.
 
-The fitted probit probabilities are 0.096153 at 0.30 and 0.156968 at 0.40. Their difference is 6.0815 percentage points. Both inputs are fractions, so the proposed change is ten percentage points of payment burden. The probit coefficient multiplies the linear index. The probability change also depends on the nonlinear cumulative-normal function and the starting index, so a coefficient-times-change shortcut does not give the finite probability contrast. These predictions use the stated one-regressor historical sample model. Without a credible account of borrower selection and other omitted lending determinants, report a descriptive prediction contrast rather than a causal response to changing an applicant's burden.
+The quadratic-index probit gives a 5.978643-percentage-point difference on 2,380 applications, compared with 6.0815 points in the original linear-index probit. The new fitted contrast is descriptive; curvature does not remove borrower-selection or omitted-variable problems.
+
+Original linear-index probit contrast: 6.0815 percentage points.
+
+Quadratic-index probit contrast: 5.9786 percentage points.
+
+Same 2,380 applications; model flexibility does not establish a causal lending response.
 
 ## 30. Choose the method that addresses the empirical problem
 

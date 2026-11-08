@@ -16,8 +16,8 @@ function axes(xmin,xmax,ymin,ymax,xticks,yticks,xlabel,ylabel){
  return s;
 }
 const average=(rows,key)=>rows.reduce((a,b)=>a+b[key],0)/rows.length;
-const mx=average(data.schools,'str'),my=average(data.schools,'score');
 function schoolplot({mode='schools',step=0,value=0,progress=1}){
+ const mx=average(data.schools,'str'),my=average(data.schools,'score');
  let s=axes(14,26,600,720,[15,20,25],[600,650,700],'Students per teacher','Test score (points)');
  const n=Math.floor(data.schools.length*progress);
  for(const d of data.schools.slice(0,n))s+=circle(X(d.str,14,26),Y(d.score,600,720));
@@ -169,6 +169,7 @@ export const scenarioCaptions={
 };
 export const chartControls={ovb:['Contribution of omitted factor',0,1,.05,1],test:['Hypothesised staffing slope',-3,1,.05,0],sampling:['Sample size (100 or 1,000)',0,1,1,0],panel:['Selected state',0,47,1,0],lp:['Response horizon (quarters)',0,8,1,4],binary:['Payment-to-income ratio',0,1.5,.01,.4]};
 function extendedChart(scenario,step,value,progress){
+ const extra=appliedExtension(scenario,step,value,progress);if(extra)return extra;
  const ds=data.datasets,est=data.estimates;
  if(scenario==='ovb'){
   const b=est['02'].short.b+(1-Number(value))*(est['02'].long.b-est['02'].short.b);
@@ -244,6 +245,135 @@ function extendedChart(scenario,step,value,progress){
   for(const [field,c] of [['lpm',gold],['probit',teal],...(step>0?[['logit',ink]]:[])])s+=pathLine(rs.map(r=>[X(r.pir,0,1.5),Y(r[field],-.1,1.05)]),c,3);
   const r=rs[Math.max(0,Math.min(150,Math.round(Number(value)*100)))];s+=line(X(r.pir,0,1.5),55,X(r.pir,0,1.5),345,rule,2,'6 5');
   s+=text(840,29,`At ${r.pir.toFixed(2)}: LPM ${r.lpm.toFixed(3)} · Probit ${r.probit.toFixed(3)} · Logit ${r.logit.toFixed(3)}`,18,'end');return svg(s,'Actual probability curves. Gold LPM can leave the zero-to-one range; probit and logit remain bounded.');
+ }
+ return '';
+}
+
+Object.assign(scenarioCaptions,{
+ headstartTime:'Constructed time-allocation diagram adapted from Qiu’s Head Start lesson. Points illustrate feasible choices, not estimated responses.',
+ didHeadStart:'Constructed Head Start employment-rate example using the original A/B/C/D sequence. Dashed untreated paths are assumptions; these are not estimates from the reading.',
+ didConditional:'Constructed two-location comparison adapted from the Overleaf lesson. Within-location trends and effects are specified for the illustration.',
+ didSupport:'Actual generated observations from the zero-effect 300-person experiment. Lowest-quarter baseline-income targeting leaves no comparison observations below the cutoff.',
+ ridgePenalty:'Constructed one-standardised-predictor ridge illustration with OLS slope 0.8. The real nine-column model need not follow this one-column formula.',
+ variance:'Actual OLS residuals from 420 districts. Gold points average squared residuals in five language-share ranges; these are diagnostic summaries, not a known variance curve.',
+ penalty:'Constructed one-standardised-predictor illustration with OLS slope 0.8. Equal numerical penalties do not imply equal model complexity across methods.',
+ validation:'Training-only cross-validation. The separate test sample is used after the fitting and tuning choices are frozen.',
+ prediction:'Actual Stata errors on one fixed split: 280 training and 140 held-out districts. Lower RMSE is better for this prediction task.',
+ didObserved:'Actual real sale-price means. The dashed near-group path assumes parallel untreated trends; it is not observed. Near means within three miles of the site.',
+ ivSensitivity:'Supporting regression slopes are actual income-controlled estimates. The extra direct tax channel is assumed for sensitivity, not estimated.'
+});
+Object.assign(chartControls,{
+ didHeadStart:['Alternative eligible untreated change minus comparison change (percentage points)',-3,5,.5,0],
+ didConditional:['Eligible-group share in location A',0,1,.05,.75],
+ ridgePenalty:['Penalty strength lambda (ridge illustration)',0,1.2,.05,.3],
+ penalty:['Penalty strength lambda (illustration)',0,1.2,.05,.3],
+ validation:['Training fold reserved for validation',1,5,1,1],
+ ivSensitivity:['Assumed direct tax channel (log quantity / real cent)',-.015,.015,.001,0]
+});
+function appliedExtension(scenario,step,value,progress){
+ const ds=data.datasets;
+ if(scenario==='headstartTime'){
+  let s=axes(0,7,0,7,[0,1,3,6],[0,2,3,5,6],'Home and other non-market time (hours)','Paid-work time (hours)');
+  s+=line(X(0,0,7),Y(3,0,7),X(3,0,7),Y(0,0,7),ink,3,'7 5')+circle(X(1,0,7),Y(2,0,7),6,ink,1)+text(X(1,0,7)+12,Y(2,0,7)-12,'E1',19,'start');
+  if(step>0)s+=line(X(0,0,7),Y(6,0,7),X(6,0,7),Y(0,0,7),teal,4)+circle(X(1,0,7),Y(5,0,7),6,teal,1)+text(X(1,0,7)+12,Y(5,0,7)-12,'E2',19,'start');
+  if(step>1)s+=circle(X(4,0,7),Y(2,0,7),6,gold,1)+text(X(4,0,7)+12,Y(2,0,7)-12,'E3',19,'start');
+  s+=text(840,29,'Three released hours can be allocated in different ways',18,'end');
+  return svg(s,'Time-allocation schematic: preschool releases care time, allowing more work or other activity.');
+ }
+ if(scenario==='didHeadStart'){
+  const delta=Number(value),pos=(t,y)=>[X(t,0,1),Y(y,30,75)];
+  let s=axes(0,1,30,75,[],[30,40,50,60,70],'Period','Maternal employment rate (percent)');
+  s+=text(85,377,'Before',19)+text(850,377,'After',19)+circle(...pos(0,40),6,ink,1)+circle(...pos(0,60),6,teal,1);
+  s+=text(101,Y(40,30,75)-10,'A: 40',18,'start',ink)+text(101,Y(60,30,75)-10,'C: 60',18,'start',teal);
+  if(step>0){s+=pathLine([pos(0,40),pos(1,48)],ink,4)+pathLine([pos(0,60),pos(1,63)],teal,4)+circle(...pos(1,48),6,ink,1)+circle(...pos(1,63),6,teal,1)+text(832,Y(48,30,75)-12,'B: 48',18,'end',ink)+text(832,Y(63,30,75)-12,'D: 63',18,'end',teal);}
+  if(step>1){s+=pathLine([pos(0,40),pos(1,43)],gold,3,'7 5')+line(825,Y(43,30,75),825,Y(48,30,75),gold,5)+text(810,Y(45.5,30,75),'DiD: 5 pp',18,'end',gold);
+   if(Math.abs(delta)>.001)s+=pathLine([pos(0,40),pos(1,43+delta)],ink,2,'3 5')+text(840,322,`Alternative assumed effect: ${(5-delta).toFixed(1)} pp`,18,'end');
+  }
+  s+=text(840,29,'Eligible: navy · Comparison: teal · Assumed untreated: dashed',17,'end');
+  return svg(s,'Head Start teaching diagram with A, B, C and D employment rates and an assumption-based untreated path.');
+ }
+ if(scenario==='didConditional'){
+  let s=text(450,20,'Employment rate (%) · Eligible: navy · Comparison: teal',17);const panel=(left,label,vals)=>{const px=t=>left+45+300*t,py=y=>320-(y-35)/35*230;
+   let z=line(px(0),320,px(1),320)+line(px(0),80,px(0),320)+text(left+190,45,label,22);
+   for(const y of[40,50,60,70])z+=text(px(0)-9,py(y)+5,y,16,'end')+line(px(0),py(y),px(1),py(y),rule,1);
+   z+=text(px(0),350,'Before',17)+text(px(1),350,'After',17);
+   const [g0,g1,c0,c1]=vals;
+   z+=line(px(0),py(g0),px(1),py(g1),ink,4)+line(px(0),py(c0),px(1),py(c1),teal,4);
+   z+=text(left+190,385,`Within-location DiD: ${(g1-g0)-(c1-c0)} pp`,18);
+   return z;};
+  s+=panel(10,'Location A',[40,43,50,52]);if(step>0)s+=panel(455,'Location B',[55,64,60,66]);
+  if(step>1){const w=Number(value);s+=text(450,412,`Eligible-weighted ATT: ${(3-2*w).toFixed(2)} pp · Naive aggregate DiD: ${(4-6*w).toFixed(2)} pp`,19);}
+  return svg(s,'Two illustrative within-location DiD comparisons and averages for a selected eligible-group location distribution.');
+ }
+ if(scenario==='didSupport'){
+  const rs=ds.did_simulation,[lo,hi]=extent(rs.map(r=>r.baseline_income));
+  let s=axes(lo,hi,0,1.2,ticks(lo,hi),[0,1],'Baseline income (constructed units)','Group (1: targeted, 0: comparison)');
+  for(const r of rs.slice(0,Math.ceil(rs.length*progress)))s+=circle(X(r.baseline_income,lo,hi),Y(r.group,0,1.2),3,r.group?ink:teal,.5);
+  const cutoff=Math.max(...rs.filter(r=>r.group===1).map(r=>r.baseline_income));
+  if(step>0)s+=line(X(cutoff,lo,hi),55,X(cutoff,lo,hi),345,gold,3,'6 5');
+  s+=text(840,29,'Targeted: lowest-income 75 of 300 people',19,'end');
+  return svg(s,'Generated baseline incomes and deterministic assignment, showing the lack of untreated observations below the cutoff.');
+ }
+ if(scenario==='variance'){
+  const rs=ds.variance,hi=Math.ceil(Math.max(...rs.map(r=>r.residual_sq))/1000)*1000;
+  let s=axes(0,100,0,hi,[0,20,40,60,80,100],ticks(0,hi),'English learners (percent)','Squared residual (score points squared)');
+  for(const r of rs.slice(0,Math.ceil(rs.length*progress)))s+=circle(X(r.el,0,100),Y(r.residual_sq,0,hi),3,teal,.45);
+  if(step>0)for(let j=0;j<5;j++){const g=rs.filter(r=>Math.min(4,Math.floor(r.el/20))===j);if(g.length)s+=circle(X(average(g,'el'),0,100),Y(average(g,'residual_sq'),0,hi),7,gold,1);}
+  s+=text(840,29,'Teal: district residuals · Gold: range averages',18,'end');
+  return svg(s,'Observed squared OLS residuals against language share, with five range averages.');
+ }
+ if(scenario==='penalty'||scenario==='ridgePenalty'){
+  const showLasso=scenario==='penalty';
+  let s=axes(0,1.2,0,.9,[0,.3,.6,.9,1.2],[0,.2,.4,.6,.8],'Penalty strength lambda','Coefficient (standardised input)');
+  s+=line(85,Y(.8,0,.9),850,Y(.8,0,.9),ink,2,'6 5');
+  const path=f=>Array.from({length:100},(_,i)=>{const l=1.2*i/99;return[X(l,0,1.2),Y(f(l),0,.9)];});
+  s+=pathLine(path(l=>.8/(1+l)),teal,4);
+  if(showLasso&&step>0)s+=pathLine(path(l=>Math.max(.8-l,0)),gold,4);
+  const l=Number(value);s+=line(X(l,0,1.2),55,X(l,0,1.2),345,rule,2,'4 4')+circle(X(l,0,1.2),Y(.8/(1+l),0,.9),6,teal,1);
+  if(showLasso&&step>0)s+=circle(X(l,0,1.2),Y(Math.max(.8-l,0),0,.9),6,gold,1);
+  s+=text(840,29,`Ridge ${(.8/(1+l)).toFixed(3)}${showLasso?` · Lasso ${Math.max(.8-l,0).toFixed(3)}`:''} · OLS 0.8`,18,'end');
+  return svg(s,showLasso?'Single-standardised-predictor ridge and lasso paths; navy dashed line is the unpenalised slope.':'Single-standardised-predictor ridge path; navy dashed line is the unpenalised slope.');
+ }
+ if(scenario==='validation'){
+  let s=text(450,40,step<2?'Validation uses only the 280 training districts':'Refit on training, then evaluate the separate test sample',23);
+  const selected=(Math.round(Number(value))-1+(step===1?1:0))%5;
+  for(let i=0;i<5;i++){
+   const x=45+i*162,held=step<2&&i===selected;
+   s+=`<rect x="${x}" y="95" width="145" height="95" fill="${held?gold:teal}" opacity=".16" stroke="${held?gold:teal}" stroke-width="3"/>`;
+   s+=text(x+72,133,`Fold ${i+1}`,21)+text(x+72,168,held?'Validate':'Fit',18);
+  }
+  s+=arrow(450,211,450,250)+text(450,280,step<2?'Rotate folds; compare training-validation errors':'Freeze the fitted models before seeing test errors',21);
+  s+=`<rect x="205" y="315" width="490" height="65" fill="white" stroke="${step<2?rule:gold}" stroke-width="3"/>`;
+  s+=text(450,356,step<2?'140 test districts remain untouched':'140 test districts: score frozen predictions',20);
+  return svg(s,'Five-fold validation inside training, followed by a separate held-out test evaluation.');
+ }
+ if(scenario==='prediction'){
+  const names=['OLS 3','OLS 9','Ridge','Lasso'];let s=axes(-.5,3.5,0,12,[],[0,3,6,9,12],'Model fitted on the same training districts','Held-out RMSE (score points)');
+  ds.prediction.forEach((r,i)=>{const c=i===2?gold:teal,x=X(i,-.5,3.5),top=Y(r.test_rmse,0,12);
+   if(step>0||i===0)s+=`<rect x="${x-55}" y="${top}" width="110" height="${345-top}" fill="${c}" opacity=".8"/>`+text(x,top-12,Number(r.test_rmse).toFixed(3),20);
+   s+=text(x,377,names[i],20);
+  });
+  s+=text(840,29,'One fixed split · 140 held-out districts',19,'end');
+  return svg(s,'Actual held-out prediction errors for two OLS specifications, ridge and lasso.');
+ }
+ if(scenario==='didObserved'){
+  const get=(near,year)=>ds.housing.find(r=>r.nearinc===near&&r.year===year).rprice/1000;
+  const f0=get(0,1978),f1=get(0,1981),n0=get(1,1978),n1=get(1,1981),cf=n0+f1-f0;
+  let s=axes(1978,1981,50,110,[1978,1981],[50,65,80,95,110],'Sale year','Mean sale price (thousand 1978 dollars)');
+  s+=line(X(1978,1978,1981),Y(f0,50,110),X(1981,1978,1981),Y(f1,50,110),teal,4)+circle(X(1978,1978,1981),Y(f0,50,110),6,teal,1)+circle(X(1981,1978,1981),Y(f1,50,110),6,teal,1);
+  s+=circle(X(1978,1978,1981),Y(n0,50,110),6,ink,1);
+  if(step>0)s+=line(X(1978,1978,1981),Y(n0,50,110),X(1981,1978,1981),Y(n1,50,110),ink,4)+circle(X(1981,1978,1981),Y(n1,50,110),6,ink,1);
+  if(step>1)s+=line(X(1978,1978,1981),Y(n0,50,110),X(1981,1978,1981),Y(cf,50,110),gold,3,'8 6')+line(825,Y(cf,50,110),825,Y(n1,50,110),gold,5)+text(810,Y((cf+n1)/2,50,110),'-11.864',19,'end',gold);
+  s+=text(840,29,'Navy: near · Teal: far · Dashed gold: assumed untreated',17,'end');
+  return svg(s,'Four actual real house-price means and the near-group counterfactual under parallel untreated trends.');
+ }
+ if(scenario==='ivSensitivity'){
+  const r=ds.iv_controlled[0],beta=g=>(r.reduced-g)/r.first;
+  let s=axes(-.015,.015,-1.8,-.5,[-.015,0,.015],[-1.8,-1.4,-1,-.6],'Assumed direct tax channel gamma','Implied price elasticity');
+  s+=pathLine([-.015,.015].map(g=>[X(g,-.015,.015),Y(beta(g),-1.8,-.5)]),teal,4);
+  const g=Number(value);s+=line(X(0,-.015,.015),55,X(0,-.015,.015),345,rule,2,'5 5')+circle(X(g,-.015,.015),Y(beta(g),-1.8,-.5),7,gold,1);
+  s+=text(840,29,`Assumed channel ${g.toFixed(3)} · implied elasticity ${beta(g).toFixed(3)}`,18,'end');
+  return svg(s,'Sensitivity of the controlled IV elasticity to an assumed direct tax channel; the channel is not estimated.');
  }
  return '';
 }

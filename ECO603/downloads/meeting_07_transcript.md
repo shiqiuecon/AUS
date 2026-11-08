@@ -1,4 +1,4 @@
-# 07. Group comparisons, interactions and joint tests
+# 07. Group comparisons, interactions and prediction
 
 ## 01. Does the staffing association differ across district groups?
 
@@ -310,7 +310,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_07.do. Compute the staffing slope for each language-share group and the fitted score contrast for a reduction of two students per teacher in each group, holding income fixed. Use the lincom output to assess the higher-share contrast. Explain why the group slope difference and the group intercept difference answer different questions.
 
-**Practice:** Run meeting_07.do. Compute the staffing slope for each language-share group and the fitted score contrast for a reduction of two students per teacher in each group, holding income fixed. Use the lincom output to assess the higher-share contrast. Explain why the group slope difference and the group intercept difference answer different questions.
+Centre staffing at 20 and refit the same interaction model. Interpret the resulting group-indicator coefficient and verify that fitted group slopes have not changed. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Centre staffing at 20 and refit the same interaction model. Interpret the resulting group-indicator coefficient and verify that fitted group slopes have not changed. Keep your commands, log, output and interpretation.
 
 ## 27. Turn an interaction into two policy contrasts: explanation
 
@@ -320,9 +322,109 @@ The lower-share staffing slope is 0.680060. Adding the interaction coefficient -
 
 Use lincom for the second contrast because its uncertainty depends on covariance between the staffing and interaction estimates. The interaction measures a difference in slopes, while the group indicator shifts the intercept. Neither is automatically a causal subgroup treatment effect. The adjusted comparison and the reason for different staffing choices within each group still need to be defended.
 
-The lower-share staffing slope is 0.680060. Adding the interaction coefficient -2.192258 gives the higher-share slope -1.512198. The fitted two-student contrasts are therefore -1.3601 and 3.0244 score points, respectively. Use lincom for the second contrast because its uncertainty depends on covariance between the staffing and interaction estimates. The interaction measures a difference in slopes, while the group indicator shifts the intercept. Neither is automatically a causal subgroup treatment effect. The adjusted comparison and the reason for different staffing choices within each group still need to be defended.
+The group gap at a staffing ratio of 20, holding income fixed, is -15.429199 score points with robust SE 1.128935. Centring changes the reference point for the intercept comparison; it does not change predictions or the two group slopes.
 
-## 28. Carry the same reasoning into ordered observations
+Original subgroup staffing slopes: \(0.680060\) and \(-1.512198\).
+
+Group gap at ratio 20: \(-15.429199\), robust SE \(1.128935\).
+
+Centring changes the reference point, not the predictions.
+
+## 28. Can we predict a district left out of fitting?
+
+A prediction question has a different target from a staffing intervention.
+
+Suppose a ministry wants a score prediction for another district from the same historical population. A prediction uses available characteristics to forecast an outcome. We reserve 140 of the 420 districts as a test sample and fit using the other 280, the training sample. Test outcomes will be used only to evaluate frozen predictions.
+
+We compare staffing, language share and income with an expanded specification containing their squares and pairwise products. Overfitting means adapting to sample-specific noise rather than a pattern that predicts new observations. Extra columns can improve training fit without improving new predictions. Our target here is an unseen district from this population. Predicting a future year or a new region would require a validation design matching that different task.
+
+Training: 280 districts for fitting and tuning.
+
+Test: 140 districts kept out of fitting and tuning.
+
+Base: three predictors; expanded: nine predetermined predictor columns.
+
+## 29. Ridge shrinks coefficients with a squared penalty
+
+Accept some bias if it reduces enough estimation variation.
+
+Highly related predictor columns can produce unstable OLS coefficients. Shrinkage pulls fitted coefficients toward zero. A penalty is an extra cost in the fitting objective; lambda is the nonnegative number controlling its strength. Ridge adds a squared-coefficient penalty to the usual prediction loss, trading some coefficient bias against reduced sampling variation.
+
+The formula uses n training observations, p predictor columns, outcome y, intercept a and slopes b. Index i identifies an observation and j a predictor column. The z columns are standardised: centred and scaled using training information, so large numerical units alone do not dictate the penalty. The intercept is not penalised. In the single-standardised-predictor illustration, increasing lambda smoothly shrinks the ridge slope. The real nine-column fit need not follow this simple one-column formula.
+
+Loss: \(L(a,b)=\frac{1}{2n}\sum_i[y_i-a-\sum_j b_jz_{ij}]^2\).
+
+Ridge objective: \(L(a,b)+\frac{\lambda}{2}\sum_j b_j^2\).
+
+Standardise predictor columns using training information; leave the intercept unpenalised.
+
+## 30. Lasso can set a predictor coefficient to zero
+
+Absolute and squared penalties behave differently near zero.
+
+Lasso changes the penalty from squared slopes to their absolute values. Absolute value measures magnitude without a sign. The corner of this cost at zero allows an estimated slope to become exactly zero. Thus lasso can select a smaller set of predictor columns, while ridge usually retains all of them with smaller magnitudes.
+
+In our one-standardised-predictor illustration, the OLS slope is 0.8. At lambda 0.3 the ridge slope is about 0.615 and the lasso slope is 0.5. At lambda 0.8 the lasso slope reaches zero. These are transparent teaching calculations, not the district estimates. The same numerical lambda does not imply equal complexity across the two penalties. With correlated columns, dropping one column does not establish that its underlying economic variable is irrelevant or has zero causal effect.
+
+Lasso objective: \(L(a,b)+\lambda\sum_j|b_j|\).
+
+One standardised predictor: \(\widehat b_R=0.8/(1+\lambda)\), \(\widehat b_L=\max(0.8-\lambda,0)\).
+
+These simple paths illustrate the penalties; the actual model has nine correlated columns.
+
+## 31. Choose the penalty inside the training sample
+
+Cross-validation reserves the test answers for a later check.
+
+Cross-validation splits the training sample into folds, or partitions. With five folds, fit on four and predict the fifth. Rotate the held-out fold and average prediction errors for each candidate penalty. All these observations belong to the training sample; the separate test sample stays untouched.
+
+Choose a penalty from those validation errors, then refit on all 280 training districts. Learned preprocessing belongs within training, including within validation folds when fitted there. The software handles its penalised fitting; do not standardise using the separate test outcomes or tune against their errors.
+
+Only after the models are frozen do we reveal the test outcomes. Root mean squared error, abbreviated RMSE, is the square root of the average squared prediction error. It is measured in score points. For a dated forecasting task, use chronological validation so later information cannot leak into an earlier prediction.
+
+Five training folds: fit on four, validate on one, then rotate.
+
+Choose the penalty and refit using training observations.
+
+Score frozen predictions on the separate 140-district test sample.
+
+## 32. Compare actual predictions on the same held-out districts
+
+A small error difference is evidence for this run, not a universal ranking.
+
+The prediction do-file fits all four models before calculating test errors. Stata uses elasticnet with alpha zero for ridge and lasso linear for lasso. Here alpha is the software's penalty-mixing setting, not the intercept a in our equation. Five-fold training cross-validation chooses each penalty.
+
+On the same 140 held-out districts, the RMSEs are 9.992 for three-column OLS, 9.906 for expanded OLS, 9.886 for ridge and 9.991 for lasso. Lower is better under this loss. Ridge is slightly lower in this split; the small differences do not establish universal superiority. Do not keep changing the split or penalty grid until the test ranking looks attractive. Explain the intended prediction population and preserve the reported result even when a preferred method does not win.
+
+Same training/test split and the same outcome scale for every model.
+
+Penalties are selected inside training; the test set is evaluated afterwards.
+
+No test-error ranking identifies a causal staffing effect.
+
+**Practice:** Does this one test split establish a universally best estimator?
+
+**Explanation:** No. These small RMSE differences describe this particular evaluation.
+
+## 33. Predictive selection does not choose a causal adjustment set
+
+Return to the DAG when the question changes from prediction to intervention.
+
+The selected lasso retains some income and language columns and drops others. It may retain an interaction while dropping its main column. This reports a penalised prediction choice conditional on the other candidate columns, not a test that a structural staffing effect is zero.
+
+If our question is a staffing intervention, begin again with its causal target and the DAG. A required pre-treatment confounder cannot be removed solely because prediction lasso gives it zero weight. A mediator or collider does not become a suitable causal control because it improves prediction. Ordinary post-selection p-values also need separate justification; specialised inferential lasso methods use additional procedures and assumptions. Our short component concerns prediction and the disciplined evaluation of new observations.
+
+Prediction selection depends on the candidate columns, penalty and sample.
+
+Causal controls follow the target and a defensible identification argument.
+
+Keep prediction accuracy separate from evidence about an intervention.
+
+**Practice:** Can prediction lasso justify removing a necessary confounder?
+
+**Explanation:** No. Causal controls follow the intervention target and identification assumptions.
+
+## 34. Carry the same reasoning into ordered observations
 
 Time adds structure to both models and uncertainty.
 

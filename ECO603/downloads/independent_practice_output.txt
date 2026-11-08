@@ -1,0 +1,1442 @@
+Actual StataMP numerical output; machine-specific log header omitted.
+
+. * 01: add district income and recalculate a two-student contrast.
+. do "setup.do" schools
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. regress score str el income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     299.03
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7072
+                                                Root MSE          =     10.347
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
+          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
+      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
+       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
+------------------------------------------------------------------------------
+
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |    .137551   .5803195     0.24   0.813    -1.003173    1.278275
+------------------------------------------------------------------------------
+
+. post task ("01") ("income_adjusted_gain") (r(estimate)) (r(se)) (420)
+
+. 
+. * 02: an omitted-income identity, holding language composition fixed.
+. regress score str el
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =    155.01
+       Model |  64864.3011         2  32432.1506   Prob > F        =    0.0000
+    Residual |  87245.2925       417  209.221325   R-squared       =    0.4264
+-------------+----------------------------------   Adj R-squared   =    0.4237
+       Total |  152109.594       419  363.030056   Root MSE        =    14.464
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .3802783    -2.90   0.004    -1.848797   -.3537945
+          el |  -.6497768   .0393425   -16.52   0.000    -.7271112   -.5724423
+       _cons |   686.0322   7.411312    92.57   0.000     671.4641    700.6004
+------------------------------------------------------------------------------
+
+. scalar short_b=_b[str]
+
+. regress score str el income
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(3, 416)       =    334.89
+       Model |  107568.862         3  35856.2873   Prob > F        =    0.0000
+    Residual |  44540.7318       416  107.069067   R-squared       =    0.7072
+-------------+----------------------------------   Adj R-squared   =    0.7051
+       Total |  152109.594       419  363.030056   Root MSE        =    10.347
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2769078    -0.25   0.804    -.6130885    .4755375
+          el |  -.4882667   .0292832   -16.67   0.000    -.5458283   -.4307052
+      income |   1.494517   .0748334    19.97   0.000     1.347418    1.641616
+       _cons |   640.3155   5.774885   110.88   0.000     628.9639    651.6671
+------------------------------------------------------------------------------
+
+. scalar movement=short_b-_b[str]
+
+. scalar income_b=_b[income]
+
+. regress income str el
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =     30.08
+       Model |  2758.12171         2  1379.06086   Prob > F        =    0.0000
+    Residual |  19119.3276       417  45.8497065   R-squared       =    0.1261
+-------------+----------------------------------   Adj R-squared   =    0.1219
+       Total |  21877.4493       419  52.2134829   Root MSE        =    6.7712
+
+------------------------------------------------------------------------------
+      income | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.6908723   .1780192    -3.88   0.000    -1.040799   -.3409455
+          el |  -.1080684   .0184174    -5.87   0.000    -.1442709   -.0718659
+       _cons |   30.58965   3.469448     8.82   0.000     23.76987    37.40944
+------------------------------------------------------------------------------
+
+. scalar contribution=income_b*_b[str]
+
+. assert abs(movement-contribution)<1e-8
+
+. post task ("02") ("income_contribution") (contribution) (.) (420)
+
+. 
+. * 03: change the income control to a log in BOTH residualising equations.
+. generate double log_income=ln(income)
+
+. regress score str el log_income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     356.65
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7121
+                                                Root MSE          =      10.26
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.3853383   .2898545    -1.33   0.184    -.9551003    .1844238
+          el |  -.4292929   .0317844   -13.51   0.000     -.491771   -.3668149
+  log_income |   28.36222   1.329174    21.34   0.000     25.74949    30.97496
+       _cons |   593.4803      6.895    86.07   0.000      579.927    607.0337
+------------------------------------------------------------------------------
+
+. scalar full_b=_b[str]
+
+. scalar full_se=_se[str]
+
+. regress str el log_income
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =     11.30
+       Model |  77.0776877         2  38.5388439   Prob > F        =    0.0000
+    Residual |  1422.50313       417   3.4112785   R-squared       =    0.0514
+-------------+----------------------------------   Adj R-squared   =    0.0468
+       Total |  1499.58082       419  3.57895184   Root MSE        =     1.847
+
+------------------------------------------------------------------------------
+         str | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          el |   .0139195   .0053468     2.60   0.010     .0034094    .0244296
+  log_income |   -.664756   .2491809    -2.67   0.008    -1.154563   -.1749488
+       _cons |   21.17911   .7016889    30.18   0.000     19.79983     22.5584
+------------------------------------------------------------------------------
+
+. predict double rx_new, residuals
+
+. regress score el log_income
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(2, 417)       =    512.23
+       Model |  108105.953         2  54052.9767   Prob > F        =    0.0000
+    Residual |  44003.6402       417  105.524317   R-squared       =    0.7107
+-------------+----------------------------------   Adj R-squared   =    0.7093
+       Total |  152109.594       419  363.030056   Root MSE        =    10.273
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          el |  -.4346566   .0297382   -14.62   0.000    -.4931121   -.3762012
+  log_income |   28.61838   1.385902    20.65   0.000     25.89415     31.3426
+       _cons |   585.3192   3.902674   149.98   0.000     577.6479    592.9906
+------------------------------------------------------------------------------
+
+. predict double ry_new, residuals
+
+. regress ry_new rx_new, noconstant
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(1, 419)       =      2.02
+       Model |  211.221206         1  211.221206   Prob > F        =    0.1559
+    Residual |   43792.419       419  104.516513   R-squared       =    0.0048
+-------------+----------------------------------   Adj R-squared   =    0.0024
+       Total |  44003.6402       420  104.770572   Root MSE        =    10.223
+
+------------------------------------------------------------------------------
+      ry_new | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      rx_new |  -.3853383   .2710603    -1.42   0.156    -.9181456    .1474691
+------------------------------------------------------------------------------
+
+. assert abs(full_b-_b[rx_new])<1e-8
+
+. post task ("03") ("log_income_staffing") (full_b) (full_se) (420)
+
+. 
+. * 04: assess a one-point gain, rather than testing only a zero slope.
+. regress score str el, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(2, 417)         =     223.82
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4264
+                                                Root MSE          =     14.464
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -1.101296   .4328472    -2.54   0.011     -1.95213   -.2504616
+          el |  -.6497768   .0310318   -20.94   0.000     -.710775   -.5887786
+       _cons |   686.0322   8.728224    78.60   0.000     668.8754     703.189
+------------------------------------------------------------------------------
+
+. lincom -2*str
+
+ ( 1)  - 2*str = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   2.202592   .8656943     2.54   0.011     .5009232     3.90426
+------------------------------------------------------------------------------
+
+. scalar gain=r(estimate)
+
+. scalar gain_se=r(se)
+
+. post task ("04") ("one_point_t_ratio") ((gain-1)/gain_se) (.) (420)
+
+. 
+. * 05: compare a 30,000-to-50,000 income contrast on the two fitted scales.
+. do "setup.do" retail
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+(9 observations deleted)
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. regress sprice inc10, vce(robust)
+
+Linear regression                               Number of obs     =        401
+                                                F(1, 399)         =       8.28
+                                                Prob > F          =     0.0042
+                                                R-squared         =     0.0182
+                                                Root MSE          =     .08809
+
+------------------------------------------------------------------------------
+             |               Robust
+      sprice | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       inc10 |   .0090733   .0031523     2.88   0.004     .0028761    .0152705
+       _cons |   1.002219   .0157154    63.77   0.000     .9713236    1.033114
+------------------------------------------------------------------------------
+
+. post task ("05") ("level_dollar_contrast") (2*_b[inc10]) (2*_se[inc10]) (e(N))
+
+. regress lp li, vce(robust)
+
+Linear regression                               Number of obs     =        401
+                                                F(1, 399)         =       6.67
+                                                Prob > F          =     0.0101
+                                                R-squared         =     0.0159
+                                                Root MSE          =     .08426
+
+------------------------------------------------------------------------------
+             |               Robust
+          lp | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          li |   .0374749   .0145083     2.58   0.010     .0089527    .0659971
+       _cons |  -.3613775   .1559216    -2.32   0.021     -.667908   -.0548471
+------------------------------------------------------------------------------
+
+. post task ("05") ("exact_log_percent") (100*(exp(_b[li]*ln(5/3))-1)) (.) (e(N))
+
+. 
+. * 06: a REAL-data influence check, alongside the separate simulations.
+. do "setup.do" schools
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. regress score str el income
+
+      Source |       SS           df       MS      Number of obs   =       420
+-------------+----------------------------------   F(3, 416)       =    334.89
+       Model |  107568.862         3  35856.2873   Prob > F        =    0.0000
+    Residual |  44540.7318       416  107.069067   R-squared       =    0.7072
+-------------+----------------------------------   Adj R-squared   =    0.7051
+       Total |  152109.594       419  363.030056   Root MSE        =    10.347
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2769078    -0.25   0.804    -.6130885    .4755375
+          el |  -.4882667   .0292832   -16.67   0.000    -.5458283   -.4307052
+      income |   1.494517   .0748334    19.97   0.000     1.347418    1.641616
+       _cons |   640.3155   5.774885   110.88   0.000     628.9639    651.6671
+------------------------------------------------------------------------------
+
+. predict double cooks, cooksd
+
+. gsort -cooks observat
+
+. scalar omitted_case=observat[1]
+
+. regress score str el income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(3, 416)         =     299.03
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7072
+                                                Root MSE          =     10.347
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0687755   .2901597    -0.24   0.813    -.6391376    .5015865
+          el |  -.4882667   .0281161   -17.37   0.000     -.543534   -.4329995
+      income |   1.494517     .09156    16.32   0.000     1.314539    1.674495
+       _cons |   640.3155   5.991918   106.86   0.000     628.5373    652.0937
+------------------------------------------------------------------------------
+
+. post task ("06") ("all_district_slope") (_b[str]) (_se[str]) (e(N))
+
+. regress score str el income if observat!=omitted_case, vce(robust)
+
+Linear regression                               Number of obs     =        419
+                                                F(3, 415)         =     326.24
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7093
+                                                Root MSE          =     10.269
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |  -.0933915   .2887836    -0.32   0.747    -.6610524    .4742695
+          el |  -.4838926   .0281223   -17.21   0.000    -.5391725   -.4286126
+      income |     1.5497   .0854809    18.13   0.000      1.38167    1.717729
+       _cons |   639.9541   5.954432   107.48   0.000     628.2495    651.6587
+------------------------------------------------------------------------------
+
+. post task ("06") ("leave_influential_out") (_b[str]) (_se[str]) (e(N))
+
+. post task ("06") ("sensitivity_case") (omitted_case) (.) (419)
+
+. 
+. * 07: centring at a ratio of 20 changes the meaning of the group intercept.
+. do "setup.do" schools
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. generate byte high=(el>=10)
+
+. generate double centered_str=str-20
+
+. regress score c.centered_str##i.high income, vce(robust)
+
+Linear regression                               Number of obs     =        420
+                                                F(4, 415)         =     161.66
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6647
+                                                Root MSE          =     11.086
+
+-------------------------------------------------------------------------------------
+                    |               Robust
+              score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+       centered_str |   .6800597   .3532615     1.93   0.055    -.0143453    1.374465
+             1.high |   -15.4292   1.128935   -13.67   0.000    -17.64834   -13.21005
+                    |
+high#c.centered_str |
+                 1  |  -2.192258   .6399264    -3.43   0.001    -3.450159   -.9343566
+                    |
+             income |   1.651672   .1034089    15.97   0.000     1.448401    1.854942
+              _cons |   636.1124    1.81012   351.42   0.000     632.5542    639.6705
+-------------------------------------------------------------------------------------
+
+. lincom 1.high
+
+ ( 1)  1.high = 0
+
+------------------------------------------------------------------------------
+       score | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   -15.4292   1.128935   -13.67   0.000    -17.64834   -13.21005
+------------------------------------------------------------------------------
+
+. post task ("07") ("group_gap_at_ratio20") (r(estimate)) (r(se)) (420)
+
+. 
+. * 09: compare two counterfactual time specifications on the same 108 months.
+. do "setup.do" traffic
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+
+Time variable: month_id, 1981m1 to 1989m12
+        Delta: 1 month
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. regress logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
+
+Linear regression                               Number of obs     =        108
+                                                F(16, 91)         =      51.37
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9101
+                                                Root MSE          =     .03524
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0002676     4.12   0.000     .0005696    .0016326
+             |
+       month |
+          2  |  -.0338346    .021402    -1.58   0.117    -.0763471    .0086779
+          3  |    .076953   .0215727     3.57   0.001     .0341013    .1198046
+          4  |   .0104562   .0189763     0.55   0.583    -.0272378    .0481503
+          5  |   .0237075    .018758     1.26   0.210    -.0135529    .0609679
+          6  |   .0219334   .0200891     1.09   0.278    -.0179711    .0618379
+          7  |   .0499292   .0198585     2.51   0.014     .0104827    .0893756
+          8  |   .0559523   .0193811     2.89   0.005     .0174541    .0944505
+          9  |   .0420694   .0186208     2.26   0.026     .0050814    .0790574
+         10  |    .081717   .0211651     3.86   0.000     .0396752    .1237588
+         11  |   .0768721   .0199737     3.85   0.000     .0371969    .1165474
+         12  |   .0990862    .021658     4.58   0.000     .0560653    .1421072
+             |
+        unem |  -.0212173   .0038238    -5.55   0.000    -.0288128   -.0136218
+      spdlaw |  -.0537593   .0120059    -4.48   0.000    -.0776076    -.029911
+     beltlaw |   .0954526   .0123682     7.72   0.000     .0708847    .1200206
+      wkends |   .0033333   .0039443     0.85   0.400    -.0045016    .0111682
+       _cons |   10.63986   .0681238   156.18   0.000     10.50454    10.77518
+------------------------------------------------------------------------------
+
+. post task ("09") ("with_linear_trend") (_b[beltlaw]) (_se[beltlaw]) (e(N))
+
+. regress logacc i.month unem spdlaw beltlaw wkends, vce(robust)
+
+Linear regression                               Number of obs     =        108
+                                                F(15, 92)         =      46.86
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8921
+                                                Root MSE          =      .0384
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       month |
+          2  |  -.0325951   .0214175    -1.52   0.131    -.0751321    .0099419
+          3  |   .0775157   .0205315     3.78   0.000     .0367384     .118293
+          4  |   .0106107   .0176463     0.60   0.549    -.0244365    .0456579
+          5  |   .0215608   .0175847     1.23   0.223    -.0133639    .0564854
+          6  |   .0219606    .019185     1.14   0.255    -.0161426    .0600637
+          7  |   .0534176    .018466     2.89   0.005     .0167425    .0900927
+          8  |   .0581758   .0187229     3.11   0.003     .0209906    .0953611
+          9  |   .0441133   .0179165     2.46   0.016     .0085296     .079697
+         10  |   .0850293   .0194241     4.38   0.000     .0464514    .1236072
+         11  |   .0816285   .0203056     4.02   0.000     .0412997    .1219573
+         12  |   .1044367   .0195297     5.35   0.000     .0656491    .1432243
+             |
+        unem |  -.0253926   .0043738    -5.81   0.000    -.0340794   -.0167058
+      spdlaw |  -.0334349   .0107738    -3.10   0.003    -.0548326   -.0120371
+     beltlaw |    .130158   .0117855    11.04   0.000     .1067511    .1535649
+      wkends |   .0032215   .0043452     0.74   0.460    -.0054085    .0118515
+       _cons |    10.7082   .0671017   159.58   0.000     10.57493    10.84147
+------------------------------------------------------------------------------
+
+. post task ("09") ("without_linear_trend") (_b[beltlaw]) (_se[beltlaw]) (e(N))
+
+. 
+. * 10: extending the lag length also changes the available sample; fix it first.
+. regress logacc L(0/2).unem trend i.month spdlaw beltlaw wkends ///
+>     if !missing(L3.unem), vce(robust)
+
+Linear regression                               Number of obs     =        105
+                                                F(18, 86)         =      51.85
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9164
+                                                Root MSE          =      .0345
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        unem |
+         --. |  -.0216455   .0079259    -2.73   0.008    -.0374017   -.0058893
+         L1. |  -.0017054    .008846    -0.19   0.848    -.0192906    .0158798
+         L2. |   .0046928   .0080959     0.58   0.564    -.0114013    .0207868
+             |
+       trend |   .0013111   .0002422     5.41   0.000     .0008296    .0017927
+             |
+       month |
+          2  |  -.0236266   .0207324    -1.14   0.258    -.0648413    .0175882
+          3  |   .0857568   .0234333     3.66   0.000      .039173    .1323407
+          4  |   .0185349   .0194806     0.95   0.344    -.0201912     .057261
+          5  |   .0336398   .0179549     1.87   0.064    -.0020534    .0693329
+          6  |    .032427   .0184441     1.76   0.082    -.0042386    .0690927
+          7  |   .0627986    .017831     3.52   0.001     .0273517    .0982456
+          8  |    .067994   .0185005     3.68   0.000     .0312162    .1047719
+          9  |   .0498074   .0188349     2.64   0.010      .012365    .0872499
+         10  |   .0918697    .020032     4.59   0.000     .0520473     .131692
+         11  |   .0878025   .0179636     4.89   0.000     .0520921     .123513
+         12  |   .1101148   .0204039     5.40   0.000     .0695533    .1506764
+             |
+      spdlaw |  -.0562977   .0125958    -4.47   0.000    -.0813373    -.031258
+     beltlaw |    .094902   .0125675     7.55   0.000     .0699187    .1198853
+      wkends |   .0026604    .004161     0.64   0.524    -.0056113    .0109321
+       _cons |   10.60892   .0672179   157.83   0.000     10.47529    10.74254
+------------------------------------------------------------------------------
+
+. assert e(N)==105
+
+. lincom unem+L.unem+L2.unem
+
+ ( 1)  unem + L.unem + L2.unem = 0
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.0186581   .0037519    -4.97   0.000    -.0261166   -.0111997
+------------------------------------------------------------------------------
+
+. post task ("10") ("two_lag_sum_common") (r(estimate)) (r(se)) (105)
+
+. regress logacc L(0/3).unem trend i.month spdlaw beltlaw wkends, vce(robust)
+
+Linear regression                               Number of obs     =        105
+                                                F(19, 85)         =      51.65
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9164
+                                                Root MSE          =      .0347
+
+------------------------------------------------------------------------------
+             |               Robust
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        unem |
+         --. |  -.0216603   .0079793    -2.71   0.008    -.0375252   -.0057954
+         L1. |  -.0015765   .0089244    -0.18   0.860    -.0193205    .0161675
+         L2. |   .0050703   .0103783     0.49   0.626    -.0155646    .0257052
+         L3. |  -.0005172   .0072972    -0.07   0.944     -.015026    .0139917
+             |
+       trend |   .0013125   .0002422     5.42   0.000      .000831     .001794
+             |
+       month |
+          2  |  -.0236737   .0208409    -1.14   0.259    -.0651111    .0177636
+          3  |    .085337    .025149     3.39   0.001      .035334    .1353401
+          4  |   .0185558   .0194945     0.95   0.344    -.0202044    .0573161
+          5  |   .0339345    .017662     1.92   0.058    -.0011824    .0690513
+          6  |   .0326446   .0180867     1.80   0.075    -.0033166    .0686057
+          7  |   .0629279   .0177467     3.55   0.001     .0276427    .0982132
+          8  |   .0677891   .0190658     3.56   0.001     .0298811    .1056971
+          9  |   .0495945   .0195103     2.54   0.013     .0108027    .0883863
+         10  |   .0922019   .0199489     4.62   0.000     .0525381    .1318657
+         11  |   .0879345   .0179617     4.90   0.000     .0522219    .1236471
+         12  |   .1100817   .0206609     5.33   0.000     .0690023    .1511611
+             |
+      spdlaw |  -.0563891   .0126576    -4.45   0.000    -.0815558   -.0312224
+     beltlaw |    .094852   .0126454     7.50   0.000     .0697095    .1199944
+      wkends |   .0026402   .0042141     0.63   0.533    -.0057385    .0110189
+       _cons |   10.60934   .0683994   155.11   0.000     10.47334    10.74533
+------------------------------------------------------------------------------
+
+. assert e(N)==105
+
+. lincom unem+L.unem+L2.unem+L3.unem
+
+ ( 1)  unem + L.unem + L2.unem + L3.unem = 0
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.0186837   .0037606    -4.97   0.000    -.0261608   -.0112066
+------------------------------------------------------------------------------
+
+. post task ("10") ("three_lag_sum_common") (r(estimate)) (r(se)) (105)
+
+. 
+. * 11: change the HAC bandwidth, not the conditional-mean regressors.
+. newey logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
+
+Regression with Newey–West standard errors      Number of obs     =        108
+Maximum lag = 4                                 F( 16,        91) =      37.42
+                                                Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0003897     2.83   0.006      .000327    .0018752
+             |
+       month |
+          2  |  -.0338346   .0168283    -2.01   0.047    -.0672619   -.0004073
+          3  |    .076953   .0183367     4.20   0.000     .0405293    .1133766
+          4  |   .0104562   .0176927     0.59   0.556    -.0246882    .0456006
+          5  |   .0237075    .018769     1.26   0.210    -.0135748    .0609899
+          6  |   .0219334   .0200354     1.09   0.277    -.0178644    .0617313
+          7  |   .0499292   .0200711     2.49   0.015     .0100605    .0897979
+          8  |   .0559523   .0194475     2.88   0.005     .0173223    .0945823
+          9  |   .0420694   .0187812     2.24   0.028     .0047629    .0793759
+         10  |    .081717    .021099     3.87   0.000     .0398064    .1236276
+         11  |   .0768721   .0210425     3.65   0.000     .0350737    .1186705
+         12  |   .0990862   .0241168     4.11   0.000     .0511812    .1469913
+             |
+        unem |  -.0212173   .0051302    -4.14   0.000    -.0314079   -.0110268
+      spdlaw |  -.0537593   .0170449    -3.15   0.002    -.0876169   -.0199018
+     beltlaw |   .0954526   .0188985     5.05   0.000     .0579131    .1329922
+      wkends |   .0033333   .0028746     1.16   0.249    -.0023768    .0090434
+       _cons |   10.63986   .0635823   167.34   0.000     10.51356    10.76616
+------------------------------------------------------------------------------
+
+. scalar common_b=_b[beltlaw]
+
+. post task ("11") ("HAC_four_months") (_b[beltlaw]) (_se[beltlaw]) (e(N))
+
+. newey logacc trend i.month unem spdlaw beltlaw wkends, lag(8)
+
+Regression with Newey–West standard errors      Number of obs     =        108
+Maximum lag = 8                                 F( 16,        91) =      55.07
+                                                Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       trend |   .0011011   .0004392     2.51   0.014     .0002286    .0019736
+             |
+       month |
+          2  |  -.0338346   .0158167    -2.14   0.035    -.0652524   -.0024167
+          3  |    .076953   .0170454     4.51   0.000     .0430943    .1108116
+          4  |   .0104562   .0165672     0.63   0.530    -.0224525     .043365
+          5  |   .0237075   .0196208     1.21   0.230    -.0152668    .0626819
+          6  |   .0219334   .0199215     1.10   0.274    -.0176382    .0615051
+          7  |   .0499292   .0211425     2.36   0.020     .0079322    .0919262
+          8  |   .0559523   .0209884     2.67   0.009     .0142614    .0976432
+          9  |   .0420694   .0195232     2.15   0.034     .0032889    .0808499
+         10  |    .081717   .0211155     3.87   0.000     .0397736    .1236604
+         11  |   .0768721   .0212122     3.62   0.000     .0347367    .1190076
+         12  |   .0990862   .0245265     4.04   0.000     .0503673    .1478052
+             |
+        unem |  -.0212173   .0043742    -4.85   0.000    -.0299062   -.0125285
+      spdlaw |  -.0537593   .0188689    -2.85   0.005    -.0912401   -.0162785
+     beltlaw |   .0954526   .0215796     4.42   0.000     .0525875    .1383178
+      wkends |   .0033333   .0025139     1.33   0.188    -.0016601    .0083268
+       _cons |   10.63986   .0532701   199.73   0.000     10.53405    10.74568
+------------------------------------------------------------------------------
+
+. assert abs(common_b-_b[beltlaw])<1e-10
+
+. post task ("11") ("HAC_eight_months") (_b[beltlaw]) (_se[beltlaw]) (e(N))
+
+. 
+. * 12: apply a dynamic mean model to ACTUAL traffic data, beyond simulation.
+. newey logacc L.logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
+
+Regression with Newey–West standard errors      Number of obs     =        107
+Maximum lag = 4                                 F( 17,        89) =      87.90
+                                                Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+             |             Newey–West
+      logacc | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      logacc |
+         L1. |   .3326578   .1071252     3.11   0.003     .1198023    .5455133
+             |
+       trend |   .0008893   .0002853     3.12   0.002     .0003223    .0014562
+             |
+       month |
+          2  |   .0146527   .0239401     0.61   0.542    -.0329158    .0622212
+          3  |   .1430085   .0223102     6.41   0.000     .0986787    .1873384
+          4  |    .038098    .017672     2.16   0.034      .002984     .073212
+          5  |    .072244   .0204505     3.53   0.001     .0316094    .1128787
+          6  |    .062745   .0200754     3.13   0.002     .0228557    .1026344
+          7  |   .0893948   .0204455     4.37   0.000     .0487701    .1300196
+          8  |   .0938234   .0183948     5.10   0.000     .0572734    .1303733
+          9  |   .0761947    .017798     4.28   0.000     .0408305     .111559
+         10  |   .1188968   .0206093     5.77   0.000     .0779465    .1598471
+         11  |   .0991803   .0200293     4.95   0.000     .0593825    .1389781
+         12  |   .1255027   .0242489     5.18   0.000     .0773206    .1736849
+             |
+        unem |  -.0125834   .0044189    -2.85   0.005    -.0213638   -.0038031
+      spdlaw |  -.0414191   .0141509    -2.93   0.004    -.0695366   -.0133016
+     beltlaw |   .0652123   .0154671     4.22   0.000     .0344794    .0959452
+      wkends |   .0032099    .002814     1.14   0.257    -.0023815    .0088014
+       _cons |   7.018421   1.156725     6.07   0.000     4.720033    9.316809
+------------------------------------------------------------------------------
+
+. post task ("12") ("monthly_AR_coefficient") (_b[L.logacc]) (_se[L.logacc]) (e(N))
+
+. post task ("12") ("monthly_law_impact") (_b[beltlaw]) (_se[beltlaw]) (e(N))
+
+. assert abs(_b[L.logacc])<1
+
+. nlcom (longrun: _b[beltlaw]/(1-_b[L.logacc]))
+
+     longrun: _b[beltlaw]/(1-_b[L.logacc])
+
+------------------------------------------------------------------------------
+      logacc | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     longrun |   .0977194   .0193572     5.05   0.000       .05978    .1356589
+------------------------------------------------------------------------------
+
+. matrix response=r(b)
+
+. matrix uncertainty=r(V)
+
+. post task ("12") ("conditional_long_run") (response[1,1]) (sqrt(uncertainty[1,1])) (e(N))
+
+. 
+. * 13: change the endpoint window explicitly; it is a different comparison.
+. do "setup.do" panel
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+
+Panel variable: state (strongly balanced)
+ Time variable: year, 1982 to 1988
+         Delta: 1 unit
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. keep if inlist(year,1983,1988)
+(240 observations deleted)
+
+. keep state year fatality beertax
+
+. reshape wide fatality beertax, i(state) j(year)
+(j = 1983 1988)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations               96   ->   48          
+Number of variables                   4   ->   5           
+j variable (2 values)              year   ->   (dropped)
+xij variables:
+                               fatality   ->   fatality1983 fatality1988
+                                beertax   ->   beertax1983 beertax1988
+-----------------------------------------------------------------------------
+
+. generate double dy=fatality1988-fatality1983
+
+. generate double dx=beertax1988-beertax1983
+
+. regress dy dx, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(1, 46)          =       6.48
+                                                Prob > F          =     0.0143
+                                                R-squared         =     0.0786
+                                                Root MSE          =     .31292
+
+------------------------------------------------------------------------------
+             |               Robust
+          dy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+          dx |  -.8453887   .3319997    -2.55   0.014    -1.513669   -.1771081
+       _cons |   .0172992   .0561727     0.31   0.760    -.0957706     .130369
+------------------------------------------------------------------------------
+
+. post task ("13") ("1983_to_1988_difference") (_b[dx]) (_se[dx]) (e(N))
+
+. 
+. * 14: include the same exogenous income control in both supporting stages.
+. do "setup.do" cigarettes
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+(48 observations deleted)
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. regress logp salestax logincome, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(2, 45)          =      48.98
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6389
+                                                Root MSE          =     .07848
+
+------------------------------------------------------------------------------
+             |               Robust
+        logp | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    salestax |   .0273948   .0040961     6.69   0.000     .0191449    .0356447
+   logincome |   .3892825   .0653914     5.95   0.000     .2575776    .5209875
+       _cons |   3.590811   .1727273    20.79   0.000      3.24292    3.938701
+------------------------------------------------------------------------------
+
+. scalar stage_one=_b[salestax]
+
+. regress logq salestax logincome, vce(robust)
+
+Linear regression                               Number of obs     =         48
+                                                F(2, 45)          =       6.37
+                                                Prob > F          =     0.0037
+                                                R-squared         =     0.1687
+                                                Root MSE          =     .22675
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    salestax |  -.0313226   .0112334    -2.79   0.008    -.0539479   -.0086973
+   logincome |  -.2305807   .2521733    -0.91   0.365    -.7384838    .2773224
+       _cons |   5.325015   .6694834     7.95   0.000     3.976606    6.673424
+------------------------------------------------------------------------------
+
+. scalar reduced=_b[salestax]
+
+. ivregress 2sls logq logincome (logp=salestax), vce(robust)
+
+Instrumental-variables 2SLS regression            Number of obs   =         48
+                                                  Wald chi2(2)    =      17.47
+                                                  Prob > chi2     =     0.0002
+                                                  R-squared       =     0.4189
+                                                  Root MSE        =     .18355
+
+------------------------------------------------------------------------------
+             |               Robust
+        logq | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        logp |  -1.143375   .3604805    -3.17   0.002    -1.849904   -.4368463
+   logincome |   .2145153   .3018477     0.71   0.477    -.3770953    .8061258
+       _cons |   9.430658   1.219402     7.73   0.000     7.040675    11.82064
+------------------------------------------------------------------------------
+Endogenous: logp
+Exogenous:  logincome salestax
+
+. assert abs(_b[logp]-reduced/stage_one)<1e-8
+
+. post task ("14") ("income_controlled_IV") (_b[logp]) (_se[logp]) (e(N))
+
+. 
+. * 15: add curvature to the probit index and compare the same probability inputs.
+. do "setup.do" mortgages
+
+. args dataset
+
+. clear
+
+. set more off
+
+. if "`dataset'"=="schools" {
+.     use "data/caschool.dta", clear
+.     rename testscr score
+.     rename el_pct el
+.     rename avginc income
+.     assert _N==420
+.     assert !missing(score,str,el,income)
+. }
+
+. if "`dataset'"=="retail" {
+.     use "data/retail.dta", clear
+.     keep if !missing(sprice,income) & sprice>0 & income>0
+.     generate double inc10=income/10000
+.     generate double lp=ln(sprice)
+.     generate double li=ln(income)
+. }
+
+. if "`dataset'"=="traffic" {
+.     use "data/traffic.dta", clear
+.     assert _N==108
+.     generate month_id=ym(1981,1)+_n-1
+.     format month_id %tm
+.     assert year==year(dofm(month_id))
+.     assert t==_n
+.     generate byte month=month(dofm(month_id))
+.     local m=2
+.     foreach flag in feb mar apr may jun jul aug sep oct nov dec {
+  2.         assert `flag'==(month==`m')
+  3.         local ++m
+  4.     }
+.     generate double logacc=ln(totacc)
+.     generate trend=_n
+.     tsset month_id
+. }
+
+. if "`dataset'"=="panel" {
+.     use "data/fatality.dta", clear
+.     generate double fatality=10000*mrall
+.     isid state year
+.     xtset state year
+.     assert _N==336
+. }
+
+. if "`dataset'"=="cigarettes" {
+.     use "data/cig_ch12.dta", clear
+.     keep if year==1995
+.     generate double logq=ln(packpc)
+.     generate double logp=ln(avgprs/cpi)
+.     generate double salestax=(taxs-tax)/cpi
+.     generate double logincome=ln(income/(pop*cpi))
+.     assert _N==48
+. }
+
+. if "`dataset'"=="mortgages" {
+.     use "data/hmda_sw.dta", clear
+.     generate byte deny=(s7==3) if !missing(s7)
+.     generate double pir=s46/100
+.     assert _N==2380
+.     assert !missing(deny,pir)
+. }
+
+. 
+end of do-file
+
+. probit deny c.pir##c.pir, vce(robust)
+
+Iteration 0:  Log pseudolikelihood =  -872.0853  
+Iteration 1:  Log pseudolikelihood = -832.66498  
+Iteration 2:  Log pseudolikelihood = -832.12417  
+Iteration 3:  Log pseudolikelihood = -831.77436  
+Iteration 4:  Log pseudolikelihood = -831.76884  
+Iteration 5:  Log pseudolikelihood = -831.76884  
+
+Probit regression                                       Number of obs =  2,380
+                                                        Wald chi2(2)  =  40.50
+                                                        Prob > chi2   = 0.0000
+Log pseudolikelihood = -831.76884                       Pseudo R2     = 0.0462
+
+------------------------------------------------------------------------------
+             |               Robust
+        deny | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         pir |   2.774259   1.460958     1.90   0.058    -.0891668    5.637685
+             |
+ c.pir#c.pir |   .2124659   1.646102     0.13   0.897    -3.013835    3.438767
+             |
+       _cons |  -2.154485   .3176422    -6.78   0.000    -2.777052   -1.531918
+------------------------------------------------------------------------------
+Note: 0 failures and 1 success completely determined.
+
+. scalar p30=normal(_b[_cons]+_b[pir]*.30+_b[c.pir#c.pir]*.30^2)
+
+. scalar p40=normal(_b[_cons]+_b[pir]*.40+_b[c.pir#c.pir]*.40^2)
+
+. post task ("15") ("quadratic_probit_gap_pp") (100*(p40-p30)) (.) (e(N))
+
+. postclose task
+
+. use "output/independent_practice.dta", clear
+
+. format value se %12.6f
+
+. list, noobs separator(0)
+
+  +------------------------------------------------------------------+
+  | meeting                 statistic        value         se      n |
+  |------------------------------------------------------------------|
+  |      01      income_adjusted_gain     0.137551   0.580319    420 |
+  |      02       income_contribution    -1.032520          .    420 |
+  |      03       log_income_staffing    -0.385338   0.289855    420 |
+  |      04         one_point_t_ratio     1.389164          .    420 |
+  |      05     level_dollar_contrast     0.018147   0.006305    401 |
+  |      05         exact_log_percent     1.932756          .    401 |
+  |      06        all_district_slope    -0.068776   0.290160    420 |
+  |      06     leave_influential_out    -0.093391   0.288784    419 |
+  |      06          sensitivity_case   405.000000          .    419 |
+  |      07      group_gap_at_ratio20   -15.429199   1.128935    420 |
+  |      09         with_linear_trend     0.095453   0.012368    108 |
+  |      09      without_linear_trend     0.130158   0.011785    108 |
+  |      10        two_lag_sum_common    -0.018658   0.003752    105 |
+  |      10      three_lag_sum_common    -0.018684   0.003761    105 |
+  |      11           HAC_four_months     0.095453   0.018898    108 |
+  |      11          HAC_eight_months     0.095453   0.021580    108 |
+  |      12    monthly_AR_coefficient     0.332658   0.107125    107 |
+  |      12        monthly_law_impact     0.065212   0.015467    107 |
+  |      12      conditional_long_run     0.097719   0.019357    107 |
+  |      13   1983_to_1988_difference    -0.845389   0.332000     48 |
+  |      14      income_controlled_IV    -1.143375   0.360481     48 |
+  |      15   quadratic_probit_gap_pp     5.978643          .   2380 |
+  +------------------------------------------------------------------+
+
+. export delimited using "output/independent_practice.csv", replace
+(file output/independent_practice.csv not found)
+file output/independent_practice.csv saved
+
+. display "ECO603_INDEPENDENT_PRACTICE_COMPLETE"
+ECO603_INDEPENDENT_PRACTICE_COMPLETE
+

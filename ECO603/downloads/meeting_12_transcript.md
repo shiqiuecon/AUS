@@ -346,7 +346,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_12.do. In its explicitly constructed quarterly experiment, calculate the true response four quarters after a unit shock. Compare it with the actual horizon-four estimate and approximate interval. Explain what the discrepancy teaches about finite-sample estimates and why the experiment does not identify an observed historical supply shock.
 
-**Practice:** Run meeting_12.do. In its explicitly constructed quarterly experiment, calculate the true response four quarters after a unit shock. Compare it with the actual horizon-four estimate and approximate interval. Explain what the discrepancy teaches about finite-sample estimates and why the experiment does not identify an observed historical supply shock.
+Then use actual traffic.csv. Add one lag of log accidents to the monthly mean model, retain the calendar and policy controls, and use four-month HAC inference. Report the law coefficient and the stable-model long-run contrast. Explain why this observed application has no known historical causal truth supplied by the simulation. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Then use actual traffic.csv. Add one lag of log accidents to the monthly mean model, retain the calendar and policy controls, and use four-month HAC inference. Report the law coefficient and the stable-model long-run contrast. Explain why this observed application has no known historical causal truth supplied by the simulation. Keep your commands, log, output and interpretation.
 
 ## 29. Compare a known response with a noisy estimate: explanation
 
@@ -356,7 +358,13 @@ The known response is 0.8 times 0.6 to the fourth power, or 0.10368. The estimat
 
 A coverage statement concerns repeated samples, so a particular estimated response can have the wrong sign and a particular interval can miss the truth. The displayed result has not been replaced with its theoretical target. The independent shock is known by construction in this experiment. Observed macroeconomic work still needs a credible shock measure, appropriate dated controls and justified inference.
 
-The known response is 0.8 times 0.6 to the fourth power, or 0.10368. The estimated horizon-four coefficient is -0.178410, with SE 0.101311. Its approximate 1.96 interval is [-0.3770, 0.0202]. This particular interval misses the true positive response. A coverage statement concerns repeated samples, so a particular estimated response can have the wrong sign and a particular interval can miss the truth. The displayed result has not been replaced with its theoretical target. The independent shock is known by construction in this experiment. Observed macroeconomic work still needs a credible shock measure, appropriate dated controls and justified inference.
+The real-data dynamic fit uses 107 months: the lag coefficient is 0.332658 and the law impact coefficient is 0.065212. The model-implied long-run log contrast is 0.097719 (approximate delta-method SE 0.019357). It assumes stability and a defensible exogenous permanent input change. HAC does not repair endogeneity from an invalid lagged-outcome specification.
+
+Constructed quarterly response: known truth and realised estimate differ.
+
+Real monthly fit: lag coefficient \(0.332658\); law impact \(0.065212\).
+
+Stable-model long-run log contrast \(0.097719\), approximate SE \(0.019357\).
 
 ## 30. Next, use repeated units to construct another comparison
 

@@ -140,7 +140,140 @@ Unequal variance does not by itself invalidate the OLS coefficient under exogene
 
 \(\operatorname{Var}(u_i\mid X_i)\) concerns spread
 
-## 13. A DAG does not encode the size of the noise
+## 13. Look for a variance pattern before choosing a remedy
+
+A squared residual is an observable clue about error spread.
+
+The population error is not observed. After fitting the staffing equation, we can examine residuals, the observed scores minus their fitted predictions. Squaring a residual records its size without cancelling positive and negative errors. The plot shows these squared residuals against language composition in the actual district data.
+
+The gold points average squared residuals within five ranges of language share. A changing pattern motivates a variance question, but it does not prove the proposed mean equation is correct. An omitted nonlinear mean can also create a residual pattern. Check the economic specification, then use a formal diagnostic to state precisely which variance restriction is being examined.
+
+Residual: observed outcome minus fitted outcome.
+
+Squared residual: \(\widehat u_i^2\).
+
+Gold: average squared residual within each of five language-share ranges.
+
+## 14. Breusch–Pagan turns the variance question into a test
+
+The null is constant conditional error variance, given the chosen mean model.
+
+The Breusch–Pagan test asks whether error variance changes with specified explanatory variables. Here we use staffing and language share. An auxiliary regression is a supporting regression: we regress the squared OLS residuals on an intercept and those two variables. Its R squared measures how much of their observed variation this equation explains.
+
+The version selected by Stata's iid option multiplies that R squared by the sample size. Assuming a correctly specified mean, independent observations and finite variances for the quantities used in this calculation, the large-sample null approximation compares the statistic with a chi-squared distribution with two degrees of freedom. It relaxes the original test's normal-error assumption. The actual statistic is 29.50, with a p-value below 0.001. This is evidence against constant variance under this specification; it is not a test of whether staffing is exogenous.
+
+\(H_0:\operatorname{Var}(u_i\mid X_i)=\sigma^2\): constant variance; \(X_i\) denotes the included regressors.
+
+Regress \(\widehat u_i^2\) on a constant, staffing and language share.
+
+Test statistic: \(nR^2_{\mathrm{aux}}\), compared with \(\chi^2_2\).
+
+```text
+. estat hettest str el, iid
+
+Breusch–Pagan/Cook–Weisberg test for heteroskedasticity 
+Assumption: i.i.d. error terms
+Variables: str el
+
+H0: Constant variance
+
+    chi2(2) =  29.50
+Prob > chi2 = 0.0000
+```
+
+## 15. White allows a broader variance pattern
+
+Squares and products expand the auxiliary variance regression.
+
+The White test uses the original regressors, their squares and their pairwise products to look for a broader pattern in squared residuals. With staffing and language share, this adds staffing squared, language share squared and their product. There are five auxiliary slopes to test jointly. Their units differ, but the joint null is that every slope is zero.
+
+The actual White statistic is 42.46, again with a p-value below 0.001. The first White-test block is our target; Stata also prints a separate decomposition involving other error properties. More flexible diagnostics use more degrees of freedom and can have low power in small samples. A failure to reject would not establish equal variance, and a rejection need not reveal the correct variance formula. An appropriate uncertainty procedure can be specified in advance rather than switched on only after a significant diagnostic.
+
+Auxiliary columns: staffing, language share, their squares and their product.
+
+White statistic: \(nR^2_{\mathrm{aux}}\), compared with \(\chi^2_5\).
+
+Distinguish a variance diagnostic from a test of the causal comparison.
+
+**Practice:** Why do BP and White have different degrees of freedom here?
+
+**Explanation:** BP uses two auxiliary slopes; White adds two squares and one product, giving five.
+
+```text
+. estat imtest, white
+
+White's test
+H0: Homoskedasticity
+Ha: Unrestricted heteroskedasticity
+
+    chi2(5) =  42.46
+Prob > chi2 = 0.0000
+```
+
+## 16. Weighted least squares changes how the line is fitted
+
+Give less weight to observations with greater conditional error variance.
+
+Robust OLS changes the uncertainty calculation while keeping the fitted line. Weighted least squares instead changes the fitting objective. Let w for observation i be a positive weight. The method minimises the sum of w times each squared residual. If a correctly specified linear mean has independent errors whose conditional variances are known up to a common scale, inverse-variance weights can improve precision.
+
+Consider a district average. Under a particular model of independent pupil noise, its error variance is proportional to one divided by enrolment. That model suggests enrolment weights. It is a hypothesis, because pupils can share district-level shocks. Multiplying the outcome, every regressor and the constant column by the square root of enrolment gives the same weighted fit. Transform the constant too; an ordinary untransformed intercept would define a different equation.
+
+WLS minimises \(\sum_i w_i(y_i-a-b_1STR_i-b_2EL_i)^2\).
+
+Candidate model: \(\operatorname{Var}(u_i\mid X_i,n_i)=\sigma^2/n_i\Rightarrow w_i=n_i\).
+
+Multiply \(y_i\), every regressor and the constant by \(\sqrt{n_i}\).
+
+## 17. Read a weighted fit without assuming it must be better
+
+A variance model and an economic target both matter.
+
+In the actual school data, enrolment weighting changes the staffing slope from -1.101 to -1.326. The corresponding heteroskedasticity-robust standard errors are 0.433 and 0.661. The weighted estimate is not automatically more precise. The proposed inverse-enrolment variance model can be a poor description of district-level errors.
+
+The enrolment-weighted fit gives larger districts more influence. If the conditional mean is misspecified, it can also change the approximation target. The same weighted coefficient is reproduced by the transformed regression in the do-file. That verifies the calculation, not the variance model or a causal staffing effect. Explain why the weights suit the question, use a justified uncertainty calculation, and report sensitivity to weighting.
+
+OLS and WLS use the same 420 districts.
+
+The transformed regression reproduces the weighted coefficient.
+
+Weighting does not remove an omitted common cause.
+
+**Practice:** Which column is easy to forget when transforming the weighted model?
+
+**Explanation:** Multiply the constant column by the square root of enrolment as well.
+
+```text
+. regress score str el [aw=enrol], vce(robust)
+
+------------------------------------------------------------------------------
+             |               Robust
+       score | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         str |   -1.32611   .6605944    -2.01   0.045     -2.62462   -.0276004
+          el |  -.6390283   .0408085   -15.66   0.000    -.7192442   -.5588124
+       _cons |   693.1913   13.26319    52.26   0.000     667.1203    719.2624
+------------------------------------------------------------------------------
+```
+
+## 18. Generalised least squares includes variance and dependence
+
+WLS is one special case of a broader transformation idea.
+
+Variance describes each error's spread. Covariance describes how two errors move together. Generalised least squares, or GLS, uses an assumed structure for both to transform the regression into an equation with equal-variance errors and zero covariance between different errors. Weighted least squares is the special case with unequal variances but no cross-observation error covariance.
+
+Feasible GLS first estimates the variance or dependence structure and then performs the transformation. Its precision advantage depends on a credible mean equation, exogeneity and a sufficiently accurate error model; estimating that structure adds uncertainty. For independent districts with uncertain variance patterns, robust OLS is a defensible starting point. For dated errors that move together, a model of that dependence may motivate another transformation. We return to that time-series case later. None of these transformations supplies a missing causal identification argument.
+
+GLS: transform using the assumed error variances and covariances.
+
+Feasible GLS: estimate that error structure before transforming.
+
+Choose separately: mean specification, estimator and uncertainty calculation.
+
+**Practice:** Would weighting remove an omitted cause related to staffing and scores?
+
+**Explanation:** No. Justify the causal comparison separately from the error-variance model.
+
+## 19. A DAG does not encode the size of the noise
 
 Use a mean-zero innovation with a regressor-dependent scale.
 
@@ -154,7 +287,7 @@ Compare this with a diagram containing an unmeasured common cause of X and the o
 
 \(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
 
-## 14. Compare conventional and robust output
+## 20. Compare conventional and robust output
 
 Same coefficients, different estimated uncertainty.
 
@@ -175,7 +308,7 @@ The robust option changes the estimated covariance matrix, which records the est
 ------------------------------------------------------------------------------
 ```
 
-## 15. Do not choose an SE by the resulting significance
+## 21. Do not choose an SE by the resulting significance
 
 Match it to the sampling and dependence structure.
 
@@ -185,7 +318,7 @@ District-level independent sampling suggests one set of methods; repeated observ
 
 Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
 
-## 16. Robust does what?
+## 22. Robust does what?
 
 Try the comparison before opening the explanation.
 
@@ -195,7 +328,7 @@ Keep the regression equation and sample fixed. Separate the fitted coefficient f
 
 **Practice:** After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
 
-## 17. Robust does what?: explanation
+## 23. Robust does what?: explanation
 
 Follow the calculation and interpret its units.
 
@@ -203,7 +336,7 @@ On the same sample the OLS coefficient does not change. The estimated covariance
 
 On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
 
-## 18. Test a substantively meaningful value
+## 24. Test a substantively meaningful value
 
 A zero null is not the only relevant question.
 
@@ -220,7 +353,7 @@ Use Stata's test command to evaluate that stated restriction. A coefficient can 
             Prob > F =    0.8151
 ```
 
-## 19. Compute uncertainty for the policy contrast
+## 25. Compute uncertainty for the policy contrast
 
 Scale the SE along with the estimate.
 
@@ -240,7 +373,7 @@ The lincom output supplies the contrast, SE and interval together. State that th
 ------------------------------------------------------------------------------
 ```
 
-## 20. A confidence interval can contain an important effect
+## 26. A confidence interval can contain an important effect
 
 Failing to reject is not proof of no effect.
 
@@ -252,7 +385,7 @@ If an interval includes zero and also includes effects large enough to matter, t
 
 Report the point estimate and interval, explain which practical values remain compatible with the model and discuss what data would improve precision.
 
-## 21. Economic versus statistical size
+## 27. Economic versus statistical size
 
 Try the comparison before opening the explanation.
 
@@ -262,7 +395,7 @@ Use the outcome units and the decision threshold. A small p-value and a worthwhi
 
 **Practice:** A precisely estimated policy effect is 0.001 outcome units. Is a small p-value enough to recommend the policy?
 
-## 22. Economic versus statistical size: explanation
+## 28. Economic versus statistical size: explanation
 
 Follow the calculation and interpret its units.
 
@@ -270,7 +403,7 @@ No. Report the units, realistic policy contrast, interval, policy cost and relev
 
 No. Report the units, realistic policy contrast, interval, policy cost and relevant outcome scale. Statistical detectability alone neither establishes causal validity nor a worthwhile benefit.
 
-## 23. More observations help only under the relevant conditions
+## 29. More observations help only under the relevant conditions
 
 The information gain depends on what the observations add.
 
@@ -280,7 +413,7 @@ Repeating highly dependent information may add less precision. Increasing observ
 
 Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
 
-## 24. Avoid repeated specification searches for a preferred p-value
+## 30. Avoid repeated specification searches for a preferred p-value
 
 The search changes what an isolated test can mean.
 
@@ -292,7 +425,7 @@ If an analyst tries many outcomes, control sets and sample restrictions and repo
 
 Keep a clear account of the main question and intended specification.
 
-## 25. Write an uncertainty statement for a policy reader
+## 31. Write an uncertainty statement for a policy reader
 
 Include the comparison, units and conditions.
 
@@ -304,7 +437,7 @@ A concise result sentence names the adjusted comparison, gives a feasible policy
 
 For example, describe a fitted two-student ratio difference at fixed language composition and give its robust interval in score points.
 
-## 26. Check the reference distribution and scale
+## 32. Check the reference distribution and scale
 
 An interval is meaningful only for a defined quantity.
 
@@ -316,7 +449,7 @@ Before interpreting an interval, identify whether it concerns a coefficient, a f
 
 Also check whether the displayed interval uses a normal approximation or a t reference and whether the covariance option matches the observations.
 
-## 27. Use the evidence to identify the next useful step
+## 33. Use the evidence to identify the next useful step
 
 Precision, fit and design can require different improvements.
 
@@ -328,7 +461,7 @@ An imprecise but credible comparison may benefit from more informative observati
 
 These are different diagnoses.
 
-## 28. DAG practice: uncertainty is not adjustment
+## 34. DAG practice: uncertainty is not adjustment
 
 Trace the routes before choosing a control.
 
@@ -338,7 +471,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
 
-## 29. DAG practice: uncertainty is not adjustment: explanation
+## 35. DAG practice: uncertainty is not adjustment: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -348,15 +481,17 @@ On an unchanged model and sample, the OLS coefficient remains the same while the
 
 The route through unmeasured motivation remains open after conditioning on education. The common-cause arrows are properties of the proposed causal story, not of the covariance formula. Switching the SE option does not block them. On an unchanged model and sample, the OLS coefficient remains the same while the estimated covariance, intervals and tests can change. Robust inference addresses uncertainty under appropriate conditions. A credible causal comparison needs an additional argument about motivation or a design that addresses its role.
 
-## 30. Report magnitude and uncertainty together
+## 36. Report magnitude and uncertainty together
 
 Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
 
-**Practice:** Run meeting_04.do. Use the robust staffing coefficient and SE to construct the approximate 95% interval with the 1.96 rule. Then calculate the estimate and SE for a two-student reduction. Explain how a decision about practical benefits differs from a test of a zero coefficient.
+Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-## 31. Report magnitude and uncertainty together: explanation
+**Practice:** Use the fitted two-student gain to assess a null gain of one score point, rather than zero. Calculate the corresponding test ratio and explain its economic meaning. Keep your commands, log, output and interpretation.
+
+## 37. Report magnitude and uncertainty together: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -364,9 +499,15 @@ The robust staffing estimate is -1.101296, with SE 0.432847. The approximate int
 
 These calculations quantify uncertainty under the model and inference assumptions. Stata's finite-degree-of-freedom interval can differ slightly from the 1.96 approximation. A recommendation also needs a credible causal comparison, the outcome's educational importance, staffing costs and the relevant population. Rejecting a zero slope does not supply those additional pieces of the decision.
 
-The robust staffing estimate is -1.101296, with SE 0.432847. The approximate interval is [-1.9497, -0.2529] score points per additional student per teacher. Multiplying the slope by minus two gives 2.2026 points; its SE is 0.8657, because scaling by a constant scales the SE by its absolute value. These calculations quantify uncertainty under the model and inference assumptions. Stata's finite-degree-of-freedom interval can differ slightly from the 1.96 approximation. A recommendation also needs a credible causal comparison, the outcome's educational importance, staffing costs and the relevant population. Rejecting a zero slope does not supply those additional pieces of the decision.
+The ratio is (2.202592-1)/0.865694=1.389164. The result does not reject a one-point fitted gain using the approximate two-sided 1.96 rule. This is distinct from the zero-slope question and still needs credible identification for a causal claim.
 
-## 32. Next, let the model represent percentages and curvature
+Two-student gain: \(2.202592\), robust SE \(0.865694\).
+
+Null gain of one: \((2.202592-1)/0.865694=1.389164\).
+
+Separate a policy-relevant magnitude from a test against zero.
+
+## 38. Next, let the model represent percentages and curvature
 
 The interpretation depends on how variables enter.
 

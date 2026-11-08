@@ -361,7 +361,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_05.do using retail.csv. In the level model, calculate the fitted soda-price contrast for a 20,000-dollar income difference. In the log–log model, calculate the exact contrast for a ten-percent income increase. State the units and the prediction quantity in each answer.
 
-**Practice:** Run meeting_05.do using retail.csv. In the level model, calculate the fitted soda-price contrast for a 20,000-dollar income difference. In the log–log model, calculate the exact contrast for a ten-percent income increase. State the units and the prediction quantity in each answer.
+Change the income comparison from 30,000 to 50,000 dollars. Report the level-model dollar contrast and the exact exponentiated-log percentage contrast. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Change the income comparison from 30,000 to 50,000 dollars. Report the level-model dollar contrast and the exact exponentiated-log percentage contrast. Keep your commands, log, output and interpretation.
 
 ## 29. Translate retail coefficients into a useful contrast: explanation
 
@@ -371,7 +373,13 @@ Income is rescaled by 10,000 in the level model, so the proposed change is two u
 
 The log–log income slope is 0.037475. A ten-percent income rise multiplies the exponentiated fitted log price by 1.1 raised to that slope, giving 0.3578 percent. This is a contrast in exponentiated fitted log values. A claim about arithmetic mean prices also requires the retransformation factor to be handled appropriately. These local-income associations do not identify a causal income effect.
 
-Income is rescaled by 10,000 in the level model, so the proposed change is two units. The fitted price contrast is two times 0.009073, or 0.018147 dollars. Treating the coefficient as dollars per one dollar of income would give the wrong magnitude. The log–log income slope is 0.037475. A ten-percent income rise multiplies the exponentiated fitted log price by 1.1 raised to that slope, giving 0.3578 percent. This is a contrast in exponentiated fitted log values. A claim about arithmetic mean prices also requires the retransformation factor to be handled appropriately. These local-income associations do not identify a causal income effect.
+The level contrast is 0.018147 dollars; the log-log contrast is 1.932756 percent because the income ratio is 5/3. These describe different fitted quantities; an arithmetic-mean price claim requires a suitable retransformation treatment.
+
+A 20,000-dollar income difference gives a 0.018147-dollar level-model contrast.
+
+From 30,000 to 50,000: exponentiated-log contrast 1.932756%.
+
+A fitted log-value ratio needs extra assumptions to be an arithmetic-mean ratio.
 
 ## 30. Connect functional form with the next data-quality question
 

@@ -406,7 +406,9 @@ Reproduce the evidence, then explain its economic meaning.
 
 Run meeting_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
 
-**Practice:** Run meeting_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
+Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Keep your commands, log, output and interpretation.
 
 ## 26. Choose an uncertainty statement for repeated months: explanation
 
@@ -416,7 +418,13 @@ The common law coefficient is about 0.095453. The SEs are about 0.014235, 0.0123
 
 A robust SE can be smaller because its covariance estimate responds to the actual relationship between regressor leverage and error spread. Four covariance lags are four months in this monthly dataset; the option does not add four regressors. HAC allows a specified treatment of remaining time dependence under suitable conditions, while none of these choices makes law adoption exogenous or removes omitted dynamics from the conditional mean.
 
-The common law coefficient is about 0.095453. The SEs are about 0.014235, 0.012368 and 0.018898 for conventional, robust and HAC4 inference. Using the common estimate plus or minus 1.96 times each SE gives different approximate intervals without changing the fitted model. A robust SE can be smaller because its covariance estimate responds to the actual relationship between regressor leverage and error spread. Four covariance lags are four months in this monthly dataset; the option does not add four regressors. HAC allows a specified treatment of remaining time dependence under suitable conditions, while none of these choices makes law adoption exogenous or removes omitted dynamics from the conditional mean.
+The common law coefficient remains 0.095453 on 108 months. The four- and eight-month HAC SEs are 0.018898 and 0.021580. The bandwidth changes the covariance estimate, not the list of regressors or the causal adoption argument.
+
+Coefficient unchanged: \(0.095453\).
+
+HAC SE, four versus eight months: \(0.018898\) versus \(0.021580\).
+
+The bandwidth changes estimated uncertainty, not the conditional-mean regressors.
 
 ## 27. Exit check: connect the model, estimate and SE
 

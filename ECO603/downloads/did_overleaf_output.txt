@@ -1,0 +1,114 @@
+Actual StataMP numerical output; machine-specific log header omitted.
+Actual naive output:
+. regress dy group, vce(robust)
+
+Linear regression                               Number of obs     =        300
+                                                F(1, 298)         =     514.67
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5004
+                                                Root MSE          =     1.3993
+
+------------------------------------------------------------------------------
+             |               Robust
+          dy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       group |  -3.222965   .1420669   -22.69   0.000    -3.502547   -2.943384
+       _cons |   2.900887   .1026169    28.27   0.000     2.698941    3.102832
+------------------------------------------------------------------------------
+
+Actual levels output:
+. regress outcome i.group##i.post baseline_income, vce(cluster person)
+
+Linear regression                               Number of obs     =        600
+                                                F(4, 299)         =    2440.04
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9562
+                                                Root MSE          =      1.284
+
+                                  (Std. err. adjusted for 300 clusters in person)
+---------------------------------------------------------------------------------
+                |               Robust
+        outcome | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+        1.group |   1.407348   .2085804     6.75   0.000     .9968769     1.81782
+         1.post |   2.900887    .102789    28.22   0.000     2.698605    3.103168
+                |
+     group#post |
+           1 1  |  -3.222965   .1423051   -22.65   0.000    -3.503012   -2.942919
+                |
+baseline_income |   1.184922   .0175994    67.33   0.000     1.150288    1.219557
+          _cons |   25.93892    .394711    65.72   0.000     25.16215    26.71568
+---------------------------------------------------------------------------------
+
+Actual trend_adjusted output:
+. regress dy group baseline_income, vce(robust)
+
+Linear regression                               Number of obs     =        300
+                                                F(2, 297)         =    8097.41
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9805
+                                                Root MSE          =     .27667
+
+---------------------------------------------------------------------------------
+                |               Robust
+             dy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+          group |  -.0265043   .0508918    -0.52   0.603    -.1266584    .0736499
+baseline_income |    .399013     .00439    90.89   0.000     .3903736    .4076523
+          _cons |  -5.987238   .0998878   -59.94   0.000    -6.183815    -5.79066
+---------------------------------------------------------------------------------
+
+Actual placebo_simple output:
+. regress re i.experimental##i.post, vce(cluster person)
+
+Linear regression                               Number of obs     =     32,834
+                                                F(3, 16416)       =     869.87
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0329
+                                                Root MSE          =       9379
+
+                                 (Std. err. adjusted for 16,417 clusters in person)
+-----------------------------------------------------------------------------------
+                  |               Robust
+               re | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+   1.experimental |  -10624.12   262.4661   -40.48   0.000    -11138.58   -10109.66
+           1.post |   1195.856   60.98505    19.61   0.000     1076.319    1315.394
+                  |
+experimental#post |
+             1 1  |    867.509   330.0114     2.63   0.009     220.6508    1514.367
+                  |
+            _cons |    13650.8   73.31059   186.21   0.000     13507.11     13794.5
+-----------------------------------------------------------------------------------
+
+Actual dr output:
+. drdid re age educ black married nodegree hisp re74, ///
+>     ivar(person) time(year) tr(experimental)
+No estimator selected. Using default drimp
+
+Doubly robust difference-in-differences                 Number of obs = 32,834
+Outcome model  : weighted least squares
+Treatment model: inverse probability tilting
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+experimental |
+   (1 vs 0)  |  -901.2703   393.6127    -2.29   0.022    -1672.737   -129.8037
+------------------------------------------------------------------------------
+
+Actual dr_without_history output:
+. drdid re age educ black married nodegree hisp, ///
+>     ivar(person) time(year) tr(experimental)
+No estimator selected. Using default drimp
+
+Doubly robust difference-in-differences                 Number of obs = 32,834
+Outcome model  : weighted least squares
+Treatment model: inverse probability tilting
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+experimental |
+   (1 vs 0)  |  -604.0295   405.8351    -1.49   0.137    -1399.452    191.3927
+------------------------------------------------------------------------------

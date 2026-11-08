@@ -344,7 +344,9 @@ Run the partialling-out code and compare the full-model staffing coefficient wit
 
 The full log also prints standard errors. Treat them as estimates of repeated-sample spread, which the next meeting develops. The FWL exercise establishes an algebraic identity for the coefficient, not permission to use any manual regression's uncertainty calculation for the full model. Record the matching coefficients and state why residualisation does not remove an unobserved common cause.
 
-**Practice:** Reproduce the two adjusted coefficients and explain the residual axes. Why is their equality a computational result rather than a causal guarantee?
+Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Keep your commands, log, output and interpretation.
 
 ## 30. Verify partialling out without misusing its SE: explanation
 
@@ -354,7 +356,13 @@ The residual staffing coefficient and the full-model staffing coefficient both e
 
 The manual fit prints standard error 0.275915, while the full fit prints 0.290160. These use different uncertainty procedures. A standard error estimates repeated-sample spread; FWL guarantees the coefficient identity without guaranteeing that every manual spread calculation matches. Use the complete model’s justified uncertainty calculation when reporting that model. Neither matching coefficients nor small residuals establish a causal staffing comparison.
 
-Same coefficient: −0.068776. The standard-error calculations require their own justification.
+The full and partialled staffing slopes both equal -0.385338 on 420 districts. The full-model robust SE is 0.289855. Removing different control columns would not be the same FWL calculation.
+
+Original staffing slope: \(-0.068776\).
+
+Using log income: \(-0.385338\), full-model robust SE \(0.289855\).
+
+FWL requires the same control columns in both residualising fits.
 
 ## 31. Next, measure uncertainty around the estimate
 
