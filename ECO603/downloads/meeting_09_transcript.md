@@ -64,9 +64,11 @@ Contemporaneous condition: \(E(u_t\mid x_t)=0\)
 
 Future regressors make strict exogeneity demanding.
 
-Strict exogeneity requires the average error at date t to be zero conditional on the full regressor history, including later dates. In the feedback story, current unexpected accidents can influence future policy, so that condition can fail. Sequential exogeneity instead conditions on current and earlier regressors. It does not impose the same restriction involving future choices.
+Read the two lists after the conditioning bar. Lowercase x at a date is the list of included regressors then. Capital T is the last date. Strict exogeneity asks the average error at date t to be zero even when we know every regressor value through T, including future choices.
 
-The sequential condition can be plausible when current policy is chosen before the current innovation and the included history properly represents what decision makers use. It is still an assumption, and omitting relevant current causes can invalidate it. In the formulas, x one through x t means the regressor lists through the current date, while capital T is the final sample date. State which information set your mean restriction uses rather than describing every lagged variable as automatically exogenous.
+In the feedback example, unusually high accidents today may prompt a policy change next month. Knowing that future policy can then tell us something about today's error. Sequential exogeneity uses the shorter list, ending with today's regressors. It allows that kind of future response.
+
+The shorter restriction still needs a reason. Did the policy decision use information about today's unobserved accident shock? Does the model include the relevant history? State which list you condition on and why a mean of zero is plausible for that list.
 
 Strict: \(E(u_t\mid x_1,\ldots,x_T)=0\)
 
@@ -122,9 +124,9 @@ A distributed-lag model includes current and earlier values of an explanatory va
 
 They are different operations on ordered observations.
 
-A lag takes an earlier value, such as unemployment in the previous month. A first difference subtracts the previous value from the current value. A horizon counts periods ahead when studying a future response. Monthly and quarterly versions have different calendar meanings.
+Suppose unemployment was six percent in March and seven percent in April. From April, a lag of one month gives March's value, six percent. The first difference is the April value minus the March value, one percentage point. A lag reads an earlier observation. A difference calculates a change.
 
-Declaring the time index lets Stata apply L and D operators consistently with gaps. A lag is not a percent change, and a difference of logs is not the same quantity as a difference of levels. Start with the economic unit and operation before interpreting the resulting coefficient. These definitions will be reused throughout the dynamic applications.
+A horizon counts how far ahead we look from the starting date. From April, horizon one is May in monthly data. In quarterly data it would be one quarter ahead. Declare the date index in Stata so that the lag and difference operators follow calendar dates, including gaps in the observations.
 
 \(LX_t=X_{t-1}\)
 
@@ -144,9 +146,9 @@ The lag coefficients describe additional dated associations. A causal response i
 
 Its outcome responses occur at several dates.
 
-Use a constructed finite-lag model with current-input coefficient 0.2, one-period-lag coefficient 0.1 and two-period-lag coefficient minus 0.05. Raise X by one at a single date and keep all its other dates fixed. The fitted outcome change is 0.2 immediately, 0.1 one period later and minus 0.05 two periods later. It is zero afterward in this specification.
+Raise the input by one at the starting date only. Keep the rest of the input path fixed. Look across the horizons. At horizon zero, the change enters through the current term, giving 0.20. One period later, that same input is the first lag, giving 0.10. Two periods later it is the second lag, giving minus 0.05. At horizon three the changed input is outside the model's lag window.
 
-The immediate change is the impact response. Adding the three dated outcome changes gives 0.25, the cumulative response to that imposed temporary input path. It is not the outcome difference at the final date. The input path has been specified externally; if an economic innovation also changes later X values, we must include those additional input changes when tracing its outcome response.
+Add the three dated responses to get 0.25. This is the cumulative response to the temporary change. The outcome at the last date on the slide has a change of zero. If an economic shock also moves later input values, trace those changes too. The calculation here fixes that later path by construction.
 
 Horizon \(h\): \(0,1,2,3\)
 
@@ -158,9 +160,9 @@ Cumulative response: \(0.20+0.10-0.05=0.25\)
 
 The long-run level effect reaches the lag sum in this model.
 
-Now raise X by one at the starting date and keep it one unit higher at every later date. The current coefficient contributes 0.2 immediately. At the next date, both current and lag-one inputs are higher, so the outcome difference is 0.3. From the third date onward, all three input terms are active and the difference is 0.25.
+This time raise the input by one at the starting date and at every date after it. At the start, only the current input is higher, so the fitted change is 0.20. One period later the current input and the first lag are both higher, so add 0.20 and 0.10. Two periods later all three terms are active. Their sum is 0.25 and it stays there.
 
-The same sum of coefficients is now a long-run level contrast, because it describes the outcome difference at each sufficiently late date. In the temporary experiment it was a sum of outcome changes over dates. This numerical equality belongs to this finite distributed-lag model without a lagged outcome. It does not make the two paths equivalent, and a causal interpretation still requires the stated input intervention and exogeneity assumptions.
+Here the sum is the difference in the fitted outcome at each sufficiently late date. In the temporary example the same number came from adding responses across dates. The equality follows from the finite distributed-lag model we specified, without a lagged outcome. Explain which input path you are using before interpreting the sum.
 
 Permanent-input responses: \(0.20,0.30,0.25,0.25,\ldots\)
 

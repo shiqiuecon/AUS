@@ -30,9 +30,11 @@ Unequal variance does not by itself invalidate the OLS coefficient under exogene
 
 The same OLS weights can propagate different observation variances.
 
-Recall the OLS slope error as a weighted sum of errors. Given the regressors and zero error correlation across observations, its variance is a sum of each squared weight times that observation's error variance. When those variances differ, districts that get large slope weights can make especially large contributions to uncertainty.
+Recall the weighted sum that gives the staffing slope error. The weights are fixed when we condition on the regressors. If errors across districts are uncorrelated, its variance is a sum. Square each weight, multiply it by that district's error variance, then add. A district with both a large weight and a large error variance can contribute a lot.
 
-The basic heteroskedasticity robust estimator replaces each unknown error variance with the squared fitted residual. H C means heteroskedasticity consistent, and this version is H C zero. Stata’s usual robust option applies the H C one adjustment, multiplying by n divided by n minus p. The approximation needs appropriate independent sampling and finite regressor-error moments, with no small set of observations dominating the fit. For a slope with controls, the weights use the regressor remainder after the same controls have been removed.
+The basic heteroskedasticity robust estimator replaces each unknown variance by the squared fitted residual. H C means heteroskedasticity consistent. This first version is H C zero.
+
+Stata’s usual robust option uses H C one. Multiply H C zero by n divided by n minus p, counting the intercept in p. The fitted line stays the same, so the two calculations use the same residuals. The approximation needs independent sampling and suitable finite moments. We will use a different covariance method when observations share shocks.
 
 With slope weights \(w_i\), \(\operatorname{Var}(\widehat\beta_1\mid\mathcal X)=\sum_i w_i^2\sigma_i^2\).
 
@@ -58,9 +60,11 @@ Gold: average squared residual within each of five language-share ranges.
 
 The null is constant conditional error variance, given the chosen mean model.
 
-The Breusch–Pagan test asks whether error variance changes with specified explanatory variables. Here we use staffing and language share. An auxiliary regression is a supporting regression: we regress the squared OLS residuals on an intercept and those two variables. Its R squared measures how much of their observed variation this equation explains.
+Start with the question about spread. The null of constant variance says that the population errors have the same conditional variance at different staffing ratios and language shares.
 
-The version selected by Stata's iid option multiplies that R squared by the sample size. Assuming a correctly specified mean, independent observations and finite variances for the quantities used in this calculation, the large-sample null approximation compares the statistic with a chi-squared distribution with two degrees of freedom. It relaxes the original test's normal-error assumption. The actual statistic is 29.50, with a p-value below 0.001. This is evidence against constant variance under this specification; it is not a test of whether staffing is exogenous.
+Use the fitted residuals as information about the errors. Square them, then regress those squares on staffing and language share with an intercept. This is an auxiliary, or supporting, regression. Its R squared tells us how much of the variation in squared residuals those inputs explain.
+
+With the I I D option, Stata multiplies that R squared by the sample size. Under the constant-variance null, a correct mean model and suitable independent sampling and moment conditions, compare the result with a chi-squared distribution with two degrees of freedom. The actual statistic is 29.50 and the p-value is below 0.001. That is evidence of unequal spread in this model. The test addresses variance, so it cannot tell us whether staffing is a credible causal comparison.
 
 \(H_0:\operatorname{Var}(u_i\mid X_i)=\sigma^2\): constant variance; \(X_i\) denotes the included regressors.
 
@@ -114,9 +118,11 @@ Prob > chi2 = 0.0000
 
 Give less weight to observations with greater conditional error variance.
 
-Robust OLS changes the uncertainty calculation while keeping the fitted line. Weighted least squares, abbreviated WLS, instead changes the fitting objective. Let w for observation i be a positive weight. The method minimises the sum of w times each squared residual. If a correctly specified linear mean has independent errors whose conditional variances are known up to a common scale, inverse-variance weights can improve precision.
+With robust OLS we keep the fitted line and revise its uncertainty. Weighted least squares, or WLS, changes the line itself. Give each district a positive weight. Multiply its squared residual by that weight before adding the loss. Districts with larger weights contribute more to the fitting objective.
 
-Consider a district average. Under a particular model of independent pupil noise, its error variance is proportional to one divided by enrolment. That model suggests enrolment weights. It is a hypothesis, because pupils can share district-level shocks. Multiplying the outcome, every regressor and the constant column by the square root of enrolment gives the same weighted fit. Transform the constant too; an ordinary untransformed intercept would define a different equation.
+If error variances are known up to a common scale, inverse-variance weights can improve precision under a correct mean model and independent errors. A district average might have a variance proportional to one over enrolment if pupil errors are independent with the same variance. That suggests weighting by enrolment. Pupils in a district can also share shocks, so explain why the model is plausible before using those weights.
+
+To see the weighted calculation as ordinary least squares, multiply each row by the square root of its weight. Transform the outcome, every regressor and the column of ones. Keeping a new, unweighted intercept would change the model you fit.
 
 WLS minimises \(\sum_i w_i(y_i-a-b_1STR_i-b_2EL_i)^2\).
 
@@ -184,9 +190,11 @@ Use the covariance from the fitted model for joint inference.
 
 A noisy regressor is not just a noisier outcome.
 
-Start a separate experiment. The true outcome relation is Y equal to an intercept plus beta times true X plus u. We observe W equal to X plus measurement noise M. Assume the true outcome error has mean zero at each true X. M is independent of X and u, has mean zero, and true X has positive variance. Substituting X equal to W minus M into the outcome equation leaves beta times W plus the new error u minus beta times M.
+Let X be the true input and W the measured input. The measurement adds a noise term M, so W equals X plus M. Suppose the outcome error u has mean zero at each true X, and M has mean zero and is independent of both X and u.
 
-W contains M, so W is related to that new error even when true X was exogenous. With these classical measurement-error assumptions, the coefficient limit is beta times the variance of true X divided by the sum of the true-X and noise variances. This ratio is the reliability ratio. Equal variances give one half, explaining attenuation toward zero in this simple one-regressor case. More complicated measurement errors need not produce the same direction of bias.
+In the outcome equation, replace true X by measured W minus M. The new error contains minus beta times M. The measured input W also contains M. They now share a term, so the zero conditional-mean argument for the true input does not carry over to the measured one.
+
+In this simple one-regressor model, the limiting slope is beta multiplied by the reliability ratio. The numerator is the variance of true X. The denominator adds the variance of the noise. If those two variances are equal, the slope moves halfway toward zero. This is attenuation. When errors in measurement are related to X or to the outcome error, the bias can go in a different direction.
 
 \(W=X+M,\quad Y=a+\beta W+(u-\beta M)\)
 
@@ -216,21 +224,21 @@ The actual Stata estimate is 0.518, close to the predicted limit of 0.5 in this 
 
 Complete-case analysis needs a selection argument.
 
-A complete-case regression uses only records with all required variables observed. This is a rule for forming a sample, not a guarantee that the remaining observations represent the intended population. If income is more often missing in certain districts, the complete-data comparison may differ systematically from the original one.
+Suppose a study observes staffing and scores only for districts that submit complete records. S marks whether the record is observed. In this first diagram, the selection arrow starts at an included input X. It could be that larger districts report more consistently. The unobserved error U is independent of X in this proposed model.
 
-Describe who is missing and why. Refit comparisons on a common sample when evaluating model changes, and separately investigate selection. Merely increasing the size of the observed group does not recover the missing group. The useful response follows the recording mechanism and target question, rather than treating missingness as a nuisance to suppress.
+Trace a path from X to U after selecting observed records. The selection rule uses X alone, so conditioning on S does not open a route between them in this graph. With a correct conditional mean and enough variation in the observed inputs, the conditional slope can still be valid.
 
-Here S indicates whether the record is observed. Selection depends only on included X, while the disturbance U is independent of X under the proposed graph. Conditioning on S does not open a path from X to U. With an appropriate conditional-mean model and adequate support, this kind of selection need not bias the conditional slope, although it can change the represented population and precision.
+The sample can still contain a different mix of districts. Record who was lost and how the range of inputs changed. If the question concerns all districts, explain how your observed comparisons represent the ones that are missing. On the next slide, selection depends on the outcome and the causal argument changes.
 
 ### 13. A missing-data assumption should be stated in context
 
 Explain what makes the analysed cases informative.
 
-One relatively favourable situation is that, conditional on variables used in the analysis, being observed is unrelated to the remaining outcome error. Even that claim needs a reason based on the data process. A database can be large and still exclude precisely the records whose outcomes differ in ways the model does not capture.
+In this diagram, recording depends on the outcome. Look at the path from input X to error U. Both arrows point into Y, so Y is a collider on that path. S, the indicator that a record is observed, is a consequence of Y.
 
-For a policy study, report counts before and after restrictions and compare observable characteristics where possible. Consider whether the conclusion concerns all eligible units or only those with complete records. A transparent narrower claim can be more useful than an unjustified claim about an entire population.
+Select observed cases. Conditioning on S can open the path through Y, even though you did not put Y itself on the right-hand side of the regression. Among the recorded cases, the input may now predict part of the error. That threatens the zero conditional-mean condition.
 
-Now selection depends on the outcome. X and disturbance U both enter Y, making Y a collider on their connecting path. Conditioning on its descendant S can open that path. The target highlighted here is the X–disturbance association, because it matters for the selected-sample mean assumption. Outcome-based selection can therefore invalidate a regression that would have been valid before selection.
+Compare this with the previous slide, where selection depended only on X. In your own work, report which records are absent and what could explain it. A claim about the observed sample and a claim about all eligible units need different evidence.
 
 ### 14. Selection on observed inputs needs a conditional-mean argument
 

@@ -40,9 +40,11 @@ Removing controls only from Y is not the same calculation. The raw X still conta
 
 The residual plot uses actual score points and staffing units.
 
-Use the first district in the exported data. Its observed score is 690.80 and its staffing ratio is 17.89. The regression on language share, income and an intercept predicts a score of 672.92. Subtracting gives a score remainder rY of about 17.88 points. A separate regression of staffing on those same controls predicts a ratio of 19.06; subtracting gives rX of about -1.17 students per teacher. These displayed values are rounded; the stored calculations retain full precision.
+Follow the first district. Its score is 690.80. A regression using language share, income and an intercept predicts 672.92. Observed minus predicted gives a score remainder of about 17.88 points.
 
-That district appears on the residual plot at horizontal coordinate -1.17 and vertical coordinate 17.88. It has fewer students per teacher and a higher score than its controls predict. Zero on either residual axis means equal to the control-based prediction, not a zero score or no teachers. We now fit the relationship between the two remainders, using all districts.
+Now use a different regression with staffing as the outcome and the same controls. The actual ratio is 17.89 students per teacher. The predicted ratio is 19.06. Observed minus predicted gives about minus 1.17 students per teacher.
+
+Find the point on the plot. The staffing remainder is the horizontal coordinate and the score remainder is the vertical coordinate. This district has fewer students per teacher and a higher score than predicted by the controls. Zero on either axis means the observation matches its prediction. The fitted line through the remainders uses this comparison across all districts.
 
 Actual first district: \(rY\approx690.80-672.92=17.88\) score points.
 
@@ -160,9 +162,11 @@ Residual degrees of freedom: \(n-p\), with \(p=k+1\) including the intercept.
 
 It is not the standard deviation of the outcome.
 
-A standard error estimates how much a coefficient estimate would vary across repeated samples under the maintained model. For the adjusted staffing slope, the heteroskedasticity-robust standard error is about 0.433 score points per student per teacher. Heteroskedasticity means that the conditional error variance differs across regressor values. This robust calculation permits that unequal spread under appropriate independent-sampling and large-sample conditions; we will derive it in the variance lesson. It is in the same units as the coefficient. It is not the typical prediction error for a district.
+Imagine sampling comparable districts again and refitting the staffing slope. The estimate would change across samples. A standard error estimates the spread of those slope estimates. It has the same units as the slope, score points per student per teacher. In the regression with language share, the reported robust standard error is about 0.433.
 
-To turn this spread into an interval or test, we also need a reference distribution: the distribution that a standardized estimation error approximately follows under the assumptions. A normal reference is bell shaped, centered at zero and scaled to standard deviation one. About 95 percent of its probability lies between minus 1.96 and plus 1.96. This explains where the familiar multiplier comes from; it is not a guarantee for every dataset or every error structure.
+Here robust refers to a calculation that allows different error spreads for districts with different regressor values, under suitable independent sampling and large-sample conditions. We call this unequal spread heteroskedasticity. We will study the calculation in the variance lesson.
+
+For a test or an interval, we also need a reference distribution. This describes the standardized estimation error under stated assumptions. In the standard normal reference, about 95 percent of the distribution lies between minus 1.96 and plus 1.96. That is where the familiar interval multiplier comes from.
 
 SE: estimated repeated-sample standard deviation of the coefficient.
 
@@ -296,11 +300,9 @@ Then state the remaining assumption: the adjusted staffing variation must not be
 
 Reproduce the evidence, then explain its economic meaning.
 
-Run the partialling-out code and compare the full-model staffing coefficient with the coefficient from regressing rY on rX. Then describe what one point on the residual plot measures. Both subtractions must use language share, income and an intercept on the same districts.
+Open the workshop instructions below. First estimate the full staffing model with language share and income. Predict score from the controls alone and subtract. Predict staffing from those same controls and subtract again. Regress the score remainder on the staffing remainder. Compare the slopes using the same districts.
 
-The full log also prints standard errors. Treat them as estimates of repeated-sample spread, which the next meeting develops. The FWL exercise establishes an algebraic identity for the coefficient, not permission to use any manual regression's uncertainty calculation for the full model. Record the matching coefficients and state why residualisation does not remove an unobserved common cause.
-
-Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+Now repeat the whole calculation with log income. Change the control in both supporting regressions and in the full model. For each version, use the full model for the reported standard error. The FWL identity tells us the slopes agree. Your explanation should say what one residual-plot point represents and which unobserved cause could still affect the staffing comparison.
 
 **Practice:** Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Keep your commands, log, output and interpretation.
 
@@ -354,9 +356,11 @@ No. The zero residual sum is a normal-equation identity imposed by least squares
 
 Define dimensions and operations before using the compact estimator.
 
-Stack the n observed scores into a column vector y, meaning a vertical list of numbers. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
+Stack the n observed scores in a vertical list called the outcome vector y. Give each district one row of X. The first column is all ones for the intercept. The other columns are the regressors. If there are k regressors, X has p equal to k plus one columns, and the coefficient vector beta has p entries. The prime symbol turns rows into columns, or columns into rows. This operation is called the transpose.
 
-Full column rank means no column is an exact linear combination of the others. It makes X prime X invertible: its inverse undoes multiplication by that square matrix. The displayed estimator solves the same OLS normal equations as the scalar formulas. Matrix notation keeps the bookkeeping compact; it introduces no additional causal assumption.
+Matrix multiplication forms the product sums in the normal equations. Multiplying the residual list by X prime makes one sum for each regressor and for the intercept. At the OLS fit every one of those sums is zero.
+
+The displayed estimator solves these equations when the columns of X are linearly independent. This means none is an exact combination of the others. We call this full column rank. Under this condition X prime X is invertible. Its inverse undoes multiplication by X prime X. The compact formula computes the same coefficients we found by using the sums.
 
 \(y=X\beta+u\); \(X:n\times p\), \(\beta:p\times1\), \(p=k+1\).
 

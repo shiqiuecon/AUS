@@ -32,9 +32,9 @@ Before calculating a test, state the exact target.
 
 The evidence is evaluated under a specific claim.
 
-A null hypothesis is a specific claim to evaluate, such as a staffing slope of zero. The alternative here is that the slope differs from zero in either direction. Write the null before examining whether the estimate looks surprising. Subtract the proposed value from the estimate, then divide by its standard error. This t statistic measures the gap in estimated standard-error units.
+A null hypothesis is a precise claim about the population. Here it says the staffing slope is zero. The alternative says it differs from zero, either above or below. To measure the distance from the null, subtract zero from the estimate and divide by its standard error. The result is the t statistic. With a slope near minus 1.101 and a standard error near 0.433, the statistic is about minus 2.54.
 
-Under the null and the maintained inference assumptions, compare that statistic with its reference distribution. The two-sided p-value is the probability of a statistic at least as far from zero in either direction as the one observed. It is not the probability that the null is true. With the robust slope near minus 1.101 and SE near 0.433, the statistic for zero is about minus 2.54. Its interpretation depends on the reference approximation and sampling assumptions.
+Imagine repeating the study under the null and the assumptions that justify the test. For this two-sided test, the p-value is the reference probability of a statistic at least 2.54 units away from zero in either direction. We use it to judge how unusual the data would be under that claim. The calculation assumes the null in order to measure that probability.
 
 \(H_0:\beta_1=0\), \(H_1:\beta_1\ne0\)
 
@@ -72,9 +72,9 @@ Interval: \(\widehat\beta_j\pm cSE_j\).
 
 Combine the estimate with a stated reference rule.
 
-A confidence interval is produced by a procedure designed to cover the target coefficient at a stated rate across repeated comparable samples. With a suitable large-sample normal approximation, a 95% interval is the estimate plus or minus 1.96 SEs. The procedure, not the fixed unknown coefficient, is what has the repeated-sample coverage property.
+Start at the estimate, 0.30 in this constructed example. The standard error is 0.12. If the large-sample normal approximation is appropriate, multiply 0.12 by 1.96. The resulting margin is 0.2352. Subtract it from 0.30 to get 0.0648, then add it to get 0.5352.
 
-For an illustrative estimate of 0.30 with SE 0.12, the margin is 0.2352 and the interval is [0.0648, 0.5352]. These are teaching numbers. The interval describes uncertainty under its assumptions; it does not account for every possible source of bias in the empirical design.
+Think of drawing another comparable sample. Its estimate and its standard error can change, so its interval can change too. A 95 percent confidence procedure aims to produce intervals that cover the same fixed population coefficient about 95 percent of the time. Read the endpoints as magnitudes to discuss under the stated model and uncertainty calculation. If the comparison is biased, changing the interval width does not correct that comparison.
 
 \(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
 
@@ -96,9 +96,9 @@ Choose the direction before inspecting the estimate.
 
 A zero null is not the only relevant question.
 
-Suppose one score point per additional student per teacher is an important benchmark. The null is now that the staffing slope equals minus one, not zero. The estimate's distance from minus one is much smaller than its distance from zero.
+Suppose a one-point change in score per additional student per teacher is a useful policy benchmark. Now test a slope of minus one. The estimate is much closer to minus one than it is to zero.
 
-Use Stata's test command to evaluate that stated restriction. A coefficient can differ detectably from zero while remaining quite compatible with another meaningful benchmark. Explaining this comparison helps a decision-maker understand the range of plausible magnitudes rather than interpret a rejection as proof of one exact effect.
+Read the restriction at the top of the Stata output. The test uses the distance from minus one and the uncertainty in the fitted slope. An estimate can give strong evidence against zero while remaining compatible with this benchmark. Report the proposed value alongside the result so the reader knows what question the test answers.
 
 ```text
 . test str=-1
@@ -215,9 +215,9 @@ Example: \(F=\dfrac{(110-100)/2}{100/(100-5)}=4.75\)
 
 Reproduce the evidence, then explain its economic meaning.
 
-Open schools.csv and run lab_01.do from the Stata bundle. Check the number of districts and the units of score and str. Compare the fitted score change when the ratio falls from 22 to 20 before and after including English-learner share. Write two sentences for a ministry reader: one reporting the magnitudes, and one explaining what comparison would still be needed for a causal claim.
+Open the school data and the full task below. Start with the two models in the lab. For each one, use a staffing change from twenty-two to twenty students per teacher and report the predicted score difference. State which variables are held fixed.
 
-Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+Add district income to the model with language share. Use the fitted slope to calculate the same two-student contrast with its robust standard error. In your ministry statement, report the magnitude in score points. Then name a difference between districts that could still affect a causal comparison.
 
 **Practice:** Add district income to the model already controlling for language share. Recalculate the fitted gain for a two-student reduction, with its robust SE. Keep your commands, log, output and interpretation.
 
@@ -323,9 +323,9 @@ Illustrative rate: \(\operatorname{SE}\propto n^{-1/2}\)
 
 The search changes what an isolated test can mean.
 
-If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search. Even under no relationship, enough attempts can produce apparently unusual results.
+Suppose you try several control sets and report only the one that gives a p-value below five percent. Even if every test is calculated correctly on its own, the reported result was selected from several chances to find an unusually large statistic.
 
-Keep a clear account of the main question and intended specification. Treat additional analyses as exploration and explain their role. This is especially useful in an applied master's project, where learning from data is legitimate but a final report should distinguish a planned test from a pattern noticed after many trials. Transparent reasoning is more informative than a table selected solely for stars.
+Start with the question and a reason for the main specification. If you explore other reasonable models, report what you changed and how the estimates and intervals moved. When you need a formal claim after many tests, use a testing plan that accounts for that search. This lets the reader distinguish a planned comparison from a result discovered while exploring.
 
 If an analyst tries many outcomes, control sets and sample restrictions and reports only the most significant result, the reported p-value does not describe the whole search.
 

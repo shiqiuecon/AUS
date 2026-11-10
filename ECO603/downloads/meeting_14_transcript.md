@@ -64,9 +64,11 @@ Time-invariant regressors also disappear from a differenced equation. This is us
 
 Adjacent differences share one error with opposite signs.
 
-Suppose the level errors for one panel unit are independent over time with common variance sigma squared. The differenced error at t is u t minus u t minus one. Its variance is two sigma squared. The next adjacent difference shares one level error with the opposite sign, so their covariance is minus sigma squared and their correlation is minus one half.
+For one state, suppose the error in each year is independent and has variance sigma squared. This year's difference subtracts last year's error from this year's error. Its variance is two sigma squared because the two variances add.
 
-This calculation does not make the differenced regressor exogenous; that needs its own moment condition. It does show why treating repeated differences from one unit as independent can give an incorrect covariance estimate. A cluster is a group whose errors may be related; here all dates for one panel unit form a cluster. Unit-clustered inference permits within-unit dependence under its own sampling and many-independent-cluster conditions. Independent-data robust standard errors alone do not generally handle those shared errors.
+Compare with last year's difference. Last year's level error enters that difference positively and this year's difference negatively. It is the only term they share, so their covariance is minus sigma squared. Dividing by their common variance gives correlation minus one half.
+
+A cluster is a group of observations whose errors may be related. Here the differences from one state form a cluster. The uncertainty calculation can allow dependence within states, under the relevant conditions across states and with enough informative clusters. Whether the differenced regressor is exogenous requires its own assumption.
 
 \(\Delta u_{it}=u_{it}-u_{i,t-1}\); if level errors are independent with variance \(\sigma^2\), \(\operatorname{Var}(\Delta u_{it})=2\sigma^2\).
 
@@ -201,11 +203,11 @@ A causal diagram does not establish parallel untreated trends.
 
 It is not a requirement that the groups begin at the same level.
 
-Use the four labels from the original diagram. A is the eligible group's employment rate before expansion, 40 percent, and B its later observed rate, 48 percent. C and D are the comparison group's rates, 60 and 63 percent. These are constructed teaching values. Different initial levels do not by themselves rule out parallel trends.
+Read the four rates in this constructed example. A is the eligible group's rate before expansion, 40 percent, and B its later observed rate, 48 percent. C and D are the comparison group's rates, 60 and 63 percent. The eligible group's observed increase is eight percentage points. The comparison group's increase is three.
 
-The average treatment effect on the treated, abbreviated ATT, is the average difference between the eligible group's post-expansion employment outcome and its outcome without the specified expansion. Here treated means exposure of the predefined eligible group to the expansion; it does not mean that every eligible mother enrolled a child. Parallel untreated trends means the two groups would have the same average outcome change without the expansion. Under that assumption, the eligible group's no-expansion increase would equal the comparison group's three-percentage-point increase.
+The missing quantity is the eligible group's later rate without expansion. Parallel untreated trends says that without expansion the two groups would have had the same average change. It allows them to start at different levels. Use the comparison group's three-point increase for the eligible group. The assumed eligible post rate without expansion is 43 percent. It appears on the dashed line.
 
-The assumed eligible post rate is therefore 43 percent. Its observed rate is 48, giving a five-percentage-point contrast. The dashed line represents a missing untreated outcome under that assumption. We do not observe it after expansion. Changing the control lets us examine an alternative assumed untreated change; it does not reveal that missing outcome.
+Compare the observed 48 with that assumed 43. The five-point difference estimates the average effect for the eligible group under the design assumptions. Here the treatment is exposure to expanded preschool access, which can affect eligible mothers even if some do not use a preschool place. The slider changes the assumed missing path. It helps you see how the estimate depends on that assumption.
 
 Observed DiD: \((Y_B-Y_A)-(Y_D-Y_C)=(48-40)-(63-60)=5\) percentage points.
 
@@ -259,9 +261,11 @@ Here the change in Y(0) means the change without expansion.
 
 The original two-location idea separates changing opportunities from policy effects.
 
-Consider two illustrative locations, A and B. Within location A the comparison group's employment rises two percentage points and the eligible group's rises three, giving a one-point DiD. Within location B the changes are six and nine, giving a three-point DiD. These are constructed values under a within-location parallel-trends model.
+First compare mothers within location A. Employment rises three percentage points for the eligible group and two for the comparison group. Subtract to get a one-point difference in differences. Within location B, the two increases are nine and six. Subtract to get three points.
 
-Now suppose 75 percent of eligible mothers live in A, while only 25 percent of comparison mothers do. The groups put different weights on locations with different untreated changes. Their unadjusted overall changes are 4.5 and five percentage points, giving minus 0.5. The negative overall DiD can coexist with positive within-location contrasts. A group average can mix the policy response with the distribution of changing local opportunities.
+Now suppose 75 percent of the eligible group lives in A, while 25 percent of the comparison group lives there. The two groups' overall changes use different location weights. The eligible change is 4.5 points. The comparison change is five points. Subtracting those overall changes gives minus 0.5 points, even though both within-location contrasts are positive.
+
+What changed? We mixed places with different untreated trends in different proportions. If the untreated trends assumption is credible within location, make the comparison there first. On the next slide, we use the eligible group's weights to combine the local contrasts.
 
 Location A: group changes 3 and 2; within-location DiD 1 percentage point.
 
@@ -287,9 +291,11 @@ Example: \(0.75(1)+0.25(3)=1.5\) percentage points.
 
 Decide whether the model represents untreated changes and effect heterogeneity.
 
-Adding a baseline covariate to an outcome-level regression is not a general solution to conditional parallel trends. In a balanced two-period panel, a time-invariant term gamma times W disappears when we difference the same person's equation. It therefore cannot describe how untreated changes vary with W.
+Think of W as income measured before expansion. Suppose you put gamma times W in the employment equation for both dates. It contributes the same amount before and after for the same person. When you subtract the two equations, it disappears. The level term cannot describe how the untreated change varies with income.
 
-A model of the change as a function of W, or suitable interactions between W and the post indicator, can represent that variation under its functional-form assumptions. A single common policy interaction can also impose a constant conditional effect where effects actually vary. If we allow heterogeneous effects, we must still average for the intended treated population. The question is which comparison and restrictions the equation represents, not simply whether a covariate appears somewhere in the command.
+To allow that variation, model the outcome change as a function of baseline income. In a levels regression, an interaction of baseline income with the post indicator can play the same role under the corresponding specification. Choose a form that represents the untreated trends you think are plausible.
+
+If the policy effect also differs with income, allow that difference and average the conditional effects for the treated population. Check both parts of the equation: which trends it allows and which effect differences it allows.
 
 Time-invariant levels: \(\Delta(\gamma W_i)=0\).
 
@@ -479,9 +485,11 @@ Relevance: \(\pi_1\ne0\)
 
 A strong first stage does not establish either condition.
 
-Instrument exogeneity rules out a relationship between the instrument and the omitted structural demand determinants under the model. Tax differences linked to unobserved smoking attitudes would threaten it. Exclusion says that an intervention changing the instrument reaches quantity only through the specified price channel. For example, a tax-linked information campaign could add a direct demand channel and violate exclusion.
+Follow the intended route. A tax changes price, and price changes cigarette sales. To use the tax as an instrument, we need two distinct reasons for trusting that variation.
 
-These restrictions do different jobs. In the DAG, the intended directed route runs from tax to price to quantity. A direct tax-to-quantity arrow violates exclusion; a common cause of tax and omitted demand threatens exogeneity. Together with relevance and an appropriate structural equation, the assumptions can justify the IV moment condition, zero covariance between Z and the structural error u. A strong first-stage relationship verifies neither substantive restriction.
+First, consider why taxes differ. If states with stronger unobserved anti-smoking attitudes choose different taxes, the tax can be related to omitted demand causes. That threatens instrument exogeneity. Next, ask how a change in the tax affects sales. If it triggers an information campaign that affects sales directly, part of the effect bypasses price. That violates exclusion.
+
+In the simple structural equation, the valid instrument has zero covariance with the error. The diagram helps you explain why that restriction could be credible or could fail. A strong first stage tells us the tax predicts price in this sample. The common-cause and direct-channel questions need separate evidence.
 
 Exogeneity: no instrument relationship with omitted structural demand causes.
 
@@ -493,9 +501,11 @@ Required IV moment: \(\operatorname{Cov}(Z,u)=0\)
 
 Compare how the instrument moves the outcome and the regressor.
 
-Start with the constant-slope structural equation Y equal to alpha plus beta times X plus u. The first stage describes how X changes with Z. The reduced form is the relationship of Y directly to Z, using the same controls and observations. If the instrument changes X by pi one units per Z unit and has no other outcome channel, its outcome relationship is beta times pi one.
+Start with the first stage. It describes how the input X, here log price, changes with the tax Z. Its slope is pi one. The reduced form relates the outcome Y, log quantity, directly to Z.
 
-Thus the reduced-form slope rho equals beta times the first-stage slope pi one under the IV assumptions. Divide to recover beta when pi one is nonzero. In a sample, the simple IV estimate with one excluded instrument for one endogenous regressor, called just identified, is the ratio of the two estimated slopes after matching their controls and sample. The units cancel: outcome per tax unit divided by log-price per tax unit becomes outcome per log-price unit. For log quantity and log price, that coefficient is an elasticity.
+Suppose price has a constant structural slope beta and the tax affects quantity only through price. Also suppose the tax is uncorrelated with the structural error. Then a one-unit difference in tax shifts log price by pi one and shifts log quantity by beta times pi one. The reduced-form slope rho equals that product.
+
+Divide the reduced-form slope by the first-stage slope to recover beta when the first stage is nonzero. In the sample, estimate both slopes using the same controls and observations. One excluded instrument for one endogenous regressor is called just identified. The tax units cancel in the ratio. We obtain log quantity per unit of log price, an elasticity.
 
 First stage: \(X=\pi_0+\pi_1Z+v\)
 
@@ -567,9 +577,11 @@ The reduced form is informative about the policy–outcome relation, but interpr
 
 Use the instrument-predicted part of price, with a dedicated IV variance calculation.
 
-Let C denote the included exogenous controls, and gamma their coefficients. If there are several controls, gamma times C stands for their coefficient-weighted sum. In the first stage, predict each state's log price from the tax instrument and all included exogenous controls. The fitted price is the part explained by those columns. Two-stage least squares, abbreviated 2SLS, then uses that fitted-price variation and the controls to obtain the structural coefficient. With one excluded instrument and one endogenous regressor, it gives the same coefficient as the reduced-form ratio.
+Use C for the included exogenous controls. Gamma times C stands for the sum of those controls multiplied by their coefficients. In the first stage, regress log price on the tax and those controls. Save the fitted log price. Then regress log quantity on the fitted price and the same controls. That explains the coefficient from two-stage least squares.
 
-The uncertainty calculation must use the structural residual: actual Y minus the intercept, controls and beta times actual X. An ordinary second-stage regression instead forms residuals using fitted X. These are different residuals, so its usual OLS standard errors are not the proper IV standard errors. Use a dedicated IV estimator with a covariance option justified for the sampling and error structure. The two stages explain the coefficient; they do not license the naive variance formula.
+Now consider its uncertainty. In the structural equation, subtract the fitted intercept, control terms and estimated slope times actual price from the observed outcome. That gives the structural residual. The manual second-stage regression uses fitted price in its residual instead. Its ordinary OLS standard error uses the wrong calculation for the structural coefficient.
+
+Use the dedicated IV command with the covariance option appropriate for the sample. The two stages help you reproduce the estimate and see where it comes from. Use the structural model to report its uncertainty.
 
 \(C\): included exogenous controls; \(\gamma C\): their coefficient-weighted sum.
 
@@ -711,9 +723,11 @@ Strength and validity are different requirements.
 
 Protecting inference from a weak first stage does not validate the instrument.
 
-An ordinary IV interval can be unreliable when the instrument barely shifts the endogenous regressor. A weak-instrument-robust test is designed to remain valid for its coefficient null without assuming that first-stage relevance is strong, while retaining the other identification and sampling requirements.
+Suppose we want to test a price elasticity of minus one. Under that null, subtract minus one times log price from log quantity. That means adding log price to log quantity. If the proposed elasticity and the instrument restrictions hold, the tax coefficient in the adjusted-outcome regression should be zero after including the controls.
 
-The Anderson–Rubin idea can be seen by proposing a price elasticity of minus one. Under that null, move minus one times log price out of the quantity equation. A valid excluded instrument should not predict the remaining adjusted outcome after the included controls. Our model has one excluded instrument for one endogenous regressor; this is called just identified. Stata performs the appropriate test. Its p-value is about 0.691, so this test does not reject an elasticity of minus one. This is not evidence that exclusion holds or that the null is true. Weak-robust inference and instrument validity address different questions.
+Test that restriction in the adjusted-outcome regression. This is the Anderson–Rubin idea. It tests a specified coefficient without relying on a strong first stage. It still requires valid instrument restrictions and an appropriate uncertainty calculation for the sample.
+
+Find the Anderson–Rubin result in the Stata output. Its p-value is about 0.691 for the proposed elasticity. The test does not reject minus one. This answers the stated coefficient question under the assumptions. Evidence about exclusion and exogeneity comes from the research design.
 
 For a proposed \(\beta_0=-1\), consider \(\log Q-\beta_0\log P=\log Q+\log P\).
 
@@ -875,9 +889,11 @@ The untreated eligible post mean is assumed, not observed.
 
 Two chances for model correctness retain the design assumptions.
 
-Doubly robust DiD combines a model of the comparison group's untreated change with a model of group membership. The first predicts the change among untreated units given prior characteristics. The second gives a propensity score: the probability of belonging to the treated group given those characteristics. Both help construct the treated group's missing untreated comparison.
+To construct the missing untreated change for eligible mothers, use two models. The first predicts the comparison group's change from prior characteristics W. The second estimates the propensity score, the probability of belonging to the eligible group at those same characteristics. The propensity score helps give comparison observations weights that match the eligible population.
 
-Under conditional parallel trends, appropriate timing, overlap and the additional sampling and model-fitting conditions needed for a large-sample approximation, a doubly robust estimate can remain consistent if either supporting model is correctly specified. It does not remain valid when both are wrong or when the design assumptions fail. In the Stata example, a linear model describes untreated changes. The membership model uses a logistic curve, a smooth S-shaped function that keeps probabilities between zero and one. Flexible machine learning can fit more complex relationships, but valid effect inference requires a suitable procedure; prediction cross-validation alone does not supply it. This is the qualified connection to the earlier ridge/lasso section.
+In the Stata example, the change model is linear. The group-membership model uses a logistic curve, a smooth S-shaped function that keeps probabilities between zero and one.
+
+Under conditional parallel trends, overlap and the other design and sampling conditions, the estimate can be consistent if either supporting model is correct. That is the meaning of doubly robust. We still need a credible untreated change within W and comparable units in both groups. More flexible models for prediction can be useful, with an inference procedure suited to how they were fitted.
 
 Outcome model: \(m_0(W)=E[\Delta Y\mid G=0,W]\).
 

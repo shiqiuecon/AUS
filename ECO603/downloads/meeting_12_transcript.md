@@ -8,11 +8,9 @@ Distinguish residual dependence from a missing part of the mean equation.
 
 Monthly observations may share information; uncertainty calculations must account for it.
 
-Imagine evaluating a traffic-safety law using monthly accident records. A month is one observation in this dataset. We observe total reported accidents in California from January 1981 through December 1989, giving 108 observations. We also observe unemployment, calendar information and whether two traffic laws were in force. Our outcome is total accidents, not fatal accidents or the risk faced by one driver.
+Return to California's 108 monthly accident counts. Suppose road conditions or enforcement stay unusual for several months. After we account for the recorded variables, the errors in adjacent months may still move together. We call correlation between errors at different dates serial correlation.
 
-Earlier, we used a regression model, an equation relating an outcome to explanatory variables, to estimate a relationship. We also used a standard error, or SE, to describe how much an estimated coefficient would vary across comparable datasets. Inference means using such estimates and their uncertainty to learn about a population relationship. Today we ask whether that uncertainty calculation needs to change when one month carries information about the next.
-
-For example, bad road conditions or a change in enforcement may last several months. Those months can share influences that our recorded variables do not fully capture. They are then dependent: knowing something about one month helps us anticipate another. If we count them as independent observations, which would provide unrelated information, we may misjudge how much we have learned. Model errors are the part of the outcome outside the included relationship. When those errors are correlated across dates, we call it serial correlation. We will trace this problem through the graphs, then compare three SE calculations for the same regression.
+A standard error estimates how much the coefficient would move across comparable samples. Treating each month as independent can give a misleading answer if months share shocks. In this lesson, keep the accident equation in view. We will plot its residuals, check their timing and decide whether to revise the mean equation or the uncertainty calculation. The next lesson compares three standard errors for the same fit.
 
 **Practice:** Name a factor that might affect accidents for several consecutive months but is not fully measured in the dataset.
 
@@ -60,13 +58,11 @@ Move the control while keeping the same innovation draws. The graph is a simulat
 
 Related errors do not, by themselves, tell us whether the coefficient is valid.
 
-The simulation shows how errors can be related over time. Before choosing a response, separate three questions. Are the regressors suitably unrelated to the error? Does the model account for the predictable parts of the outcome? Does the SE calculation allow for the dependence that remains? These concern the comparison, the model and uncertainty, respectively.
+Read the three questions in order. First ask about the comparison. Does the policy variable move with an unobserved cause of accidents? That is a threat to exogeneity, the required restriction between the regressors and the error. Strict exogeneity asks for a mean-zero error at each date given the regressor values at all observed dates, including future ones.
 
-Exogeneity is the assumption that the regressors have the required lack of relation with the error. A common stronger version is strict exogeneity: the error at a date averages to zero given the regressors at all dates, including future ones. For example, a policy change made in response to unrecorded accident risk would make the policy variable related to the error and threaten this assumption. Endogeneity names this problem of a regressor being related to the error.
+Second ask about the mean model. Can earlier information still help predict accidents after we use the included variables? If so, investigate the missing part of the equation. Adding a justified lag can change the estimated comparison.
 
-Serial correlation alone does not establish endogeneity. With an appropriate linear model and strict exogeneity, OLS, ordinary least squares, can remain unbiased even if errors are serially correlated. Unbiased means its average estimate across repeated datasets equals the population coefficient. Consistency is a different property: as the number of observations grows, the estimator approaches that coefficient. Serial dependence can be compatible with consistency when the needed stability, dependence and regressor conditions hold. We must therefore diagnose coefficient validity separately from how we calculate its SE. The next slide shows exactly where dependence enters the uncertainty calculation.
-
-The two disturbance nodes carry persistence from one month to the next. Their arrows can create dependent outcomes even though the input nodes have no unblocked common-cause route to the corresponding disturbances in this assumed model. HAC estimates uncertainty allowing suitable remaining dependence; it does not remove the persistence arrows or add exogeneity when a different graph would violate it.
+Third ask about uncertainty. Follow the arrows between disturbances in the diagram. Even when the regressors satisfy strict exogeneity, the errors can be related across months. Under the stated mean and rank conditions, OLS can still be unbiased. Its usual variance formula may miss the cross-month terms. The next slide shows these terms in a simple average before we return to regression.
 
 Exogeneity: required lack of relation between regressors and error
 
@@ -78,11 +74,11 @@ SE calculation: how much uncertainty remains?
 
 Related errors add covariance terms to the variance calculation.
 
-Recall that an SE estimates the spread of a coefficient across comparable datasets. Variance is another measure of spread: the average squared distance from a variable's mean. Its square root is the standard deviation. Covariance measures how two variables move together around their means. A positive covariance means they tend to be above their means together or below their means together. These ideas let us see what dependence adds to uncertainty.
+Start with the average of n errors. To get its variance, first add the individual error variances. Then add twice the covariance for each pair of different dates. The condition s less than t counts each pair once. Finally divide by n squared, because the average divides the sum by n.
 
-Start with the average of n errors, written mean u. The formula adds their individual variances and twice the covariances between different dates, then divides by n². The symbol \(\sum\) means 'add'; \(\sum\)ₛ<ₜ adds each pair of dates once. For two errors each with variance one and covariance zero, the average has variance (1+1)/4=0.5. If their covariance is 0.5, its variance becomes (1+1+2×0.5)/4=0.75. Averaging has removed less uncertainty because the errors move together.
+A variance measures how much one error varies around its mean. A covariance measures how two errors move together around their means. Take two errors with variance one each. With zero covariance, the variance of their average is two divided by four, or 0.5. With covariance 0.5, add twice 0.5 to the numerator. The variance becomes three divided by four, or 0.75.
 
-An OLS coefficient also combines errors, with weights determined by the regressors. Its variance therefore depends on related cross-date terms, not just the variance of each error separately. Conventional SEs rely on a restrictive error structure. Heteroskedasticity-robust SEs allow unequal error variance, called heteroskedasticity, but generally leave out serial covariance terms. The average example explains why another adjustment may be needed; it is not the full formula for a regression SE.
+A regression coefficient also combines errors, using weights determined by its regressors. The example shows why cross-date covariance matters in that weighted calculation. An unequal-variance adjustment handles different individual variances. We need another calculation to allow for cross-date terms.
 
 \(\operatorname{Var}(\overline u)=\dfrac{\sum_t\operatorname{Var}(u_t)+2\sum_{s<t}\operatorname{Cov}(u_s,u_t)}{n^2}\)
 
@@ -108,11 +104,11 @@ Both regressor weights and cross-date error covariance affect precision.
 
 Dynamic completeness concerns whether the model uses the relevant past information.
 
-Suppose an unrecorded change in travel demand lasts for several months. If information from earlier months helps predict its effect on today's accidents, our model may be leaving out a predictable part of the outcome. Dynamic completeness means that, after the included variables are taken into account, additional relevant past information does not improve the prediction of the conditional mean. 'Dynamic' refers to how the relationship develops over time.
+Suppose the residuals stay positive for several months. Ask what could have raised accidents for that long and which earlier observations might help explain it. For example, earlier travel conditions might predict current accidents even after controlling for current unemployment and the calendar. That would challenge dynamic completeness for the information we could have used.
 
-For example, yesterday's or last month's travel conditions may help explain today's outcome even after current unemployment and seasonality are included. Adding a justified lag can then change the fitted relationship and reduce the residual pattern. It can also reduce the sample, because the earliest observations may lack the required past values. We should explain which past information matters and why, rather than add variables only until a test gives a preferred answer.
+If the timing and the economic story support a lag, fit the revised equation and compare residuals on a common sample. The first dates can drop out when a lag is added. Record that change so you can separate a new equation from a new sample.
 
-There are now two separate tasks. One is to model predictable changes in accidents; the other is to estimate uncertainty when unexplained parts remain related. Improving the first task may help the second, but a residual pattern alone does not tell us which variable belongs in the causal comparison. The next slide compares adding lags with two methods that treat the error dependence in different ways.
+Adding information to the mean and estimating uncertainty for the remaining dependence address different parts of the model. The residual plot gives evidence about what to investigate. Use the policy question to decide whether the revised comparison still answers it.
 
 Dynamic completeness: additional relevant past information does not improve the model's conditional mean
 
@@ -150,9 +146,11 @@ Define the model and testing assumptions before turning a descriptive statistic 
 
 State the residual lags and the joint null.
 
-The Breusch–Godfrey test, abbreviated BG, regresses fitted residuals on the original regression inputs and q selected lagged residuals. Its null sets all q lag coefficients to zero. Including the original regressors matters because the fitted residuals came from an estimated equation, not from directly observed population errors.
+Fit the accident equation and save its residuals. The Breusch–Godfrey test, or B G, uses a supporting regression. Predict the current residual from the original regressors and q lags of the residual. Keep the original regressors because the residuals came from that estimated model. In the displayed equation, the X term stands for the sum of those original regressor terms.
 
-A familiar LM version uses the auxiliary sample size times its R squared and an asymptotic chi-squared reference with q degrees of freedom under the required conditions. LM abbreviates Lagrange multiplier: it assesses a restriction using information under the null. Treatment of initial residual lags and the covariance assumptions belong to the implementation. A conventional BG test is not automatically robust to every variance process. Report the tested lag orders and investigate the economic meaning of a rejection.
+The null says all q residual-lag coefficients are zero. In the conventional L M version, multiply the supporting regression's R squared by its sample size. Under the stated reference conditions, compare the result with chi squared with q degrees of freedom.
+
+When reporting the test, say which lag orders you used and how the software handles the initial dates. A rejection suggests that the specified residual lags still carry information. Decide whether that evidence points to a change in the mean, a dependence-aware covariance estimate, or further investigation.
 
 \(\widehat u_t=X_t\prime\gamma+\sum_{j=1}^q\rho_j\widehat u_{t-j}+v_t\).
 
@@ -272,11 +270,11 @@ This gives us a practical sequence. Check the comparison and the mean model befo
 
 Define the economic shock and time horizon before interpreting a future response.
 
-The same reasoning applies to a new question: does an unexpected increase in production costs affect inflation a year later? Inflation is the rate at which the general price level rises. A supply shock is an unexpected change in production costs or capacity. For example, a sudden disruption to oil supply can increase production costs across many industries. These definitions tell us what the economic question concerns before we write a regression.
+Consider an unexpected rise in production costs, such as a disruption to oil supply. Ask how it relates to inflation one year later. Inflation is the rate at which the general price level rises. In quarterly data, a year is four observation periods, so the horizon is four.
 
-Suppose the data are quarterly. A forecast horizon h is the number of observation periods ahead, so h=4 means four quarters, or one year. A local projection fits a separate regression of a future outcome on the current measured shock and stated controls for each horizon. Here it would relate inflation four quarters ahead to the current shock and relevant information. A coefficient has a causal shock-response interpretation only if the shock measurement and comparison support that claim; calling a change a shock does not establish its exogeneity.
+A local projection fits a separate regression for each horizon. For horizon four, use inflation four quarters later as the outcome and today's measured cost shock as a regressor. State which information you hold fixed. Whether the slope describes a causal response depends on how the shock is measured and what else affects future inflation.
 
-Errors in neighboring future-outcome regressions can share unanticipated developments over the overlapping periods. HAC inference can therefore be useful even when the mean model has sensible lag controls. A window of 12 in these quarterly data reaches three years, unlike the four-month window in today's accident example. We will develop these horizon regressions next meeting. The connection is that the meaning of dependence, the data frequency and the coefficient target must all be clear before choosing an SE method.
+Neighbouring starting dates can share some future shocks in their errors. That is why we may use a covariance estimate that accounts for dependence. A H A C lag of twelve here reaches twelve quarters, or three years. In monthly data the same number would mean one year. Report both the frequency and the lag choice.
 
 Inflation: rate of increase in the general price level
 

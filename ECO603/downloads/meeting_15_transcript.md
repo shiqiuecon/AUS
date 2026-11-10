@@ -30,9 +30,9 @@ Logistic examples: \(z=-2,0,2\Rightarrow p\approx0.119,0.500,0.881\)
 
 Increasing S-shaped functions convert the index into a probability.
 
-A cumulative distribution function gives the probability that a reference random variable is at or below a stated value. The logistic cumulative function is written capital Lambda and has the displayed exponential formula. Applying it to the index defines logit. The standard-normal cumulative function is written capital Phi; it is the area under the normal bell curve to the left of the index. Applying it defines probit.
+A cumulative distribution function gives the probability that a reference variable is at or below a given value. Logit uses the logistic function, written capital Lambda. Plug the index z into the displayed formula to get a probability. Probit uses capital Phi. Find z on a standard normal curve and take the area to its left.
 
-Both functions give one half at an index of zero and approach zero or one toward the tails. Their shapes and coefficient scales differ. At an index of one, the logistic probability is about 0.731 and the normal cumulative probability about 0.841. A fitted coefficient is therefore an index coefficient. To compare models in an economically meaningful way, translate them to predicted probabilities or probability changes at the same covariate values.
+Both models give a probability of one half when the index is zero. At an index of one, logit gives about 0.731 and probit about 0.841. The same index can produce different probabilities. When you compare fitted models, use the same applicant inputs, then compare the resulting probabilities. The coefficients describe the index on its own scale.
 
 Logit: \(p(X)=\Lambda(z)=1/(1+e^{-z})\)
 
@@ -44,9 +44,11 @@ Probit: \(p(X)=\Phi(z)\), area under a standard-normal curve left of \(z\)
 
 Translate it before discussing probabilities.
 
-Odds compare the probability of an event with the probability of its nonoccurrence: p divided by one minus p. A probability of 0.20 has odds 0.25, or one denial for four non-denials. Doubling those odds gives 0.50, which corresponds to probability one third, not 0.40. Probability and odds are different scales.
+Start at a denial probability of 0.20. Its odds are the probability of denial divided by the probability of no denial. Divide 0.20 by 0.80 to get 0.25, or one to four.
 
-In logit, the log of the odds equals the linear index. A one-unit X increase adds b to log odds and multiplies the odds by exp of b. For b equal to 0.5, a starting probability of 0.20 becomes about 0.292; a starting probability of 0.50 becomes about 0.622. The same coefficient therefore produces different probability changes. Report the starting values and a prediction contrast when discussing a finite change.
+Logit says the log of those odds equals the index. A one-unit increase in X adds b to the log odds. On the odds scale, that multiplies the starting odds by the exponential of b. To convert odds back to a probability, divide the odds by one plus the odds.
+
+Use b equal to 0.5. At a starting probability of 0.20, the new probability is about 0.292. At a starting probability of 0.50, it is about 0.622. The same change in log odds produces different changes in probability. State the starting and ending input values when you report a fitted comparison.
 
 Odds: \(p/(1-p)\); log odds: \(\log\{p/(1-p)\}=a+bX\)
 
@@ -100,9 +102,9 @@ Given the observed inputs, assume the applications are independent. The capital 
 
 Their coefficients are not directly comparable magnitudes.
 
-The probit payment-burden coefficient is 2.968; the logit coefficient is 5.884. These numbers describe different index scales. It would be incorrect to conclude that the logit probability effect is about twice the probit effect simply because its coefficient is larger.
+Find the payment-burden coefficient in each fit. It is 2.968 in probit and 5.884 in logit. These numbers multiply the input in different indexes. The functions then turn the indexes into probabilities at different rates.
 
-Compare fitted probabilities for the same ratio values or calculate marginal effects on the probability scale. The observed curves can be quite similar over a relevant range even when index coefficients differ substantially. Use a common sample and stated prediction scenario so the comparison concerns the models rather than different applicants.
+To compare the fits, hold the input values and sample fixed. Predict denial probabilities at the same payment burdens under both models. If you want a change, subtract the two probabilities within each model first. The next slide reports predictions at stated input values so we can compare on one scale.
 
 ```text
 . probit deny pir, vce(robust)
@@ -193,9 +195,11 @@ dy/dx wrt:  pir
 
 A nonlinear transformation does not commute with averaging.
 
-Call applicant i's fitted index z i. Let G be the response function that turns the index into a probability, and g its slope. If a continuous predictor enters the index linearly with coefficient b j and no interaction, its probability slope at this applicant's inputs is g at z i times b j. The average partial effect, or A P E, averages these slopes over the observed applicants. We also call it the average marginal effect.
+Call applicant i's fitted index z i. G turns that index into a probability and g gives the slope of that curve. If a continuous input enters linearly with coefficient b j and no interaction, its local probability slope is g at the applicant's index times b j.
 
-The partial effect at the average, or P E A, evaluates one slope. First average each input across applicants, then form the index from those average inputs and evaluate g there. The example with two different applicant indexes shows why the order matters in a nonlinear model. For an indicator, compare fitted probabilities at zero and one with the other inputs held at the stated values, then average these differences if that is your target.
+The average partial effect calculates that slope for each applicant and then averages the slopes. It is also called the average marginal effect. The partial effect at the average reverses the order. Average each input first. Use those average inputs to form one index and evaluate the slope there. The curve is nonlinear, so the two calculations can give different values.
+
+For an indicator, compute the difference between the two fitted probabilities at one and at zero with the other inputs fixed. Then average those differences if the question concerns the average contrast for the observed applicants.
 
 \(z_i\): fitted index for applicant \(i\); \(g\): slope of the response function.
 
@@ -263,11 +267,9 @@ Add squared payment burden to the probit index. Recalculate the 0.30-to-0.40 fit
 
 A reproducible result needs both a calculation and an interpretation.
 
-The fitted probit probabilities are 0.096153 at 0.30 and 0.156968 at 0.40. Their difference is 6.0815 percentage points. Both inputs are fractions, so the proposed change is ten percentage points of payment burden.
+Read the fitted probability at each stated payment burden. At 0.30, the first probit gives about 0.0962. At 0.40 it gives about 0.1570. Subtract, then multiply by one hundred. The probability rises by about 6.08 percentage points for a ten-percentage-point increase in payment burden. We used the full predictions before rounding.
 
-The probit coefficient multiplies the linear index. The probability change also depends on the nonlinear cumulative-normal function and the starting index, so a coefficient-times-change shortcut does not give the finite probability contrast. These predictions use the stated one-regressor historical sample model. Without a credible account of borrower selection and other omitted lending determinants, report a descriptive prediction contrast rather than a causal response to changing an applicant's burden.
-
-The quadratic-index probit gives a 5.978643-percentage-point difference on 2,380 applications, compared with 6.0815 points in the original linear-index probit. The new fitted contrast is descriptive; curvature does not remove borrower-selection or omitted-variable problems.
+Use the same two input values in the quadratic-index probit. Its fitted probability contrast is about 5.98 percentage points. Both models use the same 2,380 applications. Changing the fitted curve changes the prediction slightly. To interpret either contrast as the effect of changing a borrower's burden, we would need evidence about borrower selection and other determinants of lending.
 
 Original linear-index probit contrast: 6.0815 percentage points.
 
@@ -327,9 +329,11 @@ Positive rescaling of the whole latent equation leaves the binary decision uncha
 
 The observed outcome selects which probability enters each contribution.
 
-Let p i of beta be the model probability of denial for applicant i. A Bernoulli distribution describes one zero-or-one outcome with probability p i of one. Its probability contribution is p i raised to Y i times one minus p i raised to one minus Y i. An observed denial contributes p i; an approval contributes one minus p i. Under conditional independence, multiply these contributions across applicants.
+Let p i of beta be the probability of denial for applicant i. The response function applies the index built from the applicant's inputs and the coefficient list beta. The outcome is either one for denial or zero for approval. This is a Bernoulli outcome.
 
-Taking logs turns the product into the displayed sum. Maximum likelihood chooses beta to maximise it. A gradient is the vector of derivatives of this objective with respect to the coefficients; numerical optimisation uses such local information. Existence, identification, suitable sampling, correct probability specification and enough smoothness and information near the true coefficients are needed for the familiar consistency and large-sample normal approximation. The fitting criterion itself does not establish a causal effect.
+The exponents select the observed event. With Y equal to one, the first term remains and the other term is raised to zero, so this applicant contributes p i. With Y equal to zero, the contribution is one minus p i. Under conditional independence, multiply the contributions across applicants.
+
+Taking logs turns that product into a sum. The log increases with the product, so either criterion selects the same coefficients. An optimisation routine can use the gradient, the list of slopes of the objective with respect to the coefficients, to find a maximum. The familiar large-sample inference needs a correctly specified probability model, suitable sampling and enough information about the coefficients near the target.
 
 \(p_i(\beta)=G(x_i\prime\beta)\), \(Y_i\in\{0,1\}\).
 

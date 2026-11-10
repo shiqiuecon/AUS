@@ -22,9 +22,9 @@ Fit: \(\widehat Y_i=\widehat\beta_0+\widehat\beta_1X_i\); residual: \(e_i=Y_i-\w
 
 The error is an unobserved population remainder; the residual follows an estimated line.
 
-Write the population relationship as Y equals beta zero plus beta one times X plus u. A parameter is a fixed numerical feature of the population model; the betas are its unknown intercept and slope. If the conditional mean of u given X is zero, the population conditional mean of Y at X equal to x is beta zero plus beta one times x. A conditional mean is an average over units sharing the stated X value.
+Start with the population equation. Beta zero and beta one are the unknown intercept and slope. These fixed features of the population model are called parameters. The error u is the part of a district's score left after its population line is subtracted. If this error averages to zero among districts with the same staffing ratio, that line gives the average score at each ratio. An average at a stated ratio is a conditional mean.
 
-The sample line uses estimated coefficients b zero and b one. Its fitted value for district i is b zero plus b one times its staffing ratio. The residual is observed score minus that fitted value. A residual is calculated from this sample, whereas the population error depends on the unknown coefficients. The sample line approximates a population comparison; causal meaning still requires the earlier identification argument.
+Now look at the fitted sample line. It uses b zero and b one, the coefficients estimated from the districts we observed. For district i, plug its ratio into that fitted line. Subtract the fitted score from the observed score to get its residual. We can calculate the residual from the data. Calculating the population error would require the unknown population coefficients.
 
 Population: \(Y=\beta_0+\beta_1X+u\), with \(E[u\mid X]=0\).
 
@@ -68,11 +68,11 @@ Fitted change: \(b_1\Delta X\approx+4.56\) score points
 
 OLS chooses the line with the smallest sum of squared residuals.
 
-We have used a fitted line, but many different lines could pass through the graph. Ordinary least squares, abbreviated OLS, chooses the line with the smallest sum of squared residuals. Recall that a residual is the vertical difference between an observed score and the line's fitted score. Squaring makes each contribution nonnegative, so an overprediction cannot cancel an underprediction.
+Move the slope control to try a flat line and a steep downward line. Watch the number labelled SSE. It is the sum of squared errors, where errors here are fitted residuals. For each of the 420 districts, subtract the fitted score from the observed score, square that difference, then add the squares.
 
-The sum of squared residuals is the loss we are trying to minimise. The graph calls it SSE, for sum of squared errors; here those 'errors' mean the calculated residuals. A larger miss receives more weight because it is squared. For example, a residual of four points contributes 16 to the loss, while a residual of two contributes four.
+Why square the differences? A residual of four points contributes sixteen, and a residual of minus two contributes four. Both misses add to the loss, and the larger miss adds more.
 
-Move the slope control to compare candidate lines. Each line passes through the sample mean point: the average ratio and average score. The displayed loss uses all 420 districts. Try a flat line, then a steep downward line, and find where the loss is smallest. This exercise shows how OLS chooses its coefficients. Next we will follow one district's residual to see exactly what enters that calculation.
+Every candidate line in this graph passes through the point for the average ratio and average score. For each slope that is the intercept that gives the smallest loss. Ordinary least squares, or OLS, chooses the intercept and slope with the lowest overall loss. Next we will track one district's contribution.
 
 ### 06. Follow one residual
 
@@ -88,11 +88,11 @@ Now choose another district and repeat the steps. The same rule applies to every
 
 Compare each variable with its average, then combine the deviations.
 
-To combine the observations, first compare each variable with its sample average. Write \(\overline X\) for the average ratio and \(\overline Y\) for the average score; the bar means 'sample average'. The expression \(X_i\)−\(\overline X\) is a deviation from the mean: how far district i's ratio lies above or below the average. Define the score deviation in the same way.
+Start with the numerator. For each district, subtract the average ratio from its ratio and the average score from its score. A bar over a variable denotes its sample average. Multiply the two deviations to get a cross-product. Add those cross-products across districts. The sum symbol tells us to add. A district with a ratio above average and a score below average contributes a negative product.
 
-The slope formula adds the cross-products (\(X_i\)−\(\overline X\))(\(Y_i\)−\(\overline Y\)) and divides by the sum of squared ratio deviations. A cross-product here is simply the product of the two deviations. A district above the average ratio but below the average score contributes a negative product. If such combinations dominate, the fitted slope is negative. The symbol \(\sum\) means to add across all districts.
+The denominator adds the squared ratio deviations. It is positive when districts differ in staffing. Without variation in the ratio we cannot fit a separate slope. Divide the first sum by the second to get the slope. If negative products dominate, the fitted line slopes down.
 
-The denominator measures the variation available in X. If every district had the same ratio, it would be zero: we would have no comparison from which to estimate a slope. When it is positive, the ratio of these two sums gives \(b_1\). Then \(b_0\)=\(\overline Y\)−\(b_1\)\(\overline X\) chooses the intercept so the line passes through the sample mean point. The next small example lets us check these steps without using software.
+Now get the intercept. Start at the average score and subtract the slope times the average ratio. This puts the line through the point for the two sample averages. We will see why this calculation minimises squared residuals on the next slide.
 
 \(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
 
@@ -132,9 +132,11 @@ Insert each ratio into this fitted equation and subtract its fitted score from t
 
 An average restriction need not hold at every regressor value.
 
-Variance is the expected squared distance from a variable's mean; it measures spread in squared units. Covariance measures average co-movement: the expected product of two variables after subtracting their means. When both standard deviations are positive and finite, correlation divides covariance by their product. It is a unit-free measure of linear co-movement, between minus one and one. If the error has mean zero conditional on X, averaging X times that conditional mean gives a zero covariance between X and u, provided the relevant expectations exist. This is a population moment restriction, meaning an equality involving an average of random variables.
+Variance measures spread. It is the average squared distance from a variable's mean. Covariance measures average co-movement. Subtract the two variables' means, multiply their deviations, and take the population average. Correlation divides this covariance by the two standard deviations when both are positive and finite. Its scale runs from minus one to one.
 
-The converse need not hold. In a constructed example, X takes minus one, zero and one with equal probability, and u equals X squared minus two thirds. Its mean is zero and its covariance with X is zero, but its conditional mean is one third at the two extremes and minus two thirds at zero. Linear co-movement vanishes while the conditional pattern remains. In this regression discussion, exogeneity refers to the stated restriction connecting regressors and the population error, such as zero conditional mean. Neither zero sample residual covariance nor zero population covariance alone establishes that restriction or proves a causal model.
+Suppose the population error has mean zero at every X. At a fixed X, multiplying that average error by X still gives zero. Averaging X times that conditional mean gives zero overall. The error also has mean zero overall, so the covariance between X and u is zero.
+
+The converse need not hold. In the example, X is minus one, zero or one, each equally likely. The error is one third at both ends and minus two thirds in the middle. The products at the two ends cancel and the middle contributes zero. The covariance is zero even though the average error changes with X. Exogeneity names a stated restriction on the relationship between a regressor and the population error. Check the restriction your argument actually needs.
 
 \(\operatorname{Cov}(X,u)=E[(X-EX)(u-Eu)]\).
 
@@ -241,7 +243,9 @@ State the assumptions and units alongside the calculation.
 
 Follow the calculation and interpret its units.
 
-OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
+After fitting score on staffing with an intercept, check the sum of fitted residuals and the sum of staffing times the residual. Both are close to zero at machine precision. They follow from the way the line was fitted.
+
+Next use each district to compute a squared deviation of score from its average and a squared residual from the line. Add each set separately. One minus the residual sum divided by the total sum gives about 0.0512 for R squared, matching Stata. Use the same districts for both sums. These calculations verify the fit. Whether staffing is related to the unobserved population error calls for a separate argument about the districts.
 
 OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
 

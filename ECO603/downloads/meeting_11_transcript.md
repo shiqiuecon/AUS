@@ -30,9 +30,11 @@ One innovation with \(\rho=0.6\): \(1,0.6,0.36,0.216,\ldots\)
 
 Specify which definition is being used.
 
-Covariance stationarity means that a series has a constant finite mean and variance, and covariance between two dates depends on their separation rather than on which calendar dates they are. Observations can still fluctuate and be related across time. The rho-equals-one accumulation just traced fails this definition when its variance grows with the date.
+A series can fluctuate from month to month and still have stable statistical features. Under covariance stationarity, its mean and finite variance stay the same over time. The covariance of two dates depends on their distance apart. For example, the covariance of January and February is the same as the covariance of June and July.
 
-For an AR(1) with independent mean-zero, finite-variance innovations and absolute rho below one, a stationary regime exists: old innovations receive progressively smaller weights. Exact stationarity also requires an initial distribution consistent with that regime; an arbitrary starting value can create an initial adjustment period. Strict stationarity is a different definition requiring every joint distribution, the probabilities for a collection of dates, to be unchanged when all those dates shift together. With finite second moments it implies covariance stationarity, but the converse need not hold. Our main calculations use the covariance definition.
+In the autoregression, when the absolute value of rho is below one, the effects of older shocks get smaller. With independent mean-zero shocks of constant finite variance, a stationary regime exists. To start in that regime, the initial value must have the appropriate distribution. Starting from a fixed arbitrary value can give an adjustment period.
+
+The next slide distinguishes this condition from strict stationarity, which concerns the full joint distribution. We use covariance stationarity for the calculations in this lesson.
 
 Covariance stationary: stable finite mean/variance and lag-dependent covariance.
 
@@ -58,9 +60,11 @@ Stationarity and sufficient weak-dependence conditions are distinct.
 
 An MA(1) observation shares one innovation with its neighbour.
 
-Let e subscript t denote independent shocks with mean zero and variance sigma squared. A moving-average process of order one, abbreviated MA one, adds the current shock to theta times the previous shock. Theta is a fixed coefficient. The process variance is one plus theta squared, multiplied by sigma squared. Consecutive observations share the previous shock, so their covariance is theta times sigma squared.
+A moving average process of order one uses two shocks at each date. Add today's shock to theta times yesterday's shock. This is called M A one. Assume the shocks are independent with mean zero and variance sigma squared.
 
-Observations separated by at least two dates use disjoint independent shocks in this example. Take theta equal to one half and give each shock variance one. The process variance is then 1.25. The covariance of neighbours is one half. Dividing that covariance by 1.25 gives their correlation, 0.4. Rho of h denotes this lag-h correlation, rather than the single carry-over coefficient rho in the earlier autoregression. This is a concrete finite-memory example with the needed moments; correlation decay alone is not a general proof of every large-sample theorem.
+The process variance is one plus theta squared, multiplied by sigma squared. That is gamma of zero. Gamma of h is the covariance of observations h dates apart. Today and tomorrow share today's shock. Its weight is one today and theta tomorrow, so gamma of one is theta times sigma squared. At gaps of two or more dates, there is no shared shock and the covariance is zero.
+
+Take theta equal to one half and set the shock variance to one. The series has variance 1.25 and covariance 0.5 at a gap of one. Divide 0.5 by 1.25 to get a lag-one correlation of 0.4. Rho of h denotes correlation at a stated gap here. The earlier autoregression used rho for the coefficient on the previous outcome.
 
 \(Y_t=e_t+\theta e_{t-1}\), with iid mean-zero shocks of variance \(\sigma^2\).
 
@@ -72,9 +76,11 @@ At \(\theta=0.5,\sigma^2=1\): \(\rho(1)=0.5/1.25=0.4\).
 
 A random walk accumulates innovations.
 
-With rho equal to one and no intercept, the autoregression becomes a random walk: today's value is yesterday's value plus a new innovation. Starting at zero, it equals the sum of all innovations so far. A one-unit innovation is never automatically reversed by the model, so its effect on the level remains one at later dates. This persistence is called a unit root in the AR(1) case.
+Set the autoregressive coefficient to one and the intercept to zero. Each date's level is the previous level plus a new shock. This is a random walk. The coefficient of one is the unit root in this model.
 
-If independent innovations have variance sigma squared, the variance of the level after t dates is t times sigma squared. It grows with the calendar rather than remaining stable. The first difference, today's level minus yesterday's, is just the innovation in this simple model. Differencing can remove this particular accumulation, but it also changes the economic target from levels to changes.
+Start at zero and add one to today's shock while holding the other shocks fixed. Today's level rises by one. Tomorrow starts from that higher level, so the difference remains one. Starting from zero, the level at date t is the sum of t shocks. If the shocks are independent with variance sigma squared, the level variance is t times sigma squared. That growing spread violates covariance stationarity.
+
+Subtract the previous level from the current one. The first difference equals the new shock in this model. Differencing removes the accumulated level here and changes what we study from a level to a change.
 
 Random walk: \(Y_t=Y_{t-1}+\varepsilon_t\)
 
@@ -160,9 +166,11 @@ Stationarity alone does not guarantee that time averages behave like independent
 
 Past information should not predict the remaining mean error.
 
-A mean specification is dynamically complete relative to an information set if relevant earlier information cannot improve its conditional-mean prediction. This does not mean that every series must include every possible lag. It asks whether the history left out of the equation still predicts the outcome after the included variables have been used.
+Imagine that you have used the included variables to predict the average accident count for a month. Would earlier travel or enforcement data improve that prediction? A model is dynamically complete relative to a stated set of information when the remaining history in that set adds no mean prediction. The condition depends on which information is available.
 
-For accidents, earlier travel conditions or enforcement changes could carry information beyond current controls. A lagged outcome may summarize some of that history, but adding it changes the equation and can create a regressor–error relationship if the remaining error is persistent. We therefore state the timing and mean assumptions before reading its coefficient. A residual dependence test is evidence to investigate, not proof that one particular dynamic specification is correct.
+Adding the previous outcome might capture omitted history. It also changes the comparison we fit. If earlier shocks remain related to the current error, the lagged outcome may carry some of that relationship into the regressors. Check timing and the mean restriction before choosing the lag.
+
+A residual pattern can tell you where to investigate. The next slide states the conditional-mean restriction precisely so we can see what a residual diagnostic can address.
 
 Dynamic completeness: omitted history adds no conditional-mean prediction for the stated information set.
 

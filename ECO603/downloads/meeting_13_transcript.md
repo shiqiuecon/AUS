@@ -34,9 +34,9 @@ Variance estimate: \(\dfrac{\sum_t a_t^2+2\sum_{h=1}^L w_h\sum_{t=h+1}^T a_ta_{t
 
 ARCH describes volatility clustering, not necessarily directional error predictability.
 
-Autoregressive conditional heteroskedasticity, abbreviated ARCH, allows the conditional variance to depend on past squared errors. In an ARCH one model, the error can still have zero conditional mean while its conditional variance is alpha zero plus alpha one times the previous squared error. Positive alpha one makes large absolute shocks tend to follow large absolute shocks.
+A large error yesterday might tell us to expect a larger spread today. It may still tell us nothing about whether today's error will be positive or negative. In the displayed A R C H model, the mean given past information is zero. The variance depends on the previous squared error. A R C H stands for autoregressive conditional heteroskedasticity.
 
-A conventional ARCH LM diagnostic regresses squared fitted residuals on a constant and selected lags of squared residuals. For the one-lag version, the null is alpha one equal to zero: the previous squared error has no role in this variance equation. Its reference distribution needs the model and approximation conditions. The actual monthly traffic example reports a lag-one statistic of about 0.350 and p-value 0.554. This is a failure to reject that specified diagnostic null, not proof that all forms of changing variance are absent. Neither result settles exogeneity.
+To check that pattern, regress squared fitted residuals on an intercept and lagged squared residuals. With one lag, the null sets alpha one to zero. The actual statistic is about 0.350 and the p-value about 0.554. Under the reference conditions, the data do not give strong evidence for that particular variance pattern. Other forms of changing variance and other threats to the comparison require their own evidence.
 
 \(E[u_t\mid I_{t-1}]=0\), \(E[u_t^2\mid I_{t-1}]=\alpha_0+\alpha_1u_{t-1}^2\), \(\alpha_0>0,\alpha_1\ge0\).
 
@@ -59,11 +59,11 @@ LM test for autoregressive conditional heteroskedasticity (ARCH)
 
 Find the law coefficient and understand the labels before comparing SEs.
 
-Open the do-file, the saved list of commands for this lesson, and run the conventional regression block. First check that Stata has the correct monthly time variable. The command tsset tells Stata which variable orders the observations in time. A correct time variable is needed before using lags. The script checks the dates against the recorded years and calendar-month indicators.
+Check the date variable first. The command tsset tells Stata to use the monthly index. This matters when we later ask for lags. The outcome logacc is the log of total accidents. This regression also uses the trend, calendar months, the two law indicators, unemployment and the weekend count.
 
-The code calls log(\(A_t\)) logacc, the seat-belt indicator beltlaw, the speed-law indicator spdlaw, unemployment unem and the weekend count wkends. The coefficient table comes from the actual run. Find beltlaw: its coefficient is 0.09545, with a conventional SE of about 0.01424. Trend is the monthly time count. Rows 2 through 12 under month compare February through December with January, the omitted reference month. A reference category is the category represented by the intercept and other common terms rather than a separate indicator coefficient. The row _cons is the intercept.
+Find beltlaw in the output. Its coefficient is about 0.09545 and its conventional standard error is 0.01424. The constant is the intercept. Calendar-month coefficients compare each month to January. Their rows are in the full output download.
 
-For the coefficient tests, the null hypothesis is that the population coefficient is zero. A null hypothesis is the specific statement being tested. The t statistic, shown in the t column, divides the estimate's distance from that null by its SE. P>|t| is the two-sided p-value: under the null and test assumptions, the probability of a statistic at least as far from zero in either direction. The final columns give the confidence interval. We focus on the beltlaw row, then rerun the identical equation with robust SEs to see what changes.
+The t column compares a coefficient with zero in standard-error units. The p-value and confidence interval use the conventional uncertainty calculation. Keep the law coefficient and its standard error in view when we rerun the same equation with robust inference.
 
 ```text
 . regress logacc trend i.month unem spdlaw beltlaw wkends
@@ -112,11 +112,11 @@ In this dataset the robust SE is smaller, not larger. That fact alone does not s
 
 newey with lag(4) allows covariance contributions through four months.
 
-Run newey with the same outcome and regressors and with lag(4). In Stata, newey requests Newey–West SEs. The lag option is the four-month covariance window we examined in the graph; it does not insert four new predictors into the equation. All 108 months remain in this comparison.
+Run newey on the same 108 months with the same outcome and regressors. In the lag option, four means that the covariance calculation uses pairs of months up to four months apart. The mean equation has the same predictors.
 
-The law coefficient is still about 0.09545, but its SE is now about 0.01890. The do-file again checks that the coefficient agrees with the original OLS estimate. The change from 0.01237 under robust SEs to 0.01890 under HAC4 shows that allowing the selected cross-month terms matters for the estimated uncertainty here.
+Read the seat-belt law row. The coefficient remains about 0.09545. The Newey–West standard error is about 0.01890, compared with 0.01237 from the unequal-variance-only calculation. The estimated relationship stayed fixed while the estimated uncertainty changed.
 
-This is evidence about the comparison of SE calculations, not proof that four lags is the best window. A practical analysis should explain what might keep errors related across months and inspect plausible lag choices. Here the fixed window serves a teaching purpose: it lets us separate the unchanged fitted coefficient from a changed estimate of its uncertainty. Before using that coefficient in a policy report, we must also convert its log units carefully.
+Explain why you chose the window in your own analysis. Ask how long shocks can last and whether there are enough observations for the selected range. Here four lags make the comparison concrete. Next we translate the coefficient and its uncertainty into percent units.
 
 ```text
 . newey logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
@@ -139,9 +139,11 @@ This is evidence about the comparison of SE calculations, not proof that four la
 
 Use 100[exp(b)−1] for the exact contrast between exponentiated fitted values.
 
-From the log-model lesson, an indicator coefficient b gives a percentage contrast in exponentiated fitted outcomes of 100 times exp of b minus one. At b about 0.09545, this is about 10.02 percent. The coefficient is uncertain, so the transformed contrast is uncertain too.
+Start with the belt-law coefficient, about 0.09545 on the log scale. Take its exponential, subtract one, then multiply by one hundred. The fitted contrast is about 10.02 percent between the exponentiated fits.
 
-Near this coefficient, the transformation's local slope is 100 times exp of b, about 110.02. A small coefficient change of 0.01 therefore changes the contrast by about 1.10 percentage units. Multiplying this local slope by the HAC standard error, about 0.01890, gives a transformed standard error near 2.08 percentage units. This local propagation of uncertainty is the delta method. Stata's nlcom performs it using the fitted covariance. A z statistic divides the transformed estimate by its approximate standard error and uses a normal reference. As before, a contrast in arithmetic mean accidents requires the relevant retransformation factors to match or be modeled.
+The second line gives the local slope of that transformation. It is one hundred times the exponential of b, about 110.02 at our estimate. If b moves by 0.01 near this point, the percentage contrast moves by about 1.10 percentage units.
+
+Multiply the local slope by the Newey–West standard error of about 0.01890. The transformed standard error is about 2.08 percentage units. This is the delta method, a local approximation that passes uncertainty through a function. Stata's nlcom uses the fitted covariance to make this calculation. If you want a contrast between arithmetic mean accidents, also check the retransformation factors from the log-model lesson.
 
 \(g(b)=100\{\exp(b)-1\}\)
 
@@ -235,9 +237,11 @@ Known intervention response: \(0.8(0.6)^h\)
 
 Define the shock and horizon before the coefficient.
 
-A local projection estimates a separate regression for each future horizon. At horizon zero, regress current inflation on the current shock and the chosen earlier information. At horizon four, use inflation four quarters later as the outcome but keep the shock dated at the initial quarter. The shock coefficient then has inflation-units per unit of that initial shock.
+Fix a starting quarter t. At horizon zero, regress that quarter's inflation on its shock and on inflation from the previous quarter. At horizon four, change the outcome to inflation four quarters later. Keep the shock and previous inflation tied to the same starting quarter.
 
-In the displayed equation, h is the horizon, a subscript h is its intercept, b subscript h its shock coefficient and c subscript h the coefficient on earlier inflation. The error is also horizon specific: different future outcomes leave different unexplained components. Because the constructed shock is independent of the other innovations, this experiment lets us compare estimates with the known intervention response. In observed data, the shock and control choices require their own identification argument.
+Read b sub h in the equation. It is the fitted inflation difference h quarters ahead for one additional unit of the starting shock, holding the stated earlier information fixed. A sub h is the horizon's intercept and c sub h multiplies previous inflation. Each horizon has its own error because the outcome date changes.
+
+In this simulation the shock is independent of the other innovations, so we can compare the fitted response with the known one. With observed data, explain why the measured shock and chosen controls give a credible comparison.
 
 \(\pi_{t+h}=a_h+b_hs_t+c_h\pi_{t-1}+u^{(h)}_{t+h}\)
 
@@ -291,9 +295,11 @@ F4.inflation | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 
 A sensible mean model can still leave serial dependence.
 
-At a given horizon, two adjacent starting dates can use outcomes affected by some of the same future innovations. To see overlap simply, consider a two-period outcome sum whose unexplained component at starting date t is v at t plus one plus v at t plus two. The next starting date's error includes v at t plus two plus v at t plus three. Both contain the same middle innovation.
+Consider a two-period outcome sum. At starting date t, its error contains the shocks from t plus one and t plus two. Now move the starting date one period later. Its error contains the shocks from t plus two and t plus three.
 
-This is a constructed overlap illustration, not a claim that the inflation experiment has exactly that two-term error formula. It explains why independent underlying innovations can still produce related regression errors at a future horizon. The relevant dependence belongs to the error process for that horizon, so the covariance choice should reflect its timing and other maintained conditions. Overlap does not make every estimated response biased, but it matters for inference.
+Point to the shared term. Both contain the shock at t plus two. Even if all the underlying shocks are independent, these two errors move together because they contain the same shock. The example illustrates overlap. The exact error in the inflation regression depends on that regression and its horizon.
+
+When you choose the covariance calculation, ask which dates can share shocks at the horizon you are studying. This dependence concerns uncertainty about the response. Whether the response identifies a causal effect is a separate question about the shock and controls.
 
 Illustration: \(w_t=v_{t+1}+v_{t+2}\)
 

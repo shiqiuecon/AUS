@@ -72,9 +72,11 @@ Exogeneity for this mean model: \(E(u_i\mid X_i,Z_i)=0\)
 
 Multiply the omitted effect by the omitted-variable association.
 
-Let Z be English-learner share and X the staffing ratio. The longer score relationship has staffing slope beta one and language slope beta two. To describe how Z varies with X, write an auxiliary equation, meaning a supporting regression: Z equals delta zero plus delta one times X plus v. Delta zero is its intercept, delta one its slope, and v the remainder with mean zero at each X.
+Let X be the staffing ratio and Z the English-learner share. In the longer equation, beta one is the staffing slope and beta two the language-share slope. Write a supporting population equation for language share using staffing. This is the auxiliary regression. Call its intercept delta zero, its slope delta one and its remainder v. For this derivation, let that equation describe the mean of Z at each X.
 
-Substitute that expression for Z into the longer score equation. The constant terms combine, and the coefficient multiplying X becomes beta one plus beta two times delta one. The new error is beta two times v plus u. If the longer error u also has mean zero given X and Z, this composite error has mean zero given X. The short population regression therefore adds beta two times delta one to the longer staffing slope. Bias here means a difference from the target longer-model coefficient; that target is causal only under its stated causal assumptions.
+Substitute the supporting equation for Z in the longer score equation. Beta two multiplies every term in that equation. The terms on X now add to beta one plus beta two times delta one. The new error is beta two times v plus the original error u. The average of v at each X is zero. If u has mean zero given X and Z, its mean at each X is also zero. The new error therefore averages to zero at each X.
+
+The short slope includes the longer staffing slope and the extra product. Delta one tells us how language share moves with staffing. Beta two tells us how score moves with language share in the longer model. We need both signs to predict how omitting Z changes the slope.
 
 \(Z=\delta_0+\delta_1X+v\)
 
@@ -130,9 +132,9 @@ y1   -1.101296   -0.649777  686.032250
 
 An exact sample identity can be checked independently.
 
-In the sample, the language coefficient is -0.650 and the auxiliary slope is 1.814. Their product is about -1.179 score points per student per teacher. Adding that to the adjusted staffing slope reproduces the short slope, up to rounding.
+Read the two numbers used in the product. The longer score regression gives a language-share coefficient of minus 0.650. The supporting regression gives 1.814 as the slope of language share on staffing. Their product is about minus 1.179 score points per student per teacher.
 
-This equality is a least-squares identity when the short, long and auxiliary regressions use compatible variables and the same observations. It is a numerical check on our explanation. It is not evidence that English-learner share is the only omitted factor or that we have discovered a causal language effect. The identity tells us how these fitted regressions relate, while the research question determines which comparison we want.
+Add that product to the longer staffing slope of about minus 1.10. This recovers the shorter slope of about minus 2.28, with a small difference if you round the inputs. Use the same observations and the same variable definitions in all three fits. Then the equality follows from least squares. Whether the longer model gives a credible policy comparison depends on which common causes it accounts for.
 
 \(b_{1,\mathrm{short}}-b_{1,\mathrm{long}}=b_2\widehat\delta_1\)
 
@@ -164,11 +166,9 @@ Taking covariance of X with the longer equation gives beta one times variance of
 
 Adding Z changes the fitted comparison from about +4.56 to +2.20 score points.
 
-The staffing slope changes from about -2.28 in the simple regression to -1.10 after adding the English-learner share. The adjusted line is flatter. Moving from a ratio of 22 to 20 gives about 4.56 fitted score points on the first line and 2.20 points on the adjusted line. These two numbers describe different comparisons in the same data.
+Compare the two lines for a move from twenty-two to twenty students per teacher. The short line gives a fitted gain of about 4.56 score points. The longer line gives about 2.20 points when the English-learner share is held fixed. The data are the same. The second calculation holds one more characteristic fixed.
 
-Why might accounting for Z change the slope? If districts at different ratios also have different language composition, the first line combines both differences. The second model tries to separate their fitted relationships with scores. This is why we examined a possible confounder before adding a variable: the control should have a reason connected to the research question.
-
-The second number is not automatically the causal gain from hiring teachers. Family resources and staffing responses to students' needs could still affect the comparison. The useful conclusion at this stage is more specific: one measured district characteristic changes the estimated staffing relationship substantially. Write the two comparisons in words. After the break, we will run the commands and read the numerical evidence behind the graph.
+The shorter line mixes staffing differences with differences in language composition. Our calculation accounts for the change in the fitted slope when we add that measured characteristic. Districts can also differ in family resources and learning needs that affect hiring. To read either number as the gain from a hiring policy, we would need a comparison that addresses those other differences. Try saying each fitted comparison in one sentence before opening the Stata output.
 
 **Practice:** Report the two fitted score differences for 22 → 20 students per teacher. Explain why they need not be the same.
 
@@ -219,9 +219,11 @@ Explain why this number differs from the short-model contrast. The short fit als
 
 State what each variable is meant to address.
 
-Apply the school-control reasoning to a second setting: job training and earnings. The diagram's X is training, Y earnings, C prior education and U unmeasured motivation. Prior education can affect both participation and earnings, so holding it fixed can remove that common-cause route.
+Now consider a job-training program. X is training, Y is earnings, C is prior education and U is unmeasured motivation. Follow the backdoor paths from training to earnings. One runs through education, which can affect both program participation and earnings.
 
-Select education and trace the remaining route through motivation. It is still open because motivation affects both training and earnings. Acquired skills, by contrast, would occur after training and carry part of its effect. Before choosing controls, name the intervention, decide whether its total effect is wanted, and distinguish earlier common causes from later mechanisms. Moving to a new application changes the substantive story, while the path rules remain the same.
+Select education. Conditioning on C closes that route. The path through motivation stays open. Adding measured education can improve the comparison while leaving an important difference between participants and others.
+
+Skills learned during the program come later. They can be part of the reason training changes earnings. For a question about the total effect, leave this part of the mechanism in the comparison. Choose controls by tracing the causes and timing for the particular effect you want.
 
 New application: training → earnings.
 
@@ -435,9 +437,9 @@ A mediator or selection variable can improve prediction while changing or damagi
 
 Make the assumptions inspectable.
 
-For each proposed control, write a sentence about timing and a sentence about purpose. For prior income, explain why it might influence both staffing and scores. For current attendance, ask whether staffing could already have affected it. For a test-based funding rule, ask whether selection creates additional relationships.
+Start your control plan with one sentence about the policy and outcome. In the table, give each proposed variable a row. Say when it is measured and which path it could affect. A prior common cause can be a useful adjustment. A later mechanism can carry part of the total effect. A shared consequence can open a path when we condition on it.
 
-This exercise reveals disagreements about the economic model before they become disagreements about software. Two analysts may estimate the same equation while intending different effects. A clear control plan helps them discover that difference. It also makes the limitations of an observational study easier for a policymaker to assess.
+Add a row for an important cause that you cannot measure. Say what it could do to the comparison and how you might learn more about it. This table gives a reader the reasoning behind your specification before they see the coefficient estimates.
 
 For each proposed control, write a sentence about timing and a sentence about purpose.
 

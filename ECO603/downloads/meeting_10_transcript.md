@@ -32,9 +32,11 @@ Index points and percentage changes answer different questions.
 
 Deflation separates a monetary level from the price scale used to express it.
 
-Nominal income is the amount of money recorded at that date's prices. Real income expresses purchasing power using a common price scale. With a base-100 price index, divide nominal income by the index divided by 100. Deflation is the name for this conversion; it does not mean that the amount of money actually paid changes.
+Nominal income is the amount recorded in money. Real income expresses what it can buy on a chosen price scale. To convert to base-period prices, divide the recorded amount by the price index divided by one hundred. This conversion is called deflation.
 
-In the constructed example, income rises from 100 to 110 thousand dirhams while the price index rises from 100 to 125. The later real income is 88 thousand base-period dirhams: nominal income rose ten percent, but purchasing power fell twelve percent. These are teaching values, not current UAE statistics. The cigarette-demand application later divides nominal prices by a price index before taking logs. Define that monetary scale before interpreting its elasticity.
+In the example, income goes from 100 to 110 thousand dirhams, and the price index goes from 100 to 125. Prices in the index are now 1.25 times their base-period level. To get real income, divide 110 by 1.25. The result is 88 thousand base-period dirhams. The recorded income rises ten percent while its purchasing power falls twelve percent on this price scale.
+
+Choose an index that matches the goods or income in your question. Give its base period when reporting the real amount.
 
 Real amount: \(Y_t^{R}=Y_t^{N}/(I_t/100)\); superscripts \(R,N\) denote real and nominal amounts.
 
@@ -50,9 +52,11 @@ Choose an index suited to the economic quantity and state the base year.
 
 Rewrite the real-variable theory in the observed nominal variables.
 
-Suppose a theory relates log real spending C divided by P to log real income W divided by P, where P is a positive price index on a stated base. Let beta be its income elasticity and a its intercept. Expanding the log ratios gives an equation for nominal log C with beta multiplying log W and one minus beta multiplying log P.
+Suppose the model relates real spending to real income. C is nominal spending, W is nominal income and P is the positive price index. Divide both nominal amounts by P. The first equation says that a one-percent change in real income gives about beta percent change in fitted real spending.
 
-If we estimate separate coefficients b W and b P in the nominal equation, this particular real-variable model implies that their sum equals one. Testing that restriction evaluates one formulation of money illusion: whether a common proportional change in nominal income and prices leaves fitted real spending unchanged. The test still needs the model, measurement and uncertainty assumptions; it is not a universal definition of rational behaviour.
+Expand each log ratio as a difference of logs. Move log P from the left to the right. Nominal log income now has coefficient beta. The price index has coefficient one minus beta.
+
+Fit a model with separate coefficients on log income and log prices. The real-variable equation says their sum should be one. Test that restriction with the uncertainty calculation appropriate for the data. If both nominal income and prices rose in the same proportion, this restricted model would leave real spending unchanged. That is the particular money-illusion question this test addresses.
 
 \(\log(C/P)=a+\beta\log(W/P)+u\).
 
@@ -88,9 +92,11 @@ Eleven recurring month indicators, not 108 unique date indicators
 
 Make the intervention and units explicit.
 
-Let A denote monthly total accidents, so log A is the outcome. B indicates whether the seat-belt law is in force and S the speed-law state; each is zero or one. U is unemployment and W the weekend count. Lowercase u is the regression error, a different quantity from uppercase U. The intercept is a and g is the linear trend coefficient on the monthly index t.
+Start on the left. A is the number of accidents in month t, and we model its logarithm. On the right, a is the intercept and g times t is a straight time trend. The month indicators let February through December each have a different level relative to January. M sub m t is one when the date is in month m and zero otherwise. January is the reference month.
 
-M subscript m t is one if date t is in calendar month m. The sum includes February through December, each with coefficient gamma subscript m relative to January. January uses the intercept, avoiding a redundant twelfth indicator. The other coefficients describe fitted contrasts at fixed included calendar and economic variables. These controls represent particular patterns; they do not automatically supply the no-law accident path needed for a causal policy effect.
+Now find the policy and economic inputs. B marks the seat-belt law and S marks the speed law. Uppercase U is unemployment. W is the weekend count. Lowercase u is the remaining error, so keep the two U's separate.
+
+The belt-law coefficient compares months with the law in force to months without it, holding the stated controls fixed. To claim a policy effect, also explain why this specification gives a credible comparison with the accident path that would have occurred without the law.
 
 \(\log A_t=a+gt+\sum_{m=2}^{12}\gamma_mM_{mt}+bB_t+cS_t+dU_t+fW_t+u_t\)
 
@@ -174,11 +180,11 @@ The result raises useful applied questions. Could travel, risk behaviour, enforc
 
 A coefficient needs a counterfactual interpretation.
 
-If a law begins in one month, its indicator distinguishes a period after that date from earlier observations. Any unmeasured persistent change beginning nearby may contribute to the same contrast. Trend and season controls remove only the patterns their equations represent.
+The law starts at a known date. Its indicator separates earlier from later months. Suppose enforcement or reporting changes near the same date. Some of that change could enter the law coefficient. The trend and the month indicators account for the time patterns we wrote down.
 
-For a causal claim, explain what the accident path would have looked like without the law and why the included comparison supports that prediction. An additional comparison region, a credible assignment rule or more detailed exposure data might help in a suitable design. A long series by itself does not make one adoption event equivalent to repeated random assignments.
+Look at the diagram for a proposed explanation. Earlier accidents and economic conditions may affect both adoption and later accidents. Toggle the proposed history and economic controls separately. Trace which backdoor route closes each time. A calendar date by itself cannot account for these prior causes.
 
-Earlier accident history and economic conditions can influence both law adoption and later accidents. The diagram shows the two resulting backdoor routes. Toggle the proposed history and economic controls separately. A calendar indicator does not close a route merely because adoption occurred at a known date; the relevant pre-policy causes must be addressed by the design and measured controls.
+To report a causal result, say what would have happened to accidents without the law and what evidence supports that path. In some settings, a comparable region or a credible rule determining adoption gives more information than a longer series from one region.
 
 ### 12. A linear trend does not remove every nonstationary process
 

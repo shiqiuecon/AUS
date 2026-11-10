@@ -66,9 +66,9 @@ The useful property is that subtracting logs gives the log of a ratio. If price 
 
 Keep the regressor units visible.
 
-In a log–level model the outcome is logged and the regressor stays in levels. A change of delta X produces a fitted log difference of b times delta X. The approximate percent contrast is 100b times delta X; the exact contrast between exponentiated fitted values is 100 times exp(b delta X) minus one.
+First calculate the change on the scale we fitted. Only price is logged. If income changes by delta X units, the fitted log price changes by b times delta X. Check the units before substituting. When income is recorded in ten-thousand-dollar units, a ten-thousand-dollar increase is one unit.
 
-If income is measured in ten-thousand-dollar units, a coefficient applies to that unit, not one dollar. A dummy variable is a zero-or-one indicator for a stated condition. Its coefficient compares those two states in this log specification. These interpretations all follow from the same equation. The apparent variety of percentage rules becomes manageable when we first write the change in the fitted log outcome.
+Exponentiate that log difference to get the ratio of the two exponentiated fits. Subtract one, then multiply by one hundred to get the exact percentage contrast. For a small log change, one hundred times b times delta X is a useful approximation. If X is a zero-or-one indicator, the change from zero to one also goes through the exact formula. On the next slide we will ask which price average these exponentiated fits describe.
 
 \(\widehat{\log P}=a+bX\)
 
@@ -104,9 +104,9 @@ The outcome units remain dollars, points or whatever its original definition spe
 
 It relates proportional changes in both variables.
 
-An elasticity is the proportional change in an outcome for a small proportional change in a regressor. In a log–log model, the slope is a constant fitted elasticity. A slope of minus 0.7 means a one-percent price rise corresponds locally to about a 0.7-percent quantity decline.
+Now take logs on both sides. The slope b is the elasticity: the fitted proportional change in the outcome per small proportional change in the input. For a demand slope of minus 0.7, a one-percent price rise corresponds to about a 0.7-percent decline in fitted quantity near the starting price.
 
-For a finite ten-percent price rise, the exact fitted quantity ratio is 1.1 raised to the power minus 0.7. Its percentage change is about minus 6.45 percent. It is not exactly minus seven percent. The distinction between a local slope and a finite contrast is especially useful when policy changes are large.
+For a finite change, divide the new input by the old input, then raise the ratio to power b. For a ten-percent price rise, that is 1.1 to the power minus 0.7. Subtract one and multiply by one hundred. The exact fitted change is about minus 6.45 percent. Use the small-change rule to explain the slope and the exact calculation to report a policy-sized change.
 
 \(\widehat{\log Y}=a+b\log X\)
 
@@ -136,9 +136,11 @@ The coefficient does not show what a transfer to households would cause retailer
 
 Define the squared term before interpreting it.
 
-A straight line has the same slope everywhere. A quadratic adds the square of X, allowing the fitted slope to change with the starting value. In the teaching curve, the fitted score is 500 plus eight times X minus 0.2 times X squared. A derivative is the local slope: the fitted change per unit for a very small movement in X.
+A quadratic includes both X and X squared. In our example, the fitted score is 500 plus eight times X minus 0.2 times X squared. If you move along the curve, the same one-unit change can have different effects on the fit at different starting values.
 
-For this curve, the local slope is eight minus 0.4 times X. It equals four at X equal to ten and zero at X equal to twenty. The displayed general formula uses b zero for the intercept, b one for the X coefficient and b two for the squared-X coefficient. Although the curve is nonlinear in X, it is linear in those unknown coefficients, so OLS can estimate them. For a substantial change in X, calculate two fitted values rather than treating a local slope as constant.
+Take the derivative to find the local slope. The intercept contributes zero. The X term contributes eight. The squared term contributes minus 0.4 times X. That gives a slope of four at ten and zero at twenty. In the general formula, replace eight by b one and minus 0.2 by b two.
+
+We can fit the model with OLS because the unknown coefficients multiply known columns: a constant, X, and X squared. For a sizable change in X, calculate the fitted value at each endpoint. The derivative describes the slope at a point.
 
 \(\widehat Y=500+8X-0.2X^2\)
 
@@ -164,9 +166,9 @@ Local approximation: \(4\times5=20\), not the finite difference.
 
 Do not report an unsupported optimum.
 
-The quadratic slope is zero at minus beta one divided by twice beta two, provided beta two is nonzero. A negative squared coefficient gives a maximum and a positive one a minimum. This is a mathematical feature of the fitted curve.
+A turning point is where the fitted local slope reaches zero. Solve b one plus twice b two times X equals zero. If b two is nonzero, X star is minus b one divided by twice b two. The squared coefficient tells us the shape. Negative gives a maximum. Positive gives a minimum.
 
-Before describing an economic optimum, check whether the turning point lies inside the data range and whether the model is credible there. A tiny, imprecise squared coefficient can produce an extreme and unstable turning point. The equation's ability to calculate one does not mean the data identify a useful policy threshold.
+In our example, X star is twenty. If the data only went up to fifteen, the fitted maximum would be outside the observed range. That is an extrapolation, a prediction beyond the observed inputs. If the squared coefficient is close to zero, a small change in its estimate can also move X star a long way. Check the data range, uncertainty and whether the fitted curve supports the decision before recommending a policy target.
 
 \(X^*=-\dfrac{b_1}{2b_2}\) when \(b_2\ne0\)
 
@@ -229,9 +231,11 @@ inc10        |
 
 The exponential of an average log is not the average level.
 
-Write a log-outcome model as log Y equals m of X plus u. Here m of X is the fitted or population linear log relationship and u is the remaining log error. Exponentiating both sides gives Y equal to exp of m times exp of u. At a fixed X, taking the average therefore gives exp of m times the conditional average of exp of u.
+Let m of X be the population mean of log Y at the stated X, and u the remaining log error. Start from log Y equal to m of X plus u. On the original scale, Y is the exponential of m times the exponential of u.
 
-Even a mean-zero log error does not generally make that last average equal to one. The one-and-nine example showed the reason: exponentiation changes how spread contributes to an average. To estimate an arithmetic mean in levels, we need a suitable estimate of this retransformation factor. To interpret a ratio between groups as a mean ratio, we need the factors to cancel or to be modeled. State the target before selecting a correction.
+At a fixed X, the first factor is a constant. Take the average of the second factor to get the mean of Y. This factor can differ from one even when u has mean zero. Recall the two prices, one and nine. Exponentiating their mean log gives three, while their mean price is five.
+
+If the goal is to predict the arithmetic mean price, estimate that extra factor. For a ratio of arithmetic means, check whether the two factors cancel or estimate how they differ. First say which average you want to report.
 
 \(\log Y=m(X)+u\)
 
@@ -339,9 +343,11 @@ In the equation, beta zero is the group-zero intercept, beta one its staffing sl
 
 Two group equations reveal the relevant combinations.
 
-For D equal to zero, the D and interaction terms disappear. The X slope is beta one. For D equal to one, the intercept becomes beta zero plus beta two and the X slope becomes beta one plus beta three. The interaction coefficient is therefore the slope difference, not the second group's total slope.
+Hold the other controls fixed and plug zero into the group indicator D. Both terms that contain D vanish. The first group's fitted line has staffing slope beta one.
 
-Work through these substitutions before using verbal shortcuts. An intercept difference is the group gap at X equal to zero, which may lie outside the meaningful staffing range. A more useful group comparison can be calculated at a realistic X, as we will do after reading the fitted values.
+Now plug in one. The group term adds beta two to the intercept. The product of staffing and the group indicator adds beta three to the staffing slope. The second group's slope is beta one plus beta three. The interaction coefficient beta three gives the difference between the slopes.
+
+The intercept gap measures the difference between groups at zero students per teacher. Use a realistic ratio to compare fitted scores in the data range. To compare the effects of a staffing change, calculate the change along each group's fitted line.
 
 \(D=0:\quad \partial E(Y\mid X,D,W)/\partial X=\beta_1\)
 
@@ -595,11 +601,11 @@ These simple paths illustrate the penalties; the actual model has nine correlate
 
 Cross-validation reserves the test answers for a later check.
 
-Cross-validation splits the training sample into folds, or partitions. With five folds, fit on four and predict the fifth. Rotate the held-out fold and average prediction errors for each candidate penalty. All these observations belong to the training sample; the separate test sample stays untouched.
+Keep the 140 test districts separate. Divide the other 280, the training districts, into five folds. A fold is a group of observations. For each candidate penalty, fit on four folds and predict the fifth. Rotate the held-out fold until every fold has been predicted. Compare the average validation errors across penalties.
 
-Choose a penalty from those validation errors, then refit on all 280 training districts. Learned preprocessing belongs within training, including within validation folds when fitted there. The software handles its penalised fitting; do not standardise using the separate test outcomes or tune against their errors.
+In each fit, learn quantities such as a predictor mean and standard deviation from the rows used for that fit. Apply that same transformation to the held-out rows. Choose the penalty from the training-fold comparisons, then refit on all 280 training districts.
 
-Only after the models are frozen do we reveal the test outcomes. Root mean squared error, abbreviated RMSE, is the square root of the average squared prediction error. It is measured in score points. For a dated forecasting task, use chronological validation so later information cannot leak into an earlier prediction.
+Freeze the model before scoring its predictions on the test districts. Root mean squared error, or RMSE, is the square root of the average squared difference between a prediction and its observed score. It is in score points. In a forecasting study, also respect time order so that training never uses information from after the date being predicted.
 
 Five training folds: fit on four, validate on one, then rotate.
 
@@ -611,9 +617,11 @@ Score frozen predictions on the separate 140-district test sample.
 
 A small error difference is evidence for this run, not a universal ranking.
 
-The prediction do-file fits all four models before calculating test errors. Stata's elasticnet command can mix squared and absolute-value penalties. Alpha zero selects the squared ridge penalty; lasso linear fits the absolute-value lasso penalty. Here alpha is the software's penalty-mixing setting, not the intercept a in our equation. Five-fold training cross-validation chooses each penalty.
+Read the four bars for the same 140 test districts. Three-predictor OLS gives 9.992 score points of root mean squared error. Expanded OLS gives 9.906, ridge gives 9.886 and lasso gives 9.991. Lower means smaller prediction errors under this measure. Ridge comes out slightly ahead on this split.
 
-On the same 140 held-out districts, the RMSEs are 9.992 for three-column OLS, 9.906 for expanded OLS, 9.886 for ridge and 9.991 for lasso. Lower is better under this loss. Ridge is slightly lower in this split; the small differences do not establish universal superiority. Do not keep changing the split or penalty grid until the test ranking looks attractive. Explain the intended prediction population and preserve the reported result even when a preferred method does not win.
+In the do-file, elasticnet with alpha zero chooses the squared ridge penalty. Lasso linear uses the absolute-value penalty. Alpha here is Stata's setting for the type of penalty. The size of each penalty was chosen in training, before looking at these test scores.
+
+Report the common split, the error measure and the small differences you observe. These results answer which fitted model predicts better on this test set. A causal staffing effect would require an argument about how staffing was assigned.
 
 Same training/test split and the same outcome scale for every model.
 

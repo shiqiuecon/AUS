@@ -30,9 +30,9 @@ Ability affects Y directly and is related to X. The constructed model therefore 
 
 One concerns an average at a sample size; the other concerns a limit.
 
-Unbiasedness concerns the average estimate across repetitions at a fixed sample size. Consistency asks what happens as the sample size grows: does the estimator concentrate near its target? An estimator can have some finite-sample bias and still be consistent. An omitted-variable estimator can instead become tightly concentrated around the wrong value.
+Imagine repeating a study with a hundred observations. If the average of those estimates equals the target, the estimator is unbiased at that sample size. Now try larger and larger samples. If the estimates gather around the target, the estimator is consistent. A method can start with some bias and still converge to the right value. The short regression in our simulation will illustrate the opposite problem: the estimates can gather tightly around the wrong value.
 
-The probability limit, written plim, is the value approached in probability. That means the chance of an estimate lying more than any fixed small distance from the value goes to zero. We use the term consistency here for this estimator property. It differs from the causal consistency assumption in Meeting 01, which linked an observed outcome to the potential outcome under the intervention actually received. The shared word does not make these the same claim.
+The probability limit, written plim, is the value the estimates approach in probability. For any fixed distance from that value, the chance of being farther away goes to zero as the sample grows. Here consistency describes an estimator. In the causal lesson, consistency linked the observed outcome to the potential outcome under the policy received.
 
 Unbiasedness: correct repeated-sample mean at a fixed sample size.
 
@@ -108,9 +108,11 @@ Do not interpret the small SE as evidence against the omitted-variable explanati
 
 The square-root rate concerns sampling variation around a limit.
 
-For independent zero-or-one draws with probability one half, the average has mean one half and standard deviation 0.5 divided by the square root of sample size. At 100 observations that spread is 0.05; at 400 it is 0.025. Multiply the average's deviation from one half by the square root of sample size and its spread stays at 0.5. Under these conditions, the scaled distribution approaches a normal bell shape.
+Take independent zero-or-one draws with a one-half chance of one. Their sample average has mean one half. Its standard deviation is 0.05 with a hundred draws and 0.025 with four hundred. The average stays centered at one half and its spread shrinks.
 
-This is the role of a central limit theorem: it describes the shape and scale of fluctuations, while a law of large numbers describes concentration near a limit. Under suitable regressor and error conditions, a coefficient estimator has a similar square-root-of-sample-size approximation. In the formula, beta is the target, beta hat its estimate, the arrow marked d means convergence in distribution: for this continuous normal limit, probabilities of falling below each fixed cutoff approach the normal probabilities, and Omega is the limiting variance. None of these statements centers an inconsistent short regression on the true structural coefficient.
+To see a stable shape, subtract one half and multiply by the square root of the number of draws. The scaled average has standard deviation 0.5. As the sample grows, its distribution approaches a normal bell shape. The central limit theorem describes this scaled distribution. The law of large numbers told us where the original average settles.
+
+The second formula shows the analogous result for a coefficient under suitable sampling and regression assumptions. Beta hat minus beta is its estimation error. The arrow marked d means probabilities of falling below fixed cutoffs approach those of the normal limit. Omega is the variance in that limiting distribution. We still need an argument that the estimator centers on the coefficient we want.
 
 Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=0.5/\sqrt n\)
 
@@ -120,11 +122,11 @@ Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(
 
 A stable average in the denominator sets the scale for sampling fluctuations.
 
-Use the simple regression with an intercept to see how the two limit results work together. The slope error is the sum of centered X times the population error divided by the sum of squared centered X. The law of large numbers makes the denominator per observation approach the positive population variance of X.
+Look at the denominator of the slope formula. It is the sample average of squared staffing deviations. With independent observations from one population and finite variance, it approaches Q, the population variance of staffing. We need Q to be positive because the slope needs some staffing variation.
 
-For independent observations from the same population, with zero conditional-mean errors and finite variances for the terms in the calculation, the central limit theorem applies to the centered X times error products. In this step X is centered at its population mean. Using the sample mean instead changes the scaled sum by the sample mean's deviation from the population mean times the square-root scaled average error. The first factor approaches zero and the second has stable spread, so this difference vanishes. Dividing the scaled sum by the stable positive denominator gives the approximate normal shape for the scaled slope error.
+In the numerator, add the products of staffing deviations and population errors and divide by the square root of sample size. For the limit argument, center staffing at its population mean. If the error has zero conditional mean, the products have mean zero. With finite product variance S, the central limit theorem gives a normal limit with variance S. Replacing the population center by the sample center changes the scaled sum by a term that goes to zero: the difference between the centers goes to zero, while the square-root scaled average error has stable spread if the error variance is finite.
 
-When observations provide comparable information, the slope estimate's standard error is roughly proportional to one over the square root of sample size. Four times as many observations roughly halves that standard error. This result concerns variation around the limit. Our earlier simulation shows why it matters whether that limit is the target.
+The ratio therefore approaches a normal distribution with variance S divided by Q squared. That is for the slope error multiplied by the square root of sample size. Divide the variance by n for the slope estimate itself. This is why four times as many comparable observations roughly halves the standard error. That improvement concerns uncertainty around the limit.
 
 \(\sqrt n(\widehat\beta_1-\beta_1)=\dfrac{n^{-1/2}\sum_i(X_i-\bar X)u_i}{n^{-1}\sum_i(X_i-\bar X)^2}\).
 
@@ -136,9 +138,9 @@ With \(S=\operatorname{Var}[(X-E X)u]\), approximate slope variance is \(S/(nQ^2
 
 The auxiliary statistic and reference distribution must match the null.
 
-LM abbreviates Lagrange multiplier. This test assesses omitted coefficient restrictions using a fit that imposes the null. Suppose the unrestricted model contains the original inputs and q additional columns. The null sets the coefficients on those q columns to zero. Fit the restricted model first and obtain its residuals. In the conventional homoskedastic linear-model LM construction, regress those residuals on the complete unrestricted regressor set, including the original inputs and the intercept.
+Suppose we want to test whether q extra regressors all have zero coefficients. L M stands for Lagrange multiplier. Start by fitting the smaller model that sets those coefficients to zero. Save its residuals. Now run a supporting regression of those residuals on all the regressors in the larger model, including its intercept. If the extra variables still explain the residuals, the smaller model may have left out something systematic.
 
-The auxiliary statistic is n times its R squared, with an asymptotic chi-squared reference having q degrees of freedom under the stated sampling, moment, rank and variance conditions. A chi-squared variable with q degrees of freedom is the sum of squares of q independent standard normal variables. This ordinary construction is not automatically valid under arbitrary heteroskedasticity. For unequal variance, the later variance lesson develops a joint test based on a suitable covariance estimate instead. The restriction count comes from the null, not from the number of degrees of freedom in a conveniently available critical-value table.
+Multiply the supporting regression's R squared by the sample size. Under the null, with the usual independent sampling, equal conditional variance and other regularity conditions, this statistic has an approximate chi-squared reference with q degrees of freedom. A chi-squared variable with q degrees of freedom is the sum of squares of q independent standard normal variables. Count the independent restrictions in the null to get q. When error variance differs across observations, use a procedure whose covariance assumptions allow for it.
 
 \(H_0:\gamma_1=\cdots=\gamma_q=0\) for the \(q\) additional columns.
 
@@ -202,9 +204,11 @@ It remains: the estimator is inconsistent for the causal target. Sampling variat
 
 Define the moments needed for consistency and normal approximation.
 
-Let x i be the p-entry regressor vector, including the intercept, and let Q be its population second-moment matrix. A second moment is an expected product: entry j, k of Q is the population average of regressor j times regressor k. These products are not centred as in a covariance matrix. Asymptotic means describing a limit as sample size grows. Assume independent observations, a nonsingular, meaning invertible, Q, zero expected x i times u i, and sufficient finite moments for a law of large numbers and central limit theorem. For example, finite second moments of x i times u i support the familiar independent-data normal approximation.
+Let x i be the list of regressors for observation i, including the intercept, written as a column. In Q, each entry averages a product of two regressor entries. For example, the staffing and income entry is the average of staffing times income. Q is a second-moment matrix. Its entries use the original values. A covariance matrix would first subtract their means. Assume independent observations from one population, invertible Q, zero average regressor-error products and the finite moments needed for the two limit results.
 
-The scaled OLS estimation error equals the inverse sample second moment times the sum of regressor-error products divided by square root n. The first part approaches Q inverse. The second has a limiting normal distribution with covariance S, defined as the expectation of u squared times x x prime. Their combination gives Q inverse S Q inverse. The asymptotic covariance of the scaled estimator is not its finite-sample variance; the approximate coefficient covariance divides that limiting matrix by n.
+The scaled O L S estimation error has two parts. The inverse sample second-moment matrix approaches Q inverse. The sum of regressor-error products divided by square root n approaches a normal distribution with covariance S. Here S averages the outer product of a regressor-error column with itself, meaning one product for each pair of entries. The regressor-error column has mean zero under the moment assumption, so S is its covariance.
+
+The asymptotic covariance of the scaled estimator is Q inverse, times S, times Q inverse. Asymptotic describes what happens as the sample grows. Dividing this matrix by n gives the large-sample covariance approximation for the original coefficient estimates.
 
 \(Q=E[x_ix_i\prime]\), \(E[x_iu_i]=0\), \(S=E[u_i^2x_ix_i\prime]\).
 
