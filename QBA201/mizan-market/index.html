@@ -142,7 +142,7 @@
       case 'pitch':
         return `<p class="lead">The vendor’s account manager forwards the pilot presentation just before your first meeting.</p><section class="memo"><p class="sender">From Samir, vendor account manager · Sales follow-up</p><p class="quote">“Average savings were AED 340 a day. That easily beats a licence price of AED 240. The pilot already proves the business case.”</p><dl><dt>Pilot summary</dt><dd>12 operating days · mean AED 340 · sample SD AED 60</dd></dl><p class="small">Footnote in the presentation. The vendor selected 12 quiet days with experienced staff. No independent dispatch report is attached.</p></section><div class="split"><section><h2>Finance asks</h2><p>What costs are included in that comparison?</p></section><section><h2>The analyst asks</h2><p>Which population does this sample represent?</p></section></div><p class="small">Challenge the claim before trusting the advertised saving. A calculator cannot repair a sampling problem.</p>`;
       case 'initial':
-        return `<p class="lead">You have the contract and the sales pitch. Before opening the internal reports, record your team’s position on paper. Your captain saves the first checkpoint in the team challenge. The anonymous class vote is separate.</p>${options(initialActions,state.initial,'initial',state.initialLocked)}<label for="initialWhy">What assumption is doing the most work in your recommendation?</label><textarea id="initialWhy" maxlength="1500" ${state.initialLocked?'disabled':''}>${escape(state.initialWhy)}</textarea><div class="actions">${pollLink('first')}<button class="primary" id="lock-initial" ${state.initialLocked?'disabled':''}>${state.initialLocked?'First position recorded':'Record the class position →'}</button></div>${state.initialLocked?'<div class="record">Your first position is on the record. You may change your recommendation after examining evidence.</div>':''}`;
+        return `<p class="lead">Choose an option and enter your main assumption to record the first position. Your captain saves the scored answers in the team workspace. The class vote is anonymous and separate.</p>${options(initialActions,state.initial,'initial',state.initialLocked)}<label for="initialWhy">What is the main assumption behind your choice?</label><textarea id="initialWhy" maxlength="1500" ${state.initialLocked?'disabled':''}>${escape(state.initialWhy)}</textarea><div class="actions">${pollLink('first')}<button class="primary" id="lock-initial" ${state.initialLocked?'disabled':''}>${state.initialLocked?'First position recorded':'Record the class position →'}</button></div>${state.initialLocked?'<div class="record">Your first position is on the record. You may change your recommendation after examining evidence.</div>':''}`;
       case 'evidence':
         return `<p class="lead">Your depot manager has two reports from the planned operation. Neither appears in the sales presentation. You have 13 minutes to advise the board.</p><div class="document-grid">${sampleDocument('savings')}${sampleDocument('service')}</div><section class="memo"><h2>The questions the owner needs answered</h2><ol><li>What daily mean gross saving would cover the whole 180-day contract, including setup?</li><li>Is there evidence that the population mean gross saving exceeds that threshold?</li><li>Is there evidence that population mean dispatch lateness is below the recommended 2-minute limit?</li><li>Which conclusion is most vulnerable, and what would you do about it?</li></ol><p class="small">Use 5% significance, fixed before these reports were opened. Use the general reference tables in the case pack or a suitable calculator. Give the business implication of each result.</p></section><div class="warning"><p>The owner’s cash limit is an implementation constraint. The population mean saving is an economic question. Address both.</p></div>`;
       case 'diligence':
@@ -198,15 +198,21 @@
   function tell(text) {$('#message').textContent=text;}
   function record(type) {
     const config={
-      initial:{why:'initialWhy',locked:'initialLocked',min:20,next:4},
-      plan:{why:'planWhy',locked:'planLocked',min:20,next:6},
-      decision:{why:'decisionWhy',locked:'decisionLocked',min:35,next:8},
+      initial:{why:'initialWhy',locked:'initialLocked',missing:'Enter your assumption before saving.',next:4},
+      plan:{why:'planWhy',locked:'planLocked',missing:'Enter a reason for your audit choice before saving.',next:6},
+      decision:{why:'decisionWhy',locked:'decisionLocked',missing:'Enter a reason for your final decision before saving.',next:8},
     }[type];
     if(state[config.locked])return;
-    if(!state[type]||state[config.why].trim().length<config.min){
-      tell('Choose an option and record a reason before committing the class decision.');
+    const reason=$('#'+config.why).value.trim();
+    if(!state[type]){
+      tell('Choose an option before saving.');
       return;
     }
+    if(!reason){
+      tell(config.missing);
+      return;
+    }
+    state[config.why]=reason;
     if(type==='decision'){
       const required={launch:7200,reserve:1000,negotiate:3600,decline:0}[state.decision];
       if(required>DATA.cash-spend()){
@@ -241,7 +247,11 @@
     }
   });
   document.addEventListener('input',event=>{
-    if(['initialWhy','planWhy','decisionWhy'].includes(event.target.id)){state[event.target.id]=event.target.value;save();}
+    if(['initialWhy','planWhy','decisionWhy'].includes(event.target.id)){
+      state[event.target.id]=event.target.value;
+      tell('');
+      save();
+    }
     if(event.target.id==='scenarioMean'||event.target.id==='scenarioDelay'){
       state[event.target.id]=Number(event.target.value);save();renderStress();
     }
