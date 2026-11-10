@@ -1,6 +1,10 @@
 # 06. OLS asymptotics
 
-## 01. Can a larger dataset rescue a biased design?
+Decide whether collecting more data would solve the problem in an estimate.
+
+## Core lesson
+
+### 01. Can a larger dataset rescue a biased design?
 
 Use a known population to separate bias from sampling noise.
 
@@ -8,7 +12,7 @@ Asymptotics studies what happens to statistical procedures as sample size grows.
 
 The simulation distinguishes a short regression omitting ability from a longer regression that includes it. The true direct X coefficient is one. The short slope approaches one and a half in this constructed population. Watching the distributions narrow around different values makes consistency and bias visible before we return to imperfect real-world records.
 
-## 02. Define the simulation as an economic thought experiment
+### 02. Define the simulation as an economic thought experiment
 
 The generated truth is known by construction.
 
@@ -22,7 +26,7 @@ Ability affects Y directly and is related to X. The constructed model therefore 
 
 \(A,V,U\) independent, with mean zero and variance one
 
-## 03. Unbiasedness and consistency ask different questions
+### 03. Unbiasedness and consistency ask different questions
 
 One concerns an average at a sample size; the other concerns a limit.
 
@@ -36,19 +40,7 @@ Estimator consistency: concentration near the target as sample size grows.
 
 Causal consistency: observed/potential-outcome link; a different use of the word.
 
-## 04. Two simple estimators separate bias from concentration
-
-The two properties answer different repeated-sample questions.
-
-Suppose Y observations are independent draws with mean mu and a positive finite variance. Estimating mu using only the first observation is unbiased, because that observation has mean mu. But collecting more unused observations does not make this estimator concentrate near mu; its distribution stays unchanged. It is not consistent when the population has positive variance.
-
-Now use the sample mean plus one divided by n. Its repeated-sample mean is mu plus one divided by n, so it is biased at every finite n. Under a law of large numbers, a result giving conditions for sample averages to approach population averages, the sample mean converges to mu and the added term vanishes, making the estimator consistent. These examples explain why neither finite-sample unbiasedness nor a small standard error alone settles the large-sample question.
-
-\(\widehat\mu_n=Y_1\): \(E\widehat\mu_n=\mu\), \(\operatorname{Var}(\widehat\mu_n)=\sigma^2>0\).
-
-\(\widetilde\mu_n=\overline Y_n+1/n\): bias \(=1/n\), but \(\widetilde\mu_n\xrightarrow{p}\mu\).
-
-## 05. The law of large numbers stabilises averages
+### 04. The law of large numbers stabilises averages
 
 More data can reveal a stable but unwanted relationship.
 
@@ -60,7 +52,7 @@ Law of large numbers: sample averages approach population means under stated con
 
 Consistent estimator: concentrates near its target as the sample grows.
 
-## 06. Measure co-movement before calculating the limit
+### 05. Measure co-movement before calculating the limit
 
 Covariance records whether centered variables tend to move together.
 
@@ -72,7 +64,7 @@ In our experiment, X is A plus V. A and V are independent, each has mean zero an
 
 \(X=A+V:\quad\operatorname{Var}(X)=2,\quad\operatorname{Cov}(X,A)=1\)
 
-## 07. Calculate the wrong limit before simulating it
+### 06. Calculate the wrong limit before simulating it
 
 The short slope tends to one and a half.
 
@@ -84,7 +76,7 @@ The resulting short slope has probability limit 1.5. This prediction follows fro
 
 \(\operatorname{plim}\widehat b_{\mathrm{short}}=1+\dfrac12=1.5\)
 
-## 08. Compare repeated samples at two sizes
+### 07. Compare repeated samples at two sizes
 
 Concentration alone is not evidence of a correct target.
 
@@ -92,25 +84,7 @@ The graph uses 300 Stata-generated replications at each sample size, 100 and 1,0
 
 Select the larger sample size. Both collections should become less spread out, but they need not move toward the same centre. The short estimates concentrate near 1.5, while the controlled estimates concentrate near one. These are simulation results, not observed labour-market effects. They illustrate the specific assumptions we built into the experiment.
 
-## 09. More data, same bias
-
-Try the comparison before opening the explanation.
-
-An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
-
-Compare where each distribution is centered, then compare its spread. A narrower distribution can still concentrate on the wrong target.
-
-**Practice:** An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
-
-## 10. More data, same bias: explanation
-
-Follow the calculation and interpret its units.
-
-It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
-
-It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
-
-## 11. Read one large generated sample
+### 08. Read one large generated sample
 
 A small SE can accompany substantial omitted-variable bias.
 
@@ -130,7 +104,7 @@ Do not interpret the small SE as evidence against the omitted-variable explanati
 ------------------------------------------------------------------------------
 ```
 
-## 12. The central limit theorem describes scaled fluctuations
+### 09. The central limit theorem describes scaled fluctuations
 
 The square-root rate concerns sampling variation around a limit.
 
@@ -142,35 +116,23 @@ Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=
 
 Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(0,\Omega)\)
 
-## 13. The OLS large-sample argument separates a stable denominator from random scores
+### 10. Square-root sample-size gains require a comparable sampling model
 
-Define the moments needed for consistency and normal approximation.
+A stable average in the denominator sets the scale for sampling fluctuations.
 
-Let x i be the p-entry regressor vector, including the intercept, and let Q be its population second-moment matrix. A second moment is an expected product: entry j, k of Q is the population average of regressor j times regressor k. These products are not centred as in a covariance matrix. Asymptotic means describing a limit as sample size grows. Assume independent observations, a nonsingular, meaning invertible, Q, zero expected x i times u i, and sufficient finite moments for a law of large numbers and central limit theorem. For example, finite second moments of x i times u i support the familiar independent-data normal approximation.
+Use the simple regression with an intercept to see how the two limit results work together. The slope error is the sum of centered X times the population error divided by the sum of squared centered X. The law of large numbers makes the denominator per observation approach the positive population variance of X.
 
-The scaled OLS estimation error equals the inverse sample second moment times the sum of regressor-error products divided by square root n. The first part approaches Q inverse. The second has a limiting normal distribution with covariance S, defined as the expectation of u squared times x x prime. Their combination gives Q inverse S Q inverse. The asymptotic covariance of the scaled estimator is not its finite-sample variance; the approximate coefficient covariance divides that limiting matrix by n.
+For independent observations from the same population, with zero conditional-mean errors and finite variances for the terms in the calculation, the central limit theorem applies to the centered X times error products. In this step X is centered at its population mean. Using the sample mean instead changes the scaled sum by the sample mean's deviation from the population mean times the square-root scaled average error. The first factor approaches zero and the second has stable spread, so this difference vanishes. Dividing the scaled sum by the stable positive denominator gives the approximate normal shape for the scaled slope error.
 
-\(Q=E[x_ix_i\prime]\), \(E[x_iu_i]=0\), \(S=E[u_i^2x_ix_i\prime]\).
+When observations provide comparable information, the slope estimate's standard error is roughly proportional to one over the square root of sample size. Four times as many observations roughly halves that standard error. This result concerns variation around the limit. Our earlier simulation shows why it matters whether that limit is the target.
 
-\(\sqrt n(\widehat\beta-\beta)=[n^{-1}\sum_ix_ix_i\prime]^{-1}n^{-1/2}\sum_ix_iu_i\).
+\(\sqrt n(\widehat\beta_1-\beta_1)=\dfrac{n^{-1/2}\sum_i(X_i-\bar X)u_i}{n^{-1}\sum_i(X_i-\bar X)^2}\).
 
-\(\sqrt n(\widehat\beta-\beta)\xrightarrow{d}N(0,Q^{-1}SQ^{-1})\); approximate covariance \(Q^{-1}SQ^{-1}/n\).
+Positive denominator limit: \(Q=\operatorname{Var}(X)>0\).
 
-## 14. Square-root sample-size gains require a comparable sampling model
+With \(S=\operatorname{Var}[(X-E X)u]\), approximate slope variance is \(S/(nQ^2)\).
 
-More observations shrink sampling noise under conditions, not design bias.
-
-If an estimator has a stable large-sample covariance proportional to one divided by n, its standard error is proportional to one divided by square root n. Quadrupling the sample size therefore roughly halves its standard error, when the population, design and information per observation remain comparable.
-
-This is a rate statement, not an equality for arbitrary subsets of a dataset. A larger sample can have a different regressor distribution, more dependence or another selection rule. Nor does this approximation remove the omitted-variable probability limit already calculated in the simulation. In real school data, compare sample sizes, staffing variation and the fitted specification alongside the standard errors before attributing their difference only to n.
-
-If \(\operatorname{Var}(\widehat\theta_n)\approx V/n\), \(SE(\widehat\theta_n)\approx\sqrt V/\sqrt n\).
-
-Comparable information per observation: \(n\to4n\) implies an approximate SE ratio of \(1/2\).
-
-The approximation concerns sampling variation around the estimator’s limit.
-
-## 15. A restricted-model LM test asks what the omitted columns still explain
+### 11. A restricted-model LM test asks what the omitted columns still explain
 
 The auxiliary statistic and reference distribution must match the null.
 
@@ -184,25 +146,7 @@ Conventional homoskedastic auxiliary test: \(LM=nR^2_{aux}\xrightarrow{d}\chi_q^
 
 Estimate under the null, then test the information left in the omitted columns.
 
-## 16. Count the restrictions before choosing an LM reference
-
-Try the comparison before opening the explanation.
-
-A conventional homoskedastic LM exercise has n=500, auxiliary R squared 0.012 and two excluded-coefficient restrictions. Calculate the statistic and compare it with the 5% chi-squared critical value 5.991 for two degrees of freedom. Would a three-degree-of-freedom critical value answer the stated question?
-
-State the assumptions and units alongside the calculation.
-
-**Practice:** A conventional homoskedastic LM exercise has n=500, auxiliary R squared 0.012 and two excluded-coefficient restrictions. Calculate the statistic and compare it with the 5% chi-squared critical value 5.991 for two degrees of freedom. Would a three-degree-of-freedom critical value answer the stated question?
-
-## 17. Count the restrictions before choosing an LM reference: explanation
-
-Follow the calculation and interpret its units.
-
-LM=500*0.012=6. With q=2, compare it with 5.991, so the conventional test narrowly rejects at 5% under its assumptions. A three-degree-of-freedom critical value tests a different restriction count and is incorrect here. Rounding and the reference assumptions matter near the boundary.
-
-LM=500*0.012=6. With q=2, compare it with 5.991, so the conventional test narrowly rejects at 5% under its assumptions. A three-degree-of-freedom critical value tests a different restriction count and is incorrect here. Rounding and the reference assumptions matter near the boundary.
-
-## 18. Compare sample size and precision in the district data
+### 12. Compare sample size and precision in the district data
 
 Try the comparison before opening the explanation.
 
@@ -212,11 +156,77 @@ State the assumptions and units alongside the calculation.
 
 **Practice:** Use overleaf_technical.do to fit score on str and el for a fixed random 105-district subset and all 420 districts. Independently reproduce both robust fits. Compare sample sizes, staffing variation, coefficients and standard errors. Does the observed SE ratio have to equal two?
 
-## 19. Compare sample size and precision in the district data: explanation
+### 13. Compare sample size and precision in the district data: explanation
 
 Follow the calculation and interpret its units.
 
 The smaller sample has 105 observations and the full sample 420, but its regressor mix and realised residuals differ. The observed ratio need not equal the square-root size ratio of two. The 105-district staffing estimate is about -0.176454 with robust SE 0.689649; the 420-district estimate is about -1.101296 with SE 0.432847. Their observed SE ratio is about 1.593286. Report values from your own successful run. The rate approximation requires comparable information and a valid sampling model; neither fit establishes a causal staffing effect.
 
 The smaller sample has 105 observations and the full sample 420, but its regressor mix and realised residuals differ. The observed ratio need not equal the square-root size ratio of two. The 105-district staffing estimate is about -0.176454 with robust SE 0.689649; the 420-district estimate is about -1.101296 with SE 0.432847. Their observed SE ratio is about 1.593286. Report values from your own successful run. The rate approximation requires comparable information and a valid sampling model; neither fit establishes a causal staffing effect.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 14. Two simple estimators separate bias from concentration
+
+The two properties answer different repeated-sample questions.
+
+Suppose Y observations are independent draws with mean mu and a positive finite variance. Estimating mu using only the first observation is unbiased, because that observation has mean mu. But collecting more unused observations does not make this estimator concentrate near mu; its distribution stays unchanged. It is not consistent when the population has positive variance.
+
+Now use the sample mean plus one divided by n. Its repeated-sample mean is mu plus one divided by n, so it is biased at every finite n. Under a law of large numbers, a result giving conditions for sample averages to approach population averages, the sample mean converges to mu and the added term vanishes, making the estimator consistent. These examples explain why neither finite-sample unbiasedness nor a small standard error alone settles the large-sample question.
+
+\(\widehat\mu_n=Y_1\): \(E\widehat\mu_n=\mu\), \(\operatorname{Var}(\widehat\mu_n)=\sigma^2>0\).
+
+\(\widetilde\mu_n=\overline Y_n+1/n\): bias \(=1/n\), but \(\widetilde\mu_n\xrightarrow{p}\mu\).
+
+### 15. More data, same bias
+
+Try the comparison before opening the explanation.
+
+An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
+
+Compare where each distribution is centered, then compare its spread. A narrower distribution can still concentrate on the wrong target.
+
+**Practice:** An estimator converges to 1.4 while the causal target is 1.0. What happens to the bias problem as n grows?
+
+### 16. More data, same bias: explanation
+
+Follow the calculation and interpret its units.
+
+It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
+
+It remains: the estimator is inconsistent for the causal target. Sampling variation may shrink around the wrong limit. Narrow intervals around 1.4 do not repair the design.
+
+### 17. The OLS large-sample argument separates a stable denominator from random scores
+
+Define the moments needed for consistency and normal approximation.
+
+Let x i be the p-entry regressor vector, including the intercept, and let Q be its population second-moment matrix. A second moment is an expected product: entry j, k of Q is the population average of regressor j times regressor k. These products are not centred as in a covariance matrix. Asymptotic means describing a limit as sample size grows. Assume independent observations, a nonsingular, meaning invertible, Q, zero expected x i times u i, and sufficient finite moments for a law of large numbers and central limit theorem. For example, finite second moments of x i times u i support the familiar independent-data normal approximation.
+
+The scaled OLS estimation error equals the inverse sample second moment times the sum of regressor-error products divided by square root n. The first part approaches Q inverse. The second has a limiting normal distribution with covariance S, defined as the expectation of u squared times x x prime. Their combination gives Q inverse S Q inverse. The asymptotic covariance of the scaled estimator is not its finite-sample variance; the approximate coefficient covariance divides that limiting matrix by n.
+
+\(Q=E[x_ix_i\prime]\), \(E[x_iu_i]=0\), \(S=E[u_i^2x_ix_i\prime]\).
+
+\(\sqrt n(\widehat\beta-\beta)=[n^{-1}\sum_ix_ix_i\prime]^{-1}n^{-1/2}\sum_ix_iu_i\).
+
+\(\sqrt n(\widehat\beta-\beta)\xrightarrow{d}N(0,Q^{-1}SQ^{-1})\); approximate covariance \(Q^{-1}SQ^{-1}/n\).
+
+### 18. Count the restrictions before choosing an LM reference
+
+Try the comparison before opening the explanation.
+
+A conventional homoskedastic LM exercise has n=500, auxiliary R squared 0.012 and two excluded-coefficient restrictions. Calculate the statistic and compare it with the 5% chi-squared critical value 5.991 for two degrees of freedom. Would a three-degree-of-freedom critical value answer the stated question?
+
+State the assumptions and units alongside the calculation.
+
+**Practice:** A conventional homoskedastic LM exercise has n=500, auxiliary R squared 0.012 and two excluded-coefficient restrictions. Calculate the statistic and compare it with the 5% chi-squared critical value 5.991 for two degrees of freedom. Would a three-degree-of-freedom critical value answer the stated question?
+
+### 19. Count the restrictions before choosing an LM reference: explanation
+
+Follow the calculation and interpret its units.
+
+LM=500*0.012=6. With q=2, compare it with 5.991, so the conventional test narrowly rejects at 5% under its assumptions. A three-degree-of-freedom critical value tests a different restriction count and is incorrect here. Rounding and the reference assumptions matter near the boundary.
+
+LM=500*0.012=6. With q=2, compare it with 5.991, so the conventional test narrowly rejects at 5% under its assumptions. A three-degree-of-freedom critical value tests a different restriction count and is incorrect here. Rounding and the reference assumptions matter near the boundary.
 

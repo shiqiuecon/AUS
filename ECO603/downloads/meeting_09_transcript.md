@@ -1,6 +1,10 @@
 # 09. Time series: basic regression and distributed lags
 
-## 01. Did a traffic law change accidents, or did the calendar change?
+Specify the timing of a regression and recover a response over several dates.
+
+## Core lesson
+
+### 01. Did a traffic law change accidents, or did the calendar change?
 
 Begin with a dated outcome and a plausible alternative explanation.
 
@@ -8,7 +12,7 @@ Traffic accidents can change after a law for several reasons: policy, travel vol
 
 Our data are monthly California accident totals from January 1981 through December 1989. A trend is a gradual time pattern; seasonality is a pattern recurring at the same calendar positions, such as each December. We will identify these patterns, write an equation with explicit timing and inspect actual output. The main question is what the controls explain and what assumption is still needed to describe a policy effect. The calendar must be understood before a coefficient is interpreted.
 
-## 02. A time-only policy variable compares dates
+### 02. A time-only policy variable compares dates
 
 Time controls can remove useful variation as well as confounding.
 
@@ -20,7 +24,7 @@ A date-based policy contrast can mix several simultaneous changes.
 
 Calendar controls and an identification argument have distinct roles.
 
-## 03. Define the monthly unit and time index
+### 03. Define the monthly unit and time index
 
 A lag requires a correct ordering, not just a row number.
 
@@ -32,7 +36,7 @@ The do-file checks the reconstructed date against the original year, sequential 
 
 January 1981 through December 1989
 
-## 04. Feedback across dates does not require a causal cycle
+### 04. Feedback across dates does not require a causal cycle
 
 Current accidents can affect the policy chosen next month.
 
@@ -44,7 +48,7 @@ Trace the route from the current unexpected cause to current accidents and then 
 
 Policy at the next date can respond to an unexpected outcome now.
 
-## 05. Contemporaneous exogeneity concerns the current regressor vector
+### 05. Contemporaneous exogeneity concerns the current regressor vector
 
 Current means the variables included for the same date.
 
@@ -56,7 +60,7 @@ This is a statement about the error's mean, not full independence of every varia
 
 Contemporaneous condition: \(E(u_t\mid x_t)=0\)
 
-## 06. Strict and sequential exogeneity condition on different information
+### 06. Strict and sequential exogeneity condition on different information
 
 Future regressors make strict exogeneity demanding.
 
@@ -68,7 +72,7 @@ Strict: \(E(u_t\mid x_1,\ldots,x_T)=0\)
 
 Sequential: \(E(u_t\mid x_1,\ldots,x_t)=0\)
 
-## 07. Past outcomes can contain past errors
+### 07. Past outcomes can contain past errors
 
 Adding dynamics changes the exogeneity question.
 
@@ -80,37 +84,7 @@ A lagged outcome is the outcome from an earlier date.
 
 This is a reason to model timing explicitly rather than assume lagging a variable always makes it safe.
 
-## 08. Strict exogeneity
-
-Try the comparison before opening the explanation.
-
-Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
-
-Trace the current-error-to-future-policy route. Compare whether future regressors appear in the conditioning information.
-
-**Practice:** Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
-
-## 09. Strict exogeneity: explanation
-
-Follow the calculation and interpret its units.
-
-Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
-
-Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
-
-## 10. A count and a rate answer different questions
-
-Exposure can change while individual risk stays fixed.
-
-Total accidents can rise because there is more driving, even if risk per trip falls. A rate divides a count by an exposure measure, such as vehicle distance or population, depending on the target. Choosing the denominator changes the question and can introduce its own measurement problems.
-
-Our current outcome is the recorded statewide count, logged for the fitted comparison. Do not silently describe it as an accident probability. If the ministry cares about safety per kilometre, identify the exposure data needed and formulate that rate explicitly. A statistically careful regression cannot compensate for an outcome that does not match the policy question.
-
-Total accidents can rise because there is more driving, even if risk per trip falls.
-
-Our current outcome is the recorded statewide count, logged for the fitted comparison.
-
-## 11. Time ordering changes the meaning of a sample
+### 08. Time ordering changes the meaning of a sample
 
 One realised history can contain strongly related observations.
 
@@ -122,41 +96,21 @@ An ordered history can share information across dates.
 
 Justify averaging and uncertainty for the process, rather than treating rows as independent.
 
-## 12. Finite-sample OLS assumptions apply to the complete regressor path
+### 09. Finite-sample OLS assumptions apply to the complete regressor path
 
 Temporal dependence and regressor-error dependence are different restrictions.
 
-Write the T time-series equations together as y equals X beta plus u. Here X includes all observed dates of every included regressor, not just the row at date t. Full rank gives a unique OLS fit. Strict exogeneity requires mean zero for each error conditional on that entire design.
+Write the outcome at date t as the intercept, the sum of the included regressor terms and the error at that date. Call the collection of regressor values at every observed date the regressor path. A unique OLS fit needs each included regressor to have some variation that the others cannot reproduce exactly.
 
-Under this strong conditional-mean condition, the OLS estimator-error identity gives conditional unbiasedness even when errors are serially correlated. Equal conditional variance and zero cross-date error covariance are additional assumptions for the conventional covariance formula. Conditional joint normality adds the classical exact t and F reference distributions. Time-series consistency instead needs a justified law of large numbers and regressor-error moment conditions; unbiasedness alone does not prove it.
+Strict exogeneity says that the mean of each date's error given the full path is zero. The weights in the OLS calculation are fixed given that path. The same weighted-error argument as in the district regression then gives conditional unbiasedness. For conventional variance calculations, also assume that errors have the same conditional variance and are uncorrelated across dates. The traffic application gives us reasons to check those extra conditions separately.
 
-\(y=X\beta+u\), with \(X\) containing the complete observed regressor path.
+Let \(\mathcal X=(x_1,\ldots,x_T)\) denote the whole regressor path.
 
-Strict exogeneity: \(E[u_t\mid X]=0\), all \(t\).
+Conditional mean: \(E(u_t\mid\mathcal X)=0\) for each \(t\).
 
-Conventional covariance additionally uses \(\operatorname{Var}(u\mid X)=\sigma^2I\).
+Conventional variance: \(\operatorname{Var}(u_t\mid\mathcal X)=\sigma^2\) and \(\operatorname{Cov}(u_t,u_s\mid\mathcal X)=0\) for \(s\ne t\).
 
-## 13. DAG practice: dated policy feedback
-
-Trace the routes before choosing a control.
-
-Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
-
-## 14. DAG practice: dated policy feedback: explanation
-
-Explain what conditioning changes in this stated graph.
-
-The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process.
-
-A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
-
-The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process. A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
-
-## 15. Does unemployment affect accidents only this month?
+### 10. Does unemployment affect accidents only this month?
 
 Allow a relationship to unfold over several periods.
 
@@ -164,7 +118,7 @@ Travel behaviour and economic conditions can adjust gradually. A current unemplo
 
 A distributed-lag model includes current and earlier values of an explanatory variable. We will use the monthly accident series to distinguish an immediate coefficient from a sum of lag coefficients. Later we allow earlier outcomes to help predict current outcomes, define stability conditions for long-run comparisons and examine misleading relationships between unrelated trending series.
 
-## 16. Define lags, differences and horizons
+### 11. Define lags, differences and horizons
 
 They are different operations on ordered observations.
 
@@ -176,7 +130,7 @@ Declaring the time index lets Stata apply L and D operators consistently with ga
 
 \(\Delta X_t=X_t-X_{t-1}\)
 
-## 17. Write a finite distributed-lag model
+### 12. Write a finite distributed-lag model
 
 Every coefficient has an outcome date and a regressor date.
 
@@ -186,7 +140,7 @@ The lag coefficients describe additional dated associations. A causal response i
 
 \(Y_t=a+\beta_0X_t+\beta_1X_{t-1}+\beta_2X_{t-2}+\text{controls}+u_t\)
 
-## 18. Trace a one-period regressor change
+### 13. Trace a one-period regressor change
 
 Its outcome responses occur at several dates.
 
@@ -200,7 +154,7 @@ Temporary-input responses: \(0.20,0.10,-0.05,0\)
 
 Cumulative response: \(0.20+0.10-0.05=0.25\)
 
-## 19. A permanent change has another time path
+### 14. A permanent change has another time path
 
 The long-run level effect reaches the lag sum in this model.
 
@@ -212,25 +166,7 @@ Permanent-input responses: \(0.20,0.30,0.25,0.25,\ldots\)
 
 Temporary cumulative response and permanent long-run level contrast are different quantities.
 
-## 20. Lag sum
-
-Try the comparison before opening the explanation.
-
-A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
-
-Write the temporary and permanent paths separately. State whether the sum refers to responses across dates or the outcome difference at a late date.
-
-**Practice:** A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
-
-## 21. Lag sum: explanation
-
-Follow the calculation and interpret its units.
-
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
-
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
-
-## 22. Introduce the uncertainty option before reading the lag table
+### 15. Introduce the uncertainty option before reading the lag table
 
 Newey–West changes the covariance estimate around an unchanged OLS fit.
 
@@ -242,7 +178,7 @@ Newey–West/HAC: allow suitable unequal spread and time dependence in uncertain
 
 Four covariance lags here mean four months; the mean equation is unchanged.
 
-## 23. Read the observed lag estimates
+### 16. Read the observed lag estimates
 
 Let the application determine the pattern.
 
@@ -268,7 +204,7 @@ These estimates use Newey–West uncertainty with four monthly lags, allowing se
 ------------------------------------------------------------------------------
 ```
 
-## 24. Estimate uncertainty for the lag sum
+### 17. Estimate uncertainty for the lag sum
 
 The coefficient covariances matter.
 
@@ -286,7 +222,7 @@ Lincom calculates the sum using the fitted covariance matrix. State the outcome 
 ------------------------------------------------------------------------------
 ```
 
-## 25. Testing no dynamic response differs from testing a zero total response
+### 18. Testing no dynamic response differs from testing a zero total response
 
 A collection of lag coefficients can cancel in its sum.
 
@@ -300,7 +236,7 @@ Zero long-run propensity: \(H_0:\sum_{j=0}^q\beta_j=0\).
 
 Different null restrictions answer different empirical questions.
 
-## 26. The sample changes when lags are added
+### 19. The sample changes when lags are added
 
 Compare fit and tests on compatible observations.
 
@@ -312,37 +248,7 @@ A two-lag model loses the first two observations if no earlier data are availabl
 
 Define the common estimation window before comparing models or applying a fit-loss test.
 
-## 27. Explain a dynamic result with a time path
-
-One label such as effect is not enough.
-
-A useful dynamic report states the data frequency, timing of the X change, immediate response, relevant later responses and uncertainty for any stated sum or long-run contrast. It says whether the scenario is temporary or permanent and which stability and exogeneity conditions support it.
-
-For the accident application, describe dated unemployment associations rather than a causal experiment unless the design identifies that variation. For a constructed model with a known shock, explain the known assumptions explicitly. This keeps a graph of responses from carrying a stronger interpretation than its source supports.
-
-The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. The finite-lag coefficients describe partial dated-input contrasts; an innovation that changes several future input values requires tracing that entire input path.
-
-## 28. DAG practice: partial lag effect or propagated input change?
-
-Trace the routes before choosing a control.
-
-An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
-
-## 29. DAG practice: partial lag effect or propagated input change?: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process.
-
-For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
-
-Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process. For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
-
-## 30. Trace the actual monthly lag pattern
+### 20. Trace the actual monthly lag pattern
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -352,7 +258,7 @@ Extend unemployment lags from two to three months. First restrict both fits to t
 
 **Practice:** Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Keep your commands, log, output and interpretation.
 
-## 31. Trace the actual monthly lag pattern: explanation
+### 21. Trace the actual monthly lag pattern: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -367,4 +273,106 @@ Common 105 months: two-lag sum \(-0.018658\); three-lag sum \(-0.018684\).
 Corresponding robust SEs: \(0.003752\) and \(0.003761\).
 
 Fixing the sample isolates the change in lag specification.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 22. Strict exogeneity
+
+Try the comparison before opening the explanation.
+
+Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
+
+Trace the current-error-to-future-policy route. Compare whether future regressors appear in the conditioning information.
+
+**Practice:** Define strict and contemporaneous exogeneity for a time-series regression using \(x_t\) and error \(u_t\). Which is stronger?
+
+### 23. Strict exogeneity: explanation
+
+Follow the calculation and interpret its units.
+
+Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
+
+Contemporaneous exogeneity requires \(E(u_t\mid x_t)=0\). Strict exogeneity requires \(E(u_t\mid x_1,\ldots,x_T)=0\) for every t, including future regressors. Strict implies contemporaneous, but the reverse need not hold. These statements use \(x_t\) as the entire regressor vector.
+
+### 24. A count and a rate answer different questions
+
+Exposure can change while individual risk stays fixed.
+
+Total accidents can rise because there is more driving, even if risk per trip falls. A rate divides a count by an exposure measure, such as vehicle distance or population, depending on the target. Choosing the denominator changes the question and can introduce its own measurement problems.
+
+Our current outcome is the recorded statewide count, logged for the fitted comparison. Do not silently describe it as an accident probability. If the ministry cares about safety per kilometre, identify the exposure data needed and formulate that rate explicitly. A statistically careful regression cannot compensate for an outcome that does not match the policy question.
+
+Total accidents can rise because there is more driving, even if risk per trip falls.
+
+Our current outcome is the recorded statewide count, logged for the fitted comparison.
+
+### 25. DAG practice: dated policy feedback
+
+Trace the routes before choosing a control.
+
+Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
+
+### 26. DAG practice: dated policy feedback: explanation
+
+Explain what conditioning changes in this stated graph.
+
+The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process.
+
+A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
+
+The route is \(u_t\rightarrow Y_t\rightarrow X_{t+1}\). It provides a reason that the current disturbance can be related to future regressors, which strict exogeneity conditions on. Every causal arrow still moves forward through the policy process. A sequential mean assumption uses a different information set and can be considered when current policy is chosen before the current unexpected cause, subject to the full model and timing assumptions. The graph does not prove that assumption. It makes clear why the strict version should not be imposed merely because the observations have dates.
+
+### 27. Lag sum
+
+Try the comparison before opening the explanation.
+
+A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
+
+Write the temporary and permanent paths separately. State whether the sum refers to responses across dates or the outcome difference at a late date.
+
+**Practice:** A finite distributed-lag model has coefficients 0.2, 0.1 and −0.05 on current x, lag 1 and lag 2. Compute the impact and the cumulative response to a one-period unit increase in x.
+
+### 28. Lag sum: explanation
+
+Follow the calculation and interpret its units.
+
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
+
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
+
+### 29. Explain a dynamic result with a time path
+
+One label such as effect is not enough.
+
+A useful dynamic report states the data frequency, timing of the X change, immediate response, relevant later responses and uncertainty for any stated sum or long-run contrast. It says whether the scenario is temporary or permanent and which stability and exogeneity conditions support it.
+
+For the accident application, describe dated unemployment associations rather than a causal experiment unless the design identifies that variation. For a constructed model with a known shock, explain the known assumptions explicitly. This keeps a graph of responses from carrying a stronger interpretation than its source supports.
+
+The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. The finite-lag coefficients describe partial dated-input contrasts; an innovation that changes several future input values requires tracing that entire input path.
+
+### 30. DAG practice: partial lag effect or propagated input change?
+
+Trace the routes before choosing a control.
+
+An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
+
+### 31. DAG practice: partial lag effect or propagated input change?: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process.
+
+For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
+
+Holding both later inputs fixed blocks the routes through those input nodes. The direct earlier-input-to-current-outcome route remains. Its partial contrast differs from an intervention that also changes later values of the input process. For a propagated innovation, trace the resulting entire input path and combine it with the distributed-lag coefficients. For a one-period imposed regressor increase, specify that all other dates remain fixed. A sum of lag coefficients is meaningful for the stated path and model; the word shock alone does not define which path was changed.
 

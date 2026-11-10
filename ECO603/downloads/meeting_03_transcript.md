@@ -1,6 +1,10 @@
 # 03. Multiple regression: estimation and omitted variables
 
-## 01. What does holding other things fixed mean?
+Explain why an estimate changes when the controls change.
+
+## Core lesson
+
+### 01. What does holding other things fixed mean?
 
 Show the comparison left after observed controls are removed.
 
@@ -8,19 +12,7 @@ The simple regression compared district scores using staffing alone. Now we intr
 
 We will first define the longer equation, explain its fitting rule and derive why adding a regressor can change a slope. We then check those ideas in the actual district data. In the next lesson, partialling out will make the adjusted comparison visible by removing the fitted contributions of the controls. A coefficient calculation and its causal policy interpretation will continue to require separate arguments.
 
-## 02. Why can adding a regressor change a slope?
-
-A raw comparison can mix several observed differences.
-
-The simple regression used staffing alone to describe score differences. A longer regression can hold specified characteristics, such as language share, fixed while comparing staffing. These are different observed comparisons, so their slopes need not agree.
-
-We first write that longer relationship and solve the multiple-regression fitting problem. We then derive the omitted-variable expression and check the actual same-sample coefficient movement. The algebra explains how a slope can change; the causal claim still depends on whether the longer comparison addresses the important common causes.
-
-A short and a longer regression describe different conditional comparisons.
-
-Derive the difference before interpreting observed coefficient movement.
-
-## 03. The full model sets the target coefficient
+### 02. The full model sets the target coefficient
 
 Define every component before removing controls.
 
@@ -32,7 +24,7 @@ For this estimation exercise, assume all included variables are observed on the 
 
 \(E(u_i\mid X_i,Z_i,W_i)=0\) for the stated mean model
 
-## 04. OLS solves a sample optimisation
+### 03. OLS solves a sample optimisation
 
 Its residual identities follow from the fitted model.
 
@@ -44,7 +36,7 @@ These conditions are called the normal equations, the equations characterizing t
 
 \(\sum_i X_i e_i=0\) for each included regressor.
 
-## 05. Sample orthogonality is mechanical
+### 04. Sample orthogonality is mechanical
 
 Population exogeneity is a substantive assumption.
 
@@ -56,7 +48,7 @@ For example, a residual can be positive at one staffing value and negative at an
 
 Orthogonality here means a zero sum of paired products.
 
-## 06. What is hidden in the staffing comparison?
+### 05. What is hidden in the staffing comparison?
 
 Use a second variable to understand a changed slope.
 
@@ -64,19 +56,7 @@ The previous lesson found a negative association between students per teacher an
 
 We will use the same 420 districts throughout the main comparison. Keeping the observations fixed lets us study a change in the model without also changing the sample. Our goal is to explain the coefficient movement with an equation, a diagram and actual data, then decide what additional assumptions a causal interpretation would require.
 
-## 07. Recall the difference between an error and a residual
-
-A property of a fitted line is not a test of the design.
-
-An error is the part of the population outcome outside the included relationship. A residual is observed outcome minus fitted outcome after we estimate the model. OLS with an intercept makes the sample residuals sum to zero. That calculation can hold even when staffing is related to an important omitted factor.
-
-For example, districts might recruit teachers because their students need extra help. The resulting staffing measure can be related to learning needs inside the error. Before looking at any new output, explain why a zero average residual would not rule out this possibility. We need an argument about the population relationship, not only a check that the software solved the least-squares problem.
-
-\(e_i=Y_i-\widehat Y_i\)
-
-\(\sum_i e_i=0\) with an OLS intercept
-
-## 08. Write the longer relationship first
+### 06. Write the longer relationship first
 
 Define what the short model leaves out.
 
@@ -88,7 +68,7 @@ Suppose the average u is zero at every combination of X and Z. This zero conditi
 
 Exogeneity for this mean model: \(E(u_i\mid X_i,Z_i)=0\)
 
-## 09. Two relationships determine omitted-variable bias
+### 07. Two relationships determine omitted-variable bias
 
 Multiply the omitted effect by the omitted-variable association.
 
@@ -102,7 +82,7 @@ Substitute that expression for Z into the longer score equation. The constant te
 
 Short slope minus longer slope: \(\beta_2\delta_1\)
 
-## 10. Predict the direction before seeing the estimate
+### 08. Predict the direction before seeing the estimate
 
 The sign depends on both parts of the product.
 
@@ -110,7 +90,7 @@ Suppose a left-out factor raises the outcome and is positively related to X. Bot
 
 In an earnings example, ability may raise wages and be positively related to schooling. A regression of wages on schooling alone can then mix the schooling relationship with ability. This example provides an economic reason for the algebra. It does not establish the size of bias in a particular wage dataset, because ability and its relationships would still need to be studied.
 
-## 11. Predict omitted-variable bias
+### 09. Predict omitted-variable bias
 
 Try the comparison before opening the explanation.
 
@@ -120,7 +100,7 @@ Use the longer outcome slope of the omitted factor and its supporting relationsh
 
 **Practice:** In a wage model, the causal return to schooling is \(\beta\). Ability raises wages by \(\gamma>0\), and the auxiliary regression of ability on schooling has slope \(\delta>0\). Under the scalar model, what is the omitted-variable bias?
 
-## 12. Predict omitted-variable bias: explanation
+### 10. Predict omitted-variable bias: explanation
 
 Follow the calculation and interpret its units.
 
@@ -128,7 +108,7 @@ The short-regression slope is \(\beta+\gamma\delta\), so its bias relative to \(
 
 The short-regression slope is \(\beta+\gamma\delta\), so its bias relative to \(\beta\) is positive. Schooling picks up some of the association between ability and wages. This requires the stated linear model and exogeneity of the remaining error.
 
-## 13. Check the actual coefficient movement
+### 11. Check the actual coefficient movement
 
 Use the same districts in both regressions.
 
@@ -146,7 +126,7 @@ e(b)[1,3]
 y1   -1.101296   -0.649777  686.032250
 ```
 
-## 14. Verify the omitted-variable calculation
+### 12. Verify the omitted-variable calculation
 
 An exact sample identity can be checked independently.
 
@@ -166,7 +146,7 @@ e(b)[1,2]
 y1    1.813719  -19.854055
 ```
 
-## 15. Derive the omitted-variable contribution from population moments
+### 13. Derive the omitted-variable contribution from population moments
 
 The omitted effect and its association with the included regressor both matter.
 
@@ -180,23 +160,7 @@ Taking covariance of X with the longer equation gives beta one times variance of
 
 \(\alpha_1=\beta_1+\beta_2\operatorname{Cov}(X,W)/\operatorname{Var}(X)\), \(\operatorname{Var}(X)>0\).
 
-## 16. Holding an observed factor fixed
-
-Multiple regression compares ratios and scores at a fixed value of another variable.
-
-Our first line used only the staffing ratio. We now add Zᵢ, the percentage of English learners, to the model. This is multiple regression: a regression with more than one explanatory variable. Its fitted equation is \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\)+\(b_2\)Zᵢ. The new coefficient \(b_2\) gives the fitted score difference for one percentage-point increase in Z, keeping X fixed.
-
-The staffing coefficient \(b_1\) now answers a more specific descriptive question. How do fitted scores differ with the ratio when we compare districts at the same Z? This is what 'holding Z fixed' means in this equation. The word adjusted refers to this accounting for Z. We are changing the comparison, rather than physically changing a district's students or teachers.
-
-Select Next step to compare the simple and adjusted lines. For the adjusted line we hold Z at its sample average. Both lines use the same 420 districts, so any change in their slopes comes from adding Z, not from comparing different samples. Notice whether the line becomes steeper or flatter. The next slide translates that change into the staffing comparison we used earlier.
-
-\(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
-
-\(b_1\): staffing slope at fixed \(Z\)
-
-The graph fixes language share at its sample average.
-
-## 17. Explain why the estimated slope changed
+### 14. Explain why the estimated slope changed
 
 Adding Z changes the fitted comparison from about +4.56 to +2.20 score points.
 
@@ -210,7 +174,7 @@ The second number is not automatically the causal gain from hiring teachers. Fam
 
 **Explanation:** The simple model gives about +4.56 points. The adjusted model gives about +2.20 points while holding English-learner share fixed. The first comparison also reflects observed differences in language composition across districts; the second accounts for those differences within its stated model.
 
-## 18. Read the adjusted regression
+### 15. Read the adjusted regression
 
 Read both coefficients with their units and the stated comparison.
 
@@ -232,7 +196,7 @@ e(b)[1,3]
 y1   -1.101296   -0.649777  686.032250
 ```
 
-## 19. Attempt the adjusted policy contrast
+### 16. Attempt the adjusted policy contrast
 
 Keep the arithmetic and the interpretation together.
 
@@ -251,33 +215,7 @@ Explain why this number differs from the short-model contrast. The short fit als
   2.202592
 ```
 
-## 20. A confounder and a mediator do different jobs
-
-The timing of a control changes its meaning.
-
-A confounder helps explain both the explanatory variable and the outcome before the intervention. A mediator lies on a pathway through which the intervention changes the outcome. For training and earnings, prior education might be a confounder, while skills learned during training might be a mediator.
-
-If the target is training's total effect, holding newly acquired skills fixed removes part of the effect we wanted to measure. The resulting comparison concerns a different question. An observed variable is therefore not automatically a good control because it predicts earnings well. Ask when it was measured, why it is related to treatment and whether it is itself changed by treatment. The causal mechanism comes before the choice of regressors.
-
-In this graph, X is training, Y is earnings and M is acquired skills. Training has a direct earnings route and a route through skills. Toggle conditioning on skills. The mediated route closes, while the direct route remains. This illustrates why the total-effect question and a skills-held-fixed question differ. Identifying a direct effect additionally requires adequate control of mediator–outcome confounding; merely including the mediator does not provide that guarantee.
-
-Confounder: a prior common influence
-
-Mediator: part of the effect pathway
-
-## 21. Why a collider can be a bad control
-
-Selection into a shared consequence can create a relationship.
-
-A collider is a variable caused by two other variables. Imagine scholarship selection depending on both academic preparation and financial need. Among scholarship recipients, a student with less preparation may need greater financial need to qualify. Conditioning on selection can create an association between the two causes even if they were unrelated in the wider population.
-
-In a regression study, controlling for a similar shared consequence can open an unwanted route between the explanatory variable and the outcome. This is why a longer control list is not automatically more credible. Draw the proposed relationships and explain the selection rule. The word collider names a specific structure, not a general label for any variable you dislike.
-
-The graph makes scholarship selection the common consequence of preparation and financial need. Without selection, the proposed path between those two roots is blocked. Conditioning on scholarship selection opens it. A collider is defined relative to the particular path being traced; it is the meeting point of two arrowheads on that path.
-
-\(\text{Preparation}\rightarrow\text{Selection}\leftarrow\text{Need}\)
-
-## 22. Choose controls for the research question
+### 17. Choose controls for the research question
 
 State what each variable is meant to address.
 
@@ -289,7 +227,7 @@ New application: training → earnings.
 
 Prior education is a proposed common cause; motivation remains unmeasured.
 
-## 23. Adjustment changes a comparison; it does not guarantee identification
+### 18. Adjustment changes a comparison; it does not guarantee identification
 
 A richer model can still leave an important factor out.
 
@@ -301,25 +239,7 @@ Identification: do the data and assumptions determine the target?
 
 Estimation: use the sample to calculate it.
 
-## 24. Confounder or mediator?
-
-Try the comparison before opening the explanation.
-
-Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
-
-Locate the variable in time. Ask whether it precedes the policy and helps determine it, or is produced by the policy and carries its consequences.
-
-**Practice:** Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
-
-## 25. Confounder or mediator?: explanation
-
-Follow the calculation and interpret its units.
-
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
-
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
-
-## 26. Add income and inspect what changes
+### 19. Add income and inspect what changes
 
 An additional observed factor can substantially alter a slope.
 
@@ -337,7 +257,7 @@ e(b)[1,4]
 y1   -0.068776   -0.488267    1.494517  640.315497
 ```
 
-## 27. Keep the estimation sample fixed
+### 20. Keep the estimation sample fixed
 
 Otherwise a coefficient change can have two explanations.
 
@@ -349,115 +269,7 @@ Compare identical observations
 
 Then investigate why observations are missing
 
-## 28. Keep the sample fixed
-
-Try the comparison before opening the explanation.
-
-A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
-
-Separate the two changes: adding a regressor changes the comparison, while excluding incomplete records changes which observations contribute.
-
-**Practice:** A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
-
-## 29. Keep the sample fixed: explanation
-
-Follow the calculation and interpret its units.
-
-The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
-
-The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
-
-## 30. Interpret a control coefficient cautiously
-
-The variable may be useful without having a causal interpretation.
-
-The coefficient on English-learner share is an adjusted district association. It is measured in score points per percentage-point change in the share, holding the listed regressors fixed. It is not the effect on an individual student of learning English or changing language status.
-
-The staffing study may include this variable to address a possible source of confounding, without trying to identify the causal effect of language composition itself. Not every coefficient in a causal model has the same research status. In a report, identify the policy coefficient of interest and explain the role of supporting controls. This makes the interpretation more useful than presenting a list of significant variables with no target question.
-
-The coefficient on English-learner share is an adjusted district association.
-
-The staffing study may include this variable to address a possible source of confounding, without trying to identify the causal effect of language composition itself.
-
-## 31. Fit and causal validity are different properties
-
-Explaining more variation need not improve the comparison.
-
-R-squared measures the fraction of sample outcome variation accounted for by the fitted model. Adding a regressor cannot reduce ordinary R-squared on an unchanged sample, because OLS can always assign it a zero coefficient. This is a property of the optimisation, not a guarantee that the extra variable belongs in the causal model.
-
-A mediator or selection variable can improve prediction while changing or damaging the intended causal comparison. Conversely, a design with modest R-squared may identify a useful effect if its variation is credible. Evaluate fit, precision and identification as separate questions. Each is useful, but none replaces the others.
-
-\(R^2=1-\dfrac{\sum_i e_i^2}{\sum_i(Y_i-\overline Y)^2}\)
-
-## 32. A useful control plan fits in a short table
-
-Make the assumptions inspectable.
-
-For each proposed control, write a sentence about timing and a sentence about purpose. For prior income, explain why it might influence both staffing and scores. For current attendance, ask whether staffing could already have affected it. For a test-based funding rule, ask whether selection creates additional relationships.
-
-This exercise reveals disagreements about the economic model before they become disagreements about software. Two analysts may estimate the same equation while intending different effects. A clear control plan helps them discover that difference. It also makes the limitations of an observational study easier for a policymaker to assess.
-
-For each proposed control, write a sentence about timing and a sentence about purpose.
-
-This exercise reveals disagreements about the economic model before they become disagreements about software.
-
-## 33. Use the design to decide what data to collect next
-
-More variables are useful when they address a named problem.
-
-If earlier learning difficulties drive teacher recruitment, prior outcome measurements may be useful. If unobserved stable district features are the main concern, repeated observations could help compare changes within a district. If policy assignment remains related to changing unobserved needs, a more credible source of assignment may be required.
-
-These suggestions follow from different explanations of the error term. Do not collect a long list of convenient variables and hope one solves the problem. Start with the mechanism that threatens the comparison, then explain how the new data would help. Later panel-data and instrumental-variable lessons will develop two of these strategies in detail.
-
-If earlier learning difficulties drive teacher recruitment, prior outcome measurements may be useful.
-
-These suggestions follow from different explanations of the error term.
-
-## 34. Write the result as an empirical argument
-
-A coefficient is one part of the explanation.
-
-A useful report starts with the staffing question and identifies a district as the observation. It then compares the short and adjusted slopes, keeping their units explicit. Explain the omitted-variable calculation and the reason each control was included. End with a specific remaining threat and a suitable next step.
-
-Avoid saying that the model 'controls for everything'. Instead state exactly what was measured. Readers can then assess the remaining assumptions. This style of reporting is useful for a policy memo, a thesis application or a replication exercise because it connects the statistical result to the decision the analysis was intended to inform.
-
-A useful report starts with the staffing question and identifies a district as the observation.
-
-Avoid saying that the model 'controls for everything'.
-
-## 35. Check the two requirements for omitted-variable bias
-
-A left-out factor must matter in both relationships.
-
-If Z does not affect Y in the longer model, its omitted-effect coefficient is zero and the product vanishes. If Z is unrelated to X in the relevant auxiliary relationship, its auxiliary slope is zero and the product also vanishes. A variable's absence alone does not prove bias.
-
-Explain these two cases using an economic example. Then explain why a variable related to X but measured after treatment may create a different problem when included. This combines the algebraic condition with the control-selection reasoning. The goal is to choose and defend a comparison, rather than treat every added regressor as an improvement.
-
-If Z does not affect Y in the longer model, its omitted-effect coefficient is zero and the product vanishes.
-
-Explain these two cases using an economic example.
-
-## 36. DAG practice: preserve the intended effect
-
-Trace the routes before choosing a control.
-
-Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
-
-## 37. DAG practice: preserve the intended effect: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Conditioning on skills closes the route \(X\rightarrow M\rightarrow Y\), removing a mechanism included in the total-effect question. The direct route \(X\rightarrow Y\) remains in the diagram. A skills-held-fixed comparison therefore concerns a different target.
-
-A direct-effect estimate also needs suitable assumptions about treatment assignment, mediator–outcome confounding, intervention meaning, support and the fitted model. Adding a post-training mediator is not, by itself, evidence that these conditions hold. Start with the intended effect, then justify the control choice.
-
-Conditioning on skills closes the route \(X\rightarrow M\rightarrow Y\), removing a mechanism included in the total-effect question. The direct route \(X\rightarrow Y\) remains in the diagram. A skills-held-fixed comparison therefore concerns a different target. A direct-effect estimate also needs suitable assumptions about treatment assignment, mediator–outcome confounding, intervention meaning, support and the fitted model. Adding a post-training mediator is not, by itself, evidence that these conditions hold. Start with the intended effect, then justify the control choice.
-
-## 38. Explain an observed omitted-variable contribution
+### 21. Explain an observed omitted-variable contribution
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -467,7 +279,7 @@ Repeat the omitted-variable decomposition for income, retaining language share i
 
 **Practice:** Repeat the omitted-variable decomposition for income, retaining language share in every supporting equation. Verify the staffing-coefficient movement on one common sample. Keep your commands, log, output and interpretation.
 
-## 39. Explain an observed omitted-variable contribution: explanation
+### 22. Explain an observed omitted-variable contribution: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -483,13 +295,207 @@ Income contribution, retaining language share: \(-1.032520\).
 
 Check compatible models and the same 420 districts.
 
-## 40. From a control set to the information OLS uses
-
-From a control set to the information OLS uses
+### 23. From a control set to the information OLS uses
 
 The longer regression changes the comparison by holding the included controls fixed. The omitted-variable calculation explains why a short slope can differ from a longer slope even on the same sample. Neither calculation establishes that all important causes have been observed.
 
 We next study the properties of the estimator. Partialling out will show exactly which sample variation remains after removing the linear information in the controls. We can then ask what assumptions make that remaining comparison informative about the intended coefficient.
 
 From a control set to the information OLS uses
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 24. Why can adding a regressor change a slope?
+
+A raw comparison can mix several observed differences.
+
+The simple regression used staffing alone to describe score differences. A longer regression can hold specified characteristics, such as language share, fixed while comparing staffing. These are different observed comparisons, so their slopes need not agree.
+
+We first write that longer relationship and solve the multiple-regression fitting problem. We then derive the omitted-variable expression and check the actual same-sample coefficient movement. The algebra explains how a slope can change; the causal claim still depends on whether the longer comparison addresses the important common causes.
+
+A short and a longer regression describe different conditional comparisons.
+
+Derive the difference before interpreting observed coefficient movement.
+
+### 25. Recall the difference between an error and a residual
+
+A property of a fitted line is not a test of the design.
+
+An error is the part of the population outcome outside the included relationship. A residual is observed outcome minus fitted outcome after we estimate the model. OLS with an intercept makes the sample residuals sum to zero. That calculation can hold even when staffing is related to an important omitted factor.
+
+For example, districts might recruit teachers because their students need extra help. The resulting staffing measure can be related to learning needs inside the error. Before looking at any new output, explain why a zero average residual would not rule out this possibility. We need an argument about the population relationship, not only a check that the software solved the least-squares problem.
+
+\(e_i=Y_i-\widehat Y_i\)
+
+\(\sum_i e_i=0\) with an OLS intercept
+
+### 26. Holding an observed factor fixed
+
+Multiple regression compares ratios and scores at a fixed value of another variable.
+
+Our first line used only the staffing ratio. We now add Zᵢ, the percentage of English learners, to the model. This is multiple regression: a regression with more than one explanatory variable. Its fitted equation is \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\)+\(b_2\)Zᵢ. The new coefficient \(b_2\) gives the fitted score difference for one percentage-point increase in Z, keeping X fixed.
+
+The staffing coefficient \(b_1\) now answers a more specific descriptive question. How do fitted scores differ with the ratio when we compare districts at the same Z? This is what 'holding Z fixed' means in this equation. The word adjusted refers to this accounting for Z. We are changing the comparison, rather than physically changing a district's students or teachers.
+
+Select Next step to compare the simple and adjusted lines. For the adjusted line we hold Z at its sample average. Both lines use the same 420 districts, so any change in their slopes comes from adding Z, not from comparing different samples. Notice whether the line becomes steeper or flatter. The next slide translates that change into the staffing comparison we used earlier.
+
+\(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
+
+\(b_1\): staffing slope at fixed \(Z\)
+
+The graph fixes language share at its sample average.
+
+### 27. A confounder and a mediator do different jobs
+
+The timing of a control changes its meaning.
+
+A confounder helps explain both the explanatory variable and the outcome before the intervention. A mediator lies on a pathway through which the intervention changes the outcome. For training and earnings, prior education might be a confounder, while skills learned during training might be a mediator.
+
+If the target is training's total effect, holding newly acquired skills fixed removes part of the effect we wanted to measure. The resulting comparison concerns a different question. An observed variable is therefore not automatically a good control because it predicts earnings well. Ask when it was measured, why it is related to treatment and whether it is itself changed by treatment. The causal mechanism comes before the choice of regressors.
+
+In this graph, X is training, Y is earnings and M is acquired skills. Training has a direct earnings route and a route through skills. Toggle conditioning on skills. The mediated route closes, while the direct route remains. This illustrates why the total-effect question and a skills-held-fixed question differ. Identifying a direct effect additionally requires adequate control of mediator–outcome confounding; merely including the mediator does not provide that guarantee.
+
+Confounder: a prior common influence
+
+Mediator: part of the effect pathway
+
+### 28. Why a collider can be a bad control
+
+Selection into a shared consequence can create a relationship.
+
+A collider is a variable caused by two other variables. Imagine scholarship selection depending on both academic preparation and financial need. Among scholarship recipients, a student with less preparation may need greater financial need to qualify. Conditioning on selection can create an association between the two causes even if they were unrelated in the wider population.
+
+In a regression study, controlling for a similar shared consequence can open an unwanted route between the explanatory variable and the outcome. This is why a longer control list is not automatically more credible. Draw the proposed relationships and explain the selection rule. The word collider names a specific structure, not a general label for any variable you dislike.
+
+The graph makes scholarship selection the common consequence of preparation and financial need. Without selection, the proposed path between those two roots is blocked. Conditioning on scholarship selection opens it. A collider is defined relative to the particular path being traced; it is the meeting point of two arrowheads on that path.
+
+\(\text{Preparation}\rightarrow\text{Selection}\leftarrow\text{Need}\)
+
+### 29. Confounder or mediator?
+
+Try the comparison before opening the explanation.
+
+Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
+
+Locate the variable in time. Ask whether it precedes the policy and helps determine it, or is produced by the policy and carries its consequences.
+
+**Practice:** Training changes skills, and skills change earnings. The target is training's total effect. Should post-training skill automatically be included as a control?
+
+### 30. Confounder or mediator?: explanation
+
+Follow the calculation and interpret its units.
+
+No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+
+No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+
+### 31. Keep the sample fixed
+
+Try the comparison before opening the explanation.
+
+A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
+
+Separate the two changes: adding a regressor changes the comparison, while excluding incomplete records changes which observations contribute.
+
+**Practice:** A coefficient changes after adding income, but income is missing for 20% of observations. Why can you not attribute the entire change to controlling for income?
+
+### 32. Keep the sample fixed: explanation
+
+Follow the calculation and interpret its units.
+
+The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
+
+The comparison changes both the regressors and the estimation sample. Refit the short and long models on the same complete-case sample to isolate the specification change. Then consider whether missingness itself creates selection bias.
+
+### 33. Interpret a control coefficient cautiously
+
+The variable may be useful without having a causal interpretation.
+
+The coefficient on English-learner share is an adjusted district association. It is measured in score points per percentage-point change in the share, holding the listed regressors fixed. It is not the effect on an individual student of learning English or changing language status.
+
+The staffing study may include this variable to address a possible source of confounding, without trying to identify the causal effect of language composition itself. Not every coefficient in a causal model has the same research status. In a report, identify the policy coefficient of interest and explain the role of supporting controls. This makes the interpretation more useful than presenting a list of significant variables with no target question.
+
+The coefficient on English-learner share is an adjusted district association.
+
+The staffing study may include this variable to address a possible source of confounding, without trying to identify the causal effect of language composition itself.
+
+### 34. Fit and causal validity are different properties
+
+Explaining more variation need not improve the comparison.
+
+R-squared measures the fraction of sample outcome variation accounted for by the fitted model. Adding a regressor cannot reduce ordinary R-squared on an unchanged sample, because OLS can always assign it a zero coefficient. This is a property of the optimisation, not a guarantee that the extra variable belongs in the causal model.
+
+A mediator or selection variable can improve prediction while changing or damaging the intended causal comparison. Conversely, a design with modest R-squared may identify a useful effect if its variation is credible. Evaluate fit, precision and identification as separate questions. Each is useful, but none replaces the others.
+
+\(R^2=1-\dfrac{\sum_i e_i^2}{\sum_i(Y_i-\overline Y)^2}\)
+
+### 35. A useful control plan fits in a short table
+
+Make the assumptions inspectable.
+
+For each proposed control, write a sentence about timing and a sentence about purpose. For prior income, explain why it might influence both staffing and scores. For current attendance, ask whether staffing could already have affected it. For a test-based funding rule, ask whether selection creates additional relationships.
+
+This exercise reveals disagreements about the economic model before they become disagreements about software. Two analysts may estimate the same equation while intending different effects. A clear control plan helps them discover that difference. It also makes the limitations of an observational study easier for a policymaker to assess.
+
+For each proposed control, write a sentence about timing and a sentence about purpose.
+
+This exercise reveals disagreements about the economic model before they become disagreements about software.
+
+### 36. Use the design to decide what data to collect next
+
+More variables are useful when they address a named problem.
+
+If earlier learning difficulties drive teacher recruitment, prior outcome measurements may be useful. If unobserved stable district features are the main concern, repeated observations could help compare changes within a district. If policy assignment remains related to changing unobserved needs, a more credible source of assignment may be required.
+
+These suggestions follow from different explanations of the error term. Do not collect a long list of convenient variables and hope one solves the problem. Start with the mechanism that threatens the comparison, then explain how the new data would help. Later panel-data and instrumental-variable lessons will develop two of these strategies in detail.
+
+If earlier learning difficulties drive teacher recruitment, prior outcome measurements may be useful.
+
+These suggestions follow from different explanations of the error term.
+
+### 37. Write the result as an empirical argument
+
+A coefficient is one part of the explanation.
+
+A useful report starts with the staffing question and identifies a district as the observation. It then compares the short and adjusted slopes, keeping their units explicit. Explain the omitted-variable calculation and the reason each control was included. End with a specific remaining threat and a suitable next step.
+
+Avoid saying that the model 'controls for everything'. Instead state exactly what was measured. Readers can then assess the remaining assumptions. This style of reporting is useful for a policy memo, a thesis application or a replication exercise because it connects the statistical result to the decision the analysis was intended to inform.
+
+A useful report starts with the staffing question and identifies a district as the observation.
+
+Avoid saying that the model 'controls for everything'.
+
+### 38. Check the two requirements for omitted-variable bias
+
+A left-out factor must matter in both relationships.
+
+If Z does not affect Y in the longer model, its omitted-effect coefficient is zero and the product vanishes. If Z is unrelated to X in the relevant auxiliary relationship, its auxiliary slope is zero and the product also vanishes. A variable's absence alone does not prove bias.
+
+Explain these two cases using an economic example. Then explain why a variable related to X but measured after treatment may create a different problem when included. This combines the algebraic condition with the control-selection reasoning. The goal is to choose and defend a comparison, rather than treat every added regressor as an improvement.
+
+If Z does not affect Y in the longer model, its omitted-effect coefficient is zero and the product vanishes.
+
+Explain these two cases using an economic example.
+
+### 39. DAG practice: preserve the intended effect
+
+Trace the routes before choosing a control.
+
+Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
+
+### 40. DAG practice: preserve the intended effect: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Conditioning on skills closes the route \(X\rightarrow M\rightarrow Y\), removing a mechanism included in the total-effect question. The direct route \(X\rightarrow Y\) remains in the diagram. A skills-held-fixed comparison therefore concerns a different target.
+
+A direct-effect estimate also needs suitable assumptions about treatment assignment, mediator–outcome confounding, intervention meaning, support and the fitted model. Adding a post-training mediator is not, by itself, evidence that these conditions hold. Start with the intended effect, then justify the control choice.
+
+Conditioning on skills closes the route \(X\rightarrow M\rightarrow Y\), removing a mechanism included in the total-effect question. The direct route \(X\rightarrow Y\) remains in the diagram. A skills-held-fixed comparison therefore concerns a different target. A direct-effect estimate also needs suitable assumptions about treatment assignment, mediator–outcome confounding, intervention meaning, support and the fitted model. Adding a post-training mediator is not, by itself, evidence that these conditions hold. Start with the intended effect, then justify the control choice.
 

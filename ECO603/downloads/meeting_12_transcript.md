@@ -1,6 +1,10 @@
 # 12. Time series: serial correlation and diagnostics
 
-## 01. Why can the same estimate have different uncertainty?
+Distinguish residual dependence from a missing part of the mean equation.
+
+## Core lesson
+
+### 01. Why can the same estimate have different uncertainty?
 
 Monthly observations may share information; uncertainty calculations must account for it.
 
@@ -14,7 +18,7 @@ For example, bad road conditions or a change in enforcement may last several mon
 
 **Explanation:** A lasting change in road conditions, enforcement or reporting could affect several months. Such a shared influence can make the unexplained parts of their accident totals related.
 
-## 02. Define the monthly accident model
+### 02. Define the monthly accident model
 
 State the outcome, law indicators, calendar controls and error term.
 
@@ -28,21 +32,7 @@ The trend term uses the monthly index t. The calendar indicators are written D s
 
 \(D_{mt}\): month indicator; \(u_t\): error.
 
-## 03. Separate the outcome pattern from the error pattern
-
-Serial correlation concerns errors across dates, after specifying the model.
-
-The raw accident graph shows the outcome before we account for its predictors. A pattern that repeats at the same part of each year is seasonality. A gradual movement across the years is a trend. The month indicators and time trend in our equation are intended to describe such patterns, so a pattern in the raw outcome is not automatically a problem in the remaining error.
-
-We call the model's average outcome at given regressor values its conditional mean. 'Conditional' means that we specify the values of the explanatory variables when making the comparison. If the conditional-mean model is appropriate, its error averages to zero at those values. Serial correlation means that errors at different dates are correlated: for example, a positive error in one month tends to be followed by a positive error. Autocorrelation is another name for correlation across time within a series.
-
-This distinction tells us what to examine next. First allow the model to account for trend, seasonality and the observed controls. Then inspect the residuals, the observed outcomes minus their fitted values. A seasonal accident series may have little residual dependence after this adjustment. Equally, a fairly stable accident series can leave related residuals. We need the residual graph to see what the fitted model has left unexplained.
-
-**Practice:** Does a seasonal accident plot prove that the errors in a seasonally adjusted regression are serially correlated?
-
-**Explanation:** No. Outcome seasonality can be explained by the included month effects. Residual dependence must be assessed after fitting the specified mean model.
-
-## 04. Follow the residual path
+### 03. Follow the residual path
 
 Look for sequences of positive or negative residuals.
 
@@ -52,21 +42,7 @@ Residuals help us study the errors, but they are not the errors themselves. We c
 
 Why would a run matter for uncertainty? Suppose one unrecorded disruption affects four consecutive months. Those observations partly repeat information about the same disruption. They need not provide as much new information as four independent disruptions. The effect on a coefficient's SE depends on which months help estimate that coefficient and how their errors are related. To see the relation more directly, we will compare each residual with the preceding month's residual.
 
-## 05. Compare one month with the previous month
-
-Put the previous month's residual on the horizontal axis.
-
-A lag is a value from an earlier date. A lag-one residual is the previous month's residual, written eₜ₋₁. In this lag plot, the horizontal axis shows eₜ₋₁ and the vertical axis shows the current residual eₜ. Each dot therefore represents two neighboring months, rather than an outcome and a policy variable.
-
-Consider a dot in the upper-right part of the graph. Both residuals are positive: a month with more accidents than predicted followed another such month. In the lower-left part, both are negative. A tendency for dots to occupy those two regions suggests positive lag-one association. Positive means the values tend to have the same direction relative to their averages, not that both values must always be above zero.
-
-There are 107 pairs because the first of our 108 residuals has no observed predecessor. The graph does not estimate the law's effect. It studies the pattern left after the accident regression. We can make that pattern easier to understand with a constructed process in which we choose how strongly one error carries into the next.
-
-**Practice:** Why are there 107 residual pairs? What does a point in the upper-right region mean?
-
-**Explanation:** The first residual has no observed predecessor. An upper-right point is a month with a positive residual preceded by another month with a positive residual.
-
-## 06. See how an error can carry into the next month
+### 04. See how an error can carry into the next month
 
 An AR(1) process adds a new shock to a fraction of the previous error.
 
@@ -80,7 +56,7 @@ Move the control while keeping the same innovation draws. The graph is a simulat
 
 \(\rho\): persistence; \(\varepsilon_t\): new unpredictable error
 
-## 07. Separate the comparison, model and uncertainty
+### 05. Separate the comparison, model and uncertainty
 
 Related errors do not, by themselves, tell us whether the coefficient is valid.
 
@@ -98,7 +74,7 @@ Mean model: which variables predict the outcome?
 
 SE calculation: how much uncertainty remains?
 
-## 08. Why dependence changes uncertainty
+### 06. Why dependence changes uncertainty
 
 Related errors add covariance terms to the variance calculation.
 
@@ -114,7 +90,7 @@ Variance measures spread; covariance measures how two errors move together.
 
 Two unit-variance errors: covariance \(0\Rightarrow0.5\); covariance \(0.5\Rightarrow0.75\)
 
-## 09. Serial covariance enters the variance through cross-date terms
+### 07. Serial covariance enters the variance through cross-date terms
 
 The direction of the SE change depends on both regressor and error patterns.
 
@@ -128,21 +104,7 @@ Let \(a_t=X_t-\overline X\), \(S=\sum_t a_t^2\).
 
 Both regressor weights and cross-date error covariance affect precision.
 
-## 10. What an SE adjustment cannot repair
-
-HAC changes uncertainty; it does not remove a regressor's relation with the error.
-
-The SE adjustment deals with uncertainty, but it does not change which comparison the coefficient describes. Suppose the law is introduced when officials anticipate rising accident risk that our recorded variables do not capture. The law indicator is then related to the error: the endogeneity problem defined earlier. Newey–West leaves that relation, and the OLS coefficient, unchanged.
-
-A related problem can arise after adding last month's outcome to the equation. This is a lagged outcome. It contains the influence of last month's error. If that error is related to this month's error, the lagged outcome may also be related to the current error. OLS can then be inconsistent: collecting more months does not necessarily make it approach the target coefficient. A different SE formula cannot remove that regressor–error relation.
-
-This gives us a practical sequence. Check the comparison and the mean model before relying on an uncertainty adjustment. If the remaining concern is error dependence under a valid coefficient model, HAC may address it. If an included variable is related to the error, we need to reconsider the model or the source of the comparison. Next we will look more closely at how omitted predictable changes can create these difficulties.
-
-**Practice:** A lagged outcome is correlated with the current error. What does an HAC option change, and what does it leave?
-
-**Explanation:** It changes the estimated covariance around the fitted coefficients. It leaves the regressor–error correlation and potential coefficient inconsistency in place.
-
-## 11. Check whether past information is still missing
+### 08. Check whether past information is still missing
 
 Dynamic completeness concerns whether the model uses the relevant past information.
 
@@ -158,7 +120,7 @@ Adding a lag changes the fitted equation and may change the sample
 
 HAC addresses uncertainty from dependence that remains
 
-## 12. Choose the response that matches the problem
+### 09. Choose the response that matches the problem
 
 Adding lags, Newey–West and Prais–Winsten change different parts of the analysis.
 
@@ -172,7 +134,7 @@ Valid mean model with suitable remaining dependence → justify covariance estim
 
 A structured error transformation is developed in the next meeting.
 
-## 13. Durbin–Watson is a residual-difference statistic
+### 10. Durbin–Watson is a residual-difference statistic
 
 Its familiar approximation is a descriptive guide with conditions.
 
@@ -184,7 +146,7 @@ Values below two suggest positive adjacent residual association and values above
 
 Define the model and testing assumptions before turning a descriptive statistic into a decision.
 
-## 14. A Breusch–Godfrey test keeps the original regressors in its auxiliary model
+### 11. A Breusch–Godfrey test keeps the original regressors in its auxiliary model
 
 State the residual lags and the joint null.
 
@@ -198,7 +160,7 @@ A familiar LM version uses the auxiliary sample size times its R squared and an 
 
 State the sample, lag orders, implementation and covariance assumptions.
 
-## 15. Read the serial-correlation diagnostic
+### 12. Read the serial-correlation diagnostic
 
 Breusch–Godfrey tests a stated no-serial-correlation null.
 
@@ -228,7 +190,7 @@ Breusch–Godfrey LM test for autocorrelation
                         H0: no serial correlation
 ```
 
-## 16. Reproduce and interpret dated residual diagnostics
+### 13. Reproduce and interpret dated residual diagnostics
 
 Try the comparison before opening the explanation.
 
@@ -238,7 +200,7 @@ State the assumptions and units alongside the calculation.
 
 **Practice:** Reproduce the diagnostics block in overleaf_technical.do using traffic.csv. Report the DW statistic and BG tests at lag orders one and four. Explain the nulls, why four months are not four quarters, and why a diagnostic result does not by itself identify a policy effect.
 
-## 17. Reproduce and interpret dated residual diagnostics: explanation
+### 14. Reproduce and interpret dated residual diagnostics: explanation
 
 Follow the calculation and interpret its units.
 
@@ -246,7 +208,67 @@ Use the same 108-month regression, dates and controls. DW is about 1.200475. The
 
 Use the same 108-month regression, dates and controls. DW is about 1.200475. The BG statistics are about 13.010 for one lag (p about 0.0003) and 16.907 for four lags (p about 0.0020), rejecting their stated nulls under the reference conditions. DW describes adjacent fitted-residual differences. The BG tests jointly set the specified residual-lag coefficients to zero under their reference assumptions. Four lags mean four months. Record the actual statistics and p-values from your successful run, then distinguish a conditional-mean revision from a covariance correction and from a causal identification argument.
 
-## 18. Apply the reasoning to quarterly inflation
+### 15. Choose an action that addresses the actual problem
+
+Connect the observed concern to the model, comparison or uncertainty calculation.
+
+We have seen several reasons why a regression result might need attention. Choose the next action by naming which problem is present. If the mean equation is appropriate but its errors remain related across nearby dates, a justified HAC calculation can address uncertainty. If relevant past information still predicts the outcome, reconsider whether the mean equation needs that information.
+
+If a regressor is related to the current error, changing the SE method cannot remove that relation. For example, officials might adopt a law because they anticipate an unrecorded rise in accident risk. This is a problem with the policy comparison, even if the residual dependence is also handled carefully. The study needs a reason why its policy variation can separate the law's effect from that changing risk.
+
+Practise linking a recommendation to the diagnosis: 'The concern is…, so I would…, assuming…'. For each case, explain what your proposed change fixes and what it leaves. This prepares you to assess a new empirical question without choosing a command just because it is labelled robust. Write one connected paragraph about the accident example: name the concern, choose a response, state its assumptions and explain what it cannot establish.
+
+**Practice:** A policy indicator responds to unobserved accident risk. Is the first remedy a longer HAC window?
+
+**Explanation:** No. The named problem is policy endogeneity. A longer HAC window changes uncertainty estimates but does not create an exogenous policy comparison. Address the design or identify a defensible source of policy variation.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 16. Separate the outcome pattern from the error pattern
+
+Serial correlation concerns errors across dates, after specifying the model.
+
+The raw accident graph shows the outcome before we account for its predictors. A pattern that repeats at the same part of each year is seasonality. A gradual movement across the years is a trend. The month indicators and time trend in our equation are intended to describe such patterns, so a pattern in the raw outcome is not automatically a problem in the remaining error.
+
+We call the model's average outcome at given regressor values its conditional mean. 'Conditional' means that we specify the values of the explanatory variables when making the comparison. If the conditional-mean model is appropriate, its error averages to zero at those values. Serial correlation means that errors at different dates are correlated: for example, a positive error in one month tends to be followed by a positive error. Autocorrelation is another name for correlation across time within a series.
+
+This distinction tells us what to examine next. First allow the model to account for trend, seasonality and the observed controls. Then inspect the residuals, the observed outcomes minus their fitted values. A seasonal accident series may have little residual dependence after this adjustment. Equally, a fairly stable accident series can leave related residuals. We need the residual graph to see what the fitted model has left unexplained.
+
+**Practice:** Does a seasonal accident plot prove that the errors in a seasonally adjusted regression are serially correlated?
+
+**Explanation:** No. Outcome seasonality can be explained by the included month effects. Residual dependence must be assessed after fitting the specified mean model.
+
+### 17. Compare one month with the previous month
+
+Put the previous month's residual on the horizontal axis.
+
+A lag is a value from an earlier date. A lag-one residual is the previous month's residual, written eₜ₋₁. In this lag plot, the horizontal axis shows eₜ₋₁ and the vertical axis shows the current residual eₜ. Each dot therefore represents two neighboring months, rather than an outcome and a policy variable.
+
+Consider a dot in the upper-right part of the graph. Both residuals are positive: a month with more accidents than predicted followed another such month. In the lower-left part, both are negative. A tendency for dots to occupy those two regions suggests positive lag-one association. Positive means the values tend to have the same direction relative to their averages, not that both values must always be above zero.
+
+There are 107 pairs because the first of our 108 residuals has no observed predecessor. The graph does not estimate the law's effect. It studies the pattern left after the accident regression. We can make that pattern easier to understand with a constructed process in which we choose how strongly one error carries into the next.
+
+**Practice:** Why are there 107 residual pairs? What does a point in the upper-right region mean?
+
+**Explanation:** The first residual has no observed predecessor. An upper-right point is a month with a positive residual preceded by another month with a positive residual.
+
+### 18. What an SE adjustment cannot repair
+
+HAC changes uncertainty; it does not remove a regressor's relation with the error.
+
+The SE adjustment deals with uncertainty, but it does not change which comparison the coefficient describes. Suppose the law is introduced when officials anticipate rising accident risk that our recorded variables do not capture. The law indicator is then related to the error: the endogeneity problem defined earlier. Newey–West leaves that relation, and the OLS coefficient, unchanged.
+
+A related problem can arise after adding last month's outcome to the equation. This is a lagged outcome. It contains the influence of last month's error. If that error is related to this month's error, the lagged outcome may also be related to the current error. OLS can then be inconsistent: collecting more months does not necessarily make it approach the target coefficient. A different SE formula cannot remove that regressor–error relation.
+
+This gives us a practical sequence. Check the comparison and the mean model before relying on an uncertainty adjustment. If the remaining concern is error dependence under a valid coefficient model, HAC may address it. If an included variable is related to the error, we need to reconsider the model or the source of the comparison. Next we will look more closely at how omitted predictable changes can create these difficulties.
+
+**Practice:** A lagged outcome is correlated with the current error. What does an HAC option change, and what does it leave?
+
+**Explanation:** It changes the estimated covariance around the fitted coefficients. It leaves the regressor–error correlation and potential coefficient inconsistency in place.
+
+### 19. Apply the reasoning to quarterly inflation
 
 Define the economic shock and time horizon before interpreting a future response.
 
@@ -263,18 +285,4 @@ Quarterly h = 4: the outcome one year ahead
 Local projection: a separate future-outcome regression for each horizon
 
 HAC lag 12 in quarterly data: a three-year covariance window
-
-## 19. Choose an action that addresses the actual problem
-
-Connect the observed concern to the model, comparison or uncertainty calculation.
-
-We have seen several reasons why a regression result might need attention. Choose the next action by naming which problem is present. If the mean equation is appropriate but its errors remain related across nearby dates, a justified HAC calculation can address uncertainty. If relevant past information still predicts the outcome, reconsider whether the mean equation needs that information.
-
-If a regressor is related to the current error, changing the SE method cannot remove that relation. For example, officials might adopt a law because they anticipate an unrecorded rise in accident risk. This is a problem with the policy comparison, even if the residual dependence is also handled carefully. The study needs a reason why its policy variation can separate the law's effect from that changing risk.
-
-Practise linking a recommendation to the diagnosis: 'The concern is…, so I would…, assuming…'. For each case, explain what your proposed change fixes and what it leaves. This prepares you to assess a new empirical question without choosing a command just because it is labelled robust. Write one connected paragraph about the accident example: name the concern, choose a response, state its assumptions and explain what it cannot establish.
-
-**Practice:** A policy indicator responds to unobserved accident risk. Is the first remedy a longer HAC window?
-
-**Explanation:** No. The named problem is policy endogeneity. A longer HAC window changes uncertainty estimates but does not create an exogenous policy comparison. Address the design or identify a defensible source of policy variation.
 

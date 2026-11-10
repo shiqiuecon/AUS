@@ -546,3 +546,82 @@ LM test for autoregressive conditional heteroskedasticity (ARCH)
 . display "ECO603_OVERLEAF_TECHNICAL_COMPLETE"
 ECO603_OVERLEAF_TECHNICAL_COMPLETE
 
+
+
+Actual StataMP coefficient-only results. Log header omitted.
+
+. import delimited "output/meeting_02_data.csv", clear varnames(1) asdouble
+(encoding automatically selected: ISO-8859-1)
+(4 vars, 420 obs)
+
+. * BEGIN simple
+. quietly regress score str
+
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,2]
+           str       _cons
+y1   -2.279808  698.932953
+
+. * END simple
+. * BEGIN contrast
+. display %10.6f -2*_b[str]
+  4.559617
+
+. * END contrast
+. * BEGIN adjusted
+. quietly regress score str el
+
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,3]
+           str          el       _cons
+y1   -1.101296   -0.649777  686.032250
+
+. * END adjusted
+. * BEGIN adjusted_contrast
+. display %10.6f -2*_b[str]
+  2.202592
+
+. * END adjusted_contrast
+. * BEGIN auxiliary
+. quietly regress el str
+
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,2]
+           str       _cons
+y1    1.813719  -19.854055
+
+. * END auxiliary
+. * BEGIN income
+. quietly regress score str el income
+
+. matrix list e(b), format(%10.6f)
+
+e(b)[1,4]
+           str          el      income       _cons
+y1   -0.068776   -0.488267    1.494517  640.315497
+
+. * END income
+. quietly regress score el income
+
+. predict double ry, residuals
+
+. quietly regress str el income
+
+. predict double rx, residuals
+
+. * BEGIN partial
+. quietly regress ry rx, noconstant
+
+. matrix list e(b), format(%10.6f)
+
+symmetric e(b)[1,1]
+           rx
+y1  -0.068776
+
+. * END partial
+. display "ECO603_COEFFICIENT_WORKSHOP_COMPLETE"
+ECO603_COEFFICIENT_WORKSHOP_COMPLETE
+

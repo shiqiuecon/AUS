@@ -1,8 +1,10 @@
 # 13. Time series: corrections, heteroskedasticity and responses
 
-## 01. Choose between revising the mean, estimator and covariance
+Choose a time-series uncertainty method and estimate a response at a named horizon.
 
-Choose between revising the mean, estimator and covariance
+## Core lesson
+
+### 01. Choose between revising the mean, estimator and covariance
 
 The residual diagnostics have shown why an ordered sample needs more than an independent-observation uncertainty formula. We now compare three responses: add justified dynamics to the conditional mean, specify and estimate an error process, or keep the coefficient calculation and estimate a dependence-aware covariance.
 
@@ -12,63 +14,23 @@ Revise the conditional mean when the economic model needs additional dynamics.
 
 Compare model-based error transformations with HAC covariance under their stated assumptions.
 
-## 02. Use HAC to account for unequal spread and time dependence
+### 02. Use HAC to account for unequal spread and time dependence
 
 Newey–West keeps the OLS coefficients and changes their estimated uncertainty.
 
-We introduced Newey–West in the lag model. Here we examine how this HAC covariance estimator combines information across dates. For each date, multiply the regressor values by that date's residual. The covariance calculation uses both these same-date products and pairs of products separated by a lag. It is not simply a correction based on the residual correlation alone.
+Recall how a district slope uses the part of its regressor left after adjusting for controls. For a monthly slope, call that remainder r X at date t. Let a at t be r X times the fitted error at that date. These products record the contribution of each date to uncertainty about the slope.
 
-A lag window says which separations enter and how strongly. Let L be the largest included lag and k a positive lag. Bartlett weights are one minus k divided by L plus one, declining linearly to smaller positive weights. The same-date weight is one. With L equal to four, the positive-lag weights are 0.8, 0.6, 0.4 and 0.2. A consistent covariance estimate requires suitable exogeneity, limits on extreme regressor–error products, dependence and lag-selection conditions. A fixed four-lag illustration does not prove those conditions for an arbitrary process.
+In a sample with dependent months, we add cross-date products as well as the same-date squares. Newey–West adds pairs up to a chosen lag and gives smaller weights to more distant pairs. At lag four, the weights for gaps one through four are 0.8, 0.6, 0.4 and 0.2. Divide by the square of the total squared regressor remainders to put the result in slope-variance units. The displayed expression omits a finite-sample scaling factor.
 
-\(w_0=1,\quad w_k=1-k/(L+1),\quad k=1,\ldots,L\)
+H A C stands for heteroskedasticity and autocorrelation consistent. A justified approximation needs a suitable time-series model and dependence conditions. The lag choice should reflect the frequency, expected dependence and available sample. The fitted regression and its coefficient stay fixed when we change only the covariance calculation.
 
-For \(L=4\): \(1,0.8,0.6,0.4,0.2\)
+\(a_t=rX_t\widehat u_t\), where \(rX_t\) is the regressor remainder after the other inputs.
 
-Weights apply to regressor–residual covariance contributions.
+\(w_h=1-h/(L+1)\) for \(h=1,\ldots,L\). For \(L=4\): \(0.8,0.6,0.4,0.2\).
 
-## 03. HAC estimates covariance of regressor-error scores across dates
+Variance estimate: \(\dfrac{\sum_t a_t^2+2\sum_{h=1}^L w_h\sum_{t=h+1}^T a_ta_{t-h}}{(\sum_t rX_t^2)^2}\).
 
-Autocorrelation of errors and covariance of the coefficient estimates are connected by the regressors.
-
-For a time-series regression, define the regressor-error product vector s t as the regressor vector x t multiplied by the model error u t. The long-run covariance sums covariance of these vectors across all date separations, when that sum and the required limit approximation are well defined. With Q equal to the limiting regressor second moment, the coefficient covariance is approximately Q inverse times this long-run covariance times Q inverse, divided by T.
-
-A Newey–West estimate uses fitted residuals, a finite lag window and weights that taper with lag distance. Here bandwidth means the number of lagged cross-products kept in that window. Its consistency requires suitable exogeneity, moments, dependence and bandwidth conditions. Changing the lag choice changes which empirical cross-date products contribute. It does not remove an omitted cause or automatically guarantee accurate inference in a short persistent sample.
-
-\(s_t=x_tu_t\), \(S=\sum_{h=-\infty}^{\infty}E[s_ts_{t-h}\prime]\), when the sum and limits are justified.
-
-Approximate coefficient covariance: \(Q^{-1}SQ^{-1}/T\).
-
-Newey–West estimates a weighted, truncated version using fitted residuals.
-
-## 04. Interpret the lag in calendar time
-
-Interpret the selected maximum lag using months or quarters.
-
-Our maximum lag L must be interpreted using the data frequency, meaning how often we observe the series. These observations are monthly, so lag(4) allows covariance contributions through four months. In quarterly data, one observation covers three months; the same lag option would reach four quarters, or one year.
-
-This maximum lag is also called a bandwidth in this setting. It controls how far apart two observations can be and still contribute directly to the estimated covariance. It does not add lagged accidents, lagged policy variables or more seasonal controls to the regression equation. Adding those variables would change the mean model; selecting this window changes the uncertainty calculation.
-
-Move L in the graph and watch which weights remain positive. A larger window includes more estimated covariance contributions, but it does not guarantee a larger or better SE. Those extra terms can add noise, and their values can have different signs. The graph changes the taper weights only; it does not rerun Stata. To compare actual SEs for several windows, we would run the same regression with each stated lag choice and explain why those windows are plausible for the application.
-
-\(w_k=1-\dfrac{k}{L+1},\quad k=0,\ldots,L\)
-
-Bartlett weights taper the contribution of later error covariances.
-
-**Practice:** For quarterly data, what calendar window is lag(12)? Does that option add twelve regressors?
-
-**Explanation:** It reaches twelve quarters, or three years. It adjusts the covariance calculation; it adds no conditional-mean regressors.
-
-## 05. What stays fixed in the three fits?
-
-Hold the fitted model fixed and compare its three SE calculations.
-
-We are now ready to compare the three SE methods in the actual accident regression. The outcome, regressors and 108 observations are identical in all three fits. Conventional, heteroskedasticity-robust and Newey–West calculations therefore report the same OLS law coefficient. The different bars show different estimated uncertainty, rather than three different estimated policy relationships.
-
-Each bar is an approximate 95% confidence interval calculated as the estimate plus or minus 1.96 SEs. A confidence interval comes from a procedure designed to cover the population coefficient at its stated rate across comparable datasets. The multiplier 1.96 uses a normal reference distribution, the familiar bell-shaped pattern that gives a large-sample approximation under suitable conditions. Stata's tables use their own stated reference rule, so their interval endpoints differ slightly from this graph.
-
-Notice that the robust SE is smaller than the conventional SE, while the HAC4 SE is larger. HAC4 means Newey–West with a maximum of four lags. There is no rule that a robust SE must always increase. We should choose a method because its assumptions match the dependence in the application, not because it gives the widest interval or the preferred test result. With that distinction clear, we can ask which problems this adjustment still leaves unresolved.
-
-## 06. Predictable error variance is different from a predictable error mean
+### 03. Predictable error variance is different from a predictable error mean
 
 ARCH describes volatility clustering, not necessarily directional error predictability.
 
@@ -93,7 +55,7 @@ LM test for autoregressive conditional heteroskedasticity (ARCH)
          H0: no ARCH effects      vs.  H1: ARCH(p) disturbance
 ```
 
-## 07. Run the conventional regression
+### 04. Run the conventional regression
 
 Find the law coefficient and understand the labels before comparing SEs.
 
@@ -119,7 +81,7 @@ For the coefficient tests, the null hypothesis is that the population coefficien
 ------------------------------------------------------------------------------
 ```
 
-## 08. Run heteroskedasticity-robust inference
+### 05. Run heteroskedasticity-robust inference
 
 vce(robust) allows unequal error variance, while preserving the OLS coefficients.
 
@@ -146,7 +108,7 @@ In this dataset the robust SE is smaller, not larger. That fact alone does not s
 ------------------------------------------------------------------------------
 ```
 
-## 09. Run Newey–West on the same model
+### 06. Run Newey–West on the same model
 
 newey with lag(4) allows covariance contributions through four months.
 
@@ -173,7 +135,7 @@ This is evidence about the comparison of SE calculations, not proof that four la
 ------------------------------------------------------------------------------
 ```
 
-## 10. Convert the fitted log difference into percent
+### 07. Convert the fitted log difference into percent
 
 Use 100[exp(b)−1] for the exact contrast between exponentiated fitted values.
 
@@ -197,85 +159,7 @@ Near this coefficient, the transformation's local slope is 100 times exp of b, a
 ------------------------------------------------------------------------------
 ```
 
-## 11. Calculate, then explain the comparison
-
-Calculate the test and interval, then report what they describe.
-
-Use the three SEs to calculate the t ratio for a zero-coefficient null. The coefficient is the same each time, so divide about 0.09545 by each SE. The results are approximately 6.71 with conventional SEs, 7.72 with robust SEs and 5.05 with HAC4. Different uncertainty calculations change how far the estimate lies from zero in SE units.
-
-Using the normal large-sample rule, an absolute ratio above about 1.96 rejects a zero null at the two-sided 5% level. All three ratios pass that threshold here. Yet they do not express the same amount of uncertainty. With the HAC4 SE, the approximate 95% interval is 0.09545±1.96×0.01890, or about [0.05841, 0.13249]. These endpoints are in log-outcome coefficient units, not percent.
-
-Write the result as part of an empirical report. State that the data are monthly, describe the fitted law association, give the uncertainty method and name its four-month window. Then state the main condition that the report has not established, such as the absence of unmeasured changes related to policy timing. A precise report explains both the number and the comparison behind it.
-
-**Practice:** Use b=0.09545264 and HAC4 SE=0.01889849 to calculate the approximate t ratio and 95% interval for b.
-
-**Explanation:** t≈5.05. The large-sample interval is 0.09545264±1.96×0.01889849≈[0.05841, 0.13249], on the log-outcome coefficient scale. This is uncertainty about the fitted coefficient under the inference assumptions; it is not automatically an interval for a causal law effect.
-
-## 12. DAG practice: persistent disturbances and HAC
-
-Trace the routes before choosing a control.
-
-The earlier disturbance affects the current disturbance, but the input nodes have no common-cause connection to these disturbances in the stated graph. Does disturbance persistence alone create regressor endogeneity? What does HAC change, and which arrows does it remove?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** The earlier disturbance affects the current disturbance, but the input nodes have no common-cause connection to these disturbances in the stated graph. Does disturbance persistence alone create regressor endogeneity? What does HAC change, and which arrows does it remove?
-
-## 13. DAG practice: persistent disturbances and HAC: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Persistence alone need not create endogeneity in this proposed model. It can create dependent outcomes and errors while the relevant input–disturbance mean conditions remain valid. Those are separate questions.
-
-HAC changes the estimated covariance of the coefficient under suitable exogeneity, dependence and sample conditions. It removes no causal arrows and keeps OLS coefficients fixed on an identical specification and sample. If the actual input selection process introduces a common-cause route to the disturbance, HAC does not close that new route.
-
-Persistence alone need not create endogeneity in this proposed model. It can create dependent outcomes and errors while the relevant input–disturbance mean conditions remain valid. Those are separate questions. HAC changes the estimated covariance of the coefficient under suitable exogeneity, dependence and sample conditions. It removes no causal arrows and keeps OLS coefficients fixed on an identical specification and sample. If the actual input selection process introduces a common-cause route to the disturbance, HAC does not close that new route.
-
-## 14. Choose an uncertainty statement for repeated months
-
-Reproduce the evidence, then explain its economic meaning.
-
-Run lab_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
-
-Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
-
-**Practice:** Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Keep your commands, log, output and interpretation.
-
-## 15. Choose an uncertainty statement for repeated months: explanation
-
-A reproducible result needs both a calculation and an interpretation.
-
-The common law coefficient is about 0.095453. The SEs are about 0.014235, 0.012368 and 0.018898 for conventional, robust and HAC4 inference. Using the common estimate plus or minus 1.96 times each SE gives different approximate intervals without changing the fitted model.
-
-A robust SE can be smaller because its covariance estimate responds to the actual relationship between regressor leverage and error spread. Four covariance lags are four months in this monthly dataset; the option does not add four regressors. HAC allows a specified treatment of remaining time dependence under suitable conditions, while none of these choices makes law adoption exogenous or removes omitted dynamics from the conditional mean.
-
-The common law coefficient remains 0.095453 on 108 months. The four- and eight-month HAC SEs are 0.018898 and 0.021580. The bandwidth changes the covariance estimate, not the list of regressors or the causal adoption argument.
-
-Coefficient unchanged: \(0.095453\).
-
-HAC SE, four versus eight months: \(0.018898\) versus \(0.021580\).
-
-The bandwidth changes estimated uncertainty, not the conditional-mean regressors.
-
-## 16. Exit check: connect the model, estimate and SE
-
-Explain the three choices as responses to different empirical concerns.
-
-Explain why the same fitted law coefficient can have three different standard errors. The conventional formula assumes the stated equal-variance and independence conditions. Heteroskedasticity-robust inference allows unequal spread but does not automatically allow time dependence. The Newey–West calculation adds weighted covariance information across nearby dates under its own conditions.
-
-Give the calendar meaning of four covariance lags for monthly data, and state whether any new predictor was added. Then write one connected paragraph reporting the fitted magnitude, its uncertainty and the evidence that adoption provides a credible policy comparison. If that last argument is missing, say what design evidence would be needed. Next in this block, we derive structured error transformations and then study responses at future horizons.
-
-Same equation/sample → same OLS coefficient.
-
-Different justified covariance calculations → potentially different intervals.
-
-A policy effect still needs an assignment argument.
-
-**Practice:** In one paragraph, compare adding a lag, using Newey–West and fitting Prais–Winsten. Interpret lag(4) for this dataset.
-
-**Explanation:** Adding a lag changes the mean equation and may change the sample and coefficients. Newey–West keeps OLS coefficients on the same equation and sample, while changing their estimated covariance; lag(4) here reaches four months. Prais–Winsten uses an AR(1) error model to transform the fit and may change coefficients and SEs. None of these changes, by itself, creates an exogenous policy comparison.
-
-## 17. Which change addresses the problem we found?
+### 08. Which change addresses the problem we found?
 
 Compare improving dynamics, changing an error model and estimating a future response.
 
@@ -283,19 +167,7 @@ The serial-correlation lesson left two tasks: check whether the conditional mean
 
 The quarterly inflation example is a controlled simulation with a known shock and known population response. Its Stata output is real software output from generated data, not an empirical estimate for a country. Knowing the truth lets us see how finite samples and horizon choices affect reported response paths without pretending that a regression identifies a real macroeconomic shock by itself.
 
-## 18. Recall what HAC preserves
-
-An uncertainty adjustment does not add predictors.
-
-Newey–West retains the OLS coefficient on the same equation and sample while changing its estimated covariance. Adding a lagged outcome changes the equation and usually the usable sample. Prais–Winsten uses an error-process model to transform the fit and can change coefficients and SEs.
-
-Before comparing the results, say which concern motivates each operation. If an omitted lag helps explain current accidents, a mean-model change may be relevant. If the mean model is credible but errors remain dependent, a covariance adjustment may suffice for that part of the problem. An endogenous policy variable requires a separate identification response.
-
-Newey–West retains the OLS coefficient on the same equation and sample while changing its estimated covariance.
-
-Before comparing the results, say which concern motivates each operation.
-
-## 19. Transform a serial-error equation step by step
+### 09. Transform a serial-error equation step by step
 
 Subtracting the error carry-over also transforms the regressors.
 
@@ -307,7 +179,7 @@ The left side becomes current Y minus rho times previous Y. The regressor become
 
 \(Y_t-\rho Y_{t-1}=a(1-\rho)+\beta(X_t-\rho X_{t-1})+\varepsilon_t\)
 
-## 20. Make the transformation feasible
+### 10. Make the transformation feasible
 
 Prais–Winsten estimates the carry-over and retains the first observation.
 
@@ -321,7 +193,7 @@ First-observation weight: \(\sqrt{1-\rho^2}\)
 
 Estimate rho, transform all columns, and fit the transformed equation.
 
-## 21. Prais–Winsten models an AR(1) error process
+### 11. Prais–Winsten models an AR(1) error process
 
 Its additional structure can change the fit.
 
@@ -345,39 +217,7 @@ The potential efficiency benefit depends on the error model and appropriate regr
 -------------+----------------------------------------------------------------
 ```
 
-## 22. The first observation needs its own GLS transformation
-
-Quasi-differencing and ordinary first differences impose different error models.
-
-For an AR one error model with absolute rho below one, subtract rho times the lagged regression equation at dates after the first. This gives the innovation e t as the transformed error. If the initial error is drawn from the stationary AR one distribution, multiplying the first row of the entire regression by square root of one minus rho squared puts its error on the same variance scale.
-
-Prais–Winsten keeps this adjusted first row; Cochrane–Orcutt drops it. In practice rho is estimated, so feasible GLS needs a credible error specification and additional conditions for its large-sample claims. Transform the intercept and every regressor as well as the outcome. Ordinary first differencing instead uses rho equal to one in the algebra; it is not interchangeable with a stationary-error GLS model.
-
-For \(t\ge2\): \(Y_t-\rho Y_{t-1}=(1-\rho)\beta_0+\beta_1(X_t-\rho X_{t-1})+e_t\).
-
-Stationary first row: \((Y_1^\star,X_1^\star,1^\star)=\sqrt{1-\rho^2}(Y_1,X_1,1)\).
-
-Estimated rho and a misspecified error process require care.
-
-## 23. Model or inference?
-
-Try the comparison before opening the explanation.
-
-Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
-
-Compare three operations: add a predictor, retain OLS but change covariance, or transform the equation using a modeled error process.
-
-**Practice:** Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
-
-## 24. Model or inference?: explanation
-
-Follow the calculation and interpret its units.
-
-Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
-
-Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
-
-## 25. Specify the known quarterly data-generating rule
+### 12. Specify the known quarterly data-generating rule
 
 A stable process gives a transparent response benchmark.
 
@@ -391,7 +231,7 @@ Hold other external draws fixed; allow inflation to propagate.
 
 Known intervention response: \(0.8(0.6)^h\)
 
-## 26. A local projection asks about a specified future outcome
+### 13. A local projection asks about a specified future outcome
 
 Define the shock and horizon before the coefficient.
 
@@ -403,7 +243,7 @@ In the displayed equation, h is the horizon, a subscript h is its intercept, b s
 
 \(h\): quarters ahead; \(b_h\): response per current shock unit.
 
-## 27. The horizon coefficient has outcome-per-shock units
+### 14. The horizon coefficient has outcome-per-shock units
 
 Do not confuse a future value with a cumulative sum.
 
@@ -415,25 +255,7 @@ At horizon four, the coefficient concerns inflation four quarters after the shoc
 
 Write the economic sentence before calculating: a one-unit shock is associated with a fitted difference in the outcome at a specified future date, conditional on the included information.
 
-## 28. A horizon
-
-Try the comparison before opening the explanation.
-
-In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
-
-Keep the shock date fixed and move the outcome date forward by h observation periods. Translate those periods into quarters.
-
-**Practice:** In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
-
-## 29. A horizon: explanation
-
-Follow the calculation and interpret its units.
-
-It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
-
-It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
-
-## 30. Inspect the estimated path without forcing it to match the truth
+### 15. Inspect the estimated path without forcing it to match the truth
 
 Finite-sample response estimates can be noisy.
 
@@ -441,7 +263,7 @@ The plotted points and SEs come from the Stata regressions at horizons zero thro
 
 This is not a reason to select a different random seed after seeing an inconvenient result. The simulation helps us learn that sampling uncertainty remains even with a correctly identified constructed shock. At longer horizons, fewer usable observations and greater unexplained variation can make the path less precise. Report that uncertainty instead of drawing a smooth curve that hides the actual estimates.
 
-## 31. Read the horizon-four output honestly
+### 16. Read the horizon-four output honestly
 
 A negative sample estimate can coexist with a positive true response.
 
@@ -465,7 +287,7 @@ F4.inflation | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
 ------------------------------------------------------------------------------
 ```
 
-## 32. Future-outcome errors can overlap across dates
+### 17. Future-outcome errors can overlap across dates
 
 A sensible mean model can still leave serial dependence.
 
@@ -477,19 +299,7 @@ Illustration: \(w_t=v_{t+1}+v_{t+2}\)
 
 \(w_{t+1}=v_{t+2}+v_{t+3}\): shared \(v_{t+2}\)
 
-## 33. A HAC lag has calendar meaning
-
-The same number describes different windows at different frequencies.
-
-The simulation uses quarterly data and Newey–West lag eight, allowing contributions through eight quarters, or two years. The accident example used monthly data with lag four, a four-month window. These are not interchangeable adjustments.
-
-The appropriate window depends on the dependence structure and the asymptotic justification, and a finite-sample analysis should inspect plausible choices. A longer window is not automatically more conservative or more accurate. Also remember that lag selection in the covariance calculation does not add regressors to the horizon equation.
-
-The simulation uses quarterly data and Newey–West lag eight, allowing contributions through eight quarters, or two years.
-
-The appropriate window depends on the dependence structure and the asymptotic justification, and a finite-sample analysis should inspect plausible choices.
-
-## 34. Pointwise intervals do not cover an entire response path at the same rate
+### 18. Pointwise intervals do not cover an entire response path at the same rate
 
 Multiple horizons change the inferential question.
 
@@ -503,7 +313,7 @@ Simultaneous coverage: the complete stated collection of horizons.
 
 Illustration only, with independent events: \(0.95^9\approx0.63\).
 
-## 35. Controlling a mechanism can change the response being studied
+### 19. Controlling a mechanism can change the response being studied
 
 A current mediator is not just another lag control.
 
@@ -515,37 +325,7 @@ New application: expectations mediate a shock and also respond to other news.
 
 Post-shock controls can change the target and create selection.
 
-## 36. Mediation is not proven
-
-Try the comparison before opening the explanation.
-
-A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
-
-Trace the mediated route and the route through other news. A coefficient difference alone cannot tell which mechanism produced the change.
-
-**Practice:** A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
-
-## 37. Mediation is not proven: explanation
-
-Follow the calculation and interpret its units.
-
-No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
-
-No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
-
-## 38. Initial information and post-shock information have different roles
-
-Timing determines what a control can do.
-
-A variable known before the shock can help account for the state of the economy that predicts both measured shocks and future outcomes. A variable changed by the shock can instead be part of its transmission. The same variable name can play different roles depending on when it is measured.
-
-Write a time line for the shock, controls and outcome. This is especially useful when survey expectations, policy announcements and quarterly averages are recorded at different points. A regression with many controls can still target the wrong response if their timing is not aligned with the economic question.
-
-A variable known before the shock can help account for the state of the economy that predicts both measured shocks and future outcomes.
-
-Write a time line for the shock, controls and outcome.
-
-## 39. Distinguish an estimated shock from a known innovation
+### 20. Distinguish an estimated shock from a known innovation
 
 Measurement and first-step uncertainty can matter.
 
@@ -557,7 +337,7 @@ Known simulated shock: observed by construction.
 
 Estimated empirical shock: identification and first-step uncertainty need separate arguments.
 
-## 40. Choose among the three changes using the application
+### 21. Choose among the three changes using the application
 
 The preferred response follows the diagnosed failure.
 
@@ -569,27 +349,7 @@ For omitted predictable dynamics, reconsider the conditional-mean equation and i
 
 None automatically solves policy endogeneity or shock mismeasurement.
 
-## 41. DAG practice: expectations after a shock
-
-Trace the routes before choosing a control.
-
-A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
-
-## 42. DAG practice: expectations after a shock: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Expectations lie on \(s_t\rightarrow M\rightarrow\pi_{t+h}\), so conditioning on them blocks part of the shock’s response. They also form a collider on \(s_t\rightarrow M\leftarrow U\rightarrow\pi_{t+h}\); conditioning can open the route through other news.
-
-The adjusted shock coefficient therefore does not automatically identify a direct response. An observed reduction in its size is compatible with several stories. State the target, the control’s timing and the additional assumptions needed to separate mediation from selection or mediator–outcome confounding.
-
-Expectations lie on \(s_t\rightarrow M\rightarrow\pi_{t+h}\), so conditioning on them blocks part of the shock’s response. They also form a collider on \(s_t\rightarrow M\leftarrow U\rightarrow\pi_{t+h}\); conditioning can open the route through other news. The adjusted shock coefficient therefore does not automatically identify a direct response. An observed reduction in its size is compatible with several stories. State the target, the control’s timing and the additional assumptions needed to separate mediation from selection or mediator–outcome confounding.
-
-## 43. Compare a known response with a noisy estimate
+### 22. Compare a known response with a noisy estimate
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -599,7 +359,7 @@ Then use actual traffic.csv. Add one lag of log accidents to the monthly mean mo
 
 **Practice:** Then use actual traffic.csv. Add one lag of log accidents to the monthly mean model, retain the calendar and policy controls, and use four-month HAC inference. Report the law coefficient and the stable-model long-run contrast. Explain why this observed application has no known historical causal truth supplied by the simulation. Keep your commands, log, output and interpretation.
 
-## 44. Compare a known response with a noisy estimate: explanation
+### 23. Compare a known response with a noisy estimate: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -615,13 +375,259 @@ Real monthly fit: lag coefficient \(0.332658\); law impact \(0.065212\).
 
 Stable-model long-run log contrast \(0.097719\), approximate SE \(0.019357\).
 
-## 45. From time-series methods to repeated units and instruments
-
-From time-series methods to repeated units and instruments
+### 24. From time-series methods to repeated units and instruments
 
 We have distinguished three responses to a time-series problem: revise the conditional mean, model the error process for estimation, or preserve the coefficient calculation and revise its covariance estimate. Horizon regressions use the same distinctions when outcomes overlap across dates.
 
 The next meeting adds repeated units and instruments. Panel transformations remove specified stable factors, while an instrument proposes a different source of regressor variation. Each method brings its own identifying conditions.
 
 From time-series methods to repeated units and instruments
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 25. HAC estimates covariance of regressor-error scores across dates
+
+Autocorrelation of errors and covariance of the coefficient estimates are connected by the regressors.
+
+For a time-series regression, define the regressor-error product vector s t as the regressor vector x t multiplied by the model error u t. The long-run covariance sums covariance of these vectors across all date separations, when that sum and the required limit approximation are well defined. With Q equal to the limiting regressor second moment, the coefficient covariance is approximately Q inverse times this long-run covariance times Q inverse, divided by T.
+
+A Newey–West estimate uses fitted residuals, a finite lag window and weights that taper with lag distance. Here bandwidth means the number of lagged cross-products kept in that window. Its consistency requires suitable exogeneity, moments, dependence and bandwidth conditions. Changing the lag choice changes which empirical cross-date products contribute. It does not remove an omitted cause or automatically guarantee accurate inference in a short persistent sample.
+
+\(s_t=x_tu_t\), \(S=\sum_{h=-\infty}^{\infty}E[s_ts_{t-h}\prime]\), when the sum and limits are justified.
+
+Approximate coefficient covariance: \(Q^{-1}SQ^{-1}/T\).
+
+Newey–West estimates a weighted, truncated version using fitted residuals.
+
+### 26. Interpret the lag in calendar time
+
+Interpret the selected maximum lag using months or quarters.
+
+Our maximum lag L must be interpreted using the data frequency, meaning how often we observe the series. These observations are monthly, so lag(4) allows covariance contributions through four months. In quarterly data, one observation covers three months; the same lag option would reach four quarters, or one year.
+
+This maximum lag is also called a bandwidth in this setting. It controls how far apart two observations can be and still contribute directly to the estimated covariance. It does not add lagged accidents, lagged policy variables or more seasonal controls to the regression equation. Adding those variables would change the mean model; selecting this window changes the uncertainty calculation.
+
+Move L in the graph and watch which weights remain positive. A larger window includes more estimated covariance contributions, but it does not guarantee a larger or better SE. Those extra terms can add noise, and their values can have different signs. The graph changes the taper weights only; it does not rerun Stata. To compare actual SEs for several windows, we would run the same regression with each stated lag choice and explain why those windows are plausible for the application.
+
+\(w_k=1-\dfrac{k}{L+1},\quad k=0,\ldots,L\)
+
+Bartlett weights taper the contribution of later error covariances.
+
+**Practice:** For quarterly data, what calendar window is lag(12)? Does that option add twelve regressors?
+
+**Explanation:** It reaches twelve quarters, or three years. It adjusts the covariance calculation; it adds no conditional-mean regressors.
+
+### 27. What stays fixed in the three fits?
+
+Hold the fitted model fixed and compare its three SE calculations.
+
+We are now ready to compare the three SE methods in the actual accident regression. The outcome, regressors and 108 observations are identical in all three fits. Conventional, heteroskedasticity-robust and Newey–West calculations therefore report the same OLS law coefficient. The different bars show different estimated uncertainty, rather than three different estimated policy relationships.
+
+Each bar is an approximate 95% confidence interval calculated as the estimate plus or minus 1.96 SEs. A confidence interval comes from a procedure designed to cover the population coefficient at its stated rate across comparable datasets. The multiplier 1.96 uses a normal reference distribution, the familiar bell-shaped pattern that gives a large-sample approximation under suitable conditions. Stata's tables use their own stated reference rule, so their interval endpoints differ slightly from this graph.
+
+Notice that the robust SE is smaller than the conventional SE, while the HAC4 SE is larger. HAC4 means Newey–West with a maximum of four lags. There is no rule that a robust SE must always increase. We should choose a method because its assumptions match the dependence in the application, not because it gives the widest interval or the preferred test result. With that distinction clear, we can ask which problems this adjustment still leaves unresolved.
+
+### 28. Calculate, then explain the comparison
+
+Calculate the test and interval, then report what they describe.
+
+Use the three SEs to calculate the t ratio for a zero-coefficient null. The coefficient is the same each time, so divide about 0.09545 by each SE. The results are approximately 6.71 with conventional SEs, 7.72 with robust SEs and 5.05 with HAC4. Different uncertainty calculations change how far the estimate lies from zero in SE units.
+
+Using the normal large-sample rule, an absolute ratio above about 1.96 rejects a zero null at the two-sided 5% level. All three ratios pass that threshold here. Yet they do not express the same amount of uncertainty. With the HAC4 SE, the approximate 95% interval is 0.09545±1.96×0.01890, or about [0.05841, 0.13249]. These endpoints are in log-outcome coefficient units, not percent.
+
+Write the result as part of an empirical report. State that the data are monthly, describe the fitted law association, give the uncertainty method and name its four-month window. Then state the main condition that the report has not established, such as the absence of unmeasured changes related to policy timing. A precise report explains both the number and the comparison behind it.
+
+**Practice:** Use b=0.09545264 and HAC4 SE=0.01889849 to calculate the approximate t ratio and 95% interval for b.
+
+**Explanation:** t≈5.05. The large-sample interval is 0.09545264±1.96×0.01889849≈[0.05841, 0.13249], on the log-outcome coefficient scale. This is uncertainty about the fitted coefficient under the inference assumptions; it is not automatically an interval for a causal law effect.
+
+### 29. DAG practice: persistent disturbances and HAC
+
+Trace the routes before choosing a control.
+
+The earlier disturbance affects the current disturbance, but the input nodes have no common-cause connection to these disturbances in the stated graph. Does disturbance persistence alone create regressor endogeneity? What does HAC change, and which arrows does it remove?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** The earlier disturbance affects the current disturbance, but the input nodes have no common-cause connection to these disturbances in the stated graph. Does disturbance persistence alone create regressor endogeneity? What does HAC change, and which arrows does it remove?
+
+### 30. DAG practice: persistent disturbances and HAC: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Persistence alone need not create endogeneity in this proposed model. It can create dependent outcomes and errors while the relevant input–disturbance mean conditions remain valid. Those are separate questions.
+
+HAC changes the estimated covariance of the coefficient under suitable exogeneity, dependence and sample conditions. It removes no causal arrows and keeps OLS coefficients fixed on an identical specification and sample. If the actual input selection process introduces a common-cause route to the disturbance, HAC does not close that new route.
+
+Persistence alone need not create endogeneity in this proposed model. It can create dependent outcomes and errors while the relevant input–disturbance mean conditions remain valid. Those are separate questions. HAC changes the estimated covariance of the coefficient under suitable exogeneity, dependence and sample conditions. It removes no causal arrows and keeps OLS coefficients fixed on an identical specification and sample. If the actual input selection process introduces a common-cause route to the disturbance, HAC does not close that new route.
+
+### 31. Choose an uncertainty statement for repeated months
+
+Reproduce the evidence, then explain its economic meaning.
+
+Run lab_11.do. Confirm that conventional, robust and Newey–West fits retain the same law coefficient. Compare their SEs and approximate intervals. Explain why a smaller robust SE is possible, why four lags means four months here, and what none of these uncertainty options can establish about law adoption.
+
+Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
+
+**Practice:** Change the Newey–West bandwidth from four to eight months without changing the conditional-mean model or observations. Verify the identical coefficient and compare the SEs. Keep your commands, log, output and interpretation.
+
+### 32. Choose an uncertainty statement for repeated months: explanation
+
+A reproducible result needs both a calculation and an interpretation.
+
+The common law coefficient is about 0.095453. The SEs are about 0.014235, 0.012368 and 0.018898 for conventional, robust and HAC4 inference. Using the common estimate plus or minus 1.96 times each SE gives different approximate intervals without changing the fitted model.
+
+A robust SE can be smaller because its covariance estimate responds to the actual relationship between regressor leverage and error spread. Four covariance lags are four months in this monthly dataset; the option does not add four regressors. HAC allows a specified treatment of remaining time dependence under suitable conditions, while none of these choices makes law adoption exogenous or removes omitted dynamics from the conditional mean.
+
+The common law coefficient remains 0.095453 on 108 months. The four- and eight-month HAC SEs are 0.018898 and 0.021580. The bandwidth changes the covariance estimate, not the list of regressors or the causal adoption argument.
+
+Coefficient unchanged: \(0.095453\).
+
+HAC SE, four versus eight months: \(0.018898\) versus \(0.021580\).
+
+The bandwidth changes estimated uncertainty, not the conditional-mean regressors.
+
+### 33. Exit check: connect the model, estimate and SE
+
+Explain the three choices as responses to different empirical concerns.
+
+Explain why the same fitted law coefficient can have three different standard errors. The conventional formula assumes the stated equal-variance and independence conditions. Heteroskedasticity-robust inference allows unequal spread but does not automatically allow time dependence. The Newey–West calculation adds weighted covariance information across nearby dates under its own conditions.
+
+Give the calendar meaning of four covariance lags for monthly data, and state whether any new predictor was added. Then write one connected paragraph reporting the fitted magnitude, its uncertainty and the evidence that adoption provides a credible policy comparison. If that last argument is missing, say what design evidence would be needed. Next in this block, we derive structured error transformations and then study responses at future horizons.
+
+Same equation/sample → same OLS coefficient.
+
+Different justified covariance calculations → potentially different intervals.
+
+A policy effect still needs an assignment argument.
+
+**Practice:** In one paragraph, compare adding a lag, using Newey–West and fitting Prais–Winsten. Interpret lag(4) for this dataset.
+
+**Explanation:** Adding a lag changes the mean equation and may change the sample and coefficients. Newey–West keeps OLS coefficients on the same equation and sample, while changing their estimated covariance; lag(4) here reaches four months. Prais–Winsten uses an AR(1) error model to transform the fit and may change coefficients and SEs. None of these changes, by itself, creates an exogenous policy comparison.
+
+### 34. Recall what HAC preserves
+
+An uncertainty adjustment does not add predictors.
+
+Newey–West retains the OLS coefficient on the same equation and sample while changing its estimated covariance. Adding a lagged outcome changes the equation and usually the usable sample. Prais–Winsten uses an error-process model to transform the fit and can change coefficients and SEs.
+
+Before comparing the results, say which concern motivates each operation. If an omitted lag helps explain current accidents, a mean-model change may be relevant. If the mean model is credible but errors remain dependent, a covariance adjustment may suffice for that part of the problem. An endogenous policy variable requires a separate identification response.
+
+Newey–West retains the OLS coefficient on the same equation and sample while changing its estimated covariance.
+
+Before comparing the results, say which concern motivates each operation.
+
+### 35. The first observation needs its own GLS transformation
+
+Quasi-differencing and ordinary first differences impose different error models.
+
+For an AR one error model with absolute rho below one, subtract rho times the lagged regression equation at dates after the first. This gives the innovation e t as the transformed error. If the initial error is drawn from the stationary AR one distribution, multiplying the first row of the entire regression by square root of one minus rho squared puts its error on the same variance scale.
+
+Prais–Winsten keeps this adjusted first row; Cochrane–Orcutt drops it. In practice rho is estimated, so feasible GLS needs a credible error specification and additional conditions for its large-sample claims. Transform the intercept and every regressor as well as the outcome. Ordinary first differencing instead uses rho equal to one in the algebra; it is not interchangeable with a stationary-error GLS model.
+
+For \(t\ge2\): \(Y_t-\rho Y_{t-1}=(1-\rho)\beta_0+\beta_1(X_t-\rho X_{t-1})+e_t\).
+
+Stationary first row: \((Y_1^\star,X_1^\star,1^\star)=\sqrt{1-\rho^2}(Y_1,X_1,1)\).
+
+Estimated rho and a misspecified error process require care.
+
+### 36. Model or inference?
+
+Try the comparison before opening the explanation.
+
+Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
+
+Compare three operations: add a predictor, retain OLS but change covariance, or transform the equation using a modeled error process.
+
+**Practice:** Compare adding a lagged regressor, changing OLS SEs to HAC, and fitting Prais–Winsten. Which can change coefficients?
+
+### 37. Model or inference?: explanation
+
+Follow the calculation and interpret its units.
+
+Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
+
+Adding regressors changes the conditional-mean model and generally the OLS coefficients and sample. HAC on the identical specification and sample preserves OLS coefficients. Prais–Winsten transforms/weights the model under a modeled error process and can change coefficients as well as SEs; its assumptions must be justified.
+
+### 38. A horizon
+
+Try the comparison before opening the explanation.
+
+In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+
+Keep the shock date fixed and move the outcome date forward by h observation periods. Translate those periods into quarters.
+
+**Practice:** In quarterly local projections \(Y_{t+h}=a_h+b_h\,shock_t+\text{controls}+u_{t+h}\), what does \(b_4\) describe?
+
+### 39. A horizon: explanation
+
+Follow the calculation and interpret its units.
+
+It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
+
+It describes the outcome association or response four quarters, one year, after a unit shock, conditional on the specification. A causal impulse-response interpretation requires valid shock identification and controls; the regression form alone does not provide it.
+
+### 40. A HAC lag has calendar meaning
+
+The same number describes different windows at different frequencies.
+
+The simulation uses quarterly data and Newey–West lag eight, allowing contributions through eight quarters, or two years. The accident example used monthly data with lag four, a four-month window. These are not interchangeable adjustments.
+
+The appropriate window depends on the dependence structure and the asymptotic justification, and a finite-sample analysis should inspect plausible choices. A longer window is not automatically more conservative or more accurate. Also remember that lag selection in the covariance calculation does not add regressors to the horizon equation.
+
+The simulation uses quarterly data and Newey–West lag eight, allowing contributions through eight quarters, or two years.
+
+The appropriate window depends on the dependence structure and the asymptotic justification, and a finite-sample analysis should inspect plausible choices.
+
+### 41. Mediation is not proven
+
+Try the comparison before opening the explanation.
+
+A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
+
+Trace the mediated route and the route through other news. A coefficient difference alone cannot tell which mechanism produced the change.
+
+**Practice:** A shock coefficient becomes smaller after adding current expectations. Does this prove that expectations mediate the causal effect?
+
+### 42. Mediation is not proven: explanation
+
+Follow the calculation and interpret its units.
+
+No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
+
+No. It is consistent with a mediation story but may reflect confounding, post-treatment conditioning, endogeneity or other specification changes. State the target and the assumptions under which conditioning has a direct-effect interpretation.
+
+### 43. Initial information and post-shock information have different roles
+
+Timing determines what a control can do.
+
+A variable known before the shock can help account for the state of the economy that predicts both measured shocks and future outcomes. A variable changed by the shock can instead be part of its transmission. The same variable name can play different roles depending on when it is measured.
+
+Write a time line for the shock, controls and outcome. This is especially useful when survey expectations, policy announcements and quarterly averages are recorded at different points. A regression with many controls can still target the wrong response if their timing is not aligned with the economic question.
+
+A variable known before the shock can help account for the state of the economy that predicts both measured shocks and future outcomes.
+
+Write a time line for the shock, controls and outcome.
+
+### 44. DAG practice: expectations after a shock
+
+Trace the routes before choosing a control.
+
+A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
+
+### 45. DAG practice: expectations after a shock: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Expectations lie on \(s_t\rightarrow M\rightarrow\pi_{t+h}\), so conditioning on them blocks part of the shock’s response. They also form a collider on \(s_t\rightarrow M\leftarrow U\rightarrow\pi_{t+h}\); conditioning can open the route through other news.
+
+The adjusted shock coefficient therefore does not automatically identify a direct response. An observed reduction in its size is compatible with several stories. State the target, the control’s timing and the additional assumptions needed to separate mediation from selection or mediator–outcome confounding.
+
+Expectations lie on \(s_t\rightarrow M\rightarrow\pi_{t+h}\), so conditioning on them blocks part of the shock’s response. They also form a collider on \(s_t\rightarrow M\leftarrow U\rightarrow\pi_{t+h}\); conditioning can open the route through other news. The adjusted shock coefficient therefore does not automatically identify a direct response. An observed reduction in its size is compatible with several stories. State the target, the control’s timing and the additional assumptions needed to separate mediation from selection or mediator–outcome confounding.
 

@@ -28,3 +28,45 @@ body:has(.lesson-player){padding-bottom:165px}.lesson-bar>a{font:16px Arial,sans
 @media(max-width:540px){.lecture-index{margin:34px auto 56px}.lecture-intro h1{font-size:38px}.lecture-row{padding:18px 0}.lecture-choice{grid-template-columns:36px minmax(0,1fr) 18px;gap:13px}.lecture-choice h3{font-size:21px}.lecture-number{font-size:25px}.lecture-actions{padding-left:49px;gap:12px 20px}.lecture-collections{gap:13px 22px}.lecture-arrow{font-size:22px}}
 
 .lecture-intro .lecture-summary{font:16px/1.5 Arial,sans-serif;color:var(--muted);margin:12px 0}.lecture-index{margin-top:40px}.lecture-intro{margin-bottom:32px}.lecture-collections{margin-top:20px}@media(max-width:540px){.lecture-index{margin-top:28px}.lecture-intro{margin-bottom:28px}}
+
+/* Core and appendix share the same player and downloads. */
+.lesson-route {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 6px;
+  font-size: 14px;
+}
+#route-label {
+  color: var(--muted);
+  font-weight: 600;
+}
+.lesson-route button {
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--teal);
+}
+#class-blocks {
+  padding-left: 1.6rem;
+}
+#class-blocks li {
+  margin: .65rem 0;
+}
+#class-blocks button {
+  width: 100%;
+  text-align: left;
+  line-height: 1.45;
+}
+#class-blocks strong {
+  display: block;
+}
+.lecture-objective {
+  display: block;
+  font: 15px/1.4 Arial, sans-serif;
+  color: var(--muted);
+  margin: 4px 0;
+}

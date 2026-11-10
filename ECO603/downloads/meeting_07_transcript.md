@@ -1,14 +1,18 @@
 # 07. Functional form, indicators and prediction
 
-## 01. Do prices differ by the same amount or the same percent?
+Choose a specification for a realistic comparison and check whether it predicts well.
+
+## Core lesson
+
+### 01. Do prices differ by the same amount or the same percent?
 
 Choose a scale that answers the economic question.
 
-Consider retail soda prices linked to local family income in New Jersey and Pennsylvania. A higher-income area might have a higher price in dollars, a higher price in percentage terms, or a relationship whose slope changes with income. These are different questions, so they need not use the same equation.
+Suppose you are comparing soda prices in two areas with different family incomes. Should your result be in dollars or in percent? Does the answer change when the income difference is large? We will use the same retail observations to see what levels, logs and a curved relationship imply.
 
-Functional form means the way variables enter a model, such as levels, logarithms or squared terms. It determines what a coefficient describes. Today we will connect each form to a meaningful comparison, use actual pricing records and check exact changes rather than rely on a memorised percentage rule.
+We then allow two district groups to have different staffing slopes. The same idea of a fitted comparison also helps us describe changes in mortgage denial probability. We finish by judging predictions on districts held out of fitting. Across these tasks, start by naming the quantity you need to report, then choose an equation and an evaluation that answer that question.
 
-## 02. Define the observation and the usable sample
+### 02. Define the observation and the usable sample
 
 Inspect the data before interpreting a transformed variable.
 
@@ -20,7 +24,7 @@ Price is measured in dollars. Income is measured in dollars and is also scaled i
 
 Outcome: medium soda price, in dollars
 
-## 03. A level–level model has a constant unit slope
+### 03. A level–level model has a constant unit slope
 
 A one-unit income change produces the same fitted dollar difference.
 
@@ -44,7 +48,7 @@ That is a small dollar difference even when a statistical test detects a relatio
 ------------------------------------------------------------------------------
 ```
 
-## 04. A logarithm expresses a proportional scale
+### 04. A logarithm expresses a proportional scale
 
 Small log differences approximate percentage differences.
 
@@ -58,7 +62,7 @@ The useful property is that subtracting logs gives the log of a ratio. If price 
 
 \(100\{\exp(0.09531)-1\}\approx10\%\)
 
-## 05. A log–level model gives a proportional outcome contrast
+### 05. A log–level model gives a proportional outcome contrast
 
 Keep the regressor units visible.
 
@@ -70,7 +74,7 @@ If income is measured in ten-thousand-dollar units, a coefficient applies to tha
 
 \(100\{\exp(b\Delta X)-1\}\)
 
-## 06. Which average does a log fit describe?
+### 06. Which average does a log fit describe?
 
 An average log is not the log of an arithmetic average.
 
@@ -84,25 +88,7 @@ Exponentiated mean log: \(\exp\{(\log1+\log9)/2\}=3\)
 
 State which prediction quantity is being compared.
 
-## 07. Exact log change
-
-Try the comparison before opening the explanation.
-
-In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
-
-Convert the fitted log difference to a ratio with the exponential, then subtract one and multiply by 100. Name the prediction quantity.
-
-**Practice:** In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
-
-## 08. Exact log change: explanation
-
-Follow the calculation and interpret its units.
-
-Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
-
-Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
-
-## 09. A level–log model gives a level outcome contrast
+### 07. A level–log model gives a level outcome contrast
 
 A percent change in X becomes a small change in log X.
 
@@ -114,7 +100,7 @@ The outcome units remain dollars, points or whatever its original definition spe
 
 \(\Delta\widehat Y=b\log(X_1/X_0)\)
 
-## 10. A log–log slope is an elasticity
+### 08. A log–log slope is an elasticity
 
 It relates proportional changes in both variables.
 
@@ -126,25 +112,7 @@ For a finite ten-percent price rise, the exact fitted quantity ratio is 1.1 rais
 
 \(\%\Delta\widehat Y=100\{(X_1/X_0)^b-1\}\)
 
-## 11. Elasticity
-
-Try the comparison before opening the explanation.
-
-In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-An elasticity uses percentage changes on both sides. For the finite price increase asked here, use the new-to-old price ratio rather than treating a local approximation as exact.
-
-**Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
-
-## 12. Elasticity: explanation
-
-Follow the calculation and interpret its units.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
-
-## 13. Read the actual price–income elasticity
+### 09. Read the actual price–income elasticity
 
 A unit-free slope still needs an empirical interpretation.
 
@@ -164,29 +132,7 @@ The coefficient does not show what a transfer to households would cause retailer
 ------------------------------------------------------------------------------
 ```
 
-## 14. Compare predictions for the same realistic change
-
-Use the equation, not just the coefficient label.
-
-Choose two income values within the observed range and calculate the fitted price at each under the level and log specifications. Then subtract or divide according to the question. The same numerical coefficient can imply very different changes when units and transformations differ.
-
-Comparing predictions also makes model differences understandable to a nontechnical reader. Show the income range supported by the records, the fitted curves and the proposed contrast. Avoid evaluating one model at an observed income and another at an unsupported extrapolation. A fair comparison keeps both the sample and the economic scenario clear.
-
-## 15. Predicting a mean and predicting a new outcome have different uncertainty
-
-A new observation brings its own error as well as coefficient uncertainty.
-
-Let x zero be a stated input vector including the intercept. Its fitted conditional mean is x zero prime b. If V hat is the estimated coefficient covariance, the variance of that mean prediction is x zero prime V hat x zero. This measures uncertainty in estimating the regression mean at those inputs.
-
-A new individual outcome also contains a new error. Under a correctly specified homoskedastic independent-observation model with the new error independent of the fitted sample, its prediction-error variance adds sigma squared. An individual prediction interval is therefore wider than a confidence interval for the mean at the same inputs. With unequal variance, dependence or a different prediction population, the extra error term and the approximation need a model appropriate to that task.
-
-Mean prediction: \(\widehat m_0=x_0\prime b\); estimated variance \(x_0\prime\widehat Vx_0\).
-
-Under the stated independent homoskedastic model, prediction-error variance \(\approx x_0\prime\widehat Vx_0+s^2\).
-
-State whether the target is an average response or a new individual outcome.
-
-## 16. A quadratic lets the slope change with X
+### 10. A quadratic lets the slope change with X
 
 Define the squared term before interpreting it.
 
@@ -200,7 +146,7 @@ Local slope: \(d\widehat Y/dX=8-0.4X\)
 
 General slope: \(b_1+2b_2X\)
 
-## 17. Use a finite quadratic difference for a finite change
+### 11. Use a finite quadratic difference for a finite change
 
 The tangent slope is a local description.
 
@@ -214,7 +160,7 @@ Let delta denote a finite change from a starting value X. Expand the square of X
 
 Local approximation: \(4\times5=20\), not the finite difference.
 
-## 18. A turning point must be inside a meaningful range
+### 12. A turning point must be inside a meaningful range
 
 Do not report an unsupported optimum.
 
@@ -224,25 +170,7 @@ Before describing an economic optimum, check whether the turning point lies insi
 
 \(X^*=-\dfrac{b_1}{2b_2}\) when \(b_2\ne0\)
 
-## 19. Quadratic slope
-
-Try the comparison before opening the explanation.
-
-For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-Differentiate the fitted curve, substitute the requested starting X, and distinguish a local slope from a finite change.
-
-**Practice:** For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
-
-## 20. Quadratic slope: explanation
-
-Follow the calculation and interpret its units.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
-
-## 21. Inspect the actual curvature rather than assume it
+### 13. Inspect the actual curvature rather than assume it
 
 A flexible model may provide little evidence of bending.
 
@@ -265,7 +193,7 @@ c.inc10#c.inc10 |  -7.86e-06   .0008332    -0.01   0.992    -.0016458    .001630
 ---------------------------------------------------------------------------------
 ```
 
-## 22. Ask Stata for slopes at stated values
+### 14. Ask Stata for slopes at stated values
 
 margins makes the comparison explicit.
 
@@ -297,7 +225,7 @@ inc10        |
 ------------------------------------------------------------------------------
 ```
 
-## 23. Retransforming a log fit needs care
+### 15. Retransforming a log fit needs care
 
 The exponential of an average log is not the average level.
 
@@ -311,7 +239,7 @@ Even a mean-zero log error does not generally make that last average equal to on
 
 The retransformation factor need not be one or constant across X.
 
-## 24. Zeros and negative values are substantive information
+### 16. Zeros and negative values are substantive information
 
 Do not hide them through an automatic log transformation.
 
@@ -323,33 +251,7 @@ The natural log is defined only for positive values.
 
 In this retail application, the analysis explicitly requires positive observed price and income.
 
-## 25. Choose a form for a decision-sized comparison
-
-Keep fit, interpretation and design connected.
-
-An analyst studying affordability may want dollar price differences. A demand study may naturally focus on elasticities. A study of diminishing gains may need a changing slope. These choices follow the economic question rather than a competition to maximise R-squared across incompatible outcome scales.
-
-Use graphs and stated prediction contrasts to communicate the model. Identify which comparisons are within the observed data and which rely on extrapolation. Then carry forward the same identification and uncertainty questions used in the linear model. Transforming variables can improve the representation of a relationship, but it does not itself make the regressor exogenous.
-
-An analyst studying affordability may want dollar price differences.
-
-Use graphs and stated prediction contrasts to communicate the model.
-
-## 26. Adjusted R squared changes the fit penalty, not the identification argument
-
-Compare the same outcome and observations before using a fit criterion.
-
-Ordinary R squared cannot decrease when extra columns are added to a least-squares regression on the same sample. Adjusted R squared compares residual variation per residual degree of freedom with total variation per total degree of freedom. It can fall when an extra regressor improves fit too little relative to the lost degree of freedom.
-
-Here p counts all coefficients including the intercept, and n is the common sample size. Neither fit statistic chooses a causal adjustment set, and values from different outcomes or samples need not be comparable. The confounder, mediator and collider distinctions still determine the causal comparison. Held-out prediction is another criterion again: it evaluates predictions on observations excluded from fitting.
-
-\(\overline R^2=1-\dfrac{SSR/(n-p)}{SST/(n-1)}\).
-
-An added regressor can raise \(R^2\) and lower adjusted \(R^2\).
-
-Use the same outcome and sample; defend the control set separately.
-
-## 27. Transforming the variables does not close a backdoor
+### 17. Transforming the variables does not close a backdoor
 
 A better scale and a credible comparison answer different questions.
 
@@ -363,27 +265,7 @@ Functional form chooses the scale and shape.
 
 Identification addresses the alternative causal explanations.
 
-## 28. DAG practice: logs and a common cause
-
-Trace the routes before choosing a control.
-
-Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
-
-## 29. DAG practice: logs and a common cause: explanation
-
-Explain what conditioning changes in this stated graph.
-
-The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation.
-
-The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
-
-The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation. The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
-
-## 30. Translate retail coefficients into a useful contrast
+### 18. Translate retail coefficients into a useful contrast
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -393,7 +275,7 @@ Change the income comparison from 30,000 to 50,000 dollars. Report the level-mod
 
 **Practice:** Change the income comparison from 30,000 to 50,000 dollars. Report the level-model dollar contrast and the exact exponentiated-log percentage contrast. Keep your commands, log, output and interpretation.
 
-## 31. Translate retail coefficients into a useful contrast: explanation
+### 19. Translate retail coefficients into a useful contrast: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -409,17 +291,7 @@ From 30,000 to 50,000: exponentiated-log contrast 1.932756%.
 
 A fitted log-value ratio needs extra assumptions to be an arithmetic-mean ratio.
 
-## 32. From curvature to indicators and interactions
-
-From curvature to indicators and interactions
-
-The retail example showed why a level difference, a log difference and a local slope answer different questions. A functional form should express a useful comparison over the observed range, with its units stated.
-
-We now let the relationship differ across groups. Indicators encode categories, and interactions allow selected slopes to vary. The same discipline applies: define the comparison first, then calculate fitted values or effects at meaningful inputs.
-
-From curvature to indicators and interactions
-
-## 33. Does the staffing association differ across district groups?
+### 20. Does the staffing association differ across district groups?
 
 An interaction lets slopes differ in a stated way.
 
@@ -427,7 +299,7 @@ A single staffing slope may hide different fitted patterns across districts. We 
 
 An interaction is a product of regressors that allows the relationship of one variable with the outcome to depend on another. We will derive each group's line before reading Stata. This prevents a common mistake: treating the interaction coefficient as the whole effect for the second group rather than the difference between group slopes.
 
-## 34. Define the indicator and reference group
+### 21. Define the indicator and reference group
 
 Coding determines which coefficients describe the baseline.
 
@@ -437,7 +309,7 @@ Changing the reference group changes how coefficients are labelled, but not the 
 
 \(D_i=1\{\mathrm{EL}_i\ge10\}\)
 
-## 35. Multiple categories require a base category when there is an intercept
+### 22. Multiple categories require a base category when there is an intercept
 
 An omitted category supplies the reference comparison.
 
@@ -451,7 +323,7 @@ Use an intercept and \(G-1\) indicators; interpret against the omitted group.
 
 Stata factor notation i.group records the category structure.
 
-## 36. Write the interacted equation
+### 23. Write the interacted equation
 
 Include the main terms as well as their product.
 
@@ -463,7 +335,7 @@ In the equation, beta zero is the group-zero intercept, beta one its staffing sl
 
 \(X\): staffing; \(D\): group; \(W\): income; \(XD\): their interaction.
 
-## 37. Substitute zero and one before interpreting
+### 24. Substitute zero and one before interpreting
 
 Two group equations reveal the relevant combinations.
 
@@ -475,25 +347,7 @@ Work through these substitutions before using verbal shortcuts. An intercept dif
 
 \(D=1:\quad \partial E(Y\mid X,D,W)/\partial X=\beta_1+\beta_3\)
 
-## 38. Interaction contrast
-
-Try the comparison before opening the explanation.
-
-In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
-
-This constructed border example uses the same zero-or-one substitution as the school-group model. Set near to zero and then one; keep the intercept shift separate from the slope change.
-
-**Practice:** In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
-
-## 39. Interaction contrast: explanation
-
-Follow the calculation and interpret its units.
-
-Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
-
-Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
-
-## 40. Read both fitted lines in the actual school data
+### 25. Read both fitted lines in the actual school data
 
 The reference slope and slope difference can have different signs.
 
@@ -501,7 +355,7 @@ The lower-share group's staffing slope is 0.680. The interaction is -2.192, so t
 
 The graph draws the two fitted lines at a common observed income value. Select the next step to show the difference. Use it to check that the interaction changes a slope, while the group main effect changes the intercept. The two changes enter different policy and group comparisons.
 
-## 41. Factor-variable syntax keeps the model explicit
+### 26. Factor-variable syntax keeps the model explicit
 
 Use Stata’s interaction notation to include the needed terms.
 
@@ -527,7 +381,7 @@ Read the resulting row labels rather than assume every coefficient applies to ev
 ------------------------------------------------------------------------------
 ```
 
-## 42. Calculate a policy contrast within a group
+### 27. Calculate a policy contrast within a group
 
 A two-student change uses that group’s total slope.
 
@@ -547,37 +401,19 @@ The distinction matters in policy applications where one group responds differen
 ------------------------------------------------------------------------------
 ```
 
-## 43. The SE of a sum needs covariance
+### 28. The SE of a sum needs covariance
 
 Coefficient estimates can move together across samples.
 
-The higher-group slope is the staffing coefficient plus the interaction coefficient. Across repeated samples, those estimates move together, so their separate standard errors do not determine the sum's standard error. Covariance is the average product of their deviations from their respective means. We introduced that co-movement measure in earlier lessons; here it concerns estimates rather than raw district variables.
+The higher-group slope adds the staffing and interaction coefficients. Across repeated samples the two estimates can move together. Their covariance measures this co-movement as the average product of their deviations from their respective means.
 
-For a constructed example, suppose their variances are 0.04 and 0.09 and their covariance is minus 0.03. The sum's variance is 0.04 plus 0.09 minus 0.06, or 0.07. Its standard error is the square root, about 0.265. Adding the two standard errors would give 0.5 and be wrong. In the displayed matrix notation, V eleven and V thirty-three are the two variances and V thirteen their covariance. Stata's lincom uses all three pieces.
+Suppose their variances are 0.04 and 0.09 and their covariance is minus 0.03. The variance of the sum is 0.04 plus 0.09 plus twice minus 0.03, which is 0.07. Its standard error is the square root, about 0.265. The displayed V eleven and V thirty-three are the two variances, and V thirteen is their covariance. Stata's lincom uses all three pieces to report the group slope and its uncertainty.
 
 \(\operatorname{Var}(\widehat\beta_1+\widehat\beta_3)=V_{11}+V_{33}+2V_{13}\)
 
 Example: \(SE=\sqrt{0.04+0.09+2(-0.03)}=\sqrt{0.07}\approx0.265\)
 
-## 44. Uncertainty of a sum
-
-Try the comparison before opening the explanation.
-
-In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
-
-Use the variance of a sum. A negative covariance can make the sum more precise than a calculation that ignores co-movement.
-
-**Practice:** In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
-
-## 45. Uncertainty of a sum: explanation
-
-Follow the calculation and interpret its units.
-
-No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
-
-No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
-
-## 46. Read the higher-group slope as one tested quantity
+### 29. Read the higher-group slope as one tested quantity
 
 Use the output for the combination the question asks about.
 
@@ -595,7 +431,7 @@ Compare this with the interaction row alone. A significant interaction tests a d
 ------------------------------------------------------------------------------
 ```
 
-## 47. A group gap can depend on X
+### 30. A group gap can depend on X
 
 The group main effect is not the gap at every staffing ratio.
 
@@ -607,31 +443,7 @@ The intercept gap refers to X equal to zero, which is not a realistic school-sta
 
 Center at 20: \(X^c=X-20\)
 
-## 48. An interaction between two continuous inputs changes both partial slopes
-
-The main coefficient is the slope at a specified value of the other input.
-
-The same interaction logic applies when both inputs are continuous. Let X and W be two measured predictors, and include their product with both main terms. The fitted local slope on X is b one plus b three times W. The fitted local slope on W is b two plus b three times X. Thus the interaction coefficient describes how one local slope changes when the other input rises by one unit.
-
-Its units combine the units of both inputs. In the school application, this logic could describe a staffing slope that varies with language share. Evaluate a meaningful pair of inputs rather than interpreting a main coefficient only at an unrealistic zero. For a finite change, compare fitted values at the proposed inputs; a local derivative alone need not describe the full contrast.
-
-\(\widehat Y=b_0+b_1X+b_2W+b_3XW\).
-
-\(\partial\widehat Y/\partial X=b_1+b_3W\), \(\partial\widehat Y/\partial W=b_2+b_3X\).
-
-Evaluate slopes or finite contrasts at explicitly stated input values.
-
-## 49. Centering changes coefficient labels, not fitted values
-
-Choose a reference value that helps interpretation.
-
-Define a centered ratio as X minus twenty. In the interacted equation, the group main effect now describes the fitted group gap at a ratio of twenty rather than zero. The interaction still describes the slope difference. Predictions at any actual staffing ratio remain unchanged when the model is re-expressed consistently.
-
-This is a useful presentation choice, especially when an uncentered intercept lies far outside the data. It does not remove confounding or create new information. Its benefit is that a coefficient now answers a more meaningful reference comparison, which should be stated in the report.
-
-\(X_i^c=X_i-20\)
-
-## 50. Separate group heterogeneity from causal identification
+### 31. Separate group heterogeneity from causal identification
 
 A different slope is still a fitted relationship.
 
@@ -641,39 +453,7 @@ For a causal heterogeneity claim, explain how staffing variation is identified w
 
 Let X indicate programme participation, M post-programme skills, Y earnings and U prior ability. Skills can be a mediator between participation and earnings. If prior ability affects both skills and earnings, skills are also a collider on the programme-to-skills-to-ability-to-earnings alternative route. Conditioning on skills can both remove part of the programme mechanism and open selection through ability. The interaction coefficient describes functional-form heterogeneity; the DAG supplies the separate causal control argument.
 
-## 51. Build an empirical comparison before reading stars
-
-List the coefficient combination and its units.
-
-For each question, write the required expression: a reference slope, a second-group slope, a slope difference or a group gap at a stated X. Then use the fitted covariance to test or interval that quantity. This keeps the analysis tied to the question rather than the arrangement of rows in the output.
-
-In a policy memo, report a feasible change within each group and the evidence for any difference between them. Explain the adjustment and identifying assumptions. A clear comparison can remain useful even if uncertainty is too large to conclude that the group effects differ.
-
-For each question, write the required expression: a reference slope, a second-group slope, a slope difference or a group gap at a stated X.
-
-In a policy memo, report a feasible change within each group and the evidence for any difference between them.
-
-## 52. DAG practice: a binary treatment still needs a control argument
-
-Trace the routes before choosing a control.
-
-Programme participation affects post-programme skills and earnings. Prior ability affects skills and earnings. If the programme is initially independent of ability, what two changes can occur when skills are held fixed? Would adding a group interaction automatically resolve them?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** Programme participation affects post-programme skills and earnings. Prior ability affects skills and earnings. If the programme is initially independent of ability, what two changes can occur when skills are held fixed? Would adding a group interaction automatically resolve them?
-
-## 53. DAG practice: a binary treatment still needs a control argument: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Conditioning on skills blocks the mediated programme route \(X\rightarrow M\rightarrow Y\). It can also open \(X\rightarrow M\leftarrow U\rightarrow Y\), where skills are a collider and ability influences earnings. A regression can consequently mix a changed target with new selection.
-
-A group interaction changes the specified shape or subgroup slope. It does not automatically supply the missing causal control argument. Define the intervention and whether its total or a suitable direct effect is wanted, then assess assignment and mediator–outcome assumptions before interpreting the interaction causally.
-
-Conditioning on skills blocks the mediated programme route \(X\rightarrow M\rightarrow Y\). It can also open \(X\rightarrow M\leftarrow U\rightarrow Y\), where skills are a collider and ability influences earnings. A regression can consequently mix a changed target with new selection. A group interaction changes the specified shape or subgroup slope. It does not automatically supply the missing causal control argument. Define the intervention and whether its total or a suitable direct effect is wanted, then assess assignment and mediator–outcome assumptions before interpreting the interaction causally.
-
-## 54. Turn an interaction into two policy contrasts
+### 32. Turn an interaction into two policy contrasts
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -683,7 +463,7 @@ Centre staffing at 20 and refit the same interaction model. Interpret the result
 
 **Practice:** Centre staffing at 20 and refit the same interaction model. Interpret the resulting group-indicator coefficient and verify that fitted group slopes have not changed. Keep your commands, log, output and interpretation.
 
-## 55. Turn an interaction into two policy contrasts: explanation
+### 33. Turn an interaction into two policy contrasts: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -699,7 +479,7 @@ Group gap at ratio 20: \(-15.429199\), robust SE \(1.128935\).
 
 Centring changes the reference point, not the predictions.
 
-## 56. How does payment burden predict mortgage denial?
+### 34. How does payment burden predict mortgage denial?
 
 A zero-or-one outcome is an event indicator.
 
@@ -713,7 +493,7 @@ Payment-to-income ratio: a fraction, with 0.40 representing 40%.
 
 Define prediction before making an intervention claim.
 
-## 57. The conditional mean of an indicator is a probability
+### 35. The conditional mean of an indicator is a probability
 
 This gives the linear model a useful starting interpretation.
 
@@ -725,7 +505,7 @@ Call this probability p of X. The linear probability model, or LPM, uses a strai
 
 LPM: \(p(X)\approx a+bX\)
 
-## 58. A probability change is not a relative percent change
+### 36. A probability change is not a relative percent change
 
 Keep percentage points and percent distinct.
 
@@ -737,25 +517,7 @@ For a regression coefficient, first identify the regressor change and calculate 
 
 Relative percent: \(100(0.05/0.18)\approx27.8\%\)
 
-## 59. Probability scale
-
-Try the comparison before opening the explanation.
-
-An LPM predicts 0.18 at one covariate vector and 0.23 at another. State the change in percentage points and relative percent.
-
-Subtract the two probabilities, then multiply by 100 for percentage points. For a relative percent, divide by the starting probability as well.
-
-**Practice:** An LPM predicts 0.18 at one covariate vector and 0.23 at another. State the change in percentage points and relative percent.
-
-## 60. Probability scale: explanation
-
-Follow the calculation and interpret its units.
-
-The change is 0.05, or 5 percentage points. Relative to 0.18 it is \(100\times0.05/0.18=27.78\%\). These are different scales. The contrast is predictive unless identification assumptions support a causal claim.
-
-The change is 0.05, or 5 percentage points. Relative to 0.18 it is \(100\times0.05/0.18=27.78\%\). These are different scales. The contrast is predictive unless identification assumptions support a causal claim.
-
-## 61. Read the actual LPM coefficient
+### 37. Read the actual LPM coefficient
 
 Use a feasible ratio change, not an entire unit by default.
 
@@ -775,7 +537,7 @@ The coefficient applies to a whole one-unit ratio increase, which would be one h
 ------------------------------------------------------------------------------
 ```
 
-## 62. The LPM error variance is generally unequal
+### 38. The LPM error variance is generally unequal
 
 Robust SEs address uncertainty, not invalid fitted probabilities.
 
@@ -787,7 +549,7 @@ At p equal to 0.10 the variance is 0.09; at p equal to 0.50 it is 0.25. The outc
 
 \(p=0.1\Rightarrow\operatorname{Var}=0.09;\quad p=0.5\Rightarrow\operatorname{Var}=0.25\)
 
-## 63. Can we predict a district left out of fitting?
+### 39. Can we predict a district left out of fitting?
 
 A prediction question has a different target from a staffing intervention.
 
@@ -801,7 +563,7 @@ Test: 140 districts kept out of fitting and tuning.
 
 Base: three predictors; expanded: nine predictor columns specified before test evaluation.
 
-## 64. Ridge shrinks coefficients with a squared penalty
+### 40. Ridge shrinks coefficients with a squared penalty
 
 Accept some bias if it reduces enough estimation variation.
 
@@ -815,7 +577,7 @@ Ridge objective: \(L(a,b)+\frac{\lambda}{2}\sum_j b_j^2\).
 
 Standardise predictor columns using training information; leave the intercept unpenalised.
 
-## 65. Lasso can set a predictor coefficient to zero
+### 41. Lasso can set a predictor coefficient to zero
 
 Absolute and squared penalties behave differently near zero.
 
@@ -829,7 +591,7 @@ One standardised predictor: \(\widehat b_R=0.8/(1+\lambda)\), \(\widehat b_L=\ma
 
 These simple paths illustrate the penalties; the actual model has nine correlated columns.
 
-## 66. Choose the penalty inside the training sample
+### 42. Choose the penalty inside the training sample
 
 Cross-validation reserves the test answers for a later check.
 
@@ -845,7 +607,7 @@ Choose the penalty and refit using training observations.
 
 Score frozen predictions on the separate 140-district test sample.
 
-## 67. Compare actual predictions on the same held-out districts
+### 43. Compare actual predictions on the same held-out districts
 
 A small error difference is evidence for this run, not a universal ranking.
 
@@ -863,7 +625,7 @@ No test-error ranking identifies a causal staffing effect.
 
 **Explanation:** No. These small RMSE differences describe this particular evaluation.
 
-## 68. Predictive selection does not choose a causal adjustment set
+### 44. Predictive selection does not choose a causal adjustment set
 
 Return to the DAG when the question changes from prediction to intervention.
 
@@ -881,13 +643,255 @@ Keep prediction accuracy separate from evidence about an intervention.
 
 **Explanation:** No. Causal controls follow the intervention target and identification assumptions.
 
-## 69. From flexible models to variance and data problems
-
-From flexible models to variance and data problems
+### 45. From flexible models to variance and data problems
 
 We have extended linear regression with logs, curvature, group indicators and interactions. The short prediction extension separated fitting data from evaluating predictions on held-out districts. These tools answer different tasks and do not choose the causal control set for us.
 
 Next we examine unequal error variance, weighting, measurement error and sample selection. Those problems affect different parts of the empirical argument, so each needs a response that matches its cause.
 
 From flexible models to variance and data problems
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 46. Exact log change
+
+Try the comparison before opening the explanation.
+
+In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
+
+Convert the fitted log difference to a ratio with the exponential, then subtract one and multiply by 100. Name the prediction quantity.
+
+**Practice:** In a log-outcome model, a policy dummy has coefficient 0.08. Give the usual approximate percentage contrast and the exact multiplicative contrast in the fitted exp(linear predictor).
+
+### 47. Exact log change: explanation
+
+Follow the calculation and interpret its units.
+
+Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
+
+Approximate: +8%. Exact: \(100[\exp(0.08)-1]=8.3287\%\). This is a contrast in the exponentiated fitted log outcome. A conditional-mean claim in outcome levels additionally needs a justified retransformation treatment of the error distribution.
+
+### 48. Elasticity
+
+Try the comparison before opening the explanation.
+
+In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
+
+An elasticity uses percentage changes on both sides. For the finite price increase asked here, use the new-to-old price ratio rather than treating a local approximation as exact.
+
+**Practice:** In \(\log(quantity)=a-0.7\log(price)+u\), what is the local elasticity? What is the exact fitted quantity change for a 10% price rise?
+
+### 49. Elasticity: explanation
+
+Follow the calculation and interpret its units.
+
+The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
+
+The elasticity is −0.7. A 10% price rise multiplies fitted exponentiated log quantity by \(1.1^{-0.7}\); the percentage contrast is \(100[1.1^{-0.7}-1]\), about −6.45%, not exactly −7%. Causal interpretation requires price exogeneity or a valid identification strategy.
+
+### 50. Compare predictions for the same realistic change
+
+Use the equation, not just the coefficient label.
+
+Choose two income values within the observed range and calculate the fitted price at each under the level and log specifications. Then subtract or divide according to the question. The same numerical coefficient can imply very different changes when units and transformations differ.
+
+Comparing predictions also makes model differences understandable to a nontechnical reader. Show the income range supported by the records, the fitted curves and the proposed contrast. Avoid evaluating one model at an observed income and another at an unsupported extrapolation. A fair comparison keeps both the sample and the economic scenario clear.
+
+### 51. Predicting a mean and predicting a new outcome have different uncertainty
+
+A new observation brings its own error as well as coefficient uncertainty.
+
+Let x zero be a stated input vector including the intercept. Its fitted conditional mean is x zero prime b. If V hat is the estimated coefficient covariance, the variance of that mean prediction is x zero prime V hat x zero. This measures uncertainty in estimating the regression mean at those inputs.
+
+A new individual outcome also contains a new error. Under a correctly specified homoskedastic independent-observation model with the new error independent of the fitted sample, its prediction-error variance adds sigma squared. An individual prediction interval is therefore wider than a confidence interval for the mean at the same inputs. With unequal variance, dependence or a different prediction population, the extra error term and the approximation need a model appropriate to that task.
+
+Mean prediction: \(\widehat m_0=x_0\prime b\); estimated variance \(x_0\prime\widehat Vx_0\).
+
+Under the stated independent homoskedastic model, prediction-error variance \(\approx x_0\prime\widehat Vx_0+s^2\).
+
+State whether the target is an average response or a new individual outcome.
+
+### 52. Quadratic slope
+
+Try the comparison before opening the explanation.
+
+For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
+
+Differentiate the fitted curve, substitute the requested starting X, and distinguish a local slope from a finite change.
+
+**Practice:** For \(\widehat{score}=500+8X-0.2X^2\), give the slope at \(X=10\) and the turning point. What must be checked before using the turning point?
+
+### 53. Quadratic slope: explanation
+
+Follow the calculation and interpret its units.
+
+The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
+
+The slope is \(8-0.4X\), which equals 4 at \(X=10\). The turning point is \(X=20\), a maximum because the squared coefficient is negative. Check that \(X=20\) lies within the observed and substantively meaningful range; extrapolated turning points are unreliable.
+
+### 54. Choose a form for a decision-sized comparison
+
+Keep fit, interpretation and design connected.
+
+An analyst studying affordability may want dollar price differences. A demand study may naturally focus on elasticities. A study of diminishing gains may need a changing slope. These choices follow the economic question rather than a competition to maximise R-squared across incompatible outcome scales.
+
+Use graphs and stated prediction contrasts to communicate the model. Identify which comparisons are within the observed data and which rely on extrapolation. Then carry forward the same identification and uncertainty questions used in the linear model. Transforming variables can improve the representation of a relationship, but it does not itself make the regressor exogenous.
+
+An analyst studying affordability may want dollar price differences.
+
+Use graphs and stated prediction contrasts to communicate the model.
+
+### 55. Adjusted R squared changes the fit penalty, not the identification argument
+
+Compare the same outcome and observations before using a fit criterion.
+
+Ordinary R squared cannot decrease when extra columns are added to a least-squares regression on the same sample. Adjusted R squared compares residual variation per residual degree of freedom with total variation per total degree of freedom. It can fall when an extra regressor improves fit too little relative to the lost degree of freedom.
+
+Here p counts all coefficients including the intercept, and n is the common sample size. Neither fit statistic chooses a causal adjustment set, and values from different outcomes or samples need not be comparable. The confounder, mediator and collider distinctions still determine the causal comparison. Held-out prediction is another criterion again: it evaluates predictions on observations excluded from fitting.
+
+\(\overline R^2=1-\dfrac{SSR/(n-p)}{SST/(n-1)}\).
+
+An added regressor can raise \(R^2\) and lower adjusted \(R^2\).
+
+Use the same outcome and sample; defend the control set separately.
+
+### 56. DAG practice: logs and a common cause
+
+Trace the routes before choosing a control.
+
+Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
+
+### 57. DAG practice: logs and a common cause: explanation
+
+Explain what conditioning changes in this stated graph.
+
+The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation.
+
+The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
+
+The route \(X\leftarrow C\rightarrow Y\) remains. A numerical transformation does not remove the economic mechanism represented by C. A better fit or a convenient elasticity therefore does not establish causal income variation. The graph states the proposed causal relationships and helps assess controls or alternative designs. The equation chooses how a given comparison is represented numerically and which finite or local contrast is reported. An applied analysis needs both a defensible comparison and a useful specification.
+
+### 58. From curvature to indicators and interactions
+
+The retail example showed why a level difference, a log difference and a local slope answer different questions. A functional form should express a useful comparison over the observed range, with its units stated.
+
+We now let the relationship differ across groups. Indicators encode categories, and interactions allow selected slopes to vary. The same discipline applies: define the comparison first, then calculate fitted values or effects at meaningful inputs.
+
+From curvature to indicators and interactions
+
+### 59. Interaction contrast
+
+Try the comparison before opening the explanation.
+
+In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
+
+This constructed border example uses the same zero-or-one substitution as the school-group model. Set near to zero and then one; keep the intercept shift separate from the slope change.
+
+**Practice:** In \(Y=a+0.4X-0.9(X\times near)+c\,near+u\), near is 0 or 1. What are the x slopes far from and near the border?
+
+### 60. Interaction contrast: explanation
+
+Follow the calculation and interpret its units.
+
+Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
+
+Far: 0.4. Near: \(0.4-0.9=-0.5\). The interaction is the difference in slopes, −0.9. The near-group intercept shift c is a different quantity.
+
+### 61. Uncertainty of a sum
+
+Try the comparison before opening the explanation.
+
+In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
+
+Use the variance of a sum. A negative covariance can make the sum more precise than a calculation that ignores co-movement.
+
+**Practice:** In the lesson’s interaction model, the higher-group staffing slope is beta one plus beta three. Can its standard error be obtained by adding the two coefficient standard errors?
+
+### 62. Uncertainty of a sum: explanation
+
+Follow the calculation and interpret its units.
+
+No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
+
+No. Add their variances and twice their covariance, then take the square root. With variances 0.04 and 0.09 and covariance −0.03, the result is the square root of 0.07, about 0.265. Stata’s lincom uses the fitted covariance matrix for the actual model.
+
+### 63. An interaction between two continuous inputs changes both partial slopes
+
+The main coefficient is the slope at a specified value of the other input.
+
+The same interaction logic applies when both inputs are continuous. Let X and W be two measured predictors, and include their product with both main terms. The fitted local slope on X is b one plus b three times W. The fitted local slope on W is b two plus b three times X. Thus the interaction coefficient describes how one local slope changes when the other input rises by one unit.
+
+Its units combine the units of both inputs. In the school application, this logic could describe a staffing slope that varies with language share. Evaluate a meaningful pair of inputs rather than interpreting a main coefficient only at an unrealistic zero. For a finite change, compare fitted values at the proposed inputs; a local derivative alone need not describe the full contrast.
+
+\(\widehat Y=b_0+b_1X+b_2W+b_3XW\).
+
+\(\partial\widehat Y/\partial X=b_1+b_3W\), \(\partial\widehat Y/\partial W=b_2+b_3X\).
+
+Evaluate slopes or finite contrasts at explicitly stated input values.
+
+### 64. Centering changes coefficient labels, not fitted values
+
+Choose a reference value that helps interpretation.
+
+Define a centered ratio as X minus twenty. In the interacted equation, the group main effect now describes the fitted group gap at a ratio of twenty rather than zero. The interaction still describes the slope difference. Predictions at any actual staffing ratio remain unchanged when the model is re-expressed consistently.
+
+This is a useful presentation choice, especially when an uncentered intercept lies far outside the data. It does not remove confounding or create new information. Its benefit is that a coefficient now answers a more meaningful reference comparison, which should be stated in the report.
+
+\(X_i^c=X_i-20\)
+
+### 65. Build an empirical comparison before reading stars
+
+List the coefficient combination and its units.
+
+For each question, write the required expression: a reference slope, a second-group slope, a slope difference or a group gap at a stated X. Then use the fitted covariance to test or interval that quantity. This keeps the analysis tied to the question rather than the arrangement of rows in the output.
+
+In a policy memo, report a feasible change within each group and the evidence for any difference between them. Explain the adjustment and identifying assumptions. A clear comparison can remain useful even if uncertainty is too large to conclude that the group effects differ.
+
+For each question, write the required expression: a reference slope, a second-group slope, a slope difference or a group gap at a stated X.
+
+In a policy memo, report a feasible change within each group and the evidence for any difference between them.
+
+### 66. DAG practice: a binary treatment still needs a control argument
+
+Trace the routes before choosing a control.
+
+Programme participation affects post-programme skills and earnings. Prior ability affects skills and earnings. If the programme is initially independent of ability, what two changes can occur when skills are held fixed? Would adding a group interaction automatically resolve them?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** Programme participation affects post-programme skills and earnings. Prior ability affects skills and earnings. If the programme is initially independent of ability, what two changes can occur when skills are held fixed? Would adding a group interaction automatically resolve them?
+
+### 67. DAG practice: a binary treatment still needs a control argument: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Conditioning on skills blocks the mediated programme route \(X\rightarrow M\rightarrow Y\). It can also open \(X\rightarrow M\leftarrow U\rightarrow Y\), where skills are a collider and ability influences earnings. A regression can consequently mix a changed target with new selection.
+
+A group interaction changes the specified shape or subgroup slope. It does not automatically supply the missing causal control argument. Define the intervention and whether its total or a suitable direct effect is wanted, then assess assignment and mediator–outcome assumptions before interpreting the interaction causally.
+
+Conditioning on skills blocks the mediated programme route \(X\rightarrow M\rightarrow Y\). It can also open \(X\rightarrow M\leftarrow U\rightarrow Y\), where skills are a collider and ability influences earnings. A regression can consequently mix a changed target with new selection. A group interaction changes the specified shape or subgroup slope. It does not automatically supply the missing causal control argument. Define the intervention and whether its total or a suitable direct effect is wanted, then assess assignment and mediator–outcome assumptions before interpreting the interaction causally.
+
+### 68. Probability scale
+
+Try the comparison before opening the explanation.
+
+An LPM predicts 0.18 at one covariate vector and 0.23 at another. State the change in percentage points and relative percent.
+
+Subtract the two probabilities, then multiply by 100 for percentage points. For a relative percent, divide by the starting probability as well.
+
+**Practice:** An LPM predicts 0.18 at one covariate vector and 0.23 at another. State the change in percentage points and relative percent.
+
+### 69. Probability scale: explanation
+
+Follow the calculation and interpret its units.
+
+The change is 0.05, or 5 percentage points. Relative to 0.18 it is \(100\times0.05/0.18=27.78\%\). These are different scales. The contrast is predictive unless identification assumptions support a causal claim.
+
+The change is 0.05, or 5 percentage points. Relative to 0.18 it is \(100\times0.05/0.18=27.78\%\). These are different scales. The contrast is predictive unless identification assumptions support a causal claim.
 

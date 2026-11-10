@@ -1,8 +1,10 @@
 # 11. Time series: stationarity, persistence and dynamic completeness
 
-## 01. When is a persistent time series stable enough for the model?
+Use persistence and stationarity to decide what a fitted time-series relationship describes.
 
-When is a persistent time series stable enough for the model?
+## Core lesson
+
+### 01. When is a persistent time series stable enough for the model?
 
 A lagged outcome can carry a shock forward for several periods. Our next question is whether this propagation settles into a stable process and whether past information still helps predict the remaining error. Stationarity concerns stability of distributions or moments; weak dependence concerns restrictions on information shared across distant dates.
 
@@ -12,7 +14,7 @@ Distinguish persistence, stationarity and dependence.
 
 Then ask whether the conditional mean has used the relevant past information.
 
-## 02. An AR(1) model carries the outcome forward
+### 02. An AR(1) model carries the outcome forward
 
 The persistence parameter determines whether shocks fade.
 
@@ -24,7 +26,7 @@ Set rho to 0.6 and give the series a one-unit innovation, holding later innovati
 
 One innovation with \(\rho=0.6\): \(1,0.6,0.36,0.216,\ldots\)
 
-## 03. Stationarity describes stable statistical features
+### 03. Stationarity describes stable statistical features
 
 Specify which definition is being used.
 
@@ -38,7 +40,7 @@ AR(1) stationary regime requires \(|\rho|<1\) and suitable innovations/initializ
 
 Strict stationarity concerns full joint distributions.
 
-## 04. Strict and covariance stationarity make different distributional claims
+### 04. Strict and covariance stationarity make different distributional claims
 
 Moment statements require the corresponding moments to exist.
 
@@ -52,7 +54,7 @@ Covariance stationary: \(EY_t=\mu\), \(\operatorname{Var}(Y_t)=\gamma(0)<\infty\
 
 Stationarity and sufficient weak-dependence conditions are distinct.
 
-## 05. A moving-average example makes shared shocks visible
+### 05. A moving-average example makes shared shocks visible
 
 An MA(1) observation shares one innovation with its neighbour.
 
@@ -66,7 +68,7 @@ Observations separated by at least two dates use disjoint independent shocks in 
 
 At \(\theta=0.5,\sigma^2=1\): \(\rho(1)=0.5/1.25=0.4\).
 
-## 06. A unit root does not let shocks fade in the usual way
+### 06. A unit root does not let shocks fade in the usual way
 
 A random walk accumulates innovations.
 
@@ -80,7 +82,7 @@ If \(Y_0=0\), \(\operatorname{Var}(Y_t)=t\sigma^2\)
 
 \(\Delta Y_t=\varepsilon_t\)
 
-## 07. A permanent input change can be amplified by outcome persistence
+### 07. A permanent input change can be amplified by outcome persistence
 
 Solve for the steady difference instead of adding coefficients blindly.
 
@@ -94,25 +96,7 @@ As the path settles, the same long-run difference appears on both sides of the r
 
 Long-run multiplier: \(\beta/(1-\rho)\) for a stable recursion.
 
-## 08. AR long run
-
-Try the comparison before opening the explanation.
-
-For \(Y_t=a+0.6Y_{t-1}+0.2X_t+e_t\), what is the long-run response to a permanent unit increase in x under a stable model?
-
-Write the recursion for the difference between two paths. In a stable long run, solve for the same level difference on both sides.
-
-**Practice:** For \(Y_t=a+0.6Y_{t-1}+0.2X_t+e_t\), what is the long-run response to a permanent unit increase in x under a stable model?
-
-## 09. AR long run: explanation
-
-Follow the calculation and interpret its units.
-
-The steady-state change solves \(\Delta Y=0.6\Delta Y+0.2\), so \(\Delta Y=0.2/(1-0.6)=0.5\). This calculation assumes a stable dynamic relation and an exogenous permanent x change with other determinants fixed.
-
-The steady-state change solves \(\Delta Y=0.6\Delta Y+0.2\), so \(\Delta Y=0.2/(1-0.6)=0.5\). This calculation assumes a stable dynamic relation and an exogenous permanent x change with other determinants fixed.
-
-## 10. Inspect persistence in the accident model
+### 08. Inspect persistence in the accident model
 
 The fitted lag is a conditional association.
 
@@ -136,7 +120,7 @@ This estimate does not prove that errors are independent or that every other reg
 ------------------------------------------------------------------------------
 ```
 
-## 11. Differencing changes the target relationship
+### 09. Differencing changes the target relationship
 
 It can remove an accumulating level component in a specific model.
 
@@ -148,7 +132,7 @@ For the simple random walk, first differencing leaves the innovation.
 
 A level relationship and a relationship between changes answer different empirical questions.
 
-## 12. Unrelated trending series can appear related
+### 10. Unrelated trending series can appear related
 
 A high R-squared can be misleading.
 
@@ -160,25 +144,7 @@ Two independent series with accumulating random shocks can produce a striking re
 
 Inspect time plots and model the source of persistence before interpreting a slope.
 
-## 13. Trending regression
-
-Try the comparison before opening the explanation.
-
-Two unrelated series both rise over time and produce a high \(R^2\) when regressed on each other. What should you do before interpreting the slope?
-
-A high fit can come from unrelated persistent paths. Ask whether the regression errors and reference approximation satisfy the needed conditions.
-
-**Practice:** Two unrelated series both rise over time and produce a high \(R^2\) when regressed on each other. What should you do before interpreting the slope?
-
-## 14. Trending regression: explanation
-
-Follow the calculation and interpret its units.
-
-Inspect their time plots and consider deterministic trends, stochastic trends and stationarity. A high \(R^2\) does not establish a meaningful relationship. Choose a specification and inference procedure justified by the series' properties; differencing every series automatically is also not a substitute for reasoning.
-
-Inspect their time plots and consider deterministic trends, stochastic trends and stationarity. A high \(R^2\) does not establish a meaningful relationship. Choose a specification and inference procedure justified by the series' properties; differencing every series automatically is also not a substitute for reasoning.
-
-## 15. Weak dependence concerns information far apart in time
+### 11. Weak dependence concerns information far apart in time
 
 Persistence and large-sample reasoning must be compatible.
 
@@ -190,7 +156,7 @@ Weak dependence: sufficiently distant information becomes weak enough for the st
 
 Stationarity alone does not guarantee that time averages behave like independent draws.
 
-## 16. Dynamic completeness is a conditional-mean claim
+### 12. Dynamic completeness is a conditional-mean claim
 
 Past information should not predict the remaining mean error.
 
@@ -202,7 +168,7 @@ Dynamic completeness: omitted history adds no conditional-mean prediction for th
 
 A lagged outcome changes both the comparison and the needed assumptions.
 
-## 17. Define the information set before calling an error an innovation
+### 13. Define the information set before calling an error an innovation
 
 A mean restriction is stronger than a failed residual-correlation test.
 
@@ -216,7 +182,7 @@ If past errors are measurable from the past information and the needed moments e
 
 Mean unpredictability, zero autocovariance and a diagnostic test result are distinct.
 
-## 18. Fit a dynamic conditional mean in the same monthly data
+### 14. Fit a dynamic conditional mean in the same monthly data
 
 Try the comparison before opening the explanation.
 
@@ -226,7 +192,7 @@ State the assumptions and units alongside the calculation.
 
 **Practice:** Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your own commands and robust output.
 
-## 19. Fit a dynamic conditional mean in the same monthly data: explanation
+### 15. Fit a dynamic conditional mean in the same monthly data: explanation
 
 Follow the calculation and interpret its units.
 
@@ -234,7 +200,7 @@ The first lag removes the initial observation, leaving 107 months for this compl
 
 The first lag removes the initial observation, leaving 107 months for this complete dataset. The lagged log-accident coefficient is about 0.332658 with robust SE 0.090942. Interpret it conditional on the included calendar and policy regressors. A coefficient inside minus one and one is compatible with stability of that specified AR part, but does not establish the whole data-generating process or zero conditional mean given all relevant information.
 
-## 20. Add a lagged outcome with its timing made explicit
+### 16. Add a lagged outcome with its timing made explicit
 
 A different coefficient can be a different conditional comparison.
 
@@ -262,13 +228,51 @@ The law coefficient now describes a comparison at fixed previous accidents as we
 ------------------------------------------------------------------------------
 ```
 
-## 21. From dynamic completeness to serial-correlation diagnosis
-
-From dynamic completeness to serial-correlation diagnosis
+### 17. From dynamic completeness to serial-correlation diagnosis
 
 An autoregressive model uses past outcomes, while a distributed-lag model describes the time pattern of an input. Stability and appropriate moment conditions are needed before turning those coefficients into long-run statements.
 
 We next inspect what the fitted errors still remember across dates. Residual correlation can diagnose missing dynamics or a dependent error process, but a test result must be interpreted together with the regressors and the economic model.
 
 From dynamic completeness to serial-correlation diagnosis
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 18. AR long run
+
+Try the comparison before opening the explanation.
+
+For \(Y_t=a+0.6Y_{t-1}+0.2X_t+e_t\), what is the long-run response to a permanent unit increase in x under a stable model?
+
+Write the recursion for the difference between two paths. In a stable long run, solve for the same level difference on both sides.
+
+**Practice:** For \(Y_t=a+0.6Y_{t-1}+0.2X_t+e_t\), what is the long-run response to a permanent unit increase in x under a stable model?
+
+### 19. AR long run: explanation
+
+Follow the calculation and interpret its units.
+
+The steady-state change solves \(\Delta Y=0.6\Delta Y+0.2\), so \(\Delta Y=0.2/(1-0.6)=0.5\). This calculation assumes a stable dynamic relation and an exogenous permanent x change with other determinants fixed.
+
+The steady-state change solves \(\Delta Y=0.6\Delta Y+0.2\), so \(\Delta Y=0.2/(1-0.6)=0.5\). This calculation assumes a stable dynamic relation and an exogenous permanent x change with other determinants fixed.
+
+### 20. Trending regression
+
+Try the comparison before opening the explanation.
+
+Two unrelated series both rise over time and produce a high \(R^2\) when regressed on each other. What should you do before interpreting the slope?
+
+A high fit can come from unrelated persistent paths. Ask whether the regression errors and reference approximation satisfy the needed conditions.
+
+**Practice:** Two unrelated series both rise over time and produce a high \(R^2\) when regressed on each other. What should you do before interpreting the slope?
+
+### 21. Trending regression: explanation
+
+Follow the calculation and interpret its units.
+
+Inspect their time plots and consider deterministic trends, stochastic trends and stationarity. A high \(R^2\) does not establish a meaningful relationship. Choose a specification and inference procedure justified by the series' properties; differencing every series automatically is also not a substitute for reasoning.
+
+Inspect their time plots and consider deterministic trends, stochastic trends and stationarity. A high \(R^2\) does not establish a meaningful relationship. Choose a specification and inference procedure justified by the series' properties; differencing every series automatically is also not a substitute for reasoning.
 

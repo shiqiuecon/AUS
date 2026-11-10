@@ -1,8 +1,10 @@
 # 08. Heteroskedasticity and imperfect data
 
-## 01. Which regression problem needs which response?
+Match a variance correction, a different estimator or a data audit to the problem.
 
-Which regression problem needs which response?
+## Core lesson
+
+### 01. Which regression problem needs which response?
 
 The school application lets us distinguish unequal error variance from a misleading conditional-mean comparison. Heteroskedasticity means that error spread changes with observed inputs. It changes the conventional uncertainty calculation without, by itself, creating correlation between a regressor and the population error.
 
@@ -12,7 +14,7 @@ Variance problem: covariance correction or a justified weighting model.
 
 Measurement and selection problems: revisit the information and assumptions supporting the comparison.
 
-## 02. Unequal error spread is heteroskedasticity
+### 02. Unequal error spread is heteroskedasticity
 
 It concerns the error variance at different regressor values.
 
@@ -24,21 +26,21 @@ Unequal variance does not by itself invalidate the OLS coefficient under exogene
 
 \(\operatorname{Var}(u_i\mid X_i)\) concerns spread
 
-## 03. Robust covariance replaces a constant-variance calculation
+### 03. Robust covariance replaces a constant-variance calculation
 
 The same OLS weights can propagate different observation variances.
 
-In simple regression with an intercept, the estimation error in the slope is a weighted sum of population errors. Conditional on the design and uncorrelated observations, its variance is a sum of each squared weight times that observation's error variance. Equal error variances reduce this expression to the familiar sigma squared divided by centred X variation.
+Recall the OLS slope error as a weighted sum of errors. Given the regressors and zero error correlation across observations, its variance is a sum of each squared weight times that observation's error variance. When those variances differ, districts that get large slope weights can make especially large contributions to uncertainty.
 
-The basic heteroskedasticity-robust estimator replaces each unknown error variance with its squared fitted residual. HC abbreviates heteroskedasticity consistent; this basic version is called HC zero. Stata's usual robust option applies a degrees-of-freedom correction, HC one, multiplying the covariance by n divided by n minus p. Its justification uses a large-sample approximation and finite averages of the required regressor-error products, with no small set of observations dominating the fit. It permits unequal error variance; independent-data robust covariance does not account for arbitrary correlation between observations.
+The basic heteroskedasticity robust estimator replaces each unknown error variance with the squared fitted residual. H C means heteroskedasticity consistent, and this version is H C zero. Stata’s usual robust option applies the H C one adjustment, multiplying by n divided by n minus p. The approximation needs appropriate independent sampling and finite regressor-error moments, with no small set of observations dominating the fit. For a slope with controls, the weights use the regressor remainder after the same controls have been removed.
 
-\(\operatorname{Var}(b_1\mid X)=\dfrac{\sum_i(X_i-\overline X)^2\sigma_i^2}{[\sum_i(X_i-\overline X)^2]^2}\).
+With slope weights \(w_i\), \(\operatorname{Var}(\widehat\beta_1\mid\mathcal X)=\sum_i w_i^2\sigma_i^2\).
 
-HC0 replaces \(\sigma_i^2\) by \(\widehat u_i^2\); HC1 multiplies by \(n/(n-p)\).
+HC0 estimates this by \(\sum_i w_i^2\widehat u_i^2\).
 
-Matrix HC0: \((X\prime X)^{-1}[\sum_i x_ix_i\prime\widehat u_i^2](X\prime X)^{-1}\).
+HC1 multiplies HC0 by \(n/(n-p)\). The same OLS fit supplies the residuals.
 
-## 04. Look for a variance pattern before choosing a remedy
+### 04. Look for a variance pattern before choosing a remedy
 
 A squared residual is an observable clue about error spread.
 
@@ -52,7 +54,7 @@ Squared residual: \(\widehat u_i^2\).
 
 Gold: average squared residual within each of five language-share ranges.
 
-## 05. Breusch–Pagan turns the variance question into a test
+### 05. Breusch–Pagan turns the variance question into a test
 
 The null is constant conditional error variance, given the chosen mean model.
 
@@ -79,7 +81,7 @@ H0: Constant variance
 Prob > chi2 = 0.0000
 ```
 
-## 06. White allows a broader variance pattern
+### 06. White allows a broader variance pattern
 
 Squares and products expand the auxiliary variance regression.
 
@@ -108,21 +110,7 @@ Ha: Unrestricted heteroskedasticity
 Prob > chi2 = 0.0000
 ```
 
-## 07. A robust Wald test uses the covariance of the restrictions
-
-Account for co-movement when testing several equalities.
-
-Let R be a matrix whose q rows select q linear combinations of the p coefficients, and let r be their hypothesised values. The vector g is R times the estimated coefficients minus r. If V hat consistently estimates the coefficient covariance under the sampling conditions, R V hat R prime estimates the covariance of those restriction estimates.
-
-The Wald statistic measures their squared distance from zero after adjusting for this covariance. With q linearly independent restrictions, meaning none is implied by the others, and appropriate large-sample conditions, its null reference is chi squared with q degrees of freedom. With one restriction it equals the squared corresponding t statistic. The covariance used must match unequal variance or the relevant dependence structure. An ordinary restricted-versus-unrestricted SSR calculation is not automatically robust.
-
-\(H_0:R\beta=r\); \(g=R\widehat\beta-r\); \(R:q\times p\).
-
-\(W=g\prime(R\widehat V R\prime)^{-1}g\xrightarrow{d}\chi_q^2\).
-
-For one restriction, \(W=t^2\).
-
-## 08. Weighted least squares changes how the line is fitted
+### 07. Weighted least squares changes how the line is fitted
 
 Give less weight to observations with greater conditional error variance.
 
@@ -136,7 +124,7 @@ Candidate model: \(\operatorname{Var}(u_i\mid X_i,n_i)=\sigma^2/n_i\Rightarrow w
 
 Multiply \(y_i\), every regressor and the constant by \(\sqrt{n_i}\).
 
-## 09. Read a weighted fit without assuming it must be better
+### 08. Read a weighted fit without assuming it must be better
 
 A variance model and an economic target both matter.
 
@@ -167,45 +155,17 @@ Weighting does not remove an omitted common cause.
 ------------------------------------------------------------------------------
 ```
 
-## 10. Generalised least squares includes variance and dependence
-
-WLS is one special case of a broader transformation idea.
-
-Variance describes each error's spread. Covariance describes how two errors move together. Generalised least squares, or GLS, uses an assumed structure for both to transform the regression into an equation with equal-variance errors and zero covariance between different errors. Weighted least squares is the special case with unequal variances but no cross-observation error covariance.
-
-Feasible GLS first estimates the variance or dependence structure and then performs the transformation. Its precision advantage depends on a credible mean equation, exogeneity and a sufficiently accurate error model; estimating that structure adds uncertainty. For independent districts with uncertain variance patterns, robust OLS is a defensible starting point. For dated errors that move together, a model of that dependence may motivate another transformation. We return to that time-series case later. None of these transformations supplies a missing causal identification argument.
-
-GLS: transform using the assumed error variances and covariances.
-
-Feasible GLS: estimate that error structure before transforming.
-
-Choose separately: mean specification, estimator and uncertainty calculation.
-
-**Practice:** Would weighting remove an omitted cause related to staffing and scores?
-
-**Explanation:** No. Justify the causal comparison separately from the error-variance model.
-
-## 11. A DAG does not encode the size of the noise
-
-Use a mean-zero innovation with a regressor-dependent scale.
-
-An innovation is a new unpredictable disturbance. Let epsilon be independent of X, with mean zero and variance one. In this model, the outcome equals an intercept plus a staffing slope times X, plus sigma of X times epsilon. Sigma of X is a positive scale factor that can change with staffing.
-
-The regression error u is the scaled innovation, so its conditional mean is zero while its conditional variance is sigma of X squared. Unequal spread can therefore coexist with a valid conditional-mean comparison. The DAG shows X and the independent innovation entering the outcome. The equation, rather than the arrow pattern alone, specifies how the noise scale changes.
-
-Compare this with a diagram containing an unmeasured common cause of X and the outcome. That second story threatens identification. Robust SEs address an uncertainty calculation in the first story; they do not make the second story disappear. This distinction is why a causal graph and an error-variance assumption have different jobs.
-
-\(Y=a+bX+\sigma(X)\varepsilon\)
-
-\(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
-
-## 12. Compare conventional and robust output
+### 09. Compare conventional and robust output
 
 Same coefficients, different estimated uncertainty.
 
-The conventional staffing SE is 0.380; the heteroskedasticity-robust SE is 0.433. The coefficient is identical because both commands solve the same OLS problem on the same 420 districts.
+The conventional staffing standard error is 0.380. The heteroskedasticity robust standard error is 0.433. Both commands fit the same line to the same 420 districts, which is why their coefficients agree.
 
-The robust option changes the estimated covariance matrix, which records the estimated variances of coefficients and how their estimates vary together. We focus on the staffing variance and its square root, the SE. The new calculation allows unequal error spread under suitable conditions. It does not automatically allow observations to share arbitrary dependence, a distinction that will matter in the time-series and panel lessons.
+To ask whether staffing and language share both have zero slopes, run test str el after the robust fit. This is a joint Wald test: it measures how far the estimated slopes are from their proposed values, accounting for their estimated variances and how they move together. Stata uses the covariance from the fit when computing its test. The earlier loss-of-fit F formula uses a common error variance, so it does not give this robust test. This slope question is also different from the variance question in Breusch–Pagan.
+
+After the robust fit, use test str el for the joint null of two zero slopes.
+
+Use the covariance from the fitted model for joint inference.
 
 ```text
 . regress score str el, vce(robust)
@@ -220,35 +180,7 @@ The robust option changes the estimated covariance matrix, which records the est
 ------------------------------------------------------------------------------
 ```
 
-## 13. Do not choose an SE by the resulting significance
-
-Match it to the sampling and dependence structure.
-
-A robust SE can be larger or smaller than its conventional counterpart. Choosing the smaller one to obtain a preferred conclusion would reverse the reasoning needed for credible inference. First ask how observations were obtained and how their errors might be related.
-
-District-level independent sampling suggests one set of methods; repeated observations on districts or common state-level shocks suggest others. Record the chosen method and its justification in the analysis plan. Then interpret the resulting uncertainty, including an inconvenient or inconclusive result. Statistical uncertainty is part of the evidence, not a nuisance to eliminate by selecting a formula.
-
-Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
-
-## 14. Robust does what?
-
-Try the comparison before opening the explanation.
-
-After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
-
-Keep the regression equation and sample fixed. Separate the fitted coefficient from the covariance calculation used for its uncertainty.
-
-**Practice:** After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
-
-## 15. Robust does what?: explanation
-
-Follow the calculation and interpret its units.
-
-On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
-
-On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
-
-## 16. Measurement error creates a different source of inconsistency
+### 10. Measurement error creates a different source of inconsistency
 
 A noisy regressor is not just a noisier outcome.
 
@@ -260,7 +192,7 @@ W contains M, so W is related to that new error even when true X was exogenous. 
 
 \(\operatorname{plim}\widehat b_W=\beta\dfrac{\operatorname{Var}(X)}{\operatorname{Var}(X)+\operatorname{Var}(M)}\)
 
-## 17. Check attenuation in a separate generated comparison
+### 11. Check attenuation in a separate generated comparison
 
 Use a clean outcome equation and known noise variance.
 
@@ -280,37 +212,7 @@ The actual Stata estimate is 0.518, close to the predicted limit of 0.5 in this 
 ------------------------------------------------------------------------------
 ```
 
-## 18. Measurement error
-
-Try the comparison before opening the explanation.
-
-Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
-
-Use the separate measurement-error experiment and its independence assumptions. Do not carry the omitted-factor experiment into this calculation.
-
-**Practice:** Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
-
-## 19. Measurement error: explanation
-
-Follow the calculation and interpret its units.
-
-Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
-
-Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
-
-## 20. Outcome noise has another role
-
-Mean-zero independent outcome error need not attenuate the slope.
-
-If the outcome is measured with an additional error unrelated to the regressors, that error enters the regression disturbance. Under the required mean assumptions, the coefficient can remain unbiased or consistent, while uncertainty increases. This differs from adding classical noise to a regressor.
-
-The direction of measurement matters. Ask which variable is affected, whether the error is related to true values or other variables, and whether recording depends on the outcome. A generic statement that 'measurement error biases everything downward' would lose these distinctions. The data-collection process determines which model is plausible.
-
-If the outcome is measured with an additional error unrelated to the regressors, that error enters the regression disturbance.
-
-The direction of measurement matters.
-
-## 21. Missing observations can change the population represented
+### 12. Missing observations can change the population represented
 
 Complete-case analysis needs a selection argument.
 
@@ -320,7 +222,7 @@ Describe who is missing and why. Refit comparisons on a common sample when evalu
 
 Here S indicates whether the record is observed. Selection depends only on included X, while the disturbance U is independent of X under the proposed graph. Conditioning on S does not open a path from X to U. With an appropriate conditional-mean model and adequate support, this kind of selection need not bias the conditional slope, although it can change the represented population and precision.
 
-## 22. A missing-data assumption should be stated in context
+### 13. A missing-data assumption should be stated in context
 
 Explain what makes the analysed cases informative.
 
@@ -330,7 +232,7 @@ For a policy study, report counts before and after restrictions and compare obse
 
 Now selection depends on the outcome. X and disturbance U both enter Y, making Y a collider on their connecting path. Conditioning on its descendant S can open that path. The target highlighted here is the X–disturbance association, because it matters for the selected-sample mean assumption. Outcome-based selection can therefore invalidate a regression that would have been valid before selection.
 
-## 23. Selection on observed inputs needs a conditional-mean argument
+### 14. Selection on observed inputs needs a conditional-mean argument
 
 A nonrandom sample can preserve a coefficient while changing its target population.
 
@@ -344,7 +246,7 @@ One sufficient restriction: \(P(S=1\mid X,u)=P(S=1\mid X)\), with \(E[u\mid X]=0
 
 Preserved conditional coefficients do not imply population representativeness.
 
-## 24. Leverage and influence are different
+### 15. Leverage and influence are different
 
 An unusual regressor value need not be a bad observation.
 
@@ -358,7 +260,157 @@ Large residual: unusual outcome given the fitted predictors.
 
 Influence: material change in the fitted result when the case changes.
 
-## 25. Residual scaling and Cook’s distance answer different diagnostic questions
+### 16. Choose the covariance and estimator for the stated problem
+
+Try the comparison before opening the explanation.
+
+For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
+
+State the assumptions and units alongside the calculation.
+
+**Practice:** For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
+
+### 17. Choose the covariance and estimator for the stated problem: explanation
+
+Follow the calculation and interpret its units.
+
+Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
+
+Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
+
+### 18. Choose a remedy for the named problem
+
+More observations, better measurement and better design do different jobs.
+
+If uncertainty is large under a credible comparison, more informative observations may help. If classical regressor error is the issue, better measurement or a justified measurement-error strategy may be needed. If an omitted factor drives treatment selection, collecting more of the same comparison may only make the bias more precise.
+
+State the problem before proposing a remedy. This makes the analysis useful to a reader deciding whether to fund new data, redesign a study or use a different estimator. A small p-value from a large sample is not the final objective; a well-supported answer to the empirical question is.
+
+If uncertainty is large under a credible comparison, more informative observations may help.
+
+State the problem before proposing a remedy.
+
+### 19. From data problems to ordered observations
+
+A variance correction changes how uncertainty is calculated; weighting changes how the line is fitted; a measurement or selection problem may change the relationship that the data can identify. We should name the problem before selecting a command.
+
+The next block follows observations through time. Time ordering creates new possibilities for lagged responses and feedback, and changes the assumptions needed for both coefficients and uncertainty.
+
+From data problems to ordered observations
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 20. A robust Wald test uses the covariance of the restrictions
+
+Account for co-movement when testing several equalities.
+
+The matrix version of the robust formula collects all coefficients at once. Let X have one row for each observation, with the intercept and regressors in its columns. Let x i be the corresponding column of regressor values. The middle term in the displayed H C zero covariance adds a contribution from each observation, weighted by its squared fitted residual. The factors on either side translate those contributions into coefficient uncertainty.
+
+To test several restrictions together, let R have one row of coefficient weights for each of q restrictions. Let r collect their proposed values. Then g is R times the coefficient estimates minus r. If V hat estimates coefficient covariance, R V hat R prime estimates the covariance of g.
+
+The Wald statistic is the squared distance of g from zero, using this covariance to account for different scales and co-movement. With independent restrictions, a nonsingular restriction covariance and the appropriate large-sample conditions, its null reference is chi squared with q degrees of freedom. For a single restriction this distance is the squared t statistic. Use a covariance estimator suited to the sampling and dependence structure.
+
+Matrix HC0: \((X\prime X)^{-1}[\sum_i x_ix_i\prime\widehat u_i^2](X\prime X)^{-1}\).
+
+\(H_0:R\beta=r\); \(g=R\widehat\beta-r\); \(R:q\times p\).
+
+\(W=g\prime(R\widehat V R\prime)^{-1}g\xrightarrow{d}\chi_q^2\).
+
+For one restriction, \(W=t^2\).
+
+### 21. Generalised least squares includes variance and dependence
+
+WLS is one special case of a broader transformation idea.
+
+Variance describes each error's spread. Covariance describes how two errors move together. Generalised least squares, or GLS, uses an assumed structure for both to transform the regression into an equation with equal-variance errors and zero covariance between different errors. Weighted least squares is the special case with unequal variances but no cross-observation error covariance.
+
+Feasible GLS first estimates the variance or dependence structure and then performs the transformation. Its precision advantage depends on a credible mean equation, exogeneity and a sufficiently accurate error model; estimating that structure adds uncertainty. For independent districts with uncertain variance patterns, robust OLS is a defensible starting point. For dated errors that move together, a model of that dependence may motivate another transformation. We return to that time-series case later. None of these transformations supplies a missing causal identification argument.
+
+GLS: transform using the assumed error variances and covariances.
+
+Feasible GLS: estimate that error structure before transforming.
+
+Choose separately: mean specification, estimator and uncertainty calculation.
+
+**Practice:** Would weighting remove an omitted cause related to staffing and scores?
+
+**Explanation:** No. Justify the causal comparison separately from the error-variance model.
+
+### 22. A DAG does not encode the size of the noise
+
+Use a mean-zero innovation with a regressor-dependent scale.
+
+An innovation is a new unpredictable disturbance. Let epsilon be independent of X, with mean zero and variance one. In this model, the outcome equals an intercept plus a staffing slope times X, plus sigma of X times epsilon. Sigma of X is a positive scale factor that can change with staffing.
+
+The regression error u is the scaled innovation, so its conditional mean is zero while its conditional variance is sigma of X squared. Unequal spread can therefore coexist with a valid conditional-mean comparison. The DAG shows X and the independent innovation entering the outcome. The equation, rather than the arrow pattern alone, specifies how the noise scale changes.
+
+Compare this with a diagram containing an unmeasured common cause of X and the outcome. That second story threatens identification. Robust SEs address an uncertainty calculation in the first story; they do not make the second story disappear. This distinction is why a causal graph and an error-variance assumption have different jobs.
+
+\(Y=a+bX+\sigma(X)\varepsilon\)
+
+\(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
+
+### 23. Do not choose an SE by the resulting significance
+
+Match it to the sampling and dependence structure.
+
+A robust SE can be larger or smaller than its conventional counterpart. Choosing the smaller one to obtain a preferred conclusion would reverse the reasoning needed for credible inference. First ask how observations were obtained and how their errors might be related.
+
+District-level independent sampling suggests one set of methods; repeated observations on districts or common state-level shocks suggest others. Record the chosen method and its justification in the analysis plan. Then interpret the resulting uncertainty, including an inconvenient or inconclusive result. Statistical uncertainty is part of the evidence, not a nuisance to eliminate by selecting a formula.
+
+Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
+
+### 24. Robust does what?
+
+Try the comparison before opening the explanation.
+
+After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
+
+Keep the regression equation and sample fixed. Separate the fitted coefficient from the covariance calculation used for its uncertainty.
+
+**Practice:** After changing regress y x to regress y x, vce(robust), which point estimate changes? Does this solve omitted-variable bias?
+
+### 25. Robust does what?: explanation
+
+Follow the calculation and interpret its units.
+
+On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
+
+On the same sample the OLS coefficient does not change. The estimated covariance matrix changes, so SEs, intervals and tests can change. Heteroskedasticity-robust inference does not remove omitted-variable bias or automatically allow serial dependence.
+
+### 26. Measurement error
+
+Try the comparison before opening the explanation.
+
+Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
+
+Use the separate measurement-error experiment and its independence assumptions. Do not carry the omitted-factor experiment into this calculation.
+
+**Practice:** Observed x equals true \(X^*\) plus mean-zero noise independent of \(X^*\) and the outcome error. In a simple regression, what happens to the slope toward a positive true effect?
+
+### 27. Measurement error: explanation
+
+Follow the calculation and interpret its units.
+
+Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
+
+Under classical measurement-error assumptions, the probability limit is \(\beta\dfrac{\operatorname{Var}(X^*)}{\operatorname{Var}(X^*)+\operatorname{Var}(noise)}\), which is between zero and \(\beta\). More observations do not remove this attenuation. The result does not automatically extend to nonclassical error or every multiple-regression setting.
+
+### 28. Outcome noise has another role
+
+Mean-zero independent outcome error need not attenuate the slope.
+
+If the outcome is measured with an additional error unrelated to the regressors, that error enters the regression disturbance. Under the required mean assumptions, the coefficient can remain unbiased or consistent, while uncertainty increases. This differs from adding classical noise to a regressor.
+
+The direction of measurement matters. Ask which variable is affected, whether the error is related to true values or other variables, and whether recording depends on the outcome. A generic statement that 'measurement error biases everything downward' would lose these distinctions. The data-collection process determines which model is plausible.
+
+If the outcome is measured with an additional error unrelated to the regressors, that error enters the regression disturbance.
+
+The direction of measurement matters.
+
+### 29. Residual scaling and Cook’s distance answer different diagnostic questions
 
 A diagnostic threshold prompts investigation rather than automatic deletion.
 
@@ -372,25 +424,7 @@ Internally studentised residual: \(r_i=\widehat u_i/[s\sqrt{1-h_i}]\).
 
 Cook distance: \(D_i=\dfrac{\widehat u_i^2}{p s^2}\dfrac{h_i}{(1-h_i)^2}\).
 
-## 26. Choose the covariance and estimator for the stated problem
-
-Try the comparison before opening the explanation.
-
-For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
-
-State the assumptions and units alongside the calculation.
-
-**Practice:** For each case, name what changes and justify it: unequal district error variances under zero conditional mean; measurement error in staffing; selection related to an unobserved cause of scores. Does a small robust p-value establish a valid causal comparison?
-
-## 27. Choose the covariance and estimator for the stated problem: explanation
-
-Follow the calculation and interpret its units.
-
-Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
-
-Independent-data robust covariance addresses unequal variance without changing OLS coefficients. Measurement error and endogenous selection may alter identification and require additional information or design assumptions. A robust p-value does not establish those assumptions.
-
-## 28. Influence
+### 30. Influence
 
 Try the comparison before opening the explanation.
 
@@ -400,7 +434,7 @@ Distinguish an unusual X value from a case that materially changes the fitted li
 
 **Practice:** A high-income district sits far from the remaining x values. Must it be deleted?
 
-## 29. Influence: explanation
+### 31. Influence: explanation
 
 Follow the calculation and interpret its units.
 
@@ -408,7 +442,7 @@ No. A distant x value can have high leverage; influence also depends on its resi
 
 No. A distant x value can have high leverage; influence also depends on its residual and its effect on the fit. Verify the observation, explain substantive relevance and show defensible sensitivity analysis. Delete a confirmed error for a documented reason, not because it changes significance.
 
-## 30. Sensitivity analysis answers a stated question
+### 32. Sensitivity analysis answers a stated question
 
 Change one defensible feature and explain the comparison.
 
@@ -420,7 +454,7 @@ Sensitivity analysis examines how conclusions change under plausible alternative
 
 For example, compare a fitted income relationship with and without one verified extreme-income record and show the range supported by each sample.
 
-## 31. The data audit belongs before the policy sentence
+### 33. The data audit belongs before the policy sentence
 
 Units, ranges and recording rules affect interpretation.
 
@@ -432,19 +466,7 @@ Check how variables were measured, whether their ranges are possible and whether
 
 Record sample restrictions and verify identifiers before merging data.
 
-## 32. Choose a remedy for the named problem
-
-More observations, better measurement and better design do different jobs.
-
-If uncertainty is large under a credible comparison, more informative observations may help. If classical regressor error is the issue, better measurement or a justified measurement-error strategy may be needed. If an omitted factor drives treatment selection, collecting more of the same comparison may only make the bias more precise.
-
-State the problem before proposing a remedy. This makes the analysis useful to a reader deciding whether to fund new data, redesign a study or use a different estimator. A small p-value from a large sample is not the final objective; a well-supported answer to the empirical question is.
-
-If uncertainty is large under a credible comparison, more informative observations may help.
-
-State the problem before proposing a remedy.
-
-## 33. DAG practice: selection on an outcome descendant
+### 34. DAG practice: selection on an outcome descendant
 
 Trace the routes before choosing a control.
 
@@ -454,7 +476,7 @@ Name the target comparison first. Trace each route through the relevant variable
 
 **Practice:** Suppose X and the outcome disturbance U are independent before selection, both affect Y, and a record is observed depending on Y. Why can restricting attention to observed records create an X–U association? Compare this with selection depending only on included X.
 
-## 34. DAG practice: selection on an outcome descendant: explanation
+### 35. DAG practice: selection on an outcome descendant: explanation
 
 Explain what conditioning changes in this stated graph.
 
@@ -464,7 +486,7 @@ If selection instead depends only on included X and carries no extra information
 
 Y is a collider on \(X\rightarrow Y\leftarrow U\). The observation indicator S is its descendant. Conditioning on \(S=1\) can open the collider path, so the selected sample can violate the disturbance mean assumption even when the original sample satisfied it. If selection instead depends only on included X and carries no extra information about U conditional on X, this particular path is not opened. The conditional slope may remain valid under a correct model and adequate support, although precision and the represented population can change. The selection mechanism, rather than missingness alone, determines the concern.
 
-## 35. Separate simulation truth from estimated evidence
+### 36. Separate simulation truth from estimated evidence
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -474,7 +496,7 @@ Then use the actual schools.csv data. Fit score on staffing, language share and 
 
 **Practice:** Then use the actual schools.csv data. Fit score on staffing, language share and income; identify the largest Cook distance and compare the staffing slope with and without that district. Cook distance summarises how much omitting a case changes the fitted regression. Report this as sensitivity, not an instruction to delete it. Keep your commands, log, output and interpretation.
 
-## 36. Separate simulation truth from estimated evidence: explanation
+### 37. Separate simulation truth from estimated evidence: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -489,14 +511,4 @@ Simulation: direct coefficient 1; omitted-factor probability limit 1.5.
 Real-data sensitivity: staffing slope \(-0.068776\rightarrow-0.093391\).
 
 420 versus 419 districts; investigate an influential case before deciding whether to exclude it.
-
-## 37. From data problems to ordered observations
-
-From data problems to ordered observations
-
-A variance correction changes how uncertainty is calculated; weighting changes how the line is fitted; a measurement or selection problem may change the relationship that the data can identify. We should name the problem before selecting a command.
-
-The next block follows observations through time. Time ordering creates new possibilities for lagged responses and feedback, and changes the assumptions needed for both coefficients and uncertainty.
-
-From data problems to ordered observations
 

@@ -1,8 +1,10 @@
 # 10. Time series: functional form, indexes and calendar patterns
 
-## 01. What do the units and calendar controls change?
+Choose units, trends and calendar controls for a dated policy comparison.
 
-What do the units and calendar controls change?
+## Core lesson
+
+### 01. What do the units and calendar controls change?
 
 The monthly traffic model is our continuing application. Before interpreting its coefficients, we need to distinguish the measurement scale from the time pattern included in the equation. An index compares a level with a base period; a log difference describes a ratio; trend and seasonal terms describe particular calendar patterns.
 
@@ -12,7 +14,7 @@ Measurement: levels, logs, indexes and purchasing power.
 
 Calendar specification: trends, seasonality and dated indicators.
 
-## 02. An index number compares a level with a base period
+### 02. An index number compares a level with a base period
 
 A value of 125 on a base-100 index means 25 percent above its base.
 
@@ -26,7 +28,7 @@ A price index summarises a specified basket of prices. It does not measure every
 
 Index points and percentage changes answer different questions.
 
-## 03. Convert nominal money to a common purchasing-power scale
+### 03. Convert nominal money to a common purchasing-power scale
 
 Deflation separates a monetary level from the price scale used to express it.
 
@@ -44,7 +46,7 @@ Choose an index suited to the economic quantity and state the base year.
 
 **Explanation:** 110 divided by 1.25 is 88, in base-period monetary units.
 
-## 04. A nominal-real restriction is a testable statement about coefficients
+### 04. A nominal-real restriction is a testable statement about coefficients
 
 Rewrite the real-variable theory in the observed nominal variables.
 
@@ -58,7 +60,7 @@ If we estimate separate coefficients b W and b P in the nominal equation, this p
 
 In an unrestricted nominal equation, test \(H_0:b_W+b_P=1\).
 
-## 05. A trend is a gradual time pattern
+### 05. A trend is a gradual time pattern
 
 In a log outcome, a linear trend describes proportional growth.
 
@@ -70,7 +72,7 @@ This is one way to represent gradual changes in exposure, population or reportin
 
 Small-change interpretation: about \(100g\)% per month
 
-## 06. Seasonality repeats at the same part of the year
+### 06. Seasonality repeats at the same part of the year
 
 Use a reference month to avoid redundant indicators.
 
@@ -82,25 +84,7 @@ January is the reference category
 
 Eleven recurring month indicators, not 108 unique date indicators
 
-## 07. Frequency and season
-
-Try the comparison before opening the explanation.
-
-An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
-
-Translate each lag into calendar time using the observation frequency. A month effect repeats annually; a linear trend does not repeat.
-
-**Practice:** An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
-
-## 08. Frequency and season: explanation
-
-Follow the calculation and interpret its units.
-
-There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
-
-There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
-
-## 09. Write the policy model with its calendar controls
+### 07. Write the policy model with its calendar controls
 
 Make the intervention and units explicit.
 
@@ -114,7 +98,7 @@ M subscript m t is one if date t is in calendar month m. The sum includes Februa
 
 \(U_t\): unemployment; \(u_t\): regression error.
 
-## 10. Inspect the calendar-only regression
+### 08. Inspect the calendar-only regression
 
 Understand the baseline before adding policy variables.
 
@@ -134,7 +118,7 @@ This baseline helps us see what the policy model is adding. It does not establis
 ------------------------------------------------------------------------------
 ```
 
-## 11. A seasonal joint test asks about the whole pattern
+### 09. A seasonal joint test asks about the whole pattern
 
 One insignificant month does not settle the annual question.
 
@@ -161,7 +145,7 @@ Use testparm after fitting the intended model to state the grouped restriction. 
             Prob > F =    0.0000
 ```
 
-## 12. Read the adjusted accident regression
+### 10. Read the adjusted accident regression
 
 Connect the coefficient with the actual outcome and controls.
 
@@ -186,7 +170,7 @@ The result raises useful applied questions. Could travel, risk behaviour, enforc
 ------------------------------------------------------------------------------
 ```
 
-## 13. A date indicator can mix several simultaneous changes
+### 11. A date indicator can mix several simultaneous changes
 
 A coefficient needs a counterfactual interpretation.
 
@@ -196,25 +180,7 @@ For a causal claim, explain what the accident path would have looked like withou
 
 Earlier accident history and economic conditions can influence both law adoption and later accidents. The diagram shows the two resulting backdoor routes. Toggle the proposed history and economic controls separately. A calendar indicator does not close a route merely because adoption occurred at a known date; the relevant pre-policy causes must be addressed by the design and measured controls.
 
-## 14. Before–after is not enough
-
-Try the comparison before opening the explanation.
-
-Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-Describe the accident path that would have occurred under the specified no-law policy. Ask whether another change at adoption could explain the observed difference.
-
-**Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
-
-## 15. Before–after is not enough: explanation
-
-Follow the calculation and interpret its units.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
-
-Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
-
-## 16. A linear trend does not remove every nonstationary process
+### 12. A linear trend does not remove every nonstationary process
 
 A straight calendar pattern need not describe accumulated random changes.
 
@@ -226,19 +192,7 @@ A fixed calendar drift and accumulated unexpected changes are different mechanis
 
 Inspect whether deviations fade before relying on a trend regression.
 
-## 17. Record the time-series specification in words
-
-Dates and frequency are part of reproducibility.
-
-A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls. It states how gaps and lags are handled and which observations are lost when lagged terms are added. Another analyst should be able to reproduce the same sample and equation.
-
-Then explain the proposed economic comparison and its main uncertainty and identification conditions. This is more useful than reporting only a command name or a number of observations. In a time-series setting, the time structure is part of what the model means, not a formatting detail appended after estimation.
-
-A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls.
-
-Then explain the proposed economic comparison and its main uncertainty and identification conditions.
-
-## 18. Interpret the traffic-law coefficient with its timing
+### 13. Interpret the traffic-law coefficient with its timing
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -248,7 +202,7 @@ Refit the traffic model without its linear trend, retaining the same month contr
 
 **Practice:** Refit the traffic model without its linear trend, retaining the same month controls, other regressors and 108 months. Compare the law slopes and explain the changed time-path assumption. Keep your commands, log, output and interpretation.
 
-## 19. Interpret the traffic-law coefficient with its timing: explanation
+### 14. Interpret the traffic-law coefficient with its timing: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -264,13 +218,63 @@ Same 108 months and remaining regressors.
 
 The models impose different time-path assumptions.
 
-## 20. From calendar controls to persistence
-
-From calendar controls to persistence
+### 15. From calendar controls to persistence
 
 The time index, measurement scale, trend and seasonal controls specify the comparison being estimated. A date indicator can capture several simultaneous changes, so its coefficient alone does not establish a policy effect.
 
 Next we study stationarity, persistence and dynamic completeness. These ideas help us judge whether the chosen time-series model represents a stable relationship and whether useful past information remains in its error.
 
 From calendar controls to persistence
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 16. Frequency and season
+
+Try the comparison before opening the explanation.
+
+An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
+
+Translate each lag into calendar time using the observation frequency. A month effect repeats annually; a linear trend does not repeat.
+
+**Practice:** An accident dataset runs monthly from January 1981 through December 1989. How many observations are there, and why use eleven month indicators with an intercept?
+
+### 17. Frequency and season: explanation
+
+Follow the calculation and interpret its units.
+
+There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
+
+There are \(9\times12=108\) observations. Eleven indicators compare months with an omitted reference month; including all twelve plus an intercept creates exact collinearity. Their purpose is seasonal adjustment, not causal identification by itself.
+
+### 18. Before–after is not enough
+
+Try the comparison before opening the explanation.
+
+Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
+
+Describe the accident path that would have occurred under the specified no-law policy. Ask whether another change at adoption could explain the observed difference.
+
+**Practice:** Accidents fall after a road-safety law. Why is this not yet evidence of its causal effect?
+
+### 19. Before–after is not enough: explanation
+
+Follow the calculation and interpret its units.
+
+Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
+
+Traffic volume, seasonality, fuel prices, enforcement, reporting or other policies may also change. A defensible causal comparison must rule out relevant counterfactual changes; adding a trend is useful only insofar as its assumptions are credible.
+
+### 20. Record the time-series specification in words
+
+Dates and frequency are part of reproducibility.
+
+A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls. It states how gaps and lags are handled and which observations are lost when lagged terms are added. Another analyst should be able to reproduce the same sample and equation.
+
+Then explain the proposed economic comparison and its main uncertainty and identification conditions. This is more useful than reporting only a command name or a number of observations. In a time-series setting, the time structure is part of what the model means, not a formatting detail appended after estimation.
+
+A useful description gives the date range, monthly frequency, outcome scale, policy coding, trend and seasonal controls.
+
+Then explain the proposed economic comparison and its main uncertainty and identification conditions.
 

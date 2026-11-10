@@ -5,7 +5,6 @@ set more off
 do "lab_07.do"
 do "lab_13.do"
 do "lab_14.do"
-do "overleaf_technical.do"
 do "did_overleaf.do"
 do "iv_extension.do"
 capture log close

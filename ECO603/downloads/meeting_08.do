@@ -4,7 +4,6 @@ version 19.0
 set more off
 do "lab_04.do"
 do "lab_06.do"
-do "overleaf_technical.do"
 do "variance.do"
 capture log close
 log using "week_08_completion.txt", text replace

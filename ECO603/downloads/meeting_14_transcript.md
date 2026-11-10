@@ -1,14 +1,18 @@
 # 14. Panel methods, DiD and instrumental variables
 
-## 01. Can repeated observations improve a policy comparison?
+Choose between a within-unit, before-and-after group, or instrumental comparison.
+
+## Core lesson
+
+### 01. Can repeated observations improve a policy comparison?
 
 Use changes within states to study alcohol taxes and traffic fatalities.
 
-States differ in geography, driving culture and other persistent characteristics. A pooled comparison between beer taxes and traffic fatalities can mix those differences with a policy relationship. Panel data observe the same identifiable units repeatedly, giving us a way to remove a particular kind of stable omitted factor.
+States differ in geography, driving culture and other lasting features. If we compare beer taxes and traffic fatalities across states, those differences may enter the estimated relationship. A panel follows the same units over time, so we can also compare a state with itself as its tax changes. The data follow 48 states over seven years.
 
-Our application follows 48 states for seven years, with 336 state-year observations. The outcome is traffic fatalities per ten thousand residents and the regressor is a real beer-tax measure. We will compare a pooled regression using all rows, a fixed-effects regression accounting for stable unit components, and a two-period change regression, then build a simple difference-in-differences policy comparison with clearly constructed numbers.
+We will make three comparisons. First, use within-state changes to account for stable differences. Next, use a comparison group's change to estimate the untreated path in a preschool example. Finally, examine whether a tax that shifts cigarette prices can help identify a demand slope. For each design, ask which variation supplies the estimate, which assumptions make the comparison credible, and what determines its uncertainty.
 
-## 02. A panel has identities as well as dates
+### 02. A panel has identities as well as dates
 
 Repeated cross sections do not give the same within-unit comparison.
 
@@ -20,7 +24,7 @@ One row is a state in a year.
 
 Before estimating, verify that the state-year pair uniquely identifies rows and inspect the coverage.
 
-## 03. Write a stable omitted effect explicitly
+### 03. Write a stable omitted effect explicitly
 
 An unobserved unit component may be related to policy.
 
@@ -34,7 +38,7 @@ The tax coefficient beta is the target slope in this specification. If stable st
 
 \(u_{it}\): remaining state-year error.
 
-## 04. Follow one unit across two dates
+### 04. Follow one unit across two dates
 
 Subtracting the same unit’s outcomes removes its stable intercept.
 
@@ -46,7 +50,7 @@ This is why a within-unit comparison can remove a stable additive omitted compon
 
 \(\Delta X_i=2,\quad\Delta Y_i=4,\quad\alpha_i-\alpha_i=0\)
 
-## 05. First differencing removes a stable unit component
+### 05. First differencing removes a stable unit component
 
 Subtract the earlier equation from the later equation.
 
@@ -56,7 +60,7 @@ Time-invariant regressors also disappear from a differenced equation. This is us
 
 \(\Delta Y_i=\beta\Delta X_i+\Delta\lambda+\Delta u_i\)
 
-## 06. Differencing can create dependence even from independent level errors
+### 06. Differencing can create dependence even from independent level errors
 
 Adjacent differences share one error with opposite signs.
 
@@ -68,39 +72,7 @@ This calculation does not make the differenced regressor exogenous; that needs i
 
 \(\operatorname{Cov}(\Delta u_{it},\Delta u_{i,t-1})=-\sigma^2\); adjacent correlation \(=-1/2\).
 
-## 07. A two-period athlete example uses the same algebra
-
-State what disappears and what the comparison still needs.
-
-Apply the same subtraction to a student rather than a state. GPA means grade point average, a numerical summary of course grades. The regressor season equals one when the student's sport is in season and zero otherwise. Suppose a stable student component captures lasting preparation, while a semester effect captures a common change across students.
-
-Subtract the student's first-semester equation from the second. The stable preparation component cancels. A semester change remains, as does any change in unobserved study conditions. The coefficient uses students whose season indicator changes. If course difficulty or study time changes with the sports season, that time-varying factor can still confound the comparison. Differencing removes the stable additive component, not every reason that participation and grades might move together.
-
-\(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\)
-
-\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\)
-
-GPA: grade point average; season: a zero-or-one indicator.
-
-## 08. First differences
-
-Try the comparison before opening the explanation.
-
-In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
-
-GPA is the student’s grade point average. Subtract the same student’s first-semester equation from the second; keep the common semester change.
-
-**Practice:** In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
-
-## 09. First differences: explanation
-
-Follow the calculation and interpret its units.
-
-\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
-
-\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
-
-## 10. Demeaning uses each unit’s own average
+### 07. Demeaning uses each unit’s own average
 
 Fixed effects remove the same stable component over several periods.
 
@@ -114,7 +86,7 @@ A stable additive component equals its own time average, so it disappears in thi
 
 \(Y_{it}-\overline Y_i=\beta(X_{it}-\overline X_i)+(\lambda_t-\overline\lambda)+(u_{it}-\overline u_i)\)
 
-## 11. Two-period fixed effects and first differences share a slope identity
+### 08. Two-period fixed effects and first differences share a slope identity
 
 The identity requires the same two-period sample and specification.
 
@@ -126,7 +98,7 @@ With two observations per unit, demeaning produces one half of the change and it
 
 Our application compares a two-period change from 1982 to 1988 with a fixed-effects fit using all seven years.
 
-## 12. Read pooled and within-state associations
+### 09. Read pooled and within-state associations
 
 Removing stable differences can change the sign.
 
@@ -147,7 +119,7 @@ The fixed-effect coefficient is measured in fatalities per ten thousand resident
 -------------+----------------------------------------------------------------
 ```
 
-## 13. Use year effects for common shocks
+### 10. Use year effects for common shocks
 
 They do not remove state-specific changes.
 
@@ -159,7 +131,7 @@ Year effects: common date shifts. State effects: stable additive state differenc
 
 A location common cause is not removed by a common calendar control.
 
-## 14. Check whether fixed effects absorb a regressor
+### 11. Check whether fixed effects absorb a regressor
 
 A time-only variable cannot survive unrestricted time indicators.
 
@@ -173,25 +145,7 @@ If \(Tax_t=1+1\{t=2\}\), its column duplicates year-intercept variation.
 
 A separate coefficient needs variation beyond the included controls.
 
-## 15. What year effects absorb
-
-Try the comparison before opening the explanation.
-
-\(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
-
-Try reproducing the common tax column using the year indicators. Then ask whether the tax-by-group product has additional variation.
-
-**Practice:** \(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
-
-## 16. What year effects absorb: explanation
-
-Follow the calculation and interpret its units.
-
-The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
-
-The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
-
-## 17. State the fixed-effects exogeneity condition
+### 12. State the fixed-effects exogeneity condition
 
 Transforming variables does not make their remaining changes random.
 
@@ -201,7 +155,7 @@ First-difference OLS instead needs its differenced regressor to have the require
 
 \(E(u_{it}\mid X_{i1},\ldots,X_{iT},\alpha_i)=0\) as a sufficient panel condition
 
-## 18. Build a difference-in-differences comparison
+### 13. Build a difference-in-differences comparison
 
 Begin with the Head Start policy question from the original DiD lesson.
 
@@ -215,7 +169,7 @@ Define eligibility before the expansion, the comparison population and the two d
 
 Reading: Wikle and Wilson (2023), Access to Head Start and Maternal Labor Supply.
 
-## 19. Preschool access changes a household’s feasible choices
+### 14. Preschool access changes a household’s feasible choices
 
 Released care time can support paid work or another activity.
 
@@ -229,7 +183,7 @@ Preschool can relax a care constraint without forcing a particular response.
 
 The diagram is a constructed time-allocation illustration.
 
-## 20. Eligibility, access and participation are different variables
+### 15. Eligibility, access and participation are different variables
 
 State the policy exposure whose effect is being studied.
 
@@ -243,7 +197,7 @@ Define the expansion comparison before interpreting a coefficient as an attendan
 
 A causal diagram does not establish parallel untreated trends.
 
-## 21. Parallel trends is about unobserved untreated changes
+### 16. Parallel trends is about unobserved untreated changes
 
 It is not a requirement that the groups begin at the same level.
 
@@ -259,7 +213,7 @@ Assumed untreated eligible post rate: \(40+(63-60)=43\%\).
 
 Parallel trends concerns the missing no-expansion change, not equal starting levels.
 
-## 22. No anticipation and stable comparison units also matter
+### 17. No anticipation and stable comparison units also matter
 
 Define when treatment can begin to affect behaviour.
 
@@ -273,31 +227,7 @@ Check spillovers and the population represented at both dates.
 
 A clear policy definition is part of the causal model.
 
-## 23. DiD arithmetic
-
-Try the comparison before opening the explanation.
-
-In the Head Start teaching diagram, eligible mothers’ employment rises from 40% to 48%; comparison mothers’ employment rises from 60% to 63%. Calculate DiD in percentage points and on the zero-or-one employment-regression scale. State the untreated-trend assumption.
-
-First calculate each group’s change in the same units, then subtract. Explain which post-period mean is missing.
-
-Work in percentage points before converting to a zero-or-one outcome scale.
-
-**Practice:** In the Head Start teaching diagram, eligible mothers’ employment rises from 40% to 48%; comparison mothers’ employment rises from 60% to 63%. Calculate DiD in percentage points and on the zero-or-one employment-regression scale. State the untreated-trend assumption.
-
-## 24. DiD arithmetic: explanation
-
-Follow the calculation and interpret its units.
-
-The eligible change is eight percentage points and the comparison change three. The difference is five percentage points, or 0.05 on a zero-or-one outcome scale. Under parallel untreated trends the eligible group’s no-expansion post rate would be 43%. A causal interpretation also requires an unaffected baseline, no spillovers into the comparison group, a well-defined policy, and comparable sampling. The numbers are constructed, not estimates from the Head Start paper.
-
-\((48-40)-(63-60)=5\) percentage points.
-
-Binary-outcome regression contrast: \(0.05\).
-
-The untreated eligible post mean is assumed, not observed.
-
-## 25. The interaction in a two-by-two DiD equation has a specific meaning
+### 18. The interaction in a two-by-two DiD equation has a specific meaning
 
 Its interpretation follows the four group-time means.
 
@@ -311,7 +241,7 @@ The interaction slope is 0.05 in our constructed example, equivalent to five per
 
 Constructed interaction: \(\beta_3=0.05\), or five percentage points.
 
-## 26. Different characteristics can imply different untreated changes
+### 19. Different characteristics can imply different untreated changes
 
 Unequal starting levels and unequal untreated trends are different issues.
 
@@ -325,7 +255,7 @@ Conditional trends: \(E[\Delta Y(0)\mid G=1,W]=E[\Delta Y(0)\mid G=0,W]\).
 
 Here the change in Y(0) means the change without expansion.
 
-## 27. Compare within location before averaging across locations
+### 20. Compare within location before averaging across locations
 
 The original two-location idea separates changing opportunities from policy effects.
 
@@ -339,7 +269,7 @@ Location B: group changes 9 and 6; within-location DiD 3 percentage points.
 
 Different location mixtures can reverse the unadjusted aggregate comparison.
 
-## 28. Average conditional effects for the treated population
+### 21. Average conditional effects for the treated population
 
 The target determines the averaging weights.
 
@@ -353,7 +283,7 @@ In the two-location example, the eligible-group weights are 0.75 and 0.25. The c
 
 Example: \(0.75(1)+0.25(3)=1.5\) percentage points.
 
-## 29. A covariate in levels need not adjust a trend
+### 22. A covariate in levels need not adjust a trend
 
 Decide whether the model represents untreated changes and effect heterogeneity.
 
@@ -367,7 +297,7 @@ Model the untreated change as a function of pre-treatment W.
 
 Allow appropriate heterogeneity and average for the stated population.
 
-## 30. Repeat the original zero-effect income-targeting experiment
+### 23. Repeat the original zero-effect income-targeting experiment
 
 Known simulation truth lets us diagnose a misleading comparison.
 
@@ -393,7 +323,7 @@ A correct linear change model and a defensible comparison are different requirem
 ------------------------------------------------------------------------------
 ```
 
-## 31. Similar-group comparisons need overlap
+### 24. Similar-group comparisons need overlap
 
 An estimator cannot create comparison observations absent from the data.
 
@@ -407,49 +337,7 @@ Deterministic income targeting leaves no comparison observations below its cutof
 
 A fitted extrapolation should be justified and labelled as such.
 
-## 32. Doubly robust DiD combines two supporting models
-
-Two chances for model correctness retain the design assumptions.
-
-Doubly robust DiD combines a model of the comparison group's untreated change with a model of group membership. The first predicts the change among untreated units given prior characteristics. The second gives a propensity score: the probability of belonging to the treated group given those characteristics. Both help construct the treated group's missing untreated comparison.
-
-Under conditional parallel trends, appropriate timing, overlap and the additional sampling and model-fitting conditions needed for a large-sample approximation, a doubly robust estimate can remain consistent if either supporting model is correctly specified. It does not remain valid when both are wrong or when the design assumptions fail. In the Stata example, a linear model describes untreated changes. The membership model uses a logistic curve, a smooth S-shaped function that keeps probabilities between zero and one. Flexible machine learning can fit more complex relationships, but valid effect inference requires a suitable procedure; prediction cross-validation alone does not supply it. This is the qualified connection to the earlier ridge/lasso section.
-
-Outcome model: \(m_0(W)=E[\Delta Y\mid G=0,W]\).
-
-Propensity score: \(p(W)=P(G=1\mid W)\).
-
-A logistic membership curve stays between zero and one.
-
-Double robustness concerns supporting-model correctness; conditional trends and overlap remain assumptions.
-
-## 33. Read the real-data example from the Overleaf lesson
-
-Identify the sample and the reported target before interpreting ATET.
-
-We now reproduce the real-data command in the original DiD deck. Its filter keeps National Supported Work experimental controls and a Current Population Survey comparison sample, dropping the actual trainees. The variable experimental identifies the data-source group here. Both retained groups are non-trainees, so this is a placebo comparison for a zero training-effect benchmark, not an estimate of Head Start or a training-program effect.
-
-The data contain 16,417 people observed in 1975 and 1978. Their simple difference in earnings changes is 867.51 in the file's dollar units. The installed doubly robust command gives -901.27, with standard error 393.61, using seven pre-period covariates. Its ATET label means average treatment effect on the treated, the same target abbreviation as ATT. These nonzero placebo discrepancies are reasons to scrutinise the comparison, overlap and models. A different estimator is not automatically a more credible design.
-
-Retained sample: NSW experimental controls and CPS comparison observations.
-
-Data-source group membership is not actual training receipt.
-
-ATET and ATT name the same treated-group average target.
-
-```text
-. drdid re age educ black married nodegree hisp re74, ///
-
-------------------------------------------------------------------------------
-             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
--------------+----------------------------------------------------------------
-ATET         |
-experimental |
-   (1 vs 0)  |  -901.2703   393.6127    -2.29   0.022    -1672.737   -129.8037
-------------------------------------------------------------------------------
-```
-
-## 34. Separate spillovers, treatment versions and anticipation
+### 25. Separate spillovers, treatment versions and anticipation
 
 Use the original SUTVA discussion to define the policy comparison precisely.
 
@@ -463,49 +351,19 @@ Well-defined treatment: specify the preschool access or service bundle being com
 
 No anticipation: the baseline outcome is not already affected by the future intervention.
 
-## 35. Cluster inference for repeated units
+### 26. Cluster inference for repeated units
 
 Errors within a state can remain related after fixed effects.
 
-State fixed effects remove a stable mean component; they do not force the remaining errors in different years to be independent. State-clustered SEs allow general dependence within a state under suitable conditions across states and enough informative clusters for the approximation.
+A cluster is a group whose observations may share errors. When we follow a state over time, unexpected changes in one year may be related to changes in other years. Removing a stable state component from the mean leaves this possibility open. State-clustered standard errors allow dependence within a state, under suitable independence across states and with enough informative states for the approximation.
 
-The policy assignment and shared shocks help determine the appropriate clustering unit. Many district-year rows can still contain relatively few independent state-policy changes. Report both the number of observations and the relevant cluster structure. With few clusters, ordinary cluster approximations can be fragile, which should affect the inference strategy rather than be hidden by a large row count.
+Choose clusters by asking which observations share a policy decision or an economic shock. A sample with many districts inside a few states may contain only a few independent state-policy changes. Report the cluster structure alongside the number of observations and consider the limits of ordinary cluster inference when there are few clusters.
 
 State fixed effects remove a stable mean component; they do not force the remaining errors in different years to be independent.
 
 The policy assignment and shared shocks help determine the appropriate clustering unit.
 
-## 36. Choose the dependence unit for inference
-
-The number of rows need not equal the number of independent sources.
-
-Imagine a state policy observed for many districts. Districts in one state may share an implementation decision or an economic shock, so their errors need not be independent. Adding districts within that state then adds less independent policy information than adding another independently assigned state.
-
-A cluster is a group within which errors may be related. Cluster-robust inference allows that within-group dependence while relying on suitable independence across clusters and enough informative clusters. The clustering unit should follow the policy assignment and error story; it is not selected to obtain a preferred standard error. For repeated state observations, state clustering is often a candidate, but common national shocks or very few states require additional care. Our repeated-state data provide this within-state dependence example.
-
-Cluster: a group within which errors may be related.
-
-Independent information follows the assignment/error structure, not just the row count.
-
-## 37. Cluster choice
-
-Try the comparison before opening the explanation.
-
-A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
-
-Rows from districts in one state can share the same policy and shocks. Identify the independent assignment units before choosing the covariance calculation.
-
-**Practice:** A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
-
-## 38. Cluster choice: explanation
-
-Follow the calculation and interpret its units.
-
-Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
-
-Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
-
-## 39. Interpret a feasible tax difference
+### 27. Interpret a feasible tax difference
 
 Use the fitted contrast and preserve the outcome units.
 
@@ -523,7 +381,7 @@ Explain the within-state adjustment and time effects in the same result sentence
 ------------------------------------------------------------------------------
 ```
 
-## 40. Inspect the 1982-to-1988 changes separately
+### 28. Inspect the 1982-to-1988 changes separately
 
 A longer change can use different variation from annual fixed effects.
 
@@ -543,27 +401,7 @@ Discuss why their estimates need not be equal and which changes each model can r
 ------------------------------------------------------------------------------
 ```
 
-## 41. DAG practice: pooling is not within-location identification
-
-Trace the routes before choosing a control.
-
-In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
-
-## 42. DAG practice: pooling is not within-location identification: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Year indicators do not block \(X\leftarrow C\rightarrow Y\) through stable location quality. Unit fixed effects can cancel an additive stable location component, but they also absorb a proximity indicator that never changes within a unit. Its separate level coefficient is then unavailable.
-
-A proximity-by-post-period interaction can vary across groups and dates. Interpreting that interaction as a DiD effect requires a well-defined intervention and parallel untreated trends, along with the other stated comparison assumptions. Neither pooling nor the causal diagram alone establishes those assumptions.
-
-Year indicators do not block \(X\leftarrow C\rightarrow Y\) through stable location quality. Unit fixed effects can cancel an additive stable location component, but they also absorb a proximity indicator that never changes within a unit. Its separate level coefficient is then unavailable. A proximity-by-post-period interaction can vary across groups and dates. Interpreting that interaction as a DiD effect requires a well-defined intervention and parallel untreated trends, along with the other stated comparison assumptions. Neither pooling nor the causal diagram alone establishes those assumptions.
-
-## 43. Distinguish within-state and endpoint comparisons
+### 29. Distinguish within-state and endpoint comparisons
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -573,7 +411,7 @@ Change the endpoint first-difference comparison to 1983 and 1988. Use the same 4
 
 **Practice:** Change the endpoint first-difference comparison to 1983 and 1988. Use the same 48 states, calculate the differences yourself and compare the slope with the original endpoint window. Keep your commands, log, output and interpretation.
 
-## 44. Distinguish within-state and endpoint comparisons: explanation
+### 30. Distinguish within-state and endpoint comparisons: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -589,9 +427,7 @@ State FE slope: \(-0.639980\); 1982–1988 endpoint slope: \(-1.040973\).
 
 A changed endpoint window changes the dated comparison.
 
-## 45. From panel comparisons to instrumental variation
-
-From panel comparisons to instrumental variation
+### 31. From panel comparisons to instrumental variation
 
 Panel methods removed a stable unit component, and the DiD discussion made assumptions about missing untreated changes explicit. Neither method automatically removes a time-varying cause of both the regressor and the outcome.
 
@@ -599,7 +435,7 @@ An instrument is an observed variable proposed as a source of regressor variatio
 
 From panel comparisons to instrumental variation
 
-## 46. Do higher cigarette prices reduce sales?
+### 32. Do higher cigarette prices reduce sales?
 
 Price is chosen in a market, so its variation may be endogenous.
 
@@ -611,7 +447,7 @@ Question: isolate a demand response from other state differences.
 
 IV: instrumental variables; the proposed source of price variation needs its own argument.
 
-## 47. Define the demand equation and its units
+### 33. Define the demand equation and its units
 
 A log price slope is an elasticity under the model.
 
@@ -625,7 +461,7 @@ The consumer price index converts the source money prices to a common price scal
 
 Source deflator has base one: real cents per pack equal nominal cents divided by the recorded price index.
 
-## 48. Relevance is the first instrument requirement
+### 34. Relevance is the first instrument requirement
 
 The instrument must move the endogenous regressor.
 
@@ -639,7 +475,7 @@ Relevance: \(\pi_1\ne0\)
 
 \(Z\): real cents per pack; \(X=\log P\)
 
-## 49. Exogeneity and exclusion justify the comparison
+### 35. Exogeneity and exclusion justify the comparison
 
 A strong first stage does not establish either condition.
 
@@ -653,7 +489,7 @@ Exclusion: no causal instrument-to-quantity channel bypassing price.
 
 Required IV moment: \(\operatorname{Cov}(Z,u)=0\)
 
-## 50. Derive the simple IV ratio
+### 36. Derive the simple IV ratio
 
 Compare how the instrument moves the outcome and the regressor.
 
@@ -667,25 +503,7 @@ Reduced form: \(Y=c+\rho Z+\eta,\quad\rho=\beta\pi_1\)
 
 \(\widehat\beta_{IV}=\widehat\rho/\widehat\pi_1\)
 
-## 51. Wald ratio
-
-Try the comparison before opening the explanation.
-
-A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
-
-Use the constant-slope model just derived. Divide the outcome-per-instrument slope by the treatment-per-instrument slope and track the canceled units.
-
-**Practice:** A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
-
-## 52. Wald ratio: explanation
-
-Follow the calculation and interpret its units.
-
-The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
-
-The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
-
-## 53. Inspect the OLS demand comparison first
+### 37. Inspect the OLS demand comparison first
 
 It is a useful benchmark, not the target by default.
 
@@ -705,7 +523,7 @@ The benchmark helps communicate how the IV comparison differs. Do not select OLS
 ------------------------------------------------------------------------------
 ```
 
-## 54. Read the actual first stage
+### 38. Read the actual first stage
 
 State the instrument units as recorded in the data.
 
@@ -725,7 +543,7 @@ The coefficient describes the fitted log-price change for one unit of that recor
 ------------------------------------------------------------------------------
 ```
 
-## 55. Read the reduced form using the same controls and sample
+### 39. Read the reduced form using the same controls and sample
 
 Its scale is quantity change per instrument unit.
 
@@ -745,7 +563,7 @@ The reduced form is informative about the policy–outcome relation, but interpr
 ------------------------------------------------------------------------------
 ```
 
-## 56. What the two stages actually fit
+### 40. What the two stages actually fit
 
 Use the instrument-predicted part of price, with a dedicated IV variance calculation.
 
@@ -761,7 +579,7 @@ Structural residual: \(\widehat u=Y-\widehat\alpha-\widehat\beta X-\widehat\gamm
 
 2SLS uses instrument-predicted variation; IV inference uses the structural model.
 
-## 57. Use the dedicated IV estimator for uncertainty
+### 41. Use the dedicated IV estimator for uncertainty
 
 Manual fitted-regressor OLS is not enough for valid IV SEs.
 
@@ -771,39 +589,7 @@ Its ordinary SE formula does not provide the appropriate IV covariance calculati
 
 \(\texttt{ivregress 2sls logq (logp = salestax), vce(robust)}\)
 
-## 58. Two-stage least squares projects regressors onto the instrument space
-
-The instrument matrix includes the exogenous controls and the excluded instruments.
-
-Let X contain the endogenous regressor, the exogenous controls and the intercept in the outcome equation. Let Z contain the exogenous controls, the intercept and the excluded instruments. The projection matrix P sub Z maps each column of X to its fitted values from its regression on Z. Two-stage least squares uses those fitted regressor columns to estimate the outcome coefficients.
-
-The matrix expression is X prime P sub Z X inverse times X prime P sub Z y, when the required rank condition holds. Orthogonality of instruments to the structural error supplies the identifying moments; rank supplies sufficient instrument-predicted variation. The second-stage numerical coefficient identity does not justify ordinary OLS standard errors computed as though the first-stage fits were fixed observed regressors. Use the dedicated IV covariance estimator.
-
-\(P_Z=Z(Z\prime Z)^{-1}Z\prime\); \(\widehat X=P_ZX\).
-
-\(\widehat\beta_{2SLS}=(X\prime P_ZX)^{-1}X\prime P_Zy\).
-
-Population moments: \(E[z_iu_i]=0\), with the required rank condition.
-
-## 59. Two stages and uncertainty
-
-Try the comparison before opening the explanation.
-
-Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
-
-Compare actual X with first-stage fitted X in the residual. The variance calculation must correspond to the structural estimating problem.
-
-**Practice:** Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
-
-## 60. Two stages and uncertainty: explanation
-
-Follow the calculation and interpret its units.
-
-The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
-
-The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
-
-## 61. Compare the actual IV coefficient with its ratio
+### 42. Compare the actual IV coefficient with its ratio
 
 The do-file verifies equality before rounding.
 
@@ -823,7 +609,7 @@ The IV estimate has more sampling uncertainty than the OLS benchmark here. That 
 ------------------------------------------------------------------------------
 ```
 
-## 62. Included exogenous controls belong in the IV specification
+### 43. Included exogenous controls belong in the IV specification
 
 They help define the same conditional comparison in both stages.
 
@@ -844,7 +630,7 @@ The income adjustment can help with some observed demand differences but does no
 ------------------------------------------------------------------------------
 ```
 
-## 63. Hold income fixed in both supporting IV regressions
+### 44. Hold income fixed in both supporting IV regressions
 
 Compatible controls and observations make the controlled ratio meaningful.
 
@@ -871,37 +657,7 @@ Read the dedicated IV result for its uncertainty.
 ------------------------------------------------------------------------------
 ```
 
-## 64. School availability illustrates the exclusion question
-
-A plausible first stage can still leave another route to the outcome.
-
-Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score. Relevance asks whether availability actually moves attendance. Exclusion asks whether availability affects scores only through the attendance measure in the equation.
-
-Residential choice, local resources or school competition may create other relationships. Family preferences can also relate availability to unobserved motivation. Discuss these mechanisms explicitly instead of treating geographical proximity as automatically random. A useful IV proposal identifies the potential violation and explains what institutional evidence or controls could make the assumption more credible.
-
-Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score.
-
-Residential choice, local resources or school competition may create other relationships.
-
-## 65. Unexpected first-stage sign
-
-Try the comparison before opening the explanation.
-
-School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
-
-In this separate school-attendance example, relevance asks for a nonzero slope. Investigate an unexpected sign without confusing it with a test of exclusion.
-
-**Practice:** School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
-
-## 66. Unexpected first-stage sign: explanation
-
-Follow the calculation and interpret its units.
-
-No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
-
-No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
-
-## 67. Whose treatment changes when encouragement changes?
+### 45. Whose treatment changes when encouragement changes?
 
 A binary encouragement example introduces the treatment-response groups.
 
@@ -915,7 +671,7 @@ Monotonicity: the offer does not reduce any individual’s attendance.
 
 Constructed ratio: \(0.90/(0.60-0.30)=3\) score points.
 
-## 68. With heterogeneous effects, say whose response IV identifies
+### 46. With heterogeneous effects, say whose response IV identifies
 
 A constant coefficient can hide a local treatment comparison.
 
@@ -927,7 +683,7 @@ LATE: average treatment effect for compliers under the binary-IV assumptions.
 
 An IV population is determined by the instrument and the maintained model.
 
-## 69. Weak instruments make the ratio fragile
+### 47. Weak instruments make the ratio fragile
 
 A near-zero first stage magnifies uncertainty.
 
@@ -951,19 +707,7 @@ Strength and validity are different requirements.
   --------------------------------------------------------------------------
 ```
 
-## 70. The simple IV precision formula shows the cost of a weak first stage
-
-A formula under strong-instrument asymptotics is not a cure for weak identification.
-
-In the single-endogenous-regressor, single-instrument model with an intercept, iid observations and homoskedastic structural errors, the usual large-sample IV variance can be written as sigma squared divided by the product of centred X variation and the first-stage R squared. Here sigma squared is the structural error variance and the first-stage R squared measures instrument-predicted X variation in that simple model.
-
-When the first stage explains little variation, the denominator is small and ordinary ratio-based inference becomes fragile. This formula assumes the regular strong-identification approximation; it should not be used to declare standard Wald inference reliable in a weak-instrument design. With controls, use the appropriate partial first-stage variation and a dedicated procedure. The next weak-instrument-robust coefficient test addresses inference under specified instrument validity, not exclusion itself.
-
-Simple homoskedastic strong-IV approximation: \(\operatorname{Var}(\widehat\beta_{IV})\approx\sigma_u^2/[SST_X R_{X,Z}^2]\).
-
-Instrument validity, first-stage strength and the validity of an inference approximation are distinct.
-
-## 71. A weak-instrument-robust test asks a stated coefficient question
+### 48. A weak-instrument-robust test asks a stated coefficient question
 
 Protecting inference from a weak first stage does not validate the instrument.
 
@@ -993,41 +737,7 @@ Note: Anderson–Rubin test reported by
       identified.
 ```
 
-## 72. A larger instrument set adds assumptions as well as information
-
-More instruments are not automatically a better design.
-
-An excluded instrument appears in the first stage but is excluded from the structural outcome equation except through the endogenous regressors. A model is overidentified when there are more such instruments than endogenous regressors. Extra instruments can supply additional variation, but each needs a substantive validity argument and may be weak.
-
-An overidentification test checks whether the instrument moment restrictions are mutually compatible with the maintained model. A nonrejection does not prove every instrument valid: the test can have little power, meaning a low probability of detecting a particular violation. Some violations can also be shared across instruments. Keep the present one-instrument application transparent, and explain the distinct economic argument for any proposed additional instrument before using a larger set.
-
-Overidentified: more excluded instruments than endogenous regressors.
-
-A compatibility test cannot certify all substantive instrument assumptions.
-
-## 73. Instrument scaling does not change the simple ratio
-
-Consistent numerator and denominator transformations cancel.
-
-If an instrument is multiplied by one hundred, its first-stage and reduced-form slopes are each divided by one hundred. Their ratio is unchanged in the matching simple IV model. This is a useful numerical check when two data sources report a tax in different units.
-
-Scaling does not solve a weak or invalid instrument. It changes labels and coefficient magnitudes in component regressions, not the underlying source of variation. Keep those units explicit so that an apparently huge or tiny first-stage coefficient is not mistaken for evidence about strength or economic importance.
-
-\(\dfrac{\widehat\rho/c}{\widehat\pi_1/c}=\dfrac{\widehat\rho}{\widehat\pi_1}\) for nonzero \(c\)
-
-## 74. Write the IV argument as a chain of evidence
-
-Separate relevance, exclusion, estimation and inference.
-
-Begin with the endogenous comparison and the omitted forces that threaten OLS. Explain how the instrument changes the regressor, why another direct outcome route is ruled out and why the instrument is not tied to the structural error. Then show the first stage, reduced form and IV result with units and uncertainty.
-
-This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality. State what remains uncertain about the instrument. An honest limitation can identify the next useful source of institutional evidence or data, even if the current estimate is statistically precise.
-
-Begin with the endogenous comparison and the omitted forces that threaten OLS.
-
-This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality.
-
-## 75. How sensitive is IV to an excluded tax channel?
+### 49. How sensitive is IV to an excluded tax channel?
 
 Treat an assumed exclusion violation as a sensitivity scenario, not an estimate.
 
@@ -1045,27 +755,7 @@ The direct-channel value is assumed; the supporting regression slopes are actual
 
 **Explanation:** No. It is an explicitly assumed sensitivity value.
 
-## 76. DAG practice: challenge exclusion with one extra arrow
-
-Trace the routes before choosing a control.
-
-The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
-
-## 77. DAG practice: challenge exclusion with one extra arrow: explanation
-
-Explain what conditioning changes in this stated graph.
-
-The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price.
-
-The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
-
-The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price. The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
-
-## 78. Reconstruct IV and assess the instrument separately
+### 50. Reconstruct IV and assess the instrument separately
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -1075,7 +765,7 @@ Add log real income to the first stage, reduced form and IV equation, using the 
 
 **Practice:** Add log real income to the first stage, reduced form and IV equation, using the same 48 states. Verify the controlled ratio and compare the elasticity with the original no-income result. Keep your commands, log, output and interpretation.
 
-## 79. Reconstruct IV and assess the instrument separately: explanation
+### 51. Reconstruct IV and assess the instrument separately: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -1091,7 +781,7 @@ Income-controlled IV: \(-1.143375\), robust SE \(0.360481\).
 
 Both stages need the same controls and states; exclusion remains a substantive argument.
 
-## 80. Next, change the outcome from a level to a probability
+### 52. Next, change the outcome from a level to a probability
 
 A binary response requires a different interpretation of the fitted function.
 
@@ -1102,4 +792,320 @@ Next we study whether a mortgage application is denied. A straight-line predicti
 Next outcome: a zero-or-one event.
 
 Compare models on the probability scale after defining their functions.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 53. A two-period athlete example uses the same algebra
+
+State what disappears and what the comparison still needs.
+
+Apply the same subtraction to a student rather than a state. GPA means grade point average, a numerical summary of course grades. The regressor season equals one when the student's sport is in season and zero otherwise. Suppose a stable student component captures lasting preparation, while a semester effect captures a common change across students.
+
+Subtract the student's first-semester equation from the second. The stable preparation component cancels. A semester change remains, as does any change in unobserved study conditions. The coefficient uses students whose season indicator changes. If course difficulty or study time changes with the sports season, that time-varying factor can still confound the comparison. Differencing removes the stable additive component, not every reason that participation and grades might move together.
+
+\(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\)
+
+\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\)
+
+GPA: grade point average; season: a zero-or-one indicator.
+
+### 54. First differences
+
+Try the comparison before opening the explanation.
+
+In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
+
+GPA is the student’s grade point average. Subtract the same student’s first-semester equation from the second; keep the common semester change.
+
+**Practice:** In \(GPA_{it}=\beta\,season_{it}+\alpha_i+\lambda_t+u_{it}\) for two semesters, write the differenced equation and say what disappears.
+
+### 55. First differences: explanation
+
+Follow the calculation and interpret its units.
+
+\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
+
+\(\Delta GPA_i=\beta\Delta season_i+\Delta\lambda+\Delta u_i\). The time-invariant \(\alpha_i\) disappears, as do coefficients on time-invariant regressors. Semester effects do not disappear; with two periods they become a common intercept. Time-varying confounding can remain.
+
+### 56. What year effects absorb
+
+Try the comparison before opening the explanation.
+
+\(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
+
+Try reproducing the common tax column using the year indicators. Then ask whether the tax-by-group product has additional variation.
+
+**Practice:** \(Tax_t\) is identical across all districts in each year. Can its coefficient be estimated separately in a regression with an intercept and a full set of year effects? Can \(Tax_t\times near_i\) survive?
+
+### 57. What year effects absorb: explanation
+
+Follow the calculation and interpret its units.
+
+The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
+
+The common tax column is a linear combination of the year indicators, so its separate coefficient is not identified in that regression. The tax-by-group product can retain variation because it differs across groups within years. Check that it is not reproduced by all the included controls. It describes a differential group slope; it does not recover the absorbed common tax effect.
+
+### 58. DiD arithmetic
+
+Try the comparison before opening the explanation.
+
+In the Head Start teaching diagram, eligible mothers’ employment rises from 40% to 48%; comparison mothers’ employment rises from 60% to 63%. Calculate DiD in percentage points and on the zero-or-one employment-regression scale. State the untreated-trend assumption.
+
+First calculate each group’s change in the same units, then subtract. Explain which post-period mean is missing.
+
+Work in percentage points before converting to a zero-or-one outcome scale.
+
+**Practice:** In the Head Start teaching diagram, eligible mothers’ employment rises from 40% to 48%; comparison mothers’ employment rises from 60% to 63%. Calculate DiD in percentage points and on the zero-or-one employment-regression scale. State the untreated-trend assumption.
+
+### 59. DiD arithmetic: explanation
+
+Follow the calculation and interpret its units.
+
+The eligible change is eight percentage points and the comparison change three. The difference is five percentage points, or 0.05 on a zero-or-one outcome scale. Under parallel untreated trends the eligible group’s no-expansion post rate would be 43%. A causal interpretation also requires an unaffected baseline, no spillovers into the comparison group, a well-defined policy, and comparable sampling. The numbers are constructed, not estimates from the Head Start paper.
+
+\((48-40)-(63-60)=5\) percentage points.
+
+Binary-outcome regression contrast: \(0.05\).
+
+The untreated eligible post mean is assumed, not observed.
+
+### 60. Doubly robust DiD combines two supporting models
+
+Two chances for model correctness retain the design assumptions.
+
+Doubly robust DiD combines a model of the comparison group's untreated change with a model of group membership. The first predicts the change among untreated units given prior characteristics. The second gives a propensity score: the probability of belonging to the treated group given those characteristics. Both help construct the treated group's missing untreated comparison.
+
+Under conditional parallel trends, appropriate timing, overlap and the additional sampling and model-fitting conditions needed for a large-sample approximation, a doubly robust estimate can remain consistent if either supporting model is correctly specified. It does not remain valid when both are wrong or when the design assumptions fail. In the Stata example, a linear model describes untreated changes. The membership model uses a logistic curve, a smooth S-shaped function that keeps probabilities between zero and one. Flexible machine learning can fit more complex relationships, but valid effect inference requires a suitable procedure; prediction cross-validation alone does not supply it. This is the qualified connection to the earlier ridge/lasso section.
+
+Outcome model: \(m_0(W)=E[\Delta Y\mid G=0,W]\).
+
+Propensity score: \(p(W)=P(G=1\mid W)\).
+
+A logistic membership curve stays between zero and one.
+
+Double robustness concerns supporting-model correctness; conditional trends and overlap remain assumptions.
+
+### 61. Read the real-data example from the Overleaf lesson
+
+Identify the sample and the reported target before interpreting ATET.
+
+We now reproduce the real-data command in the original DiD deck. Its filter keeps National Supported Work experimental controls and a Current Population Survey comparison sample, dropping the actual trainees. The variable experimental identifies the data-source group here. Both retained groups are non-trainees, so this is a placebo comparison for a zero training-effect benchmark, not an estimate of Head Start or a training-program effect.
+
+The data contain 16,417 people observed in 1975 and 1978. Their simple difference in earnings changes is 867.51 in the file's dollar units. The installed doubly robust command gives -901.27, with standard error 393.61, using seven pre-period covariates. Its ATET label means average treatment effect on the treated, the same target abbreviation as ATT. These nonzero placebo discrepancies are reasons to scrutinise the comparison, overlap and models. A different estimator is not automatically a more credible design.
+
+Retained sample: NSW experimental controls and CPS comparison observations.
+
+Data-source group membership is not actual training receipt.
+
+ATET and ATT name the same treated-group average target.
+
+```text
+. drdid re age educ black married nodegree hisp re74, ///
+
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+experimental |
+   (1 vs 0)  |  -901.2703   393.6127    -2.29   0.022    -1672.737   -129.8037
+------------------------------------------------------------------------------
+```
+
+### 62. Choose the dependence unit for inference
+
+The number of rows need not equal the number of independent sources.
+
+Imagine a state policy observed for many districts. Districts in one state may share an implementation decision or an economic shock, so their errors need not be independent. Adding districts within that state then adds less independent policy information than adding another independently assigned state.
+
+A cluster is a group within which errors may be related. Cluster-robust inference allows that within-group dependence while relying on suitable independence across clusters and enough informative clusters. The clustering unit should follow the policy assignment and error story; it is not selected to obtain a preferred standard error. For repeated state observations, state clustering is often a candidate, but common national shocks or very few states require additional care. Our repeated-state data provide this within-state dependence example.
+
+Cluster: a group within which errors may be related.
+
+Independent information follows the assignment/error structure, not just the row count.
+
+### 63. Cluster choice
+
+Try the comparison before opening the explanation.
+
+A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
+
+Rows from districts in one state can share the same policy and shocks. Identify the independent assignment units before choosing the covariance calculation.
+
+**Practice:** A policy is assigned to states and repeated outcomes are observed for many districts over years. Why is clustering by district alone potentially insufficient?
+
+### 64. Cluster choice: explanation
+
+Follow the calculation and interpret its units.
+
+Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
+
+Errors and policy exposure may be shared across districts within a state. Inference should reflect the assignment and dependence structure; state clustering is a starting point when states are independent sampling/assignment clusters. Few states require special care, and a universal cluster-count threshold is not a theorem.
+
+### 65. DAG practice: pooling is not within-location identification
+
+Trace the routes before choosing a control.
+
+In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
+
+### 66. DAG practice: pooling is not within-location identification: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Year indicators do not block \(X\leftarrow C\rightarrow Y\) through stable location quality. Unit fixed effects can cancel an additive stable location component, but they also absorb a proximity indicator that never changes within a unit. Its separate level coefficient is then unavailable.
+
+A proximity-by-post-period interaction can vary across groups and dates. Interpreting that interaction as a DiD effect requires a well-defined intervention and parallel untreated trends, along with the other stated comparison assumptions. Neither pooling nor the causal diagram alone establishes those assumptions.
+
+Year indicators do not block \(X\leftarrow C\rightarrow Y\) through stable location quality. Unit fixed effects can cancel an additive stable location component, but they also absorb a proximity indicator that never changes within a unit. Its separate level coefficient is then unavailable. A proximity-by-post-period interaction can vary across groups and dates. Interpreting that interaction as a DiD effect requires a well-defined intervention and parallel untreated trends, along with the other stated comparison assumptions. Neither pooling nor the causal diagram alone establishes those assumptions.
+
+### 67. Wald ratio
+
+Try the comparison before opening the explanation.
+
+A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
+
+Use the constant-slope model just derived. Divide the outcome-per-instrument slope by the treatment-per-instrument slope and track the canceled units.
+
+**Practice:** A proposed instrument increases treatment by 0.30 units; its reduced-form outcome coefficient is −0.09. Compute the simple IV ratio and name the conditions behind a causal interpretation.
+
+### 68. Wald ratio: explanation
+
+Follow the calculation and interpret its units.
+
+The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
+
+The ratio is −0.09 divided by 0.30, or −0.30 outcome units per treatment unit. Under the constant-slope structural model, relevance, instrument exogeneity and exclusion justify the causal interpretation. The reduced-form and first-stage regressions must use compatible controls and observations. A strong first stage alone does not establish instrument validity.
+
+### 69. Two-stage least squares projects regressors onto the instrument space
+
+The instrument matrix includes the exogenous controls and the excluded instruments.
+
+Let X contain the endogenous regressor, the exogenous controls and the intercept in the outcome equation. Let Z contain the exogenous controls, the intercept and the excluded instruments. The projection matrix P sub Z maps each column of X to its fitted values from its regression on Z. Two-stage least squares uses those fitted regressor columns to estimate the outcome coefficients.
+
+The matrix expression is X prime P sub Z X inverse times X prime P sub Z y, when the required rank condition holds. Orthogonality of instruments to the structural error supplies the identifying moments; rank supplies sufficient instrument-predicted variation. The second-stage numerical coefficient identity does not justify ordinary OLS standard errors computed as though the first-stage fits were fixed observed regressors. Use the dedicated IV covariance estimator.
+
+\(P_Z=Z(Z\prime Z)^{-1}Z\prime\); \(\widehat X=P_ZX\).
+
+\(\widehat\beta_{2SLS}=(X\prime P_ZX)^{-1}X\prime P_Zy\).
+
+Population moments: \(E[z_iu_i]=0\), with the required rank condition.
+
+### 70. Two stages and uncertainty
+
+Try the comparison before opening the explanation.
+
+Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
+
+Compare actual X with first-stage fitted X in the residual. The variance calculation must correspond to the structural estimating problem.
+
+**Practice:** Why not report ordinary OLS standard errors from regressing y on first-stage fitted x?
+
+### 71. Two stages and uncertainty: explanation
+
+Follow the calculation and interpret its units.
+
+The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
+
+The second-stage fitted regressor is generated, and the relevant structural residual and variance calculation differ from the naive second-stage OLS calculation. Use a proper IV estimator such as ivregress 2sls with a justified covariance option.
+
+### 72. School availability illustrates the exclusion question
+
+A plausible first stage can still leave another route to the outcome.
+
+Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score. Relevance asks whether availability actually moves attendance. Exclusion asks whether availability affects scores only through the attendance measure in the equation.
+
+Residential choice, local resources or school competition may create other relationships. Family preferences can also relate availability to unobserved motivation. Discuss these mechanisms explicitly instead of treating geographical proximity as automatically random. A useful IV proposal identifies the potential violation and explains what institutional evidence or controls could make the assumption more credible.
+
+Suppose nearby single-sex school availability predicts attendance at that school type, and the outcome is a student's score.
+
+Residential choice, local resources or school competition may create other relationships.
+
+### 73. Unexpected first-stage sign
+
+Try the comparison before opening the explanation.
+
+School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
+
+In this separate school-attendance example, relevance asks for a nonzero slope. Investigate an unexpected sign without confusing it with a test of exclusion.
+
+**Practice:** School availability predicts less attendance at the intended school type. Is a negative first-stage coefficient alone proof that IV is invalid?
+
+### 74. Unexpected first-stage sign: explanation
+
+Follow the calculation and interpret its units.
+
+No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
+
+No. Relevance requires a nonzero first stage, not a prescribed positive sign. An unexpected sign should prompt checks of coding, selection, theory and strength. It does not by itself prove or disprove exclusion or exogeneity.
+
+### 75. The simple IV precision formula shows the cost of a weak first stage
+
+A formula under strong-instrument asymptotics is not a cure for weak identification.
+
+In the single-endogenous-regressor, single-instrument model with an intercept, iid observations and homoskedastic structural errors, the usual large-sample IV variance can be written as sigma squared divided by the product of centred X variation and the first-stage R squared. Here sigma squared is the structural error variance and the first-stage R squared measures instrument-predicted X variation in that simple model.
+
+When the first stage explains little variation, the denominator is small and ordinary ratio-based inference becomes fragile. This formula assumes the regular strong-identification approximation; it should not be used to declare standard Wald inference reliable in a weak-instrument design. With controls, use the appropriate partial first-stage variation and a dedicated procedure. The next weak-instrument-robust coefficient test addresses inference under specified instrument validity, not exclusion itself.
+
+Simple homoskedastic strong-IV approximation: \(\operatorname{Var}(\widehat\beta_{IV})\approx\sigma_u^2/[SST_X R_{X,Z}^2]\).
+
+Instrument validity, first-stage strength and the validity of an inference approximation are distinct.
+
+### 76. A larger instrument set adds assumptions as well as information
+
+More instruments are not automatically a better design.
+
+An excluded instrument appears in the first stage but is excluded from the structural outcome equation except through the endogenous regressors. A model is overidentified when there are more such instruments than endogenous regressors. Extra instruments can supply additional variation, but each needs a substantive validity argument and may be weak.
+
+An overidentification test checks whether the instrument moment restrictions are mutually compatible with the maintained model. A nonrejection does not prove every instrument valid: the test can have little power, meaning a low probability of detecting a particular violation. Some violations can also be shared across instruments. Keep the present one-instrument application transparent, and explain the distinct economic argument for any proposed additional instrument before using a larger set.
+
+Overidentified: more excluded instruments than endogenous regressors.
+
+A compatibility test cannot certify all substantive instrument assumptions.
+
+### 77. Instrument scaling does not change the simple ratio
+
+Consistent numerator and denominator transformations cancel.
+
+If an instrument is multiplied by one hundred, its first-stage and reduced-form slopes are each divided by one hundred. Their ratio is unchanged in the matching simple IV model. This is a useful numerical check when two data sources report a tax in different units.
+
+Scaling does not solve a weak or invalid instrument. It changes labels and coefficient magnitudes in component regressions, not the underlying source of variation. Keep those units explicit so that an apparently huge or tiny first-stage coefficient is not mistaken for evidence about strength or economic importance.
+
+\(\dfrac{\widehat\rho/c}{\widehat\pi_1/c}=\dfrac{\widehat\rho}{\widehat\pi_1}\) for nonzero \(c\)
+
+### 78. Write the IV argument as a chain of evidence
+
+Separate relevance, exclusion, estimation and inference.
+
+Begin with the endogenous comparison and the omitted forces that threaten OLS. Explain how the instrument changes the regressor, why another direct outcome route is ruled out and why the instrument is not tied to the structural error. Then show the first stage, reduced form and IV result with units and uncertainty.
+
+This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality. State what remains uncertain about the instrument. An honest limitation can identify the next useful source of institutional evidence or data, even if the current estimate is statistically precise.
+
+Begin with the endogenous comparison and the omitted forces that threaten OLS.
+
+This sequence helps a policy reader assess the strategy rather than treat 2SLS as a label for causality.
+
+### 79. DAG practice: challenge exclusion with one extra arrow
+
+Trace the routes before choosing a control.
+
+The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
+
+### 80. DAG practice: challenge exclusion with one extra arrow: explanation
+
+Explain what conditioning changes in this stated graph.
+
+The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price.
+
+The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
+
+The first stage can remain strong because the tax-to-price arrow has not disappeared. Relevance does not rule out a second route from the instrument to quantity that bypasses price. The reduced-form instrument association would combine the price channel and that additional direct channel. Dividing by the first stage no longer isolates the price response under the original exclusion argument. Use the graph to name a concrete institutional threat and assess it separately from the numerical strength of the first stage.
 

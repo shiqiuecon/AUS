@@ -1,6 +1,10 @@
 # 01. Economic questions, data and causal reasoning
 
-## 01. Do smaller classes improve learning?
+Turn an economic question into a comparison that the data might support.
+
+## Core lesson
+
+### 01. Do smaller classes improve learning?
 
 Compare districts. Then ask what else differs.
 
@@ -14,7 +18,7 @@ Each dot in the graph represents one district. If districts with fewer students 
 
 **Explanation:** A downward slope is plausible: districts with more students per teacher may have lower scores. Family resources could also matter. For example, districts serving richer families may have both more teachers and higher scores. The graph lets us check the observed pattern; it does not yet isolate the effect of hiring teachers.
 
-## 02. Which question are we answering?
+### 02. Which question are we answering?
 
 The same data can describe a pattern, predict an outcome or help study a policy effect.
 
@@ -30,7 +34,7 @@ Prediction: how well can we forecast a new outcome?
 
 Causation: what changes when the policy changes?
 
-## 03. Define the observation before the equation
+### 03. Define the observation before the equation
 
 One observation is one district; define the variables and their units.
 
@@ -52,7 +56,7 @@ The population is the full set of units we want to understand; the sample is the
 
 **Explanation:** The first is a panel if district identities are tracked. The second may be repeated cross sections; the calendar alone does not create within-unit observations.
 
-## 04. Different data structures support different comparisons
+### 04. Different data structures support different comparisons
 
 Identify the unit and whether the same units return over time.
 
@@ -66,7 +70,7 @@ Pooled cross sections: samples at several dates; panel: identified units followe
 
 Data structure and sampling design are separate questions.
 
-## 05. Random sampling is a claim about how observations are drawn
+### 05. Random sampling is a claim about how observations are drawn
 
 Independence and a common distribution need a substantive argument.
 
@@ -82,7 +86,7 @@ iid: independent and identically distributed.
 
 Ask how units were selected and whether they share shocks.
 
-## 06. Start with a rule for how the outcome is produced
+### 06. Start with a rule for how the outcome is produced
 
 A causal model states mechanisms before asking what would change.
 
@@ -96,7 +100,7 @@ Learning: \(Y=700-2X+5C+U\)
 
 \(C=2,V=2,U=3\Rightarrow X=22,Y=669\)
 
-## 07. Define the intervention before its counterfactual
+### 07. Define the intervention before its counterfactual
 
 Change the staffing rule; retain the stated learning mechanism.
 
@@ -110,7 +114,7 @@ Alternative score: \(700-2(20)+5(2)+3=673\)
 
 Same-district difference: \(673-669=4\) points
 
-## 08. The comparison we want is partly missing
+### 08. The comparison we want is partly missing
 
 A policy effect compares potential outcomes under two staffing choices.
 
@@ -124,7 +128,7 @@ Causal contrast: \(Y_i(20)-Y_i(22)\)
 
 Observed groups do not automatically supply the missing outcome.
 
-## 09. Average effects require a population and an identification argument
+### 09. Average effects require a population and an identification argument
 
 Define the policy states, population and averaging rule.
 
@@ -140,7 +144,7 @@ Exchangeability: \((Y(1),Y(0))\perp D\mid C\); overlap: \(0<P(D=1\mid C)<1\).
 
 Under the stated conditions, \(ATE=E_C\{E[Y\mid D=1,C]-E[Y\mid D=0,C]\}\).
 
-## 10. Read the data before fitting a line
+### 10. Read the data before fitting a line
 
 Start with axes, units, range and unusual observations.
 
@@ -154,7 +158,7 @@ The range of the data also limits what we can learn. The observed ratios run fro
 
 **Explanation:** No. A line can summarise the average pattern even when individual districts lie above and below it. Those differences tell us that staffing alone does not fully explain scores.
 
-## 11. Use a DAG to make the causal story visible
+### 11. Use a DAG to make the causal story visible
 
 Begin with assumptions about the arrows and mechanisms.
 
@@ -168,7 +172,7 @@ Directed: arrows have a direction. Acyclic: no directed loop.
 
 Missing arrows and independent background inputs are assumptions.
 
-## 12. Trace a path one connection at a time
+### 12. Trace a path one connection at a time
 
 A causal route follows arrows; a general path need not.
 
@@ -180,7 +184,7 @@ Causal route: \(X\rightarrow Y\)
 
 Backdoor route: \(X\leftarrow C\rightarrow Y\)
 
-## 13. A common cause creates a backdoor comparison
+### 13. A common cause creates a backdoor comparison
 
 Compare districts with similar prior background.
 
@@ -192,7 +196,7 @@ Compare at fixed \(C\): block \(X\leftarrow C\rightarrow Y\)
 
 Conditioning selects comparisons; intervention changes a mechanism.
 
-## 14. An intermediate mechanism is a mediator
+### 14. An intermediate mechanism is a mediator
 
 A variable caused by staffing can carry part of its effect.
 
@@ -204,7 +208,7 @@ Mediated route: \(X\rightarrow M\rightarrow Y\)
 
 Total effect allows the mediator to respond.
 
-## 15. Selection can create a relationship
+### 15. Selection can create a relationship
 
 A four-case scholarship example makes the mechanism visible.
 
@@ -218,7 +222,7 @@ Award if \(P=1\) or \(N=1\); exclude only \((0,0)\)
 
 Among recipients: \(\Pr(N=1\mid P=0)=1\), \(\Pr(N=1\mid P=1)=1/2\)
 
-## 16. A shared consequence behaves differently
+### 16. A shared consequence behaves differently
 
 Conditioning can open a route that was blocked.
 
@@ -230,7 +234,7 @@ Collider: \(P\rightarrow S\leftarrow N\)
 
 Unconditioned collider blocks; selecting recipients opens the path.
 
-## 17. Selecting a consequence can also open the route
+### 17. Selecting a consequence can also open the route
 
 A descendant is reached by following arrows forward.
 
@@ -242,7 +246,7 @@ Select the record indicator rather than scholarship status. Information about a 
 
 Conditioning on a collider descendant can open its path.
 
-## 18. Why the observed groups might differ
+### 18. Why the observed groups might differ
 
 A confounder is another factor related to both staffing and scores.
 
@@ -258,19 +262,7 @@ Possible confounder: related to staffing and scores
 
 \(X\leftarrow Z\rightarrow Y\): an alternative explanation
 
-## 19. An intervention graph changes a different object
-
-The policy removes incoming staffing arrows rather than selecting a subgroup.
-
-Return to staffing. In the observed-data graph, prior support helps determine staffing. In the intervention graph shown here, the policy sets staffing to a specified value, so support no longer determines it. That incoming arrow has been removed. Support continues to affect learning, and staffing can still affect learning through its retained mechanism.
-
-This operation corresponds to replacing the staffing equation in our numerical model. It differs from conditioning on support, which compares observed districts with the same support, and from conditioning on staffing, which selects districts with a particular observed ratio. The graph and the numerical model now tell the same story. Before using a counterfactual later in the course, we will specify the intervention, the mechanisms allowed to respond and the assumptions used to estimate its missing outcome.
-
-Intervention: replace the assignment mechanism.
-
-Conditioning: compare within an observed subgroup.
-
-## 20. Law and order: identify the conviction comparison
+### 19. Law and order: identify the conviction comparison
 
 A useful adjustment closes every drawn backdoor route.
 
@@ -284,7 +276,7 @@ Target: \(\text{conviction probability}\rightarrow\text{criminal time}\)
 
 Ask which variable closes every backdoor route.
 
-## 21. Changing the target can change the required controls
+### 20. Changing the target can change the required controls
 
 The arrest comparison still has an unobserved route.
 
@@ -298,71 +290,7 @@ Remaining route: \(A\leftarrow U\rightarrow Y\)
 
 A control plan is specific to the chosen explanatory variable.
 
-## 22. Would the result apply in a new setting?
-
-Check credibility in the original setting and relevance to the new one.
-
-Suppose the ministry now asks whether this California comparison should guide staffing in another country. The answer requires two separate checks. Internal validity asks whether a study identifies the claimed causal effect in its own setting. Identification means that the data and stated assumptions allow us to learn the effect we want, rather than a mixture of that effect and other influences.
-
-External validity asks whether the result applies to the population and policy we now care about. Even a well-identified effect in California may differ elsewhere because class organisation, language needs, teacher training or starting ratios differ. A result must first be credible in its original setting before we ask how well it transfers, but credibility alone does not guarantee transfer.
-
-Use these checks to propose a local study. Specify which schools we would study, what staffing change we would evaluate and how we would measure learning. Then explain what comparison could tell us what would have happened without the change. A concrete plan is more useful than assuming a precise effect from elsewhere must apply locally. This brings us back to the ministry's decision rather than leaving the analysis at a regression table.
-
-**Practice:** Propose a local staffing study. Name the schools or districts, policy change, learning measure, comparison and main concern.
-
-**Explanation:** For example, study school-level learning gains after a funded reduction in the staffing ratio. Compare funded schools with schools whose lack of funding gives a credible estimate of what would otherwise have happened. If struggling schools are selected for funding, the comparison must address their different expected progress.
-
-## 23. Diagnose the claim
-
-A test of the slope and a credible policy comparison answer different questions.
-
-Consider this proposed recommendation: 'The staffing slope is statistically significant, so reducing class sizes will improve scores by exactly the fitted amount.' Here statistically significant means that a statistical test finds the estimate unusually far from a specified zero slope under its reference assumptions. A test is a rule for assessing such a population claim using sample data; we will develop its calculation after studying estimation and uncertainty. Even if that rule gives evidence against zero, it addresses the observed comparison under the model's assumptions. It does not test whether staffing choices are free from other influences on learning.
-
-The diagram makes the remaining issue concrete. If language composition, family resources or learning needs connect staffing and scores, a sample association can reflect those connections. An estimate of sampling uncertainty tells us how the estimate might vary across comparable samples. It does not tell us whether the comparison separates the policy effect from those other influences. Repeating the same flawed comparison more precisely does not solve that problem.
-
-Rewrite the recommendation using the evidence we have. Name the fitted comparison and give its units, then state the specific reason it may differ from a staffing effect. This is stronger than simply writing 'association is not causation': it shows that you understand the mechanism behind the concern. The final task is to decide what evidence would address it.
-
-**Practice:** Rewrite: 'Significant slope proves that smaller classes cause higher scores.'
-
-**Explanation:** Districts with lower student–teacher ratios have higher fitted scores in these data. A causal staffing effect would require a defensible comparison addressing factors such as family resources and staffing responses to student needs.
-
-## 24. What would convince you next?
-
-Choose new data or a new comparison to address a specific concern.
-
-Suppose you can improve the study in one way. Adding more districts could make the estimated slope more precise. Precision means that estimates vary less across comparable samples, when the sampling conditions support that comparison. But more observations do not by themselves explain why districts chose different staffing levels.
-
-If that choice is the main concern, a staffing offer allocated by chance could provide more useful evidence about the policy effect. A natural experiment is another possibility: an outside event or rule creates a comparison that can be argued to resemble random assignment. For example, an unexpected funding rule might alter teacher recruitment for some schools. We would still need to explain why the rule was unrelated to other changes in learning and whether it affected scores through other routes.
-
-Choose an improvement by asking which concern it addresses. Better measurement can help us account for a relevant district difference. More districts can improve precision. A credible assignment rule can help identify a policy effect. These improvements may work together, but they do different jobs. Keeping those jobs separate will guide our model choices throughout the course.
-
-**Practice:** Compare adding more districts with allocating a staffing offer by chance. What can each improve?
-
-**Explanation:** More districts can improve precision if the sampling conditions are suitable. Chance allocation can support a causal comparison by making the offer unrelated to other factors before the policy. We must still check whether the offer was implemented and whether the groups were affected by other differences.
-
-## 25. DAG practice: conviction and arrest
-
-Trace the routes before choosing a control.
-
-In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
-
-## 26. DAG practice: conviction and arrest: explanation
-
-Explain what conditioning changes in this stated graph.
-
-For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route.
-
-For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
-
-For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route. For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
-
-## 27. Before estimating, state what the data can answer
-
-Before estimating, state what the data can answer
+### 21. Before estimating, state what the data can answer
 
 We have defined the observation, the policy intervention and the missing comparison. A useful empirical argument states which population is represented and which assumptions connect its data to the policy question. The causal graph makes proposed channels visible; it does not supply evidence for every arrow.
 
@@ -374,7 +302,7 @@ Before estimating, state what the data can answer
 
 **Explanation:** One observation is a school district, and staffing is measured as students per teacher. A reduction of two students per teacher gives about +4.56 fitted score points in the simple model. The difference is about +2.20 points after holding English-learner share fixed. Other district differences or staffing responses to learning needs could still prevent either number from measuring the causal gain from hiring teachers.
 
-## 28. Audit the school observations before estimating
+### 22. Audit the school observations before estimating
 
 Try the comparison before opening the explanation.
 
@@ -392,11 +320,89 @@ Save your commands in a do-file and their printed results in a log.
 
 **Practice:** Use schools.csv in Stata. Verify the number of districts, inspect score, str, el and income, and count districts with el above 20. Save your commands and output. Explain which sampling and causal claims cannot be verified merely by these counts.
 
-## 29. Audit the school observations before estimating: explanation
+### 23. Audit the school observations before estimating: explanation
 
 Follow the calculation and interpret its units.
 
 There are 420 district observations. The variables are district test score, students per teacher, English-learner percentage and district income in thousands of dollars. There are 118 districts with English-learner share above 20 percent; mean score is about 654.157 and mean staffing ratio about 19.640. The overleaf_technical.do reference prints the summaries. Correct execution, documented units and an explicit population statement are required. Counts do not establish random sampling, independent errors or a causal staffing effect.
 
 There are 420 district observations. The variables are district test score, students per teacher, English-learner percentage and district income in thousands of dollars. There are 118 districts with English-learner share above 20 percent; mean score is about 654.157 and mean staffing ratio about 19.640. The overleaf_technical.do reference prints the summaries. Correct execution, documented units and an explicit population statement are required. Counts do not establish random sampling, independent errors or a causal staffing effect.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 24. An intervention graph changes a different object
+
+The policy removes incoming staffing arrows rather than selecting a subgroup.
+
+Return to staffing. In the observed-data graph, prior support helps determine staffing. In the intervention graph shown here, the policy sets staffing to a specified value, so support no longer determines it. That incoming arrow has been removed. Support continues to affect learning, and staffing can still affect learning through its retained mechanism.
+
+This operation corresponds to replacing the staffing equation in our numerical model. It differs from conditioning on support, which compares observed districts with the same support, and from conditioning on staffing, which selects districts with a particular observed ratio. The graph and the numerical model now tell the same story. Before using a counterfactual later in the course, we will specify the intervention, the mechanisms allowed to respond and the assumptions used to estimate its missing outcome.
+
+Intervention: replace the assignment mechanism.
+
+Conditioning: compare within an observed subgroup.
+
+### 25. Would the result apply in a new setting?
+
+Check credibility in the original setting and relevance to the new one.
+
+Suppose the ministry now asks whether this California comparison should guide staffing in another country. The answer requires two separate checks. Internal validity asks whether a study identifies the claimed causal effect in its own setting. Identification means that the data and stated assumptions allow us to learn the effect we want, rather than a mixture of that effect and other influences.
+
+External validity asks whether the result applies to the population and policy we now care about. Even a well-identified effect in California may differ elsewhere because class organisation, language needs, teacher training or starting ratios differ. A result must first be credible in its original setting before we ask how well it transfers, but credibility alone does not guarantee transfer.
+
+Use these checks to propose a local study. Specify which schools we would study, what staffing change we would evaluate and how we would measure learning. Then explain what comparison could tell us what would have happened without the change. A concrete plan is more useful than assuming a precise effect from elsewhere must apply locally. This brings us back to the ministry's decision rather than leaving the analysis at a regression table.
+
+**Practice:** Propose a local staffing study. Name the schools or districts, policy change, learning measure, comparison and main concern.
+
+**Explanation:** For example, study school-level learning gains after a funded reduction in the staffing ratio. Compare funded schools with schools whose lack of funding gives a credible estimate of what would otherwise have happened. If struggling schools are selected for funding, the comparison must address their different expected progress.
+
+### 26. Diagnose the claim
+
+A test of the slope and a credible policy comparison answer different questions.
+
+Consider this proposed recommendation: 'The staffing slope is statistically significant, so reducing class sizes will improve scores by exactly the fitted amount.' Here statistically significant means that a statistical test finds the estimate unusually far from a specified zero slope under its reference assumptions. A test is a rule for assessing such a population claim using sample data; we will develop its calculation after studying estimation and uncertainty. Even if that rule gives evidence against zero, it addresses the observed comparison under the model's assumptions. It does not test whether staffing choices are free from other influences on learning.
+
+The diagram makes the remaining issue concrete. If language composition, family resources or learning needs connect staffing and scores, a sample association can reflect those connections. An estimate of sampling uncertainty tells us how the estimate might vary across comparable samples. It does not tell us whether the comparison separates the policy effect from those other influences. Repeating the same flawed comparison more precisely does not solve that problem.
+
+Rewrite the recommendation using the evidence we have. Name the fitted comparison and give its units, then state the specific reason it may differ from a staffing effect. This is stronger than simply writing 'association is not causation': it shows that you understand the mechanism behind the concern. The final task is to decide what evidence would address it.
+
+**Practice:** Rewrite: 'Significant slope proves that smaller classes cause higher scores.'
+
+**Explanation:** Districts with lower student–teacher ratios have higher fitted scores in these data. A causal staffing effect would require a defensible comparison addressing factors such as family resources and staffing responses to student needs.
+
+### 27. What would convince you next?
+
+Choose new data or a new comparison to address a specific concern.
+
+Suppose you can improve the study in one way. Adding more districts could make the estimated slope more precise. Precision means that estimates vary less across comparable samples, when the sampling conditions support that comparison. But more observations do not by themselves explain why districts chose different staffing levels.
+
+If that choice is the main concern, a staffing offer allocated by chance could provide more useful evidence about the policy effect. A natural experiment is another possibility: an outside event or rule creates a comparison that can be argued to resemble random assignment. For example, an unexpected funding rule might alter teacher recruitment for some schools. We would still need to explain why the rule was unrelated to other changes in learning and whether it affected scores through other routes.
+
+Choose an improvement by asking which concern it addresses. Better measurement can help us account for a relevant district difference. More districts can improve precision. A credible assignment rule can help identify a policy effect. These improvements may work together, but they do different jobs. Keeping those jobs separate will guide our model choices throughout the course.
+
+**Practice:** Compare adding more districts with allocating a staffing offer by chance. What can each improve?
+
+**Explanation:** More districts can improve precision if the sampling conditions are suitable. Chance allocation can support a causal comparison by making the offer unrelated to other factors before the policy. We must still check whether the offer was implemented and whether the groups were affected by other differences.
+
+### 28. DAG practice: conviction and arrest
+
+Trace the routes before choosing a control.
+
+In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
+
+### 29. DAG practice: conviction and arrest: explanation
+
+Explain what conditioning changes in this stated graph.
+
+For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route.
+
+For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
+
+For arrest, the route \(A\leftarrow U\rightarrow Y\) remains open because unobserved background affects both arrest probability and criminal time. Holding enforcement fixed does not block that route. For conviction, every drawn backdoor starts through enforcement, so conditioning on enforcement blocks those routes in this stated graph. The result is specific to the chosen explanatory variable and assumed arrows. If the real conviction process had another unmeasured parent affecting the outcome, that control set could also be insufficient.
 

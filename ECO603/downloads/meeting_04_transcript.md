@@ -1,36 +1,20 @@
 # 04. Multiple regression: OLS properties and partialling out
 
-## 01. What makes an OLS comparison informative and precise?
+Show which variation identifies the fitted slope and why its precision can change.
 
-What makes an OLS comparison informative and precise?
+## Core lesson
 
-The multiple-regression fit has already supplied a staffing coefficient and a control set. We now ask two separate questions: which sample variation determines that coefficient, and which assumptions describe its behaviour across repeated samples? The partialling-out calculation answers the first; conditional means and variances answer the second.
+### 01. What makes an OLS comparison informative and precise?
 
-We retain the same district data and the same coefficient. After following the residualised variables, we use compact matrix notation to prove the coefficient identity and derive conditions for correct average estimation and useful precision. Each additional assumption will have a stated role, so a computational equality will not be mistaken for a causal or uncertainty result.
+Two districts with the same measured income and language composition can still have different staffing. Which part of the staffing data drives the adjusted slope? We will isolate that part by subtracting what the controls predict.
 
-Separate the coefficient calculation, causal assumptions and behaviour across repeated samples.
+Once we know how each district contributes to the slope, we can ask two questions about repeated samples. Does the estimate center on the population coefficient? How widely does it vary? The same slope calculation lets us answer both questions under explicit assumptions.
 
-Begin with one residualised regressor; then organise the same equations in matrices.
+Recover the adjusted slope from two sets of residuals.
 
-## 02. Residual versus error
+Use the slope’s observation weights to explain bias and precision.
 
-Try the comparison before opening the explanation.
-
-OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
-
-Use what is observed after fitting to distinguish a residual from the unobserved population error.
-
-**Practice:** OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
-
-## 03. Residual versus error: explanation
-
-Follow the calculation and interpret its units.
-
-No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
-
-No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
-
-## 04. First remove controls from the outcome
+### 02. First remove controls from the outcome
 
 Save the score differences the controls do not predict.
 
@@ -42,7 +26,7 @@ Fit score on the control columns; save \(rY_i=Y_i-\widehat Y_{i,controls}\).
 
 rY remains in score points.
 
-## 05. Then remove the same controls from staffing
+### 03. Then remove the same controls from staffing
 
 An adjusted outcome must be compared with an adjusted regressor.
 
@@ -52,7 +36,7 @@ Removing controls only from Y is not the same calculation. The raw X still conta
 
 \(rX_i=X_i-\widehat E_{\mathrm{linear}}(X_i\mid Z_i,W_i)\)
 
-## 06. Follow one district through both subtractions
+### 04. Follow one district through both subtractions
 
 The residual plot uses actual score points and staffing units.
 
@@ -64,45 +48,19 @@ Actual first district: \(rY\approx690.80-672.92=17.88\) score points.
 
 \(rX\approx17.89-19.06=-1.17\) students per teacher.
 
-## 07. Regress the two remainders on each other
+### 05. Regress the two remainders on each other
 
 The partialled slope equals the full-model staffing slope.
 
-Now regress rY on rX without an intercept. The Frisch–Waugh–Lovell theorem, usually abbreviated FWL, states that this slope equals the coefficient on X in the full regression with the same controls and observations. Both residual series already have mean zero because their supporting regressions included intercepts.
+Fit the score remainder r Y on the staffing remainder r X through the origin. The Frisch–Waugh–Lovell theorem, or F W L, says that this slope equals the staffing slope from the full model on the same districts.
 
-The theorem is an estimation identity. It shows that the staffing coefficient is driven by covariation between outcome and staffing after their fitted control contributions are removed. It does not say the remaining staffing variation is random. Draw the residual scatterplot and compare its slope with the raw staffing-score plot to see how the available comparison has changed.
+To see why, multiply the full fitted equation by r X and sum over districts. The intercept and control terms disappear because r X has zero product sums with those inputs. The full residual term also disappears: r X is a linear combination of included inputs, and each has zero product sum with the full residual. The product sum with staffing equals the sum of squared r X. This follows because staffing is its prediction from the controls plus r X. Subtracting the control prediction from scores also leaves the product sum with r X unchanged. Dividing gives the displayed slope.
+
+The identity tells us which district differences determine the estimate. Whether those differences are suitable for a causal comparison depends on the control argument from the previous week.
 
 \(\widehat\beta_1=\dfrac{\sum_i rX_i rY_i}{\sum_i rX_i^2}\)
 
-## 08. Matrix notation stacks the same regression equations
-
-Define dimensions and operations before using the compact estimator.
-
-Stack the n observed scores into a column vector y, meaning a vertical list of numbers. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
-
-Full column rank means no column is an exact linear combination of the others. It makes X prime X invertible: its inverse undoes multiplication by that square matrix. The displayed estimator solves the same OLS normal equations as the scalar formulas. Matrix notation keeps the bookkeeping compact; it introduces no additional causal assumption.
-
-\(y=X\beta+u\); \(X:n\times p\), \(\beta:p\times1\), \(p=k+1\).
-
-Normal equations: \(X\prime(y-X\widehat\beta)=0\).
-
-Under full column rank, \(\widehat\beta=(X\prime X)^{-1}X\prime y\).
-
-## 09. The residual-maker gives a compact FWL proof
-
-Remove the same control space from the outcome and target regressor.
-
-Let x be the staffing column and let Z contain the intercept and the other controls. The projection matrix P sub Z maps a vector to its fitted values from OLS on Z. The residual-maker M sub Z is the identity matrix I minus that projection. I leaves a vector unchanged, so M sub Z keeps the remainder after fitting on Z.
-
-The residual-maker is symmetric, meaning its transpose equals itself, and idempotent, meaning that applying it twice changes nothing further. It also removes Z exactly. Minimising the full squared-error criterion over the coefficients on Z therefore leaves a criterion using M sub Z times y and M sub Z times x. Its one-regressor normal equation gives the displayed FWL coefficient. This proves the coefficient identity, while uncertainty still needs assumptions about error variation and an accounting of every fitted coefficient.
-
-\(P_Z=Z(Z\prime Z)^{-1}Z\prime\), \(M_Z=I-P_Z\); \(M_ZZ=0\).
-
-\(M_Z\prime=M_Z\), \(M_Z^2=M_Z\).
-
-\(\widehat\beta_x=(x\prime M_Zx)^{-1}x\prime M_Zy\).
-
-## 10. Read the full regression first
+### 06. Read the full regression first
 
 Compare coefficients on the same observations and controls.
 
@@ -124,7 +82,7 @@ e(b)[1,4]
 y1   -0.068776   -0.488267    1.494517  640.315497
 ```
 
-## 11. Verify the FWL identity in Stata
+### 07. Verify the FWL identity in Stata
 
 The slopes agree to numerical precision.
 
@@ -146,7 +104,7 @@ symmetric e(b)[1,1]
 y1  -0.068776
 ```
 
-## 12. Read the residual axes in real units
+### 08. Read the residual axes in real units
 
 They are deviations, not new measurements.
 
@@ -154,7 +112,7 @@ The horizontal axis measures students per teacher above or below the level predi
 
 The fitted line summarises how these adjusted deviations move together. Its slope retains units of score points per additional student per teacher. Use the graph to explain which variation the full coefficient uses, then ask whether that variation is plausibly unrelated to omitted learning determinants. The residual plot makes the question visible but does not answer it automatically.
 
-## 13. Partialling out
+### 09. Partialling out
 
 Try the comparison before opening the explanation.
 
@@ -164,7 +122,7 @@ Name both variables that are residualised and list the identical controls used i
 
 **Practice:** To estimate the schooling coefficient controlling for experience, describe the FWL procedure in words.
 
-## 14. Partialling out: explanation
+### 10. Partialling out: explanation
 
 Follow the calculation and interpret its units.
 
@@ -172,7 +130,7 @@ Regress wages on an intercept and experience and save the residuals. Regress sch
 
 Regress wages on an intercept and experience and save the residuals. Regress schooling on the same intercept and experience and save those residuals. Regress wage residuals on schooling residuals without another intercept. Its slope equals the schooling coefficient in the full regression on the same observations. Both subtractions must remove exactly the same control columns.
 
-## 15. An outcome distribution is not a sampling distribution
+### 11. An outcome distribution is not a sampling distribution
 
 The random object changes.
 
@@ -184,7 +142,7 @@ A distribution describes the possible values of a random quantity and how often 
 
 These are different objects.
 
-## 16. Describe spread before estimating uncertainty
+### 12. Describe spread before estimating uncertainty
 
 Variance and standard deviation summarize different kinds of variation.
 
@@ -198,7 +156,7 @@ Standard deviation: \(\sqrt{2/3}\approx0.816\)
 
 Residual degrees of freedom: \(n-p\), with \(p=k+1\) including the intercept.
 
-## 17. A standard error estimates the estimator’s spread
+### 13. A standard error estimates the estimator’s spread
 
 It is not the standard deviation of the outcome.
 
@@ -210,59 +168,37 @@ SE: estimated repeated-sample standard deviation of the coefficient.
 
 Normal reference: about 95% between \(-1.96\) and \(1.96\).
 
-## 18. Unbiasedness concerns repeated samples
+### 14. Unbiasedness concerns repeated samples
 
 It does not promise an accurate estimate in every sample.
 
-Imagine repeating the sampling process and estimating the same target each time. An estimator is unbiased if its average over these repetitions equals the target. It does not have to equal the target in any particular sample. Consider a target of one. Suppose one estimator produces 0.7, 1.0 and 1.3 equally often, while another produces zero, one and two equally often. Both average to one.
+Keep the observed regressor values fixed for this calculation. Let r X be the staffing remainder from the same controls. Write each district's weight as its r X divided by the sum of squared r X. Apply the preceding product-sum argument to the population equation, where the unknown coefficient multiplies staffing and the unobserved error remains. The fitted slope equals the population slope plus the weighted sum of those errors.
 
-The first estimator varies less. Its variance, the average squared deviation from its mean, is 0.06; the second variance is two thirds. Precision refers to this spread, so two unbiased estimators can have different precision. Under independent sampling, a correctly specified linear mean, sufficient separate regressor variation and a zero conditional-mean error, OLS is unbiased. These assumptions concern the population and sampling process rather than the fitted residual identities.
+Conditional on all regressor values, these weights are fixed. If every error has conditional mean zero given those values, the weighted sum has conditional mean zero. This gives conditional unbiasedness. For an independent sample, the assumption that each observation's error has mean zero given its own regressors gives this zero mean for the full set of regressors. A unique slope needs variation in r X. Precision is a separate question about how much the weighted sum varies.
 
-Unbiased: repeated-sample average equals the target.
+Let \(\mathcal X\) denote all observed regressor values. Put \(w_i=rX_i/\sum_j rX_j^2\).
 
-Variance: average squared distance from that average.
+\(\widehat\beta_1-\beta_1=\sum_i w_i u_i\).
 
-Two unbiased procedures can have different precision.
+If \(E(u_i\mid\mathcal X)=0\) for each \(i\), then \(E(\widehat\beta_1\mid\mathcal X)=\beta_1\).
 
-## 19. The estimator-error identity shows where unbiasedness comes from
-
-Separate the algebra from the conditional-mean assumption.
-
-Substitute y equals X beta plus u into the OLS formula. The result is the true coefficient vector plus X prime X inverse times X prime u. Conditional on the entire design matrix, the matrix weights are fixed. If the error vector has conditional mean zero, the added term averages to zero, giving conditional unbiasedness.
-
-This conclusion requires full rank and the stated sampling and mean assumptions. It does not require normally distributed errors or equal error variances. The weights multiply the observed outcomes linearly, which is the meaning of linear estimator in the later efficiency result. A model can be linear in unknown coefficients even when its regressors contain logs, squares or products.
-
-\(\widehat\beta-\beta=(X\prime X)^{-1}X\prime u\).
-
-\(E[u\mid X]=0\Rightarrow E[\widehat\beta\mid X]=\beta\).
-
-Linearity of the estimator in outcomes and linearity of the model in parameters are distinct statements.
-
-## 20. The conventional variance formula uses usable regressor variation
-
-Make the assumptions behind the precision calculation explicit.
-
-Suppose errors have conditional variance sigma squared, are uncorrelated across observations, and have zero mean conditional on the design. Equal conditional variances are called homoskedasticity. A covariance matrix collects the coefficient variances on its diagonal and the pairwise covariances off that diagonal. The covariance matrix of OLS is then sigma squared times X prime X inverse. For a particular regressor j, its variance can also be written using its total centred variation and the R squared from regressing it on the other inputs.
-
-As that auxiliary R squared approaches one, less separate variation remains and the coefficient becomes less precise. Estimate sigma squared by residual sum of squares divided by n minus p, where p counts every fitted coefficient including the intercept. The conventional standard error is the square root of the corresponding estimated variance. Later, unequal variance and dependence will change this covariance formula.
-
-If \(\operatorname{Var}(u\mid X)=\sigma^2I\), \(\operatorname{Var}(\widehat\beta\mid X)=\sigma^2(X\prime X)^{-1}\).
-
-\(\operatorname{Var}(\widehat\beta_j\mid X)=\dfrac{\sigma^2}{SST_j(1-R_j^2)}\), \(SST_j=\sum_i(X_{ij}-\overline X_j)^2\).
-
-\(s^2=SSR/(n-p)\), \(SE_j=\sqrt{s^2[(X\prime X)^{-1}]_{jj}}\).
-
-## 21. Precision depends on usable regressor variation
+### 15. Precision depends on usable regressor variation
 
 Little variation after adjustment means a weak comparison.
 
-Suppose most staffing variation is already predicted by income and language composition. Then rX has little variation. The FWL slope divides by the sum of squared rX values, so small remaining variation can make the estimate sensitive to outcome noise.
+Start with the weighted error sum for the staffing slope. Suppose that, given the regressors, errors from different districts are uncorrelated and each has variance sigma squared. The variance of the weighted sum is sigma squared times the sum of squared weights. Substituting the weights gives sigma squared divided by the sum of squared staffing remainders. Equal conditional error variance is called homoskedasticity.
 
-This is one reason a control may increase an SE even when it helps address confounding. The analyst is asking a more specific comparison and may have fewer independent differences available to answer it. Precision and credibility can move in different directions. Explain that trade-off instead of dropping a substantively needed control solely to obtain a smaller SE.
+We estimate sigma squared by the residual sum of squares divided by n minus p. Here n counts districts and p counts all fitted coefficients, including the intercept. The denominator is the residual degrees of freedom, the number of observations left after accounting for fitted coefficients in this calculation. Replace sigma squared by its estimate and take the square root to get the conventional standard error.
 
-Usable variation: \(\sum_i rX_i^2\)
+When controls predict staffing very closely, the staffing remainders are small and the same amount of error variation can produce a less precise slope. A control can improve the comparison while leaving less independent variation for estimating the coefficient.
 
-## 22. Multicollinearity reduces separate information
+Given equal conditional variances and zero error correlation across districts, \(\operatorname{Var}(\widehat\beta_1\mid\mathcal X)=\sigma^2/\sum_i rX_i^2\).
+
+\(s^2=\sum_i\widehat u_i^2/(n-p)\), with \(p\) counting the intercept.
+
+Conventional \(SE(\widehat\beta_1)=\sqrt{s^2/\sum_i rX_i^2}\).
+
+### 16. Multicollinearity reduces separate information
 
 High correlation is different from exact dependence.
 
@@ -274,33 +210,21 @@ Multicollinearity describes strong linear relationships among regressors.
 
 For example, including income measured in dollars and the same income divided by one thousand creates exact dependence.
 
-## 23. Efficiency needs additional error assumptions
+### 17. Efficiency needs additional error assumptions
 
 Small variance is a comparison among estimators.
 
-To compare precision, specify which estimators and assumptions are being compared. In the Gauss–Markov result, linear estimators are weighted sums of the observed outcomes, with weights determined by the regressors. Unbiased means that their repeated-sample averages equal the coefficient target. Among this class, OLS has the smallest variance under the theorem's assumptions.
+Suppose several procedures estimate the same slope without bias. To compare their precision, restrict attention to linear estimators: each is a weighted sum of the observed outcomes with weights determined by the regressors.
 
-Those assumptions include the correct linear mean and zero conditional-mean error, nonredundant regressor columns, and errors that are uncorrelated with each other and have the same variance given the regressors. Equal conditional error variance is called homoskedasticity. The theorem does not compare every possible estimator, establish a causal interpretation or make unequal-variance OLS coefficients automatically biased. We next study how to estimate uncertainty when the equal-variance condition is doubtful.
+Under the Gauss–Markov assumptions, OLS has the smallest conditional variance in this class. We need a unique linear fit, zero conditional-mean errors, equal conditional error variance and zero error correlation across observations. This is why OLS is called the best linear unbiased estimator, or BLUE, under these conditions. The efficiency result gives a reason to use OLS when its variance assumptions fit the application. Unequal variances can change the efficiency comparison while the conditional unbiasedness argument still holds.
 
-Linear unbiased estimators: weighted outcome sums with correct repeated-sample means.
+Linear estimators weight the observed outcomes using the regressors.
 
-Gauss–Markov adds equal error variance and no cross-observation error correlation.
+Gauss–Markov gives OLS minimum conditional variance among linear unbiased estimators under its assumptions.
 
-## 24. Best linear unbiased has a precise comparison class
+BLUE means best linear unbiased estimator.
 
-An efficiency theorem is conditional on a model and a class of estimators.
-
-The Gauss–Markov result compares OLS with other estimators that are linear combinations of the observed outcomes and unbiased conditional on the design matrix. Under zero conditional mean, full rank and error covariance sigma squared I, OLS has the smallest conditional variance in that class. BLUE abbreviates best linear unbiased estimator.
-
-The result does not compare every conceivable biased or nonlinear procedure, and it does not establish the causal validity of the coefficient. With unequal error variances, OLS can remain unbiased while losing this efficiency guarantee. The appropriate response depends on whether we want a covariance correction or have a credible variance model for weighting. A smaller reported standard error does not by itself validate either choice.
-
-BLUE: best linear unbiased estimator under the stated mean, rank and covariance assumptions.
-
-“Best” means minimum conditional variance within the linear unbiased class.
-
-Normality is not needed for this theorem.
-
-## 25. Use VIF as a description, not a decision rule
+### 18. Use VIF as a description, not a decision rule
 
 It measures linear overlap among included regressors.
 
@@ -328,7 +252,7 @@ No universal VIF cutoff certifies a causal model.
     Mean VIF |      1.11
 ```
 
-## 26. Reconstruct precision and the degrees of freedom
+### 19. Reconstruct precision and the degrees of freedom
 
 Try the comparison before opening the explanation.
 
@@ -338,7 +262,7 @@ State the assumptions and units alongside the calculation.
 
 **Practice:** Run score on str, el and income using schools.csv. Reconstruct s squared as SSR/(n-p), identify p, and explain the staffing VIF. Then compare the full staffing coefficient with the residual-on-residual coefficient. State which equality is algebraic and which variance claims require additional assumptions.
 
-## 27. Reconstruct precision and the degrees of freedom: explanation
+### 20. Reconstruct precision and the degrees of freedom: explanation
 
 Follow the calculation and interpret its units.
 
@@ -346,25 +270,7 @@ The model has an intercept and three slopes, so p is 4 and n minus p is 416. The
 
 The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
 
-## 28. Collinearity
-
-Try the comparison before opening the explanation.
-
-Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
-
-Ask whether X still changes after the other regressors have been accounted for. Lack of separate variation is the key issue.
-
-**Practice:** Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
-
-## 29. Collinearity: explanation
-
-Follow the calculation and interpret its units.
-
-No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
-
-No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
-
-## 30. A residual is not an automatically valid control
+### 21. A residual is not an automatically valid control
 
 Its construction does not establish a causal role.
 
@@ -374,7 +280,7 @@ Return to the control-selection discussion. First decide which comparison is jus
 
 In this separate diagram, R is an observed staffing-allocation rule, while unmeasured learning needs U influence staffing and scores. Removing the fitted R component does not block the route through U. Residualisation is a calculation on the observed variables; it does not certify that the remaining variation is unrelated to every omitted outcome determinant.
 
-## 31. Explain what the estimate uses
+### 22. Explain what the estimate uses
 
 Describe the remaining comparison in ordinary language.
 
@@ -386,39 +292,7 @@ For the school application, say that the staffing coefficient uses variation in 
 
 Then state the remaining assumption: the adjusted staffing variation must not be related to relevant unobserved determinants in the way ruled out by the chosen error restriction.
 
-## 32. Make the computation reproducible
-
-The same sample and control set are essential.
-
-The do-file fits the full model, saves the staffing coefficient, creates both supporting-regression residuals and checks the final slope. Use the same controls and observations in every step. A different missing-value sample would change the identity being checked. Name the saved residual variables so that another reader can tell which predictors were removed.
-
-For a reproducible coefficient calculation, retain the data definitions, sample, equation and exact commands. For a causal interpretation, add the separate argument about why the remaining staffing variation is comparable. The next meeting adds uncertainty calculations to this record. A reader should be able to reproduce the arithmetic and distinguish it from the assumptions supplied by the researcher.
-
-Record the sample, control columns, residual definitions and coefficient check.
-
-Reproducibility of a calculation does not establish its causal assumptions.
-
-## 33. DAG practice: partialling out and hidden needs
-
-Trace the routes before choosing a control.
-
-The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
-
-## 34. DAG practice: partialling out and hidden needs: explanation
-
-Explain what conditioning changes in this stated graph.
-
-The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains.
-
-Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
-
-The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains. Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
-
-## 35. Verify partialling out without misusing its SE
+### 23. Verify partialling out without misusing its SE
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -430,7 +304,7 @@ Replace income by log income in both residualising equations and in the full mod
 
 **Practice:** Replace income by log income in both residualising equations and in the full model. Verify the new slope identity and report uncertainty from the complete model. Keep your commands, log, output and interpretation.
 
-## 36. Verify partialling out without misusing its SE: explanation
+### 24. Verify partialling out without misusing its SE: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -446,13 +320,153 @@ Using log income: \(-0.385338\), full-model robust SE \(0.289855\).
 
 FWL requires the same control columns in both residualising fits.
 
-## 37. From OLS properties to statistical inference
-
-From OLS properties to statistical inference
+### 25. From OLS properties to statistical inference
 
 We can now separate the calculation of an OLS coefficient from its repeated-sample properties. Full rank makes the sample solution unique, zero conditional mean supports unbiasedness, and additional variance assumptions determine the conventional precision formula.
 
 The next meeting uses these ideas for confidence intervals and hypothesis tests. A confidence interval is a range from a procedure intended to cover the coefficient at a stated rate across repeated samples. A hypothesis test assesses a specified population restriction using sample evidence and a reference rule. A causal interpretation still needs the earlier argument about the economic comparison; an interval describes uncertainty around the coefficient in a specified model.
 
 From OLS properties to statistical inference
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 26. Residual versus error
+
+Try the comparison before opening the explanation.
+
+OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
+
+Use what is observed after fitting to distinguish a residual from the unobserved population error.
+
+**Practice:** OLS with an intercept gives residuals summing to zero. Does that verify \(E(u\mid X)=0\) in the population?
+
+### 27. Residual versus error: explanation
+
+Follow the calculation and interpret its units.
+
+No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
+
+No. The zero residual sum is a normal-equation identity imposed by least squares. The unobserved population error and its relation to X are a substantive assumption. OLS can satisfy its sample identities in a badly confounded model.
+
+### 28. Matrix notation stacks the same regression equations
+
+Define dimensions and operations before using the compact estimator.
+
+Stack the n observed scores into a column vector y, meaning a vertical list of numbers. Put an intercept column and k regressor columns into the design matrix X, which has n rows and p equals k plus one columns. The coefficient vector beta has p entries. A prime denotes transpose, which exchanges rows and columns. Matrix multiplication forms the sums of products in the normal equations.
+
+Full column rank means no column is an exact linear combination of the others. It makes X prime X invertible: its inverse undoes multiplication by that square matrix. The displayed estimator solves the same OLS normal equations as the scalar formulas. Matrix notation keeps the bookkeeping compact; it introduces no additional causal assumption.
+
+\(y=X\beta+u\); \(X:n\times p\), \(\beta:p\times1\), \(p=k+1\).
+
+Normal equations: \(X\prime(y-X\widehat\beta)=0\).
+
+Under full column rank, \(\widehat\beta=(X\prime X)^{-1}X\prime y\).
+
+### 29. The residual-maker gives a compact FWL proof
+
+Remove the same control space from the outcome and target regressor.
+
+Let x be the staffing column and let Z contain the intercept and the other controls. The projection matrix P sub Z maps a vector to its fitted values from OLS on Z. The residual-maker M sub Z is the identity matrix I minus that projection. I leaves a vector unchanged, so M sub Z keeps the remainder after fitting on Z.
+
+The residual-maker is symmetric, meaning its transpose equals itself, and idempotent, meaning that applying it twice changes nothing further. It also removes Z exactly. Minimising the full squared-error criterion over the coefficients on Z therefore leaves a criterion using M sub Z times y and M sub Z times x. Its one-regressor normal equation gives the displayed FWL coefficient. This proves the coefficient identity, while uncertainty still needs assumptions about error variation and an accounting of every fitted coefficient.
+
+\(P_Z=Z(Z\prime Z)^{-1}Z\prime\), \(M_Z=I-P_Z\); \(M_ZZ=0\).
+
+\(M_Z\prime=M_Z\), \(M_Z^2=M_Z\).
+
+\(\widehat\beta_x=(x\prime M_Zx)^{-1}x\prime M_Zy\).
+
+### 30. The estimator-error identity shows where unbiasedness comes from
+
+Separate the algebra from the conditional-mean assumption.
+
+Substitute y equals X beta plus u into the OLS formula. The result is the true coefficient vector plus X prime X inverse times X prime u. Conditional on the entire design matrix, the matrix weights are fixed. If the error vector has conditional mean zero, the added term averages to zero, giving conditional unbiasedness.
+
+This conclusion requires full rank and the stated sampling and mean assumptions. It does not require normally distributed errors or equal error variances. The weights multiply the observed outcomes linearly, which is the meaning of linear estimator in the later efficiency result. A model can be linear in unknown coefficients even when its regressors contain logs, squares or products.
+
+\(\widehat\beta-\beta=(X\prime X)^{-1}X\prime u\).
+
+\(E[u\mid X]=0\Rightarrow E[\widehat\beta\mid X]=\beta\).
+
+Linearity of the estimator in outcomes and linearity of the model in parameters are distinct statements.
+
+### 31. The conventional variance formula uses usable regressor variation
+
+Make the assumptions behind the precision calculation explicit.
+
+Suppose errors have conditional variance sigma squared, are uncorrelated across observations, and have zero mean conditional on the design. Equal conditional variances are called homoskedasticity. A covariance matrix collects the coefficient variances on its diagonal and the pairwise covariances off that diagonal. The covariance matrix of OLS is then sigma squared times X prime X inverse. For a particular regressor j, its variance can also be written using its total centred variation and the R squared from regressing it on the other inputs.
+
+As that auxiliary R squared approaches one, less separate variation remains and the coefficient becomes less precise. Estimate sigma squared by residual sum of squares divided by n minus p, where p counts every fitted coefficient including the intercept. The conventional standard error is the square root of the corresponding estimated variance. Later, unequal variance and dependence will change this covariance formula.
+
+If \(\operatorname{Var}(u\mid X)=\sigma^2I\), \(\operatorname{Var}(\widehat\beta\mid X)=\sigma^2(X\prime X)^{-1}\).
+
+\(\operatorname{Var}(\widehat\beta_j\mid X)=\dfrac{\sigma^2}{SST_j(1-R_j^2)}\), \(SST_j=\sum_i(X_{ij}-\overline X_j)^2\).
+
+\(s^2=SSR/(n-p)\), \(SE_j=\sqrt{s^2[(X\prime X)^{-1}]_{jj}}\).
+
+### 32. Best linear unbiased has a precise comparison class
+
+An efficiency theorem is conditional on a model and a class of estimators.
+
+The Gauss–Markov result compares OLS with other estimators that are linear combinations of the observed outcomes and unbiased conditional on the design matrix. Under zero conditional mean, full rank and error covariance sigma squared I, OLS has the smallest conditional variance in that class. BLUE abbreviates best linear unbiased estimator.
+
+The result does not compare every conceivable biased or nonlinear procedure, and it does not establish the causal validity of the coefficient. With unequal error variances, OLS can remain unbiased while losing this efficiency guarantee. The appropriate response depends on whether we want a covariance correction or have a credible variance model for weighting. A smaller reported standard error does not by itself validate either choice.
+
+BLUE: best linear unbiased estimator under the stated mean, rank and covariance assumptions.
+
+“Best” means minimum conditional variance within the linear unbiased class.
+
+Normality is not needed for this theorem.
+
+### 33. Collinearity
+
+Try the comparison before opening the explanation.
+
+Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
+
+Ask whether X still changes after the other regressors have been accounted for. Lack of separate variation is the key issue.
+
+**Practice:** Two controls are highly correlated but neither is an exact linear combination of the others. Does this alone create omitted-variable bias?
+
+### 34. Collinearity: explanation
+
+Follow the calculation and interpret its units.
+
+No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
+
+No. Under exogeneity, it need not bias OLS. It can reduce precision because there is little independent regressor variation. Exact collinearity is different: a separate coefficient is not identified in that specification.
+
+### 35. Make the computation reproducible
+
+The same sample and control set are essential.
+
+The do-file fits the full model, saves the staffing coefficient, creates both supporting-regression residuals and checks the final slope. Use the same controls and observations in every step. A different missing-value sample would change the identity being checked. Name the saved residual variables so that another reader can tell which predictors were removed.
+
+For a reproducible coefficient calculation, retain the data definitions, sample, equation and exact commands. For a causal interpretation, add the separate argument about why the remaining staffing variation is comparable. The next meeting adds uncertainty calculations to this record. A reader should be able to reproduce the arithmetic and distinguish it from the assumptions supplied by the researcher.
+
+Record the sample, control columns, residual definitions and coefficient check.
+
+Reproducibility of a calculation does not establish its causal assumptions.
+
+### 36. DAG practice: partialling out and hidden needs
+
+Trace the routes before choosing a control.
+
+The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
+
+### 37. DAG practice: partialling out and hidden needs: explanation
+
+Explain what conditioning changes in this stated graph.
+
+The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains.
+
+Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
+
+The route \(X\leftarrow U\rightarrow Y\) is still open. Removing the fitted contributions of R does not condition on the unobserved common cause U. The FWL coefficient identity can hold exactly while that identification problem remains. Residualisation describes which observed linear variation drives a coefficient. Exogeneity concerns whether the remaining comparison is unrelated to relevant omitted outcome determinants under the model. Those are different statements. A clear empirical report can verify the first by calculation while explaining why the second is, or is not, credible.
 

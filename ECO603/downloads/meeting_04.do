@@ -5,6 +5,7 @@ set more off
 do "lab_03.do"
 do "lab_04.do"
 do "overleaf_technical.do"
+do "coefficient_workshop.do"
 capture log close
 log using "week_04_completion.txt", text replace
 display "ECO603_WEEK_04_COMPLETE"

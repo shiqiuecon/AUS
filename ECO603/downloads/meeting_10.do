@@ -3,7 +3,6 @@
 version 19.0
 set more off
 do "lab_09.do"
-do "overleaf_technical.do"
 capture log close
 log using "week_10_completion.txt", text replace
 display "ECO603_WEEK_10_COMPLETE"

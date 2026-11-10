@@ -1,8 +1,10 @@
 # 15. Binary response: logit, probit and interpretation
 
-## 01. How should we model a mortgage decision probability?
+Estimate a binary-outcome model and report effects on the probability scale.
 
-How should we model a mortgage decision probability?
+## Core lesson
+
+### 01. How should we model a mortgage decision probability?
 
 Our outcome is mortgage denial, coded one for denial and zero otherwise. The earlier linear probability model treated its conditional mean as a linear function of payment burden and the chosen controls. We now use the same application to introduce logit and probit probability models.
 
@@ -12,7 +14,7 @@ Same mortgage application and zero-or-one outcome.
 
 Compare probability models and interpretable contrasts on the same observations.
 
-## 02. Build a probability from an unrestricted index
+### 02. Build a probability from an unrestricted index
 
 First compute the index; then convert it to a bounded prediction.
 
@@ -24,7 +26,7 @@ Index: \(z=a+bX\)
 
 Logistic examples: \(z=-2,0,2\Rightarrow p\approx0.119,0.500,0.881\)
 
-## 03. Logit and probit keep fitted probabilities in range
+### 03. Logit and probit keep fitted probabilities in range
 
 Increasing S-shaped functions convert the index into a probability.
 
@@ -38,7 +40,7 @@ Probit: \(p(X)=\Phi(z)\), area under a standard-normal curve left of \(z\)
 
 \(z=a+bX\); both return probabilities in \((0,1)\).
 
-## 04. A logit coefficient changes log odds
+### 04. A logit coefficient changes log odds
 
 Translate it before discussing probabilities.
 
@@ -52,25 +54,7 @@ Odds: \(p/(1-p)\); log odds: \(\log\{p/(1-p)\}=a+bX\)
 
 For \(b=0.5,\Delta X=1\): \(0.20\rightarrow0.292\), \(0.50\rightarrow0.622\)
 
-## 05. Logit coefficient
-
-Try the comparison before opening the explanation.
-
-Why is a logit coefficient of 0.5 not a 50-percentage-point increase in probability?
-
-Name the coefficient’s index scale. Use the two starting-probability examples to explain why no single probability increase follows from the coefficient alone.
-
-**Practice:** Why is a logit coefficient of 0.5 not a 50-percentage-point increase in probability?
-
-## 06. Logit coefficient: explanation
-
-Follow the calculation and interpret its units.
-
-It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
-
-It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
-
-## 07. Probit also uses an index coefficient
+### 05. Probit also uses an index coefficient
 
 Its probability effect depends on the reference density.
 
@@ -84,21 +68,7 @@ Local slope: \(\partial p/\partial X=b\phi(a+bX)\)
 
 \(\Phi\): cumulative area; \(\phi\): density height.
 
-## 08. A latent-variable representation fixes an otherwise arbitrary scale
-
-Only the sign of the unobserved index is observed.
-
-A latent variable is an unobserved continuous quantity used to describe the binary decision. Write Y star as x prime beta plus e, and record Y equal to one when Y star is positive. Multiplying the entire latent equation by a positive constant leaves that observed decision unchanged, so its absolute scale cannot be recovered from the binary outcome alone.
-
-Probit fixes the latent error to a standard normal distribution with variance one. Standard logit fixes a logistic distribution, with variance pi squared divided by three. Here pi is the mathematical constant, about 3.14159, rather than the inflation variable used in the earlier application. Their coefficients therefore use different index scales. A mechanical coefficient conversion is only a rough comparison, not an identity or a test that the models agree. Compare fitted probabilities and stated probability contrasts on the same observed sample.
-
-\(Y^\star=x\prime\beta+e\), \(Y=1\{Y^\star>0\}\).
-
-Probit: \(e\sim N(0,1)\); standard logit: logistic error variance \(\pi^2/3\).
-
-Positive rescaling of the whole latent equation leaves the binary decision unchanged.
-
-## 09. Compare two candidate models on observed events
+### 06. Compare two candidate models on observed events
 
 Likelihood evaluates coefficient choices with the observed outcomes held fixed.
 
@@ -112,13 +82,13 @@ Candidate A: \(0.8(1-0.2)=0.64\)
 
 Candidate B: \(0.4(1-0.6)=0.16\)
 
-## 10. Maximum likelihood chooses probabilities that support the observed events
+### 07. Maximum likelihood chooses probabilities that support the observed events
 
 Define the objective before interpreting the estimator.
 
-Let theta denote the full list of coefficients and p subscript i of theta the predicted denial probability for application i. An observed denial contributes p to the likelihood; an observed non-denial contributes one minus p. The expression with powers Y and one minus Y selects the appropriate contribution for each zero-or-one observation. The capital product symbol multiplies those contributions across the conditionally independent observations.
+Let theta denote the list of coefficients and p i of theta the predicted denial probability for applicant i. A Bernoulli outcome is a single zero-or-one event. A denial contributes its predicted probability p i, and an approval contributes one minus p i. The exponents in the formula select one of these contributions.
 
-The log likelihood, written lowercase ell, takes the logarithm of that product and turns it into a sum. Because the logarithm is increasing, maximizing it selects the same coefficients. This numerical optimization fits the probability model; it does not establish the causal meaning of burden changes. After estimating coefficients, return to the probability scale to report quantities a lending reader can interpret.
+Given the observed inputs, assume the applications are independent. The capital product symbol multiplies their probabilities, as in the two-applicant example. This product is the likelihood as a function of the coefficients. Taking logs changes the product to a sum. The logarithm is increasing, so the coefficient values that maximize the sum also maximize the product. With the fit in hand, we return to the probability scale for the comparisons we want to report.
 
 \(L(\theta)=\prod_i p_i(\theta)^{Y_i}[1-p_i(\theta)]^{1-Y_i}\)
 
@@ -126,21 +96,7 @@ The log likelihood, written lowercase ell, takes the logarithm of that product a
 
 \(\theta\): coefficient list; \(\prod\): multiply; \(\sum\): add.
 
-## 11. The Bernoulli log-likelihood makes the fitting criterion explicit
-
-The observed outcome selects which probability enters each contribution.
-
-Let p i of beta be the model probability of denial for applicant i. A Bernoulli distribution describes one zero-or-one outcome with probability p i of one. Its probability contribution is p i raised to Y i times one minus p i raised to one minus Y i. An observed denial contributes p i; an approval contributes one minus p i. Under conditional independence, multiply these contributions across applicants.
-
-Taking logs turns the product into the displayed sum. Maximum likelihood chooses beta to maximise it. A gradient is the vector of derivatives of this objective with respect to the coefficients; numerical optimisation uses such local information. Existence, identification, suitable sampling, correct probability specification and enough smoothness and information near the true coefficients are needed for the familiar consistency and large-sample normal approximation. The fitting criterion itself does not establish a causal effect.
-
-\(p_i(\beta)=G(x_i\prime\beta)\), \(Y_i\in\{0,1\}\).
-
-\(L(\beta)=\prod_i p_i(\beta)^{Y_i}[1-p_i(\beta)]^{1-Y_i}\).
-
-\(\ell(\beta)=\sum_i\{Y_i\log p_i(\beta)+(1-Y_i)\log[1-p_i(\beta)]\}\).
-
-## 12. Compare the actual fitted probit and logit scales
+### 08. Compare the actual fitted probit and logit scales
 
 Their coefficients are not directly comparable magnitudes.
 
@@ -160,7 +116,7 @@ Compare fitted probabilities for the same ratio values or calculate marginal eff
 ------------------------------------------------------------------------------
 ```
 
-## 13. Predict probabilities at meaningful ratio values
+### 09. Predict probabilities at meaningful ratio values
 
 State which covariates are changed or held fixed.
 
@@ -190,7 +146,7 @@ Expression: Pr(deny), predict()
 ------------------------------------------------------------------------------
 ```
 
-## 14. A marginal effect is a local probability slope
+### 10. A marginal effect is a local probability slope
 
 For an indicator, use a discrete comparison instead.
 
@@ -202,7 +158,7 @@ Logit: \(\partial p/\partial X=b\,p(1-p)\)
 
 Binary \(D\): \(p(D=1,X)-p(D=0,X)\)
 
-## 15. An average marginal effect averages individual slopes
+### 11. An average marginal effect averages individual slopes
 
 The effect at the average covariates is another calculation.
 
@@ -233,57 +189,23 @@ dy/dx wrt:  pir
 ------------------------------------------------------------------------------
 ```
 
-## 16. A partial effect at average inputs is a different object
+### 12. A partial effect at average inputs is a different object
 
 A nonlinear transformation does not commute with averaging.
 
-Let G be the response function mapping the index to a probability, and g its derivative, and x i the observed input vector. For a continuous input entering the index linearly without an interaction, applicant i's local probability slope is g of x i prime b times coefficient b j. The average partial effect, APE, averages these slopes over observed applicants. It is also called an average marginal effect, AME.
+Call applicant i's fitted index z i. Let G be the response function that turns the index into a probability, and g its slope. If a continuous predictor enters the index linearly with coefficient b j and no interaction, its probability slope at this applicant's inputs is g at z i times b j. The average partial effect, or A P E, averages these slopes over the observed applicants. We also call it the average marginal effect.
 
-The partial effect at the average, PEA, instead evaluates the derivative at the vector of sample mean inputs. This vector can describe a hypothetical applicant, and its result generally differs from the average of applicant-specific slopes. For an indicator, use a finite zero-to-one probability difference, holding the other inputs at their stated values, then average if that is the target. Interactions and squares require the full derivative or fitted contrast.
+The partial effect at the average, or P E A, evaluates one slope. First average each input across applicants, then form the index from those average inputs and evaluate g there. The example with two different applicant indexes shows why the order matters in a nonlinear model. For an indicator, compare fitted probabilities at zero and one with the other inputs held at the stated values, then average these differences if that is your target.
 
-\(APE_j=AME_j=n^{-1}\sum_i g(x_i\prime b)b_j\).
+\(z_i\): fitted index for applicant \(i\); \(g\): slope of the response function.
 
-\(PEA_j=g(\overline x\prime b)b_j\), generally different from \(APE_j\).
+\(APE_j=AME_j=n^{-1}\sum_i g(z_i)b_j\).
 
-An indicator effect is a fitted zero-to-one difference, not a derivative of the indicator.
+\(PEA_j=g(z_{\mathrm{mean}})b_j\), where \(z_{\mathrm{mean}}\) uses the average inputs.
 
-## 17. Distinguish an average slope from a slope at average inputs
+For an indicator, compare the fitted probabilities at zero and one.
 
-Try the comparison before opening the explanation.
-
-For the mortgage probit model, explain what margins, dydx(pir) averages and what adding atmeans changes. Which reported quantity uses the observed covariate distribution? How should an indicator regressor be handled?
-
-State the assumptions and units alongside the calculation.
-
-**Practice:** For the mortgage probit model, explain what margins, dydx(pir) averages and what adding atmeans changes. Which reported quantity uses the observed covariate distribution? How should an indicator regressor be handled?
-
-## 18. Distinguish an average slope from a slope at average inputs: explanation
-
-Follow the calculation and interpret its units.
-
-The average marginal effect averages the model’s input-specific local slopes over the observed applications. An atmeans calculation evaluates the slope at a single mean-input vector. Nonlinearity makes them generally different. Use a finite zero-to-one contrast for an indicator, with a clear reference population. Neither fitted probability comparison is automatically causal.
-
-The average marginal effect averages the model’s input-specific local slopes over the observed applications. An atmeans calculation evaluates the slope at a single mean-input vector. Nonlinearity makes them generally different. Use a finite zero-to-one contrast for an indicator, with a clear reference population. Neither fitted probability comparison is automatically causal.
-
-## 19. Average marginal effect
-
-Try the comparison before opening the explanation.
-
-Distinguish an average marginal effect from the marginal effect evaluated at the mean covariate vector.
-
-Evaluate each applicant’s local slope before averaging. Compare this order with evaluating one slope at averaged covariates.
-
-**Practice:** Distinguish an average marginal effect from the marginal effect evaluated at the mean covariate vector.
-
-## 20. Average marginal effect: explanation
-
-Follow the calculation and interpret its units.
-
-The AME computes an effect at each observation's covariates and averages those effects. The effect at means computes one effect at the vector of average covariates. In nonlinear models the two generally differ, and the average vector can describe no actual person.
-
-The AME computes an effect at each observation's covariates and averages those effects. The effect at means computes one effect at the vector of average covariates. In nonlinear models the two generally differ, and the average vector can describe no actual person.
-
-## 21. A finite probability change can differ from a local approximation
+### 13. A finite probability change can differ from a local approximation
 
 Evaluate both endpoints when the proposed change is substantial.
 
@@ -291,7 +213,7 @@ For a continuous ratio increase of 0.10, multiplying a derivative by 0.10 is a l
 
 This is the same distinction used for logs and quadratic regressions earlier in the course. A policy-sized contrast should follow the change decision-makers actually contemplate. The exactness concerns the fitted function, not a guarantee that the contrast is causal or that all its parameters are known without uncertainty.
 
-## 22. Prediction performance needs more than a significance test
+### 14. Prediction performance needs more than a significance test
 
 Check the probability model against its task.
 
@@ -305,7 +227,7 @@ Classification: threshold probabilities to make event/non-event decisions.
 
 Assess new-data performance and the costs of different errors.
 
-## 23. A fitted denial gap is not automatically a treatment effect
+### 15. A fitted denial gap is not automatically a treatment effect
 
 Selection and omitted applicant characteristics can remain.
 
@@ -315,7 +237,7 @@ If the research question is causal, specify the intervention and identify a cred
 
 The selection node S means applying for a mortgage; every observed application has S equal to one. In this possible graph, payment burden and unmeasured financial readiness both affect applying, while readiness also affects denial. Selecting applicants can open the shared-consequence route. Predicting denial within the observed applicant population is still a meaningful task; a causal burden effect or a claim about all potential borrowers needs additional selection and identification arguments.
 
-## 24. Write a compact applied research memo
+### 16. Write a compact applied research memo
 
 Connect the question, data, model, assumptions and result.
 
@@ -327,27 +249,7 @@ A useful memo identifies the decision or economic question, defines the observat
 
 For the mortgage example, use a payment-burden contrast in percentage points and explain how it was obtained from the fitted model.
 
-## 25. DAG practice: selected applicants and prediction
-
-Trace the routes before choosing a control.
-
-All observed records are mortgage applicants. In the diagram, payment burden and unmeasured readiness affect applying, while readiness also affects denial. Trace the route opened by selecting applicants. Does this make within-applicant prediction meaningless, or does it change the causal claim that needs defending?
-
-Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
-
-**Practice:** All observed records are mortgage applicants. In the diagram, payment burden and unmeasured readiness affect applying, while readiness also affects denial. Trace the route opened by selecting applicants. Does this make within-applicant prediction meaningless, or does it change the causal claim that needs defending?
-
-## 26. DAG practice: selected applicants and prediction: explanation
-
-Explain what conditioning changes in this stated graph.
-
-Selecting on application opens \(X\rightarrow S\leftarrow U\rightarrow Y\), because application is a common consequence of burden and readiness. A causal comparison of burden can then mix its relationship with the outcome and selection through readiness.
-
-Predicting denial conditional on burden within the observed applicant population remains a legitimate descriptive task. A causal change in burden, or a conclusion about all potential borrowers, requires a clear target and additional identification and selection assumptions. A bounded logit or probit function does not itself close the path.
-
-Selecting on application opens \(X\rightarrow S\leftarrow U\rightarrow Y\), because application is a common consequence of burden and readiness. A causal comparison of burden can then mix its relationship with the outcome and selection through readiness. Predicting denial conditional on burden within the observed applicant population remains a legitimate descriptive task. A causal change in burden, or a conclusion about all potential borrowers, requires a clear target and additional identification and selection assumptions. A bounded logit or probit function does not itself close the path.
-
-## 27. Compare probabilities on one common scale
+### 17. Compare probabilities on one common scale
 
 Reproduce the evidence, then explain its economic meaning.
 
@@ -357,7 +259,7 @@ Add squared payment burden to the probit index. Recalculate the 0.30-to-0.40 fit
 
 **Practice:** Add squared payment burden to the probit index. Recalculate the 0.30-to-0.40 fitted probability difference on the same observations and compare it with the original fit. Keep your commands, log, output and interpretation.
 
-## 28. Compare probabilities on one common scale: explanation
+### 18. Compare probabilities on one common scale: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
@@ -373,7 +275,7 @@ Quadratic-index probit contrast: 5.9786 percentage points.
 
 Same 2,380 applications; model flexibility does not establish a causal lending response.
 
-## 29. Choose the method that addresses the empirical problem
+### 19. Choose the method that addresses the empirical problem
 
 A technical tool is useful when its role is explicit.
 
@@ -384,4 +286,110 @@ These roles can be combined, but none is a universal stamp of credibility. Begin
 Multiple regression accounts for stated observed differences.
 
 These roles can be combined, but none is a universal stamp of credibility.
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 20. Logit coefficient
+
+Try the comparison before opening the explanation.
+
+Why is a logit coefficient of 0.5 not a 50-percentage-point increase in probability?
+
+Name the coefficient’s index scale. Use the two starting-probability examples to explain why no single probability increase follows from the coefficient alone.
+
+**Practice:** Why is a logit coefficient of 0.5 not a 50-percentage-point increase in probability?
+
+### 21. Logit coefficient: explanation
+
+Follow the calculation and interpret its units.
+
+It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
+
+It is a change in the log odds per unit of the regressor, conditional on the specification. The probability change depends on the starting index and other covariates. Report an explicit prediction contrast or marginal effect, meaning a local probability slope, to discuss probabilities.
+
+### 22. A latent-variable representation fixes an otherwise arbitrary scale
+
+Only the sign of the unobserved index is observed.
+
+A latent variable is an unobserved continuous quantity used to describe the binary decision. Write Y star as x prime beta plus e, and record Y equal to one when Y star is positive. Multiplying the entire latent equation by a positive constant leaves that observed decision unchanged, so its absolute scale cannot be recovered from the binary outcome alone.
+
+Probit fixes the latent error to a standard normal distribution with variance one. Standard logit fixes a logistic distribution, with variance pi squared divided by three. Here pi is the mathematical constant, about 3.14159, rather than the inflation variable used in the earlier application. Their coefficients therefore use different index scales. A mechanical coefficient conversion is only a rough comparison, not an identity or a test that the models agree. Compare fitted probabilities and stated probability contrasts on the same observed sample.
+
+\(Y^\star=x\prime\beta+e\), \(Y=1\{Y^\star>0\}\).
+
+Probit: \(e\sim N(0,1)\); standard logit: logistic error variance \(\pi^2/3\).
+
+Positive rescaling of the whole latent equation leaves the binary decision unchanged.
+
+### 23. The Bernoulli log-likelihood makes the fitting criterion explicit
+
+The observed outcome selects which probability enters each contribution.
+
+Let p i of beta be the model probability of denial for applicant i. A Bernoulli distribution describes one zero-or-one outcome with probability p i of one. Its probability contribution is p i raised to Y i times one minus p i raised to one minus Y i. An observed denial contributes p i; an approval contributes one minus p i. Under conditional independence, multiply these contributions across applicants.
+
+Taking logs turns the product into the displayed sum. Maximum likelihood chooses beta to maximise it. A gradient is the vector of derivatives of this objective with respect to the coefficients; numerical optimisation uses such local information. Existence, identification, suitable sampling, correct probability specification and enough smoothness and information near the true coefficients are needed for the familiar consistency and large-sample normal approximation. The fitting criterion itself does not establish a causal effect.
+
+\(p_i(\beta)=G(x_i\prime\beta)\), \(Y_i\in\{0,1\}\).
+
+\(L(\beta)=\prod_i p_i(\beta)^{Y_i}[1-p_i(\beta)]^{1-Y_i}\).
+
+\(\ell(\beta)=\sum_i\{Y_i\log p_i(\beta)+(1-Y_i)\log[1-p_i(\beta)]\}\).
+
+### 24. Distinguish an average slope from a slope at average inputs
+
+Try the comparison before opening the explanation.
+
+For the mortgage probit model, explain what margins, dydx(pir) averages and what adding atmeans changes. Which reported quantity uses the observed covariate distribution? How should an indicator regressor be handled?
+
+State the assumptions and units alongside the calculation.
+
+**Practice:** For the mortgage probit model, explain what margins, dydx(pir) averages and what adding atmeans changes. Which reported quantity uses the observed covariate distribution? How should an indicator regressor be handled?
+
+### 25. Distinguish an average slope from a slope at average inputs: explanation
+
+Follow the calculation and interpret its units.
+
+The average marginal effect averages the model’s input-specific local slopes over the observed applications. An atmeans calculation evaluates the slope at a single mean-input vector. Nonlinearity makes them generally different. Use a finite zero-to-one contrast for an indicator, with a clear reference population. Neither fitted probability comparison is automatically causal.
+
+The average marginal effect averages the model’s input-specific local slopes over the observed applications. An atmeans calculation evaluates the slope at a single mean-input vector. Nonlinearity makes them generally different. Use a finite zero-to-one contrast for an indicator, with a clear reference population. Neither fitted probability comparison is automatically causal.
+
+### 26. Average marginal effect
+
+Try the comparison before opening the explanation.
+
+Distinguish an average marginal effect from the marginal effect evaluated at the mean covariate vector.
+
+Evaluate each applicant’s local slope before averaging. Compare this order with evaluating one slope at averaged covariates.
+
+**Practice:** Distinguish an average marginal effect from the marginal effect evaluated at the mean covariate vector.
+
+### 27. Average marginal effect: explanation
+
+Follow the calculation and interpret its units.
+
+The AME computes an effect at each observation's covariates and averages those effects. The effect at means computes one effect at the vector of average covariates. In nonlinear models the two generally differ, and the average vector can describe no actual person.
+
+The AME computes an effect at each observation's covariates and averages those effects. The effect at means computes one effect at the vector of average covariates. In nonlinear models the two generally differ, and the average vector can describe no actual person.
+
+### 28. DAG practice: selected applicants and prediction
+
+Trace the routes before choosing a control.
+
+All observed records are mortgage applicants. In the diagram, payment burden and unmeasured readiness affect applying, while readiness also affects denial. Trace the route opened by selecting applicants. Does this make within-applicant prediction meaningless, or does it change the causal claim that needs defending?
+
+Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+**Practice:** All observed records are mortgage applicants. In the diagram, payment burden and unmeasured readiness affect applying, while readiness also affects denial. Trace the route opened by selecting applicants. Does this make within-applicant prediction meaningless, or does it change the causal claim that needs defending?
+
+### 29. DAG practice: selected applicants and prediction: explanation
+
+Explain what conditioning changes in this stated graph.
+
+Selecting on application opens \(X\rightarrow S\leftarrow U\rightarrow Y\), because application is a common consequence of burden and readiness. A causal comparison of burden can then mix its relationship with the outcome and selection through readiness.
+
+Predicting denial conditional on burden within the observed applicant population remains a legitimate descriptive task. A causal change in burden, or a conclusion about all potential borrowers, requires a clear target and additional identification and selection assumptions. A bounded logit or probit function does not itself close the path.
+
+Selecting on application opens \(X\rightarrow S\leftarrow U\rightarrow Y\), because application is a common consequence of burden and readiness. A causal comparison of burden can then mix its relationship with the outcome and selection through readiness. Predicting denial conditional on burden within the observed applicant population remains a legitimate descriptive task. A causal change in burden, or a conclusion about all potential borrowers, requires a clear target and additional identification and selection assumptions. A bounded logit or probit function does not itself close the path.
 

@@ -1,6 +1,10 @@
 # 02. Simple regression: estimation, units and fit
 
-## 01. Make the first regression model explicit
+Fit a line and report what a realistic change in its predictor would imply.
+
+## Core lesson
+
+### 01. Make the first regression model explicit
 
 Define the regression equation, its coefficients and the error term.
 
@@ -14,7 +18,7 @@ Conditional-mean assumption: \(E(u_i\mid X_i)=0\)
 
 Fit: \(\widehat Y_i=\widehat\beta_0+\widehat\beta_1X_i\); residual: \(e_i=Y_i-\widehat Y_i\)
 
-## 02. A population conditional mean is different from a fitted sample line
+### 02. A population conditional mean is different from a fitted sample line
 
 The error is an unobserved population remainder; the residual follows an estimated line.
 
@@ -28,7 +32,7 @@ Population conditional mean: \(E[Y\mid X=x]=\beta_0+\beta_1x\).
 
 Sample: \(\widehat Y_i=b_0+b_1X_i\); residual: \(\widehat u_i=Y_i-\widehat Y_i\).
 
-## 03. Inspect variables before running the model
+### 03. Inspect variables before running the model
 
 Check the data, then use a saved do-file to reproduce the estimates.
 
@@ -40,7 +44,7 @@ Check observation counts, units, ranges and missing values.
 
 Outcome first; regressors afterward.
 
-## 04. A slope is a change with units
+### 04. A slope is a change with units
 
 A fitted change equals the slope times the change in the regressor.
 
@@ -60,7 +64,7 @@ Fitted change: \(b_1\Delta X\approx+4.56\) score points
 
 **Explanation:** The change in the ratio is +3. The fitted score change is 3×(−2.279808), about −6.84 score points. Moving right along the downward-sloping line lowers its fitted score.
 
-## 05. Choose a line by its errors
+### 05. Choose a line by its errors
 
 OLS chooses the line with the smallest sum of squared residuals.
 
@@ -70,7 +74,7 @@ The sum of squared residuals is the loss we are trying to minimise. The graph ca
 
 Move the slope control to compare candidate lines. Each line passes through the sample mean point: the average ratio and average score. The displayed loss uses all 420 districts. Try a flat line, then a steep downward line, and find where the loss is smallest. This exercise shows how OLS chooses its coefficients. Next we will follow one district's residual to see exactly what enters that calculation.
 
-## 06. Follow one residual
+### 06. Follow one residual
 
 For one district, compare the observed score with the score on the line.
 
@@ -80,7 +84,7 @@ Predict its sign before revealing the segment. A dot above the line has a positi
 
 Now choose another district and repeat the steps. The same rule applies to every dot, and OLS adds all the squared contributions. This connects the graph to the formula \(e_i\)=\(Y_i\)−\(\widehat Y_i\). It also shows why a residual is a prediction difference for one observation, rather than the effect of changing staffing. We can now ask how all the observations combine to determine the slope.
 
-## 07. Calculate the OLS slope from the data
+### 07. Calculate the OLS slope from the data
 
 Compare each variable with its average, then combine the deviations.
 
@@ -96,7 +100,7 @@ The denominator measures the variation available in X. If every district had the
 
 Without regressor variation, the slope cannot be separately estimated.
 
-## 08. The normal equations explain the slope formula
+### 08. The normal equations explain the slope formula
 
 Differentiate the squared-error criterion, then solve the two conditions.
 
@@ -110,7 +114,7 @@ The first condition implies that the fitted line passes through the sample means
 
 \(b_0=\overline Y-b_1\overline X\), \(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\).
 
-## 09. A small calculation you can finish
+### 09. A small calculation you can finish
 
 Use three constructed districts to see the formula work.
 
@@ -124,7 +128,7 @@ Insert each ratio into this fitted equation and subtract its fitted score from t
 
 **Explanation:** \(b_1\)=−7.5 and \(b_0\)=816⅔. Fitted scores are 681⅔, 666⅔ and 651⅔. Residuals are −1⅔, +3⅓ and −1⅔, which sum to zero. Small differences from rounding are acceptable.
 
-## 10. Zero conditional mean is stronger than zero covariance
+### 10. Zero conditional mean is stronger than zero covariance
 
 An average restriction need not hold at every regressor value.
 
@@ -138,7 +142,7 @@ The converse need not hold. In a constructed example, X takes minus one, zero an
 
 Counterexample: \(P(X=-1)=P(X=0)=P(X=1)=1/3\), \(u=X^2-2/3\).
 
-## 11. With an intercept, fitted and residual variation add up
+### 11. With an intercept, fitted and residual variation add up
 
 Define the sums of squares before reading fit statistics.
 
@@ -152,7 +156,7 @@ With an intercept: \(\sum_i(\widehat Y_i-\overline Y)\widehat u_i=0\), so \(SST=
 
 \(R^2=1-SSR/SST\), for \(SST>0\).
 
-## 12. Rescaling a variable changes coefficients and preserves fitted values
+### 12. Rescaling a variable changes coefficients and preserves fitted values
 
 Units belong to the coefficient, not to the fit.
 
@@ -166,39 +170,7 @@ If the outcome is multiplied by a positive scale factor a, its intercept, slopes
 
 Changing units preserves the translated fit; removing an intercept changes the model.
 
-## 13. Logs provide a second measurement scale for a simple regression
-
-Define the logarithm before using percentage language.
-
-The natural logarithm of a positive value is the power of e, about 2.718, that produces it. The exponential reverses that operation. A difference in natural logs is the log of the ratio of the original values. Thus a fitted log-outcome change of d corresponds to a ratio exp of d and a proportional change exp of d minus one.
-
-In a log-level model the coefficient b is the fitted log-outcome change for a one-unit increase in X, so 100 times b is a small-change percentage approximation. In a log-log model b relates proportional changes on both sides and is called an elasticity. These translations concern the fitted log relationship. Later we examine arithmetic mean prediction, zeros and finite changes in detail using the same retail data.
-
-\(\log Y_1-\log Y_0=\log(Y_1/Y_0)\); exact proportional change: \(\exp(d)-1\).
-
-Log-level: \(\log Y=b_0+b_1X\); one-unit fitted change: \(100[\exp(b_1)-1]\%\).
-
-Log-log: \(\log Y=b_0+b_1\log X\); \(b_1\) is a local elasticity.
-
-## 14. Check the normal equations and fit decomposition
-
-Try the comparison before opening the explanation.
-
-Estimate score on str with an intercept using schools.csv. Verify that the residual sum and staffing-residual cross-product are approximately zero, reconstruct SST and SSR, and recover R squared. Explain why these numerical identities do not establish exogeneity.
-
-State the assumptions and units alongside the calculation.
-
-**Practice:** Estimate score on str with an intercept using schools.csv. Verify that the residual sum and staffing-residual cross-product are approximately zero, reconstruct SST and SSR, and recover R squared. Explain why these numerical identities do not establish exogeneity.
-
-## 15. Check the normal equations and fit decomposition: explanation
-
-Follow the calculation and interpret its units.
-
-OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
-
-OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
-
-## 16. Read a genuine Stata result
+### 13. Read a genuine Stata result
 
 Read the fitted coefficients and their units in the actual Stata display.
 
@@ -220,7 +192,7 @@ e(b)[1,2]
 y1   -2.279808  698.932953
 ```
 
-## 17. Calculate the policy-sized fitted difference
+### 14. Calculate the policy-sized fitted difference
 
 lincom translates a slope into the particular comparison we want.
 
@@ -236,4 +208,40 @@ The sign is positive because both the slope and the proposed ratio change are ne
 . display %10.6f -2*_b[str]
   4.559617
 ```
+
+## Appendix
+
+Further examples, practice and technical derivations for study after the core lesson.
+
+### 15. Logs provide a second measurement scale for a simple regression
+
+Define the logarithm before using percentage language.
+
+The natural logarithm of a positive value is the power of e, about 2.718, that produces it. The exponential reverses that operation. A difference in natural logs is the log of the ratio of the original values. Thus a fitted log-outcome change of d corresponds to a ratio exp of d and a proportional change exp of d minus one.
+
+In a log-level model the coefficient b is the fitted log-outcome change for a one-unit increase in X, so 100 times b is a small-change percentage approximation. In a log-log model b relates proportional changes on both sides and is called an elasticity. These translations concern the fitted log relationship. Later we examine arithmetic mean prediction, zeros and finite changes in detail using the same retail data.
+
+\(\log Y_1-\log Y_0=\log(Y_1/Y_0)\); exact proportional change: \(\exp(d)-1\).
+
+Log-level: \(\log Y=b_0+b_1X\); one-unit fitted change: \(100[\exp(b_1)-1]\%\).
+
+Log-log: \(\log Y=b_0+b_1\log X\); \(b_1\) is a local elasticity.
+
+### 16. Check the normal equations and fit decomposition
+
+Try the comparison before opening the explanation.
+
+Estimate score on str with an intercept using schools.csv. Verify that the residual sum and staffing-residual cross-product are approximately zero, reconstruct SST and SSR, and recover R squared. Explain why these numerical identities do not establish exogeneity.
+
+State the assumptions and units alongside the calculation.
+
+**Practice:** Estimate score on str with an intercept using schools.csv. Verify that the residual sum and staffing-residual cross-product are approximately zero, reconstruct SST and SSR, and recover R squared. Explain why these numerical identities do not establish exogeneity.
+
+### 17. Check the normal equations and fit decomposition: explanation
+
+Follow the calculation and interpret its units.
+
+OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
+
+OLS with an intercept makes the two sample cross-products zero up to numerical precision. Here SST is about 152109.594, SSR about 144315.484, and reconstructed R squared is about 0.0512401, matching Stata. The overleaf_technical.do reference demonstrates the calculation. These are consequences of minimisation, not evidence that the unknown population error has zero conditional mean.
 

@@ -5,7 +5,6 @@ set more off
 do "lab_05.do"
 do "lab_07.do"
 do "lab_15.do"
-do "overleaf_technical.do"
 do "prediction.do"
 capture log close
 log using "week_07_completion.txt", text replace
