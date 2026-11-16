@@ -15,7 +15,13 @@
     .primary{display:inline-block;background:#11624b;color:white;border-radius:4px;padding:11px 18px;text-decoration:none}
     .primary:focus-visible,a:focus-visible{outline:3px solid #b58c43;outline-offset:4px}
     footer{margin-top:18px;font-size:14px}footer p{margin-top:7px;color:#52645c}
+    .live-check-in{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;margin:16px 0;padding:12px 14px;border:1px solid #d3dfd4;background:#f7faf7}
+    .live-check-in[hidden],.live-check-in img[hidden],.case:has(.live-check-in:not([hidden])) .check-in-fallback{display:none}
+    .live-check-in img{width:clamp(84px,26vw,144px);height:auto;image-rendering:pixelated;background:white}
+    .live-check-in h2,.live-check-in p{margin:0 0 5px}
   </style>
+  <script src="https://qba201-classroom-voting.quirkywand37.chatgpt.site/mizan-qr.js" defer></script>
+  <script src="https://qba201-classroom-voting.quirkywand37.chatgpt.site/mizan-check-in.js" defer></script>
 </head>
 <body>
   <main>
@@ -23,13 +29,17 @@
       <p class="course">QBA201 · Team case</p>
       <h1 id="case-title">Mizan Market</h1>
       <p class="intro">A grocery delivery company must decide whether to buy software that could cut costs. Can it save enough and still send orders out on time?</p>
+      <section class="live-check-in" data-current-check-in aria-labelledby="live-check-in-heading" hidden>
+        <img data-current-qr alt="QR code for the open Mizan Market section" width="144" height="144">
+        <div><h2 id="live-check-in-heading">Check-in is open</h2><p>Scan with your phone camera.</p><a data-current-link>Check in on this device</a></div>
+      </section>
       <h2>How the activity works</h2>
       <ol>
-        <li><strong>Check in.</strong> Every student joins a team on their own device with the class code.</li>
+        <li><strong>Check in.</strong> Every student checks in on their own device and chooses a team.</li>
         <li><strong>Analyze.</strong> Work through the evidence together as your instructor opens each round.</li>
         <li><strong>Decide.</strong> Your captain saves the team’s answers. You’ll see your team’s score after each round.</li>
       </ol>
-      <a class="primary" href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/lobby?classroom=mizan">Check in and join a team</a>
+      <a class="primary check-in-fallback" href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/lobby?classroom=mizan">Check in and join a team</a>
     </section>
     <footer><a href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/challenge/host?classroom=mizan#template=82ae8ef3e6d6ea9f074196a8e47c1e22">Instructor dashboard</a><p>Start check-in, guide the discussion, and monitor team answers and scores.</p></footer>
   </main>
