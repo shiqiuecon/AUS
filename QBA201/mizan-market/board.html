@@ -113,7 +113,7 @@
     return '<div class="facts">'+rows.map(([title,value,text])=>`<div class="fact"><span>${title}</span><b>${value}</b><p>${text}</p></div>`).join('')+'</div>';
   }
   function options(items,value,kind,locked) {
-    return '<div class="options">'+items.map(item=>`<button class="choice ${value===item.id?'selected':''}" data-kind="${kind}" data-value="${item.id}" aria-pressed="${value===item.id}" ${locked?'disabled':''}><strong>${item.title}</strong><small>${item.detail}</small></button>`).join('')+'</div>';
+    return '<div class="options">'+items.map((item,index)=>`<button aria-label="Option ${String.fromCharCode(65+index)}" class="choice ${value===item.id?'selected':''}" data-kind="${kind}" data-value="${item.id}" aria-pressed="${value===item.id}" ${locked?'disabled':''}><strong>${item.title}</strong><small>${item.detail}</small></button>`).join('')+'</div>';
   }
   function lockPrompt(text,index) {
     return `<div class="locked"><h2>Keep the decision sequence intact.</h2><p>${text}</p><button data-go="${index}">Return to that decision →</button></div>`;
@@ -177,12 +177,26 @@
     const points=[240,260,280,300,320,340,360].map(mu=>`${x(mu)},${y(180*(mu-license)-7200-spend())}`).join(' ');
     $('#stress-results').innerHTML=`<section class="stress"><h2>${state.decision==='negotiate'?'Staged-payment contract scenario':'Full-launch scenario under the original offer'}</h2><div class="split"><div><p class="small">Expected 180-day net saving after the audit cost</p><p class="metric ${afterAudit>=0?'profit':'loss'}">${money(afterAudit)}</p><p class="small">180 ×(${state.scenarioMean} −${license}) −7,200 −${spend()}.</p></div><div><p class="small">Dispatch target in this assumed population</p><p class="metric ${state.scenarioDelay<2?'profit':'loss'}">${state.scenarioDelay<2?'Below 2 min':state.scenarioDelay===2?'At 2 min':'Above 2 min'}</p><p class="small">${state.scenarioDelay<2?'The mean meets the customer lead’s preferred condition.':'The assumed population mean fails the preferred strict below 2-minute condition.'}</p></div></div><svg viewBox="0 0 700 285" role="img" aria-label="Scenario line for full-launch expected net saving over population mean daily savings"><line x1="42" y1="${y(0)}" x2="648" y2="${y(0)}" stroke="#c5cfbf"/>${[-18000,-9000,0,9000,18000].map(v=>`<text x="35" y="${y(v)+4}" text-anchor="end" fill="#52645c" font-size="11">${v/1000}k</text>`).join('')}<polyline points="${points}"  fill="none" stroke="#11624b" stroke-width="3"/><circle cx="${x(state.scenarioMean)}" cy="${y(afterAudit)}" r="6" fill="#8a5d20"/>${[240,280,320,360].map(mu=>`<text x="${x(mu)}" y="265" text-anchor="middle" fill="#52645c" font-size="12">${mu}</text>`).join('')}<text x="42" y="20" fill="#52645c" font-size="12">Expected net saving in AED</text><text x="350" y="283" text-anchor="middle" fill="#52645c" font-size="12">Assumed population mean daily gross savings</text></svg><p class="small">The audit is already paid at the contract decision. Compare the forward-looking contract cost with the total project return. This line describes a full launch under a daily fee of AED ${license}. ${['launch','negotiate'].includes(state.decision)?'That is the contract you selected.':state.decision==='decline'?'Your recorded decision declines the offer. The audit expense remains paid, with no setup or licence commitment. Any missed saving depends on the unknown population mean.':'Your recorded action is '+escape(selectedAction(state.decision).title.slice(4).toLowerCase())+'. Later launch and terms remain conditional.'}</p></section>`;
   }
+  function hideSceneText(root) {
+    const controls='a, button, input, textarea, select, label, summary, [tabindex]';
+    for (const child of root.children) {
+      if (child.matches(controls)) continue;
+      if (child.querySelector(controls)) hideSceneText(child);
+      else child.setAttribute('aria-hidden','true');
+    }
+  }
   function render() {
     const [id,label,title]=stages[state.stage];
     $('#stages').innerHTML=stages.map((row,i)=>`<button data-go="${i}" class="${i===state.stage?'active':''}" ${i===state.stage?'aria-current="step"':''}><span>${String(i+1).padStart(2,'0')}</span><span class="nav-name">${row[1]}</span></button>`).join('');
     $('#stage-number').textContent=label;
     $('#cash').textContent='Upfront cash remaining '+money(cash());
     $('#scene').innerHTML='<h1>'+title+'</h1>'+stageBody(id);
+    $('#scene').querySelectorAll('label[for]').forEach((label,index)=>{
+      if (!label.control) return;
+      label.setAttribute('aria-hidden','true');
+      label.control.setAttribute('aria-label','Case input '+(index+1));
+    });
+    hideSceneText($('#scene'));
     $('#page-count').textContent=(state.stage+1)+' / '+stages.length;
     $('#back').disabled=state.stage===0;
     $('#next').disabled=state.stage===stages.length-1;
