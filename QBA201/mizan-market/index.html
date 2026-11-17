@@ -19,6 +19,13 @@
     .live-check-in[hidden],.live-check-in img[hidden],.case:has(.live-check-in:not([hidden])) .check-in-fallback{display:none}
     .live-check-in img{width:clamp(84px,26vw,144px);height:auto;image-rendering:pixelated;background:white}
     .live-check-in h2,.live-check-in p{margin:0 0 5px}
+    .case-formats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 17px}
+    .format{padding:14px 16px;background:#f7faf7;border:1px solid #d3dfd4;border-radius:4px;scroll-margin-top:20px}
+    .format:target{outline:2px solid #11624b;outline-offset:2px}
+    .format h3{font-size:17px;margin:0 0 4px}
+    .format p{margin:0 0 9px}
+    .format a{display:block;margin-top:7px}
+    @media(max-width:520px){.case-formats{grid-template-columns:1fr}}
   </style>
   <script src="https://qba201-classroom-voting.quirkywand37.chatgpt.site/mizan-qr.js" defer></script>
   <script src="https://qba201-classroom-voting.quirkywand37.chatgpt.site/mizan-check-in.js" defer></script>
@@ -41,7 +48,24 @@
       </ol>
       <a class="primary check-in-fallback" href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/lobby?classroom=mizan">Check in and join a team</a>
     </section>
-    <footer><a href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/challenge/host?classroom=mizan#template=82ae8ef3e6d6ea9f074196a8e47c1e22">Instructor dashboard</a><p>Start check-in, guide the discussion, and monitor team answers and scores.</p></footer>
+    <footer aria-labelledby="formats-heading">
+      <h2 id="formats-heading">Class formats</h2>
+      <div class="case-formats">
+        <article class="format" id="case-60">
+          <h3>60 minutes</h3>
+          <p>24 points. Four questions each in Rounds 2 and 3B.</p>
+          <a href="Mizan_Market_Student_Handout_60min.pdf" download>Download 60-minute handout (PDF)</a>
+          <a href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/challenge/host?classroom=mizan&amp;minutes=60#template=82ae8ef3e6d6ea9f074196a8e47c1e22">Start 60-minute section</a>
+        </article>
+        <article class="format" id="case-75">
+          <h3>75 minutes</h3>
+          <p>32 points. Six questions each in Rounds 2 and 3B.</p>
+          <a href="Mizan_Market_Student_Handout_75min.pdf" download>Download 75-minute handout (PDF)</a>
+          <a href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/challenge/host?classroom=mizan&amp;minutes=75#template=82ae8ef3e6d6ea9f074196a8e47c1e22">Start 75-minute section</a>
+        </article>
+      </div>
+      <p><a href="https://qba201-classroom-voting.quirkywand37.chatgpt.site/challenge/host?classroom=mizan#template=82ae8ef3e6d6ea9f074196a8e47c1e22">Instructor dashboard and saved sections</a></p>
+    </footer>
   </main>
 </body>
 </html>
