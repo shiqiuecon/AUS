@@ -38,6 +38,9 @@ display "Observations = " e(N) "  parameters including intercept = " e(rank)
 display "Residual degrees of freedom = " df "  s-squared = " s2
 estat vif
 * END precision
+* BEGIN joint_controls
+test el income
+* END joint_controls
 * BEGIN linear_contrast
 lincom -2*str+5*el
 * END linear_contrast
@@ -70,7 +73,7 @@ keep month_id month year totacc logacc trend unem spdlaw beltlaw wkends
 format month_id %tm
 tsset month_id
 * BEGIN dynamic
-regress logacc L.logacc trend i.month unem spdlaw beltlaw wkends, vce(robust)
+newey logacc L.logacc trend i.month unem spdlaw beltlaw wkends, lag(4)
 * END dynamic
 * BEGIN diagnostics
 regress logacc trend i.month unem spdlaw beltlaw wkends

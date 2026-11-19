@@ -92,7 +92,7 @@ One realised history can contain strongly related observations.
 
 A cross section records different units, often at a common date, and a simple sampling argument may treat them as independent draws. A time series instead records one ordered history. Neighboring months can share weather, travel conditions or persistent policy influences. Treating its rows as independent simply because a regression command accepts them would ignore that history.
 
-The averaging and reference-distribution arguments from earlier lessons need conditions appropriate to this dependence. We must ask how strongly dates are related, whether old influences fade and whether the process keeps comparable statistical features over time. The next lesson gives those ideas precise names and worked examples. Time-series regression remains useful when the model and uncertainty calculation describe how the history evolves.
+The averaging and reference-distribution arguments from earlier lessons need conditions appropriate to this dependence. We must ask how strongly dates are related, whether old influences fade and whether the process keeps comparable statistical features over time. Meeting 11 gives those ideas precise names and worked examples. Time-series regression remains useful when the model and uncertainty calculation describe how the history evolves.
 
 An ordered history can share information across dates.
 
@@ -136,7 +136,9 @@ A horizon counts how far ahead we look from the starting date. From April, horiz
 
 Every coefficient has an outcome date and a regressor date.
 
-Let Y be log accidents and X be unemployment. A two-lag model includes current X, its previous-month value and its value two months earlier, together with the stated trend and seasonal controls. Beta zero is the impact coefficient, the fitted current association for a one-unit current X difference with the other included X values fixed.
+Let Y be log accidents and X be the unemployment rate, recorded in percentage points. A change from seven to eight percent is one unit of X. A two-lag model includes current X, its previous-month value and its value two months earlier, together with the stated trend and seasonal controls.
+
+Beta zero is the impact coefficient: the fitted current log-accident difference for a one-percentage-point current unemployment difference, with the other included X values and controls fixed. Beta one and beta two multiply unemployment from one and two months earlier.
 
 The lag coefficients describe additional dated associations. A causal response interpretation requires that the sequence of X variation and error conditions support it. A lagged regressor is not automatically exogenous because its date is earlier; omitted persistent conditions can connect it with the current error.
 
@@ -254,27 +256,27 @@ Define the common estimation window before comparing models or applying a fit-lo
 
 Reproduce the evidence, then explain its economic meaning.
 
-Run lab_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the difference between the sequence after a one-month unit increase and the long-run level contrast after a permanent increase in this finite-lag model.
+Run lab_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the dated response to a one-month, one-percentage-point unemployment increase and the eventual level contrast after a permanent increase. For the extension, use the same trend and month indicators in both fits, keep the same 105 months with an available third lag, and use four-month Newey–West covariance. Compare the two-lag and three-lag sums and their lincom standard errors. Keep your commands, log, output and interpretation.
 
-Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
-
-**Practice:** Extend unemployment lags from two to three months. First restrict both fits to the same 105 available months. Compare the cumulative coefficients and their lincom SEs. Keep your commands, log, output and interpretation.
+**Practice:** Run lab_10.do. Record the current, one-month-lagged and two-month-lagged unemployment coefficients. Calculate their sum and compare it with lincom. Explain the dated response to a one-month, one-percentage-point unemployment increase and the eventual level contrast after a permanent increase. For the extension, use the same trend and month indicators in both fits, keep the same 105 months with an available third lag, and use four-month Newey–West covariance. Compare the two-lag and three-lag sums and their lincom standard errors. Keep your commands, log, output and interpretation.
 
 ### 21. Trace the actual monthly lag pattern: explanation
 
 A reproducible result needs both a calculation and an interpretation.
 
-The three coefficients are -0.021834, -0.002771 and 0.002824. Their sum is -0.021781 in log-accident units per unemployment-rate unit. The covariance among estimates matters for the SE of that sum, which is why lincom is useful.
+The original model uses 106 months. Its three unemployment coefficients add to about minus 0.02178 log-accident units per percentage point of unemployment. The standard error of their sum uses their estimated covariances, which is why we ask Stata for a linear combination.
 
-A one-month unit increase has those dated fitted responses, then no further direct effect in this finite two-lag specification. Their sum is the cumulative log-outcome response. A permanent unit increase eventually activates all three terms at once, giving the same sum as a long-run level contrast. An equation with a lagged outcome needs a different multiplier calculation and stability assumptions.
+For a one-month increase, follow the three dated fitted responses. This finite-lag equation then has no further direct response. For a permanent increase, all three terms eventually apply together. Their sum is the eventual level contrast, rather than an accumulation that keeps growing forever.
 
-On the common 105 months, the two-lag sum is -0.018658 (SE 0.003752) and the three-lag sum is -0.018684 (SE 0.003761). Common-sample comparison separates changed lag specification from the loss of another initial observation.
+Now use the same 105 months for both extension fits. Retain the trend, month indicators and four-month Newey–West covariance. Both lag sums are close to minus 0.02171. The table retains extra digits so you can check the calculation.
 
-Common 105 months: two-lag sum \(-0.018658\); three-lag sum \(-0.018684\).
+The two-lag standard error is about 0.00425; the three-lag standard error is about 0.00422. These results change very little when we add the third lag. Because the observations, other controls and covariance rule are fixed, we can attribute that comparison to the added lag. A causal interpretation still needs the exogeneity argument.
 
-Corresponding robust SEs: \(0.003752\) and \(0.003761\).
+Common 105 months: two-lag sum \(-0.021710\); three-lag sum \(-0.021707\).
 
-Fixing the sample isolates the change in lag specification.
+Four-month HAC SEs: \(0.004251\) and \(0.004219\).
+
+Keep the observations, trend, month indicators and covariance rule fixed.
 
 ## Appendix
 
@@ -344,9 +346,9 @@ Write the temporary and permanent paths separately. State whether the sum refers
 
 Follow the calculation and interpret its units.
 
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed in Meeting 11.
 
-Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed next.
+Impact is 0.2. The three-period cumulative response is \(0.2+0.1-0.05=0.25\) outcome units. In this finite-lag model, a permanent unit x increase has a long-run level effect of 0.25 as well. A model also containing earlier outcomes needs a different long-run calculation, developed in Meeting 11.
 
 ### 29. Explain a dynamic result with a time path
 
@@ -356,7 +358,7 @@ A useful dynamic report states the data frequency, timing of the X change, immed
 
 For the accident application, describe dated unemployment associations rather than a causal experiment unless the design identifies that variation. For a constructed model with a known shock, explain the known assumptions explicitly. This keeps a graph of responses from carrying a stronger interpretation than its source supports.
 
-The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. The finite-lag coefficients describe partial dated-input contrasts; an innovation that changes several future input values requires tracing that entire input path.
+The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. An innovation means a new unpredictable input change here. If that change also moves future inputs, trace its entire input path rather than reading one partial lag coefficient as its total response.
 
 ### 30. DAG practice: partial lag effect or propagated input change?
 

@@ -517,9 +517,11 @@ Reduced form: \(Y=c+\rho Z+\eta,\quad\rho=\beta\pi_1\)
 
 It is a useful benchmark, not the target by default.
 
-The OLS price coefficient is -1.213, with robust SE 0.195. It is a negative fitted association in log sales and log price. Its direction alone does not show that market price variation identifies demand.
+In the command, logq is log cigarette packs sold per person and logp is log real price per pack. The OLS log-price coefficient is minus 1.213, with robust standard error 0.195. This is a fitted log-quantity difference per unit of log price, with the local proportional interpretation developed earlier.
 
-The benchmark helps communicate how the IV comparison differs. Do not select OLS or IV simply by which estimate is larger, smaller or more significant. Explain which source of variation each uses and which assumptions support it. Both can be invalid if their separate identifying requirements are not credible.
+Its negative sign does not show that market price variation identifies demand. Prices can be related to omitted demand conditions. We use this fit as a benchmark before proposing a different source of price variation.
+
+Compare OLS and IV through those sources and their assumptions. Their relative size or statistical significance cannot decide which comparison identifies the demand slope. Both can fail if their respective identifying requirements are not credible.
 
 ```text
 . regress logq logp, vce(robust)
@@ -537,9 +539,11 @@ The benchmark helps communicate how the IV comparison differs. Do not select OLS
 
 State the instrument units as recorded in the data.
 
-The first-stage sales-tax coefficient is 0.03073. The data construct the tax as the difference between recorded total and cigarette-specific taxes, deflated by the price index. The recorded price and tax series retain their source currency scale; deflating does not by itself convert cents into dollars.
+The Stata variable salestax is the proposed sales-tax instrument. It is constructed as recorded total tax minus cigarette-specific tax, divided by the price index. Its units remain real cents per pack. Deflating changes purchasing-power units; it does not convert cents into dollars.
 
-The coefficient describes the fitted log-price change for one unit of that recorded real-tax measure. For the IV ratio, consistently using the same instrument scaling leaves the price elasticity unchanged because the scaling cancels in numerator and denominator. Still label the first-stage units correctly when interpreting it on its own.
+The first-stage coefficient is about 0.03073. A one-real-cent difference in this tax component corresponds to a fitted log-price difference of 0.03073. For a small change, that is approximately a 3.07-percent price difference. This describes the first stage's scale, subject to its linear specification.
+
+In the IV ratio, the same tax scaling appears in both supporting regressions and cancels. Changing tax units consistently therefore leaves the price elasticity unchanged. It remains essential to label the first-stage units when interpreting that regression on its own.
 
 ```text
 . regress logp salestax, vce(robust)
@@ -625,9 +629,11 @@ The IV estimate has more sampling uncertainty than the OLS benchmark here. That 
 
 They help define the same conditional comparison in both stages.
 
-Adding real income to the stated IV model gives a price coefficient of -1.143. The included exogenous control enters the instrumented-regressor prediction and the structural specification through the 2SLS setup. Using incompatible controls in hand-built stages can change the intended comparison.
+The new variable logincome is the natural log of real income per person. Adding it as an exogenous control gives an IV price coefficient of about minus 1.143. In this command, logincome appears outside the parentheses. The part in parentheses names the endogenous price variable and its excluded tax instrument.
 
-The income adjustment can help with some observed demand differences but does not prove instrument exogeneity. Explain its timing and why it is a suitable included control. The instrument must still supply price variation related to the outcome only through the permitted model channels under the identifying assumptions.
+The included income control enters both the price prediction and the structural quantity equation through the two-stage least-squares setup. If you reconstruct the stages manually, use the same income control and observations in both.
+
+Income adjustment can account for observed demand differences under the model. It does not prove instrument exogeneity. Explain its timing and why it is a suitable control. The tax must still supply price variation that satisfies the instrument restrictions after that adjustment.
 
 ```text
 . ivregress 2sls logq logincome (logp=salestax), vce(robust)
@@ -687,9 +693,13 @@ Constructed ratio: \(0.90/(0.60-0.30)=3\) score points.
 
 A constant coefficient can hide a local treatment comparison.
 
-Heterogeneous effects are effects that differ across individuals. In the binary offer-and-attendance example, assume random offer assignment, relevance, exclusion of a direct offer effect, consistency, no relevant spillovers and monotonicity. The attendance difference then gives the fraction of compliers. Always-takers and never-takers do not change attendance, so their treatment status does not generate the offer's outcome difference under exclusion.
+Heterogeneous effects are effects that differ across individuals. Return to the randomly assigned training offer. Assume relevance, exclusion of a direct offer effect, no relevant spillovers and monotonicity. Also assume consistency: each person's observed outcome equals the potential outcome for the attendance status that person actually receives.
 
-Dividing the outcome difference by the attendance difference identifies the compliers' average treatment effect: the local average treatment effect, abbreviated LATE. The constructed ratio is three score points for that group. It is not automatically the average effect for everyone. This binary interpretation does not transfer unchanged to the continuous cigarette-price application; there the interpretation depends on its structural slope and heterogeneity assumptions. State the relevant population rather than calling every IV coefficient a universal effect.
+Under these assumptions, the offer-induced attendance difference is the fraction of compliers. Always-takers and never-takers do not change attendance. Under exclusion, they therefore do not contribute an offer-induced outcome change. The outcome difference comes from the compliers whose attendance changes.
+
+Divide the outcome difference by the attendance difference. The ratio identifies the compliers' average treatment effect, called the local average treatment effect or LATE. In our constructed example it is three score points for that group.
+
+That target need not equal the average effect for everyone. Nor does this binary attendance interpretation transfer unchanged to continuous cigarette prices. The cigarette result needs its structural slope and heterogeneity assumptions. State whose response the instrument and model support.
 
 LATE: average treatment effect for compliers under the binary-IV assumptions.
 
@@ -783,11 +793,11 @@ Add log real income to the first stage, reduced form and IV equation, using the 
 
 A reproducible result needs both a calculation and an interpretation.
 
-The reduced-form slope is -0.033297 and the first-stage slope is 0.030729. Their ratio is -1.083587, matching the simple IV price coefficient. In this log–log specification it is an elasticity: a small one-percent price increase corresponds to roughly 1.08 percent lower quantity under the model and identifying assumptions.
+Begin with the no-income comparison. Divide the reduced-form slope, about minus 0.03330, by the first-stage slope, about 0.03073. The ratio is about minus 1.084, matching the dedicated IV estimate. Under the log-log demand model and instrument assumptions, a small one-percent price increase corresponds to approximately 1.08 percent lower quantity.
 
-The ratio uses the same observations, instrument and controls in both supporting regressions. The first stage addresses relevance. Tax policy could still be associated with smoking attitudes or other tobacco policies, or affect consumption through other price channels. Those are substantive exogeneity or exclusion threats. Report the dedicated IV estimator's uncertainty rather than ordinary second-stage OLS SEs.
+Now include log real income in both supporting regressions on the same 48 states. The price first stage is about 0.02740 and the quantity reduced form about minus 0.03132. Their ratio and the dedicated IV estimate are both about minus 1.143. The dedicated robust standard error is about 0.360. The full results retain the more detailed numbers.
 
-The controlled ratio and dedicated IV estimate are both -1.143375, with dedicated robust SE 0.360481. The compatible first-stage and reduced-form slopes are 0.027395 and -0.031323. Income adjustment does not establish exclusion.
+Finally assess the instrument argument separately. The first stage shows that the tax predicts price. States' smoking attitudes or other tobacco policies could still relate the tax to demand. A direct tax channel could also violate exclusion. Income adjustment does not settle those questions. Report the dedicated IV uncertainty together with the economic argument for the instrument.
 
 Original IV elasticity: \(-1.083587\).
 
@@ -907,9 +917,11 @@ Double robustness concerns supporting-model correctness; conditional trends and 
 
 Identify the sample and the reported target before interpreting ATET.
 
-We now reproduce the real-data command in the original DiD deck. Its filter keeps National Supported Work experimental controls and a Current Population Survey comparison sample, dropping the actual trainees. The variable experimental identifies the data-source group here. Both retained groups are non-trainees, so this is a placebo comparison for a zero training-effect benchmark, not an estimate of Head Start or a training-program effect.
+We now reproduce the real-data command in the original DiD deck. Its filter keeps National Supported Work experimental controls and a Current Population Survey comparison sample, dropping actual trainees. The variable experimental identifies the data-source group here. Both retained groups are non-trainees. This is a placebo comparison against a zero training-effect benchmark, rather than an estimate of Head Start or a training-program effect.
 
-The data contain 16,417 people observed in 1975 and 1978. Their simple difference in earnings changes is 867.51 in the file's dollar units. The installed doubly robust command gives -901.27, with standard error 393.61, using seven pre-period covariates. Its ATET label means average treatment effect on the treated, the same target abbreviation as ATT. These nonzero placebo discrepancies are reasons to scrutinise the comparison, overlap and models. A different estimator is not automatically a more credible design.
+The data contain 16,417 people observed in 1975 and 1978. In the command, re is earnings at the observation date. The seven prior covariates are age, education, indicators for Black race, marriage, no degree and Hispanic ethnicity, and earnings in 1974, called re74. These variables describe the comparison; including them does not establish parallel untreated trends.
+
+The simple difference in earnings changes is about 867.51 in the file's dollar units. The installed doubly robust command gives about minus 901.27, with standard error 393.61. Its ATET label means average treatment effect on the treated, the same target abbreviation as ATT. Here that software label refers to the designated data-source group, not actual training receipt. The nonzero placebo discrepancies call for scrutiny of overlap, the models and the comparison itself.
 
 Retained sample: NSW experimental controls and CPS comparison observations.
 
@@ -1063,9 +1075,11 @@ No. Relevance requires a nonzero first stage, not a prescribed positive sign. An
 
 A formula under strong-instrument asymptotics is not a cure for weak identification.
 
-In the single-endogenous-regressor, single-instrument model with an intercept, iid observations and homoskedastic structural errors, the usual large-sample IV variance can be written as sigma squared divided by the product of centred X variation and the first-stage R squared. Here sigma squared is the structural error variance and the first-stage R squared measures instrument-predicted X variation in that simple model.
+Consider the single-endogenous-regressor, single-instrument model with an intercept, independent and identically distributed observations, and equal structural error variance. Under the usual strong-identification large-sample approximation, the IV variance is sigma squared divided by centred X variation times the first-stage R squared. Sigma squared is the structural error variance. The first-stage R squared measures the fraction of X variation fitted by the instrument in this simple model.
 
-When the first stage explains little variation, the denominator is small and ordinary ratio-based inference becomes fragile. This formula assumes the regular strong-identification approximation; it should not be used to declare standard Wald inference reliable in a weak-instrument design. With controls, use the appropriate partial first-stage variation and a dedicated procedure. The next weak-instrument-robust coefficient test addresses inference under specified instrument validity, not exclusion itself.
+Little instrument-predicted variation makes that denominator small. Yet the formula relies on a strong-identification approximation. It cannot justify an ordinary normal interval when the first stage supplies too little information. With controls, use the appropriate partial first-stage variation and the dedicated estimator.
+
+The Anderson–Rubin test introduced earlier avoids reliance on a strong first stage when testing a specified coefficient, under valid instrument restrictions and suitable inference conditions. It still cannot establish exclusion. Keep strength, instrument validity and the accuracy of an uncertainty approximation as three separate questions.
 
 Simple homoskedastic strong-IV approximation: \(\operatorname{Var}(\widehat\beta_{IV})\approx\sigma_u^2/[SST_X R_{X,Z}^2]\).
 

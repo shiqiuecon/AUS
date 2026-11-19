@@ -16,9 +16,9 @@ We will first define the longer equation, explain its fitting rule and derive wh
 
 Define every component before removing controls.
 
-Let Y be district test score, X the student–teacher ratio, Z language composition and W income. The full linear regression includes an intercept and all three regressors. Its coefficient on X is the fitted staffing slope at fixed Z and W.
+Let Y be district score, X students per teacher, Z English-learner share and W income. In the population equation, beta one describes the model's mean score difference for a one-unit staffing difference at fixed Z and W when the mean error is zero at each combination of inputs. The sample estimates that unknown coefficient.
 
-For this estimation exercise, assume all included variables are observed on the same districts and no regressor is an exact linear combination of the others. Exact linear dependence is perfect multicollinearity; it prevents a separate coefficient from being estimated. Causal interpretation also needs a suitable population error restriction, such as a zero conditional mean given the included variables.
+A separate coefficient also needs separate variation. If a regressor is exactly a linear combination of the others, the same fitted values can be produced by different coefficient choices. This is perfect multicollinearity. Use the same districts for all variables and state the population mean assumption before interpreting the estimate. A causal hiring effect additionally needs the intervention and assignment argument.
 
 \(Y_i=\beta_0+\beta_1X_i+\beta_2Z_i+\beta_3W_i+u_i\)
 
@@ -337,11 +337,11 @@ For example, districts might recruit teachers because their students need extra 
 
 Multiple regression compares ratios and scores at a fixed value of another variable.
 
-Our first line used only the staffing ratio. We now add Zᵢ, the percentage of English learners, to the model. This is multiple regression: a regression with more than one explanatory variable. Its fitted equation is \(\widehat Y_i\)=\(b_0\)+\(b_1\)\(X_i\)+\(b_2\)Zᵢ. The new coefficient \(b_2\) gives the fitted score difference for one percentage-point increase in Z, keeping X fixed.
+Return to the fitted equation with staffing X and English-learner share Z. The coefficient b two describes the score difference for a one-percentage-point change in language share at fixed staffing. The staffing coefficient b one instead compares staffing values at the same language share.
 
-The staffing coefficient \(b_1\) now answers a more specific descriptive question. How do fitted scores differ with the ratio when we compare districts at the same Z? This is what 'holding Z fixed' means in this equation. The word adjusted refers to this accounting for Z. We are changing the comparison, rather than physically changing a district's students or teachers.
+Select Next step to compare the simple and adjusted lines. The adjusted line fixes language share at its sample average. Both use the same 420 districts. The flatter adjusted slope shows how adding a measured background characteristic changes the fitted comparison.
 
-Select Next step to compare the simple and adjusted lines. For the adjusted line we hold Z at its sample average. Both lines use the same 420 districts, so any change in their slopes comes from adding Z, not from comparing different samples. Notice whether the line becomes steeper or flatter. The next slide translates that change into the staffing comparison we used earlier.
+This is the meaning of adjustment in the equation. We compare similar measured language composition. The next examples ask whether a proposed control is a prior common cause, a later mechanism or a shared consequence. That distinction determines whether adjustment helps answer the chosen causal question.
 
 \(\widehat Y_i=b_0+b_1X_i+b_2Z_i\)
 

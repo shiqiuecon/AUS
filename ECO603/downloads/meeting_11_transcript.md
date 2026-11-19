@@ -194,19 +194,25 @@ Mean unpredictability, zero autocovariance and a diagnostic test result are dist
 
 Try the comparison before opening the explanation.
 
-Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your own commands and robust output.
+Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do with four-month Newey–West covariance. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your commands, log and output.
 
-State the assumptions and units alongside the calculation.
-
-**Practice:** Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your own commands and robust output.
+**Practice:** Using traffic.csv, fit the model in the dynamic block of overleaf_technical.do with four-month Newey–West covariance. State the estimation dates, interpret the lagged log-accident coefficient, and explain why its estimated value does not prove stationarity or dynamic completeness. Save your commands, log and output.
 
 ### 15. Fit a dynamic conditional mean in the same monthly data: explanation
 
 Follow the calculation and interpret its units.
 
-The first lag removes the initial observation, leaving 107 months for this complete dataset. The lagged log-accident coefficient is about 0.332658 with robust SE 0.090942. Interpret it conditional on the included calendar and policy regressors. A coefficient inside minus one and one is compatible with stability of that specified AR part, but does not establish the whole data-generating process or zero conditional mean given all relevant information.
+The first lag removes the initial observation, leaving 107 months. The lagged log-accident coefficient is about 0.332658, with four-month Newey–West SE 0.107125, matching the adjoining dynamic-model output.
 
-The first lag removes the initial observation, leaving 107 months for this complete dataset. The lagged log-accident coefficient is about 0.332658 with robust SE 0.090942. Interpret it conditional on the included calendar and policy regressors. A coefficient inside minus one and one is compatible with stability of that specified AR part, but does not establish the whole data-generating process or zero conditional mean given all relevant information.
+This coefficient compares current log accidents at different previous-month values, holding the included calendar and policy inputs fixed. A one-percent difference in previous accidents corresponds locally to about a 0.333-percent difference in the exponentiated current fit. This describes the fitted dynamic relationship; a causal response still requires the model's exogeneity conditions.
+
+An autoregressive coefficient between minus one and one is compatible with stability of this specified part of the model. Its estimated value does not establish stationarity of the whole data-generating process or prove that all relevant past information has been included.
+
+107 months; lag coefficient \(0.332658\), four-month HAC SE \(0.107125\).
+
+Interpret the lag at fixed calendar and policy inputs.
+
+A fitted coefficient in the stable range does not prove stationarity or dynamic completeness.
 
 ### 16. Add a lagged outcome with its timing made explicit
 

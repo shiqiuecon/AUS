@@ -116,9 +116,11 @@ For a finite change, divide the new input by the old input, then raise the ratio
 
 A unit-free slope still needs an empirical interpretation.
 
-The log–log regression gives an income slope of 0.037, with robust SE 0.015. A one-percent higher local income corresponds to about a 0.037-percent higher fitted price in this sample. This is a small association, measured on a different scale from the dollar slope.
+In this Stata table, lp is the natural log of soda price and li is the natural log of local median family income. Find the li row. Its coefficient is about 0.0375 and its robust standard error about 0.0145.
 
-The coefficient does not show what a transfer to households would cause retailers to charge. Area characteristics, costs and market structure may also vary with income. It is useful as a descriptive comparison and as a demonstration of how a meaningful proportional question changes the equation. Read both the scale and the design before making a policy claim.
+Because both variables are logged, a one-percent higher income corresponds locally to about a 0.0375-percent higher exponentiated fitted price. This is a small observed relationship on a proportional scale.
+
+Area costs and market characteristics can also vary with income. The regression describes the price-income comparison in these records. A prediction of how a household transfer would change retailers' prices would require additional evidence about those mechanisms.
 
 ```text
 . regress lp li, vce(robust)
@@ -176,9 +178,11 @@ In our example, X star is twenty. If the data only went up to fifteen, the fitte
 
 A flexible model may provide little evidence of bending.
 
-The quadratic price specification estimates the squared-income coefficient at -0.000008, with SE 0.000833. Its magnitude is small relative to its uncertainty. The graph therefore should not be described as revealing a clear income threshold.
+Read the command before the coefficients. In Stata, the c prefix marks income as continuous. The double-hash operator includes its main term and product. Using income on both sides of that product creates income squared.
 
-This is a useful applied outcome. We learn that allowing curvature and finding convincing curvature are different things. Compare fitted values over observed incomes and consider whether the more complex specification materially changes the substantive comparison. Complexity is justified by the question and evidence, not by the mere availability of another polynomial term.
+Find the squared-income row. The notation minus 7.86 e minus 6 means minus 0.00000786. Its robust standard error is about 0.000833, much larger than the coefficient's magnitude. The fitted quadratic is therefore weak evidence of curvature in these data.
+
+Compare predicted prices over the income range you actually observe. A turning point calculated from such a small and uncertain squared coefficient would be unstable. Choose the specification for the question and check how much its predictions change.
 
 ```text
 . regress sprice c.inc10##c.inc10, vce(robust)
@@ -199,9 +203,11 @@ c.inc10#c.inc10 |  -7.86e-06   .0008332    -0.01   0.992    -.0016458    .001630
 
 margins makes the comparison explicit.
 
-After the quadratic regression, margins with dydx requests a derivative of the fitted outcome. The at option chooses income values where that derivative is evaluated. Here the values two, four and six are in ten-thousand-dollar units, so they correspond to twenty, forty and sixty thousand dollars.
+After fitting the quadratic, the margins command asks for the local slope at stated income values. The dydx option selects the input to differentiate. The at option chooses two, four and six units of scaled income, or twenty, forty and sixty thousand dollars.
 
-Read each derivative as a local fitted dollar change for one unit of scaled income at that point. Its uncertainty depends on both fitted coefficients and their covariance. Stata uses that covariance information. Computing a slope by hand is a useful check, but adding the two coefficient SEs would not produce the correct derivative SE.
+Read the three derivative rows as fitted dollar changes per additional ten thousand dollars near each starting income. Each slope combines the linear coefficient with twice the squared coefficient times that income. Its variance depends on the uncertainty in both coefficients and their covariance.
+
+The output calls this a delta-method calculation. It passes coefficient uncertainty through the formula for the slope using how the formula changes locally. In this linear combination of fitted coefficients, that covariance calculation is exact once their covariance estimate is specified. We use the same idea for nonlinear transformations later.
 
 ```text
 . margins, dydx(inc10) at(inc10=(2 4 6))
@@ -317,9 +323,11 @@ Changing the reference group changes how coefficients are labelled, but not the 
 
 An omitted category supplies the reference comparison.
 
-For a categorical variable with G mutually exclusive and exhaustive groups, define one indicator for each group. Each observation belongs to one group, so its indicators sum to one. Including all G indicators together with an intercept therefore creates an exact linear dependence, called the dummy-variable trap.
+Suppose a variable records G groups and each observation belongs to exactly one. Define one zero-or-one indicator for every group. Because each observation is in one group, its indicators sum to one. All G indicators therefore reproduce the column of ones used for the intercept. Including all of them gives exact collinearity, the dummy-variable trap.
 
-Use an intercept and G minus one indicators, or use all G indicators without an intercept if group-specific intercepts are the intended parameterisation. The first form reports differences relative to the omitted base group. These are equivalent ways to span group means, not different empirical evidence. For comparisons with additional controls, state both the base category and which inputs are held fixed.
+Use an intercept and G minus one indicators. The omitted group is the base category. The first form reports differences from that base. Alternatively, all G indicators without a separate intercept can directly represent the group intercepts. With the other terms represented consistently, these are two ways of describing the same fitted group means.
+
+Stata's i prefix tells it that a variable defines categories, so it can handle the base group and label the comparisons. Always state the category coding and which other inputs are held fixed.
 
 \(D_1+\cdots+D_G=1\): all \(G\) indicators and an intercept are linearly dependent.
 
@@ -527,9 +535,11 @@ Relative percent: \(100(0.05/0.18)\approx27.8\%\)
 
 Use a feasible ratio change, not an entire unit by default.
 
-The fitted LPM slope on payment-to-income ratio is 0.604, with robust SE 0.098. A 0.10 increase in the ratio, such as from 0.30 to 0.40, therefore corresponds to about a 0.0604 probability difference, or 6.04 percentage points.
+In Stata, deny equals one for a denial and zero for an approval. The regressor pir is payment-to-income ratio recorded as a fraction. Its fitted slope is about 0.604, with robust standard error about 0.098.
 
-The coefficient applies to a whole one-unit ratio increase, which would be one hundred percentage points of payment burden. Translating it into a realistic change makes the comparison easier to assess. The fitted relationship is conditional on the simple model used here, not a complete account of how lenders make decisions.
+A whole unit of pir would mean a hundred-percentage-point increase in burden. For the realistic comparison from 0.30 to 0.40, multiply the slope by 0.10. The result is about 0.0604 probability units, or 6.04 percentage points.
+
+The straight-line approximation describes denial rates across the observed applicants. Later we compare bounded probability functions on these same inputs. Keep the input scale explicit when reading their coefficients.
 
 ```text
 . regress deny pir, vce(robust)

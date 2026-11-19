@@ -46,9 +46,11 @@ p-value: a tail probability under the null and reference assumptions.
 
 Know which argument supports the reference distribution.
 
-Under a correctly specified linear conditional mean, independent normal errors with constant conditional variance, and nonredundant regressors, conventional regression t and F reference distributions, where F is used for a joint test of several coefficient restrictions, are exact conditional on the regressor values. The t distribution has heavier tails than the standard normal and uses the residual degrees of freedom. Normality here describes the errors, not a requirement that staffing itself be normally distributed.
+For the classical exact result, condition on all observed regressors. Assume a correct linear mean, a unique fit and independent normal errors with one common variance. A conventional standard error then gives an exact Student t reference for one coefficient and an F reference for a joint test. The t distribution allows heavier tails than the standard normal, with its shape determined by the residual degrees of freedom.
 
- Heteroskedasticity-robust inference permits error spread to vary with the regressors. Its usual justification is a large-sample approximation, with suitable sampling and finite variances for the quantities being averaged and no small set of observations dominating the fit. It does not automatically allow errors to be related across districts, states or dates. The reference distribution and the covariance formula are distinct choices, and neither fixes a failure of the model's zero conditional-mean requirement.
+Error normality is an assumption about the unexplained outcomes given the regressors. The staffing values themselves can have another distribution.
+
+Heteroskedasticity-robust inference instead permits different error variances. Its usual reference is justified approximately as the sample grows, under suitable independence and moment conditions. If observations share shocks, use a calculation that also represents that dependence. State both the covariance method and the reference used for the test.
 
 Exact conventional t/F: normal, independent, equal-variance errors under the linear model.
 
@@ -179,9 +181,11 @@ The route through unmeasured motivation remains open after conditioning on educa
 
 One coefficient test cannot replace the combined question.
 
-A joint hypothesis places several restrictions on the population coefficients at once. In the district model, we could ask whether language share and district income both have zero conditional-mean coefficients, holding staffing in the equation. Checking two separate p-values does not create a single test with the intended overall rejection probability.
+Ask whether language share and district income both have zero coefficients once staffing is included. That is one joint null with two restrictions. The smaller, restricted equation leaves both controls out. The unrestricted equation includes them. Fit both on the same district observations.
 
-The restricted model imposes both zero coefficients; the unrestricted model includes both variables. Under the classical normal-error assumptions, an F test compares their loss of fit relative to the unrestricted error-variance estimate. Both fits must use the same observations and outcome. Unequal-variance robust joint testing requires an appropriate covariance construction, developed in the variance block.
+In Stata, test el income tests those two zero coefficients together after the full regression. Read the two restrictions first. The displayed F statistic measures the joint departure from zero relative to the full model's estimated uncertainty. Its p-value rounds to zero at the displayed precision, meaning very strong evidence against this joint null under the reference assumptions.
+
+Two separate p-values do not implement the same combined decision rule. This table uses the conventional common-variance model. The next slide derives its loss-of-fit calculation; later we allow unequal variance in a robust joint test.
 
 Example joint null: \(H_0:\beta_{el}=0,\ \beta_{income}=0\).
 
@@ -190,12 +194,12 @@ Estimate the restricted and unrestricted models on the same observations.
 Use the reference distribution justified by the covariance assumptions.
 
 ```text
-. test 1.high 1.high#c.str
+. test el income
 
- ( 1)  1.high = 0
- ( 2)  1.high#c.str = 0
+ ( 1)  el = 0
+ ( 2)  income = 0
 
-       F(  2,   415) =   98.88
+       F(  2,   416) =  465.94
             Prob > F =    0.0000
 ```
 

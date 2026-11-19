@@ -90,9 +90,11 @@ Two unit-variance errors: covariance \(0\Rightarrow0.5\); covariance \(0.5\Right
 
 The direction of the SE change depends on both regressor and error patterns.
 
-In simple regression with centred regressor values a t, the slope error is the sum of a t times u t divided by the sum of a t squared. Its conditional variance includes same-date error variances and cross-date covariances. The conventional independent-error formula drops those cross-date terms.
+In simple regression, centre the regressor by subtracting its sample average. Call the result a at each date, and call the sum of its squared values S. The slope's estimation error is the sum of a times u divided by S. Thus each date's error enters the estimated slope with weight a divided by S.
 
-Positive error autocorrelation does not mechanically multiply every slope variance by the same number. The signs and time pattern of the regressor weights matter too. The familiar one-plus-rho over one-minus-rho multiplier describes particular persistent-mean settings under additional approximations; it is not a universal regression formula. This is why the actual traffic comparison estimates an appropriate covariance rather than imposing one generic inflation factor.
+The displayed variance has two parts. First add each error variance multiplied by its squared regressor weight. Then add the covariance of each pair of errors, multiplied by twice the product of their weights. Finally divide by S squared, as shown. This is the variance-of-a-sum calculation from the preceding slide with unequal regression weights.
+
+A positive covariance between errors does not necessarily increase every slope's variance. Two dates can have regressor weights with opposite signs, making their cross-product negative. The signs and time pattern of the weights matter alongside error persistence. An appropriate covariance estimate represents both features rather than applying one common inflation factor to every coefficient.
 
 Let \(a_t=X_t-\overline X\), \(S=\sum_t a_t^2\).
 
@@ -258,9 +260,9 @@ HAC changes uncertainty; it does not remove a regressor's relation with the erro
 
 The SE adjustment deals with uncertainty, but it does not change which comparison the coefficient describes. Suppose the law is introduced when officials anticipate rising accident risk that our recorded variables do not capture. The law indicator is then related to the error: the endogeneity problem defined earlier. Newey–West leaves that relation, and the OLS coefficient, unchanged.
 
-A related problem can arise after adding last month's outcome to the equation. This is a lagged outcome. It contains the influence of last month's error. If that error is related to this month's error, the lagged outcome may also be related to the current error. OLS can then be inconsistent: collecting more months does not necessarily make it approach the target coefficient. A different SE formula cannot remove that regressor–error relation.
+A related problem can arise after adding last month's outcome to the equation. It contains the influence of last month's error. If that error is related to this month's error, the lagged outcome may also be related to the current error. OLS can then be inconsistent: collecting more months does not necessarily make it approach the target coefficient. A different SE formula cannot remove that regressor–error relation.
 
-This gives us a practical sequence. Check the comparison and the mean model before relying on an uncertainty adjustment. If the remaining concern is error dependence under a valid coefficient model, HAC may address it. If an included variable is related to the error, we need to reconsider the model or the source of the comparison. Next we will look more closely at how omitted predictable changes can create these difficulties.
+Check the comparison and the mean model before relying on an uncertainty adjustment. If the remaining concern is error dependence under a valid coefficient model, HAC may address it. If an included variable is related to the error, reconsider the model or the source of the comparison. Apply that sequence next when the question concerns inflation at a future date.
 
 **Practice:** A lagged outcome is correlated with the current error. What does an HAC option change, and what does it leave?
 

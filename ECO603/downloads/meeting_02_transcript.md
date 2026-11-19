@@ -48,11 +48,11 @@ Outcome first; regressors afterward.
 
 A fitted change equals the slope times the change in the regressor.
 
-The slope now lets us translate a proposed staffing change into a fitted score difference. Use \(\Delta X\) to mean the new ratio minus the old ratio. The Greek letter Δ, read 'delta', means a change. Along a straight line, the fitted score change is \(b_1\)\(\Delta X\).
+The slope converts a staffing change into a fitted score difference. Delta X means the new ratio minus the old ratio. Delta is the Greek letter used for a change. For a straight line, multiply that change by the slope.
 
-In the simple regression, which includes one explanatory variable, the estimated slope is -2.280 score points per additional student per teacher. Reducing the ratio from 22 to 20 gives \(\Delta X\)=20−22=−2. Multiplying a negative slope by this negative change gives a positive fitted difference: about 4.56 score points. We are moving left and up along the fitted line.
+Here the slope is about minus 2.280 score points per additional student per teacher. Moving from 22 to 20 gives delta X equal to minus two. Multiplying the two negative numbers gives about 4.56 more fitted score points. On the graph we move left and up.
 
-Check the units as well as the sign. The result is in district score points, not percentages, and it compares two values on the line. Whether a staffing policy would cause this gain is the research-design question we discussed earlier. For now, make sure you can translate the proposed change correctly. After the break, we will examine how the data determine the line itself.
+Check the units and the target. The result compares two positions on the fitted line in score points. A claim about what a hiring policy would do needs the causal comparison developed earlier. Try the three-unit increase in the question, then check the explanation.
 
 \(\Delta X=\text{new ratio}-\text{old ratio}\)
 
@@ -88,11 +88,11 @@ Now choose another district and repeat the steps. The same rule applies to every
 
 Compare each variable with its average, then combine the deviations.
 
-Start with the numerator. For each district, subtract the average ratio from its ratio and the average score from its score. A bar over a variable denotes its sample average. Multiply the two deviations to get a cross-product. Add those cross-products across districts. The sum symbol tells us to add. A district with a ratio above average and a score below average contributes a negative product.
+Start with the numerator. Subtract the average ratio from each district's ratio and the average score from its score. A bar denotes a sample average. Multiply the two deviations to get a cross-product, then add those products. A ratio above average paired with a score below average contributes a negative product.
 
-The denominator adds the squared ratio deviations. It is positive when districts differ in staffing. Without variation in the ratio we cannot fit a separate slope. Divide the first sum by the second to get the slope. If negative products dominate, the fitted line slopes down.
+The denominator adds the squared ratio deviations. Divide the numerator by this denominator to obtain the slope. Negative products dominating the numerator give a downward slope.
 
-Now get the intercept. Start at the average score and subtract the slope times the average ratio. This puts the line through the point for the two sample averages. We will see why this calculation minimises squared residuals on the next slide.
+Now get the intercept. Subtract the slope times the average ratio from the average score. This puts the line through the two sample averages. Finally check the available variation. Without variation in the ratio the denominator is zero, and the data cannot determine a separate slope. The next slide derives these calculations from the loss we minimise.
 
 \(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
 
@@ -118,11 +118,11 @@ The first condition implies that the fitted line passes through the sample means
 
 Use three constructed districts to see the formula work.
 
-Use three constructed districts with ratios 18, 20 and 22 and scores 680, 670 and 650. These are teaching numbers, not three selected observations from the actual dataset. We know how to fit a line from the previous slide, so work through each sum before revealing the answer.
+Use the three constructed districts in the question. Their staffing ratios are 18, 20 and 22, and their scores are 680, 670 and 650. Work through the slope before opening the explanation.
 
-The average ratio is 20 and the average score is 666⅔. Ratio deviations are therefore −2, 0 and +2. Multiply each by its corresponding score deviation and add: the numerator is −60. Square and add the ratio deviations: the denominator is 8. This gives \(b_1\)=−60/8=−7.5, and \(b_0\)=666⅔−(−7.5×20)=816⅔. The intercept follows from the formula; it does not describe a realistic district with no students per teacher.
+Find the two sample averages. Subtract each average from its observations, multiply the paired deviations and add. Divide by the sum of squared staffing deviations. Then use the mean point to get the intercept.
 
-Insert each ratio into this fitted equation and subtract its fitted score from the observed score. Check that the residuals sum to zero. This is a property of OLS when the model includes an intercept. It checks the calculation, but it does not test the population assumption that the error averages to zero at each X. Having checked the method, we can return to the real districts and add the language-composition variable.
+Plug each ratio into your line and subtract the fitted score from the observed score. Check that the residuals sum to zero, allowing for rounding. A zero residual sum checks the least-squares calculation. It cannot check whether staffing is related to the unobserved population error.
 
 **Practice:** Find the slope, intercept, fitted scores and residuals for X=(18,20,22) and Y=(680,670,650).
 
@@ -198,9 +198,11 @@ y1   -2.279808  698.932953
 
 lincom translates a slope into the particular comparison we want.
 
-Stata's lincom command calculates a stated weighted sum of estimated coefficients; here the weight is minus two on the staffing slope. A policy reader usually cares about a feasible staffing change rather than a one-unit coefficient. The proposed change from 22 to 20 students per teacher is minus two units. Stata evaluates minus twice the staffing coefficient and obtains 4.559616 score points.
+The displayed Stata command uses display to multiply the saved staffing coefficient by minus two. The notation _b followed by str in brackets retrieves the coefficient on students per teacher. A change from 22 to 20 has that minus-two weight.
 
-The sign is positive because both the slope and the proposed ratio change are negative. The intercept cancels when two fitted scores from the same line are subtracted. Compare this fitted difference with the four-point causal effect in our earlier teaching model. They answer different questions: one comes from an observed-data fit, while the other follows from specified causal mechanisms. Numerical similarity would not establish that they have the same interpretation.
+The result is about 4.5596 score points. The intercept cancels when we subtract the two fitted scores. Stata's lincom command, introduced with inference, can also calculate this weighted coefficient and its uncertainty.
+
+Compare the fitted difference with the four-point causal effect in our constructed model. The first describes district data. The second followed from explicitly specified mechanisms for the same district. To use the fitted number for a hiring decision, justify the link between those observed differences and the proposed intervention.
 
 \(\Delta X=20-22=-2\)
 

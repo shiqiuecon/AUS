@@ -87,12 +87,14 @@ regress logacc i.month unem spdlaw beltlaw wkends, vce(robust)
 post task ("09") ("without_linear_trend") (_b[beltlaw]) (_se[beltlaw]) (e(N))
 
 * 10: extending the lag length also changes the available sample; fix it first.
-regress logacc L(0/2).unem trend i.month spdlaw beltlaw wkends ///
-    if !missing(L3.unem), vce(robust)
+* Keep the lab's trend and calendar controls fixed in BOTH follow-up fits.
+* Four-month HAC matches the lab's covariance treatment.
+newey logacc L(0/2).unem trend i.month ///
+    if !missing(L3.unem), lag(4)
 assert e(N)==105
 lincom unem+L.unem+L2.unem
 post task ("10") ("two_lag_sum_common") (r(estimate)) (r(se)) (105)
-regress logacc L(0/3).unem trend i.month spdlaw beltlaw wkends, vce(robust)
+newey logacc L(0/3).unem trend i.month, lag(4)
 assert e(N)==105
 lincom unem+L.unem+L2.unem+L3.unem
 post task ("10") ("three_lag_sum_common") (r(estimate)) (r(se)) (105)

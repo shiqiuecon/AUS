@@ -270,7 +270,11 @@ State the assumptions and units alongside the calculation.
 
 Follow the calculation and interpret its units.
 
-The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
+Count three slopes and the intercept. That gives four fitted coefficients, so 420 districts leave 416 residual degrees of freedom. Divide the full model's residual sum of squares by 416 to obtain about 107.0691 for the estimated error variance.
+
+The staffing variance inflation factor is about 1.07. It describes how much the other regressors predict the staffing column. The full and partialled staffing slopes both equal about minus 0.068776 because they use matching observations and controls.
+
+The coefficient equality is an algebraic result. The conventional variance calculation also assumes equal conditional error variance and uncorrelated errors across districts. Record the model, sample and variance assumptions with your numerical checks.
 
 The model has an intercept and three slopes, so p is 4 and n minus p is 416. The fitted s squared is about 107.0691, the staffing VIF about 1.07, and both FWL and full staffing coefficients are about -0.068776. The conventional covariance formula requires equal conditional error variance and no cross-observation correlation; it is not established by this equality. The reference overleaf_technical.do prints s squared, VIF and the direct and residualised coefficients.
 

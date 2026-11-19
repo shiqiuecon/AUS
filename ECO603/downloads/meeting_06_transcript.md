@@ -138,15 +138,17 @@ With \(S=\operatorname{Var}[(X-E X)u]\), approximate slope variance is \(S/(nQ^2
 
 The auxiliary statistic and reference distribution must match the null.
 
-Suppose we want to test whether q extra regressors all have zero coefficients. L M stands for Lagrange multiplier. Start by fitting the smaller model that sets those coefficients to zero. Save its residuals. Now run a supporting regression of those residuals on all the regressors in the larger model, including its intercept. If the extra variables still explain the residuals, the smaller model may have left out something systematic.
+Suppose we want to test whether q additional regressors all have zero coefficients. These are q independent restrictions on the larger model. L M stands for Lagrange multiplier.
 
-Multiply the supporting regression's R squared by the sample size. Under the null, with the usual independent sampling, equal conditional variance and other regularity conditions, this statistic has an approximate chi-squared reference with q degrees of freedom. A chi-squared variable with q degrees of freedom is the sum of squares of q independent standard normal variables. Count the independent restrictions in the null to get q. When error variance differs across observations, use a procedure whose covariance assumptions allow for it.
+Start by fitting the smaller model under the null and save its residuals. Run a supporting regression of those residuals on the full set of original and added regressors, including the intercept. The question is whether the additional variables explain systematic variation left after imposing the null.
 
-\(H_0:\gamma_1=\cdots=\gamma_q=0\) for the \(q\) additional columns.
+Multiply the supporting regression's R squared by the sample size. Under the null, independent sampling, a correct conditional mean, equal error variance and the required finite-moment conditions and a unique fit give an approximate chi-squared reference with q degrees of freedom. A chi-squared variable with q degrees of freedom is a sum of squares of q independent standard normal variables. With unequal error spread, use a test that represents that variance structure.
 
-Conventional homoskedastic auxiliary test: \(LM=nR^2_{aux}\xrightarrow{d}\chi_q^2\).
+\(H_0:\gamma_1=\cdots=\gamma_q=0\) for \(q\) independent restrictions.
 
-Estimate under the null, then test the information left in the omitted columns.
+Fit the restricted model, then regress its residuals on all unrestricted regressors.
+
+Conventional auxiliary statistic: \(LM=nR^2_{aux}\xrightarrow{d}\chi_q^2\).
 
 ### 12. Compare sample size and precision in the district data
 
@@ -162,7 +164,11 @@ State the assumptions and units alongside the calculation.
 
 Follow the calculation and interpret its units.
 
-The smaller sample has 105 observations and the full sample 420, but its regressor mix and realised residuals differ. The observed ratio need not equal the square-root size ratio of two. The 105-district staffing estimate is about -0.176454 with robust SE 0.689649; the 420-district estimate is about -1.101296 with SE 0.432847. Their observed SE ratio is about 1.593286. Report values from your own successful run. The rate approximation requires comparable information and a valid sampling model; neither fit establishes a causal staffing effect.
+First compare the sample sizes. We used 105 districts in the fixed random subset and all 420 in the larger fit. That is four times as many observations.
+
+The smaller fit has a staffing estimate of about minus 0.176 and robust standard error 0.690. The full fit has an estimate of minus 1.101 and standard error 0.433. Divide the smaller standard error by the larger one to get about 1.59.
+
+The square-root calculation suggests a ratio near two when information per observation is comparable. This one realised subset has its own staffing distribution and residuals, so its ratio need not be exactly two. Report the estimates and sample composition together, and use the design argument to assess their causal meaning.
 
 The smaller sample has 105 observations and the full sample 420, but its regressor mix and realised residuals differ. The observed ratio need not equal the square-root size ratio of two. The 105-district staffing estimate is about -0.176454 with robust SE 0.689649; the 420-district estimate is about -1.101296 with SE 0.432847. Their observed SE ratio is about 1.593286. Report values from your own successful run. The rate approximation requires comparable information and a valid sampling model; neither fit establishes a causal staffing effect.
 

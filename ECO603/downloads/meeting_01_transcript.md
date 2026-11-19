@@ -214,15 +214,17 @@ Total effect allows the mediator to respond.
 
 A four-case scholarship example makes the mechanism visible.
 
-Consider a separate, constructed scholarship rule. Preparation and financial need are independent zero-or-one characteristics. Their four combinations are equally likely. A scholarship is awarded when preparation is one or need is one, including when both are one. Before selection, half the applicants have need, whether preparation is zero or one.
+Consider a constructed scholarship rule. Let P be one for strong preparation and zero otherwise. Let N be one for financial need and zero otherwise. These two characteristics are independent, with four equally likely combinations. Let S mark a scholarship award. Award it when preparation is one or need is one, including when both are one.
 
-Now keep scholarship recipients only. The zero-preparation, zero-need case disappears. Among recipients with zero preparation, everyone has need. Among recipients with preparation one, only half have need. Preparation and need have become associated in the selected sample even though neither causes the other. We can see the reason by listing the four cases before giving the pattern its technical name.
+Before selection, half the applicants have need in either preparation group. Now keep recipients only, meaning S equals one. The zero-preparation, zero-need case disappears. Among recipients with zero preparation, everyone has need. Among recipients with preparation one, half have need.
 
-Equally likely \((P,N)\): \((0,0),(0,1),(1,0),(1,1)\)
+Read the conditioning bars in the last line. Both probabilities refer to scholarship recipients, and each also fixes preparation. The relationship appeared when we selected on the award rule. Neither preparation nor need caused the other. The next diagram gives this selection pattern its technical name.
 
-Award if \(P=1\) or \(N=1\); exclude only \((0,0)\)
+Equally likely \((P,N)\): \((0,0),(0,1),(1,0),(1,1)\).
 
-Among recipients: \(\Pr(N=1\mid P=0)=1\), \(\Pr(N=1\mid P=1)=1/2\)
+\(S=1\) if \(P=1\) or \(N=1\); exclude only \((0,0)\).
+
+\(\Pr(N=1\mid P=0,S=1)=1\), \(\Pr(N=1\mid P=1,S=1)=1/2\).
 
 ### 16. A shared consequence behaves differently
 
@@ -294,15 +296,15 @@ A control plan is specific to the chosen explanatory variable.
 
 ### 21. Before estimating, state what the data can answer
 
-We have defined the observation, the policy intervention and the missing comparison. A useful empirical argument states which population is represented and which assumptions connect its data to the policy question. The causal graph makes proposed channels visible; it does not supply evidence for every arrow.
+Put the elements of the school study together before choosing a regression. Name the population, the teacher-hiring intervention and the score outcome. Then choose one prior district difference that could affect both staffing and learning.
 
-Write four sentences: name the district population; define the teacher-hiring intervention and score outcome; explain one alternative cause that could distort an observed comparison; and propose evidence that would address it. Next we build simple regression carefully. A fitted slope will describe an observed comparison. Its calculation and its causal interpretation require separate arguments.
+Write four connected sentences for a ministry reader. First state which districts your conclusion concerns. Next define what the hiring policy changes. In the third sentence explain a possible alternative cause of the observed score pattern. Finish with evidence that would help distinguish the hiring effect from that alternative. Use the worked explanation to check that each sentence answers part of the question.
 
 Before estimating, state what the data can answer
 
 **Practice:** Write four sentences naming the population, staffing intervention and outcome, one alternative explanation, and evidence that could address it.
 
-**Explanation:** One observation is a school district, and staffing is measured as students per teacher. A reduction of two students per teacher gives about +4.56 fitted score points in the simple model. The difference is about +2.20 points after holding English-learner share fixed. Other district differences or staffing responses to learning needs could still prevent either number from measuring the causal gain from hiring teachers.
+**Explanation:** Our target is the specified population of school districts represented by a justified sampling design. The intervention hires comparable teachers to reduce students per teacher from 22 to 20 at fixed enrollment, with the test-score outcome defined for the same period. Prior family resources could affect both staffing choices and learning. Random allocation of a funded hiring offer, with implementation and spillovers checked, could help identify the effect of that offer.
 
 ### 22. Audit the school observations before estimating
 

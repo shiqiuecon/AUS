@@ -130,7 +130,9 @@ One insignificant month does not settle the annual question.
 
 The null for a seasonal joint test is that all eleven calendar-month coefficients are zero, conditional on the other regressors. The alternative is that at least one contributes a difference. This is not the same as selecting whichever month has the largest t statistic.
 
-Use testparm after fitting the intended model to state the grouped restriction. As before, the reference distribution depends on the covariance treatment and assumptions. The test describes evidence for a seasonal component in that fitted model; it does not identify the economic cause of the seasonality or verify the policy comparison.
+The testparm command tests that group of coefficients. Here it follows the full adjusted accident regression, with the trend, month indicators, unemployment, both laws and weekend count. That regression used heteroskedasticity-robust covariance. Its F value is about 10.29, with eleven restrictions and 91 residual degrees of freedom. The displayed zero p-value is rounded, not literally zero.
+
+This test allows unequal error spread under its sampling assumptions. It has not yet allowed residual dependence across months. To make an inference that allows such dependence, fit the intended model with a justified time-series covariance estimate and test the same restrictions using that covariance. The joint-test idea is the same; its uncertainty calculation must match the application.
 
 ```text
 . testparm i.month

@@ -224,7 +224,7 @@ The actual Stata estimate is 0.518, close to the predicted limit of 0.5 in this 
 
 Complete-case analysis needs a selection argument.
 
-Suppose a study observes staffing and scores only for districts that submit complete records. S marks whether the record is observed. In this first diagram, the selection arrow starts at an included input X. It could be that larger districts report more consistently. The unobserved error U is independent of X in this proposed model.
+Suppose a study observes staffing and scores only for districts that submit complete records. S marks whether the record is observed. In this first diagram, the selection arrow starts at the included staffing input X. Districts at some staffing ratios might be more likely to report complete records. The unobserved error U is independent of X in this proposed model.
 
 Trace a path from X to U after selecting observed records. The selection rule uses X alone, so conditioning on S does not open a route between them in this graph. With a correct conditional mean and enough variation in the observed inputs, the conditional slope can still be valid.
 

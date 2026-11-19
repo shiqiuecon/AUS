@@ -501,7 +501,9 @@ Explain the three choices as responses to different empirical concerns.
 
 Explain why the same fitted law coefficient can have three different standard errors. The conventional formula assumes the stated equal-variance and independence conditions. Heteroskedasticity-robust inference allows unequal spread but does not automatically allow time dependence. The Newey–West calculation adds weighted covariance information across nearby dates under its own conditions.
 
-Give the calendar meaning of four covariance lags for monthly data, and state whether any new predictor was added. Then write one connected paragraph reporting the fitted magnitude, its uncertainty and the evidence that adoption provides a credible policy comparison. If that last argument is missing, say what design evidence would be needed. Next in this block, we derive structured error transformations and then study responses at future horizons.
+Give the calendar meaning of four covariance lags for monthly data, and state whether any new predictor was added. Then write one connected paragraph reporting the fitted magnitude, its uncertainty and the evidence needed for a causal policy comparison.
+
+This completes the time-series block. We have also compared adding a justified lag and fitting a Prais–Winsten error transformation. Use the practice to explain which operation changes which part of the analysis. Meeting 14 turns to repeated units, difference in differences and instruments.
 
 Same equation/sample → same OLS coefficient.
 
