@@ -46,7 +46,7 @@ window.MizanBrief={
     if(credential?.member)headers['X-Lobby-Member']=credential.member;
     if(body!==undefined)headers['Content-Type']='application/json';
     const path=credential?'/'+credential.code+(action?'/'+action:''):'';
-    const slowHost=classroomLaunch&&(credential?.secret&&body===undefined||action==='end-early'||body?.closeSection||
+    const slowHost=classroomLaunch&&(credential?.secret||action==='end-early'||body?.closeSection||
       action==='mizan-timing'&&body?.stage==='extend');
     const timeout=slowHost?30000:12000;
     const response=await MizanRuntime.fetch('/api/challenges'+path,{method:body===undefined?'GET':'POST',headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store',signal:AbortSignal.timeout(timeout)});
