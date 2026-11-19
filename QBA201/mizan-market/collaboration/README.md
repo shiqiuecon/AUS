@@ -1,9 +1,9 @@
 # Mizan Market workspace on GitHub Pages
 
-These HTML, CSS and JavaScript files are published by the existing `shiqiuecon/AUS` Pages deployment. `index.html` opens an explicitly labeled read-only sample; both 60- and 75-minute dashboard links are provided.
+The existing `shiqiuecon/AUS` Pages deployment hosts these HTML, CSS and JavaScript files. The dashboard, participant workspace and course entry use the existing QBA201 classroom API, configured in `config.js`. Both 60- and 75-minute sections share this interface.
 
-The participant and instructor pages use `runtime.js` to contact a classroom API configured in `config.js`. `apiOrigin: null` intentionally disables live setup until an actual compatible server has been deployed. Do not point it to the earlier server without enabling the required cross-origin requests and late-observer migration there.
+The server permits authenticated browser requests from `https://shiqiuecon.github.io` and its own origin. Instructor and member credentials still apply. The application stores teams, answers, votes and archives in the existing classroom database. No records or secrets are stored in this public repository.
 
-Only client code and fictional sample data belong in this public repository. Keep instructor passcodes, authentication tokens, student records, grading definitions and the server code outside the public Pages tree. GitHub Pages cannot execute the database or API.
+Late arrivals can check in to existing populated teams as read-only observers after the competing rosters are locked. Their names appear in the team workspace and instructor dashboard, but they cannot claim a role, submit answers or vote and are excluded from team bonuses. The current-section QR routes to GitHub-hosted check-in.
 
-Live activation: deploy the compatible classroom server; verify its health endpoint and allowed web origin; set `apiOrigin` to its HTTPS origin in `config.js`; test section creation, QR check-in, timed rounds, exports and late observers in both class lengths; then switch the course activity links to `host.html` and `lobby.html`. Until activation, existing class links continue to use the current classroom service.
+The fictional read-only sample remains available with `preview=sample`; ordinary course links open the live interface. Grading definitions and server source stay outside the public Pages tree.
