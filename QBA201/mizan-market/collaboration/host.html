@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="config.js"></script><script src="runtime.js"></script><title>QBA201 team challenge</title><link rel="stylesheet" href="assets/challenge.css"><script src="assets/mizan-clock.js" defer></script><script src="assets/team-fields.js" defer></script><script src="assets/leaderboard.js" defer></script>
+<script src="assets/mizan-qr.js" defer></script><script src="assets/challenge.js" defer></script>
+<link rel="stylesheet" href="assets/case-copy.css"><script src="assets/case-copy.js" defer></script><link rel="stylesheet" href="assets/collaboration.css"></head>
+<body data-mizan-page="host"><header><a href="index.html">QBA201 <span>Team challenge</span></a><span id="session-tag"></span></header>
+<main>
+<div id="archive-entry" hidden><button type="button" id="open-archives" class="secondary">Past games &amp; results</button></div>
+<section id="start" hidden>
+<h1 id="start-title">Run the team challenge</h1><p id="start-intro">Open this page from the case’s <strong>Team competition</strong> button to load its checkpoints.</p>
+<section id="section-manager" class="panel" aria-labelledby="sections-heading" hidden>
+<div class="heading"><h2 id="sections-heading" tabindex="-1">Sections</h2><button type="button" id="new-section">New section</button></div>
+<form id="section-sign-in"><label for="sections-passcode">Instructor passcode</label><input id="sections-passcode" type="password" autocomplete="current-password" required><button>Show saved sections</button></form>
+<p id="sections-status" class="fine" role="status"></p><ul id="section-list" class="section-list" aria-label="Open sessions"></ul>
+<details id="closed-sections" hidden><summary>Closed sessions (<span id="closed-section-count"></span>)</summary><ul id="closed-section-list" class="section-list"></ul></details>
+<button type="button" id="refresh-sections" class="secondary" hidden>Refresh list</button>
+</section>
+<div id="setup-rules" class="rules"><strong>Winning-team bonus · 1 percentage point of the course grade</strong><p id="start-rules">Six criteria, 0–2 points each. Highest total out of 12 wins. Tied top teams are joint winners, with the full bonus for each verified member. The instructor verifies the members and finalizes the result.</p></div>
+<form id="create" class="panel"><h2 id="create-heading">Start a session</h2><p id="pack-status" class="fine"></p>
+<div class="setup-fields"><div><label for="session-label">Section or rehearsal label</label><input id="session-label" maxlength="40" placeholder="Section 1 or Rehearsal"></div><div id="expected-field" hidden><label for="expected-students">Expected students</label><input id="expected-students" type="number" min="1" max="180" step="1" disabled></div><div><label for="team-count">Number of teams</label><input id="team-count" type="number" min="0" max="30" step="1" value="4" required></div></div>
+<div id="session-minutes-field" hidden><label for="session-minutes">Class length</label><select id="session-minutes" aria-describedby="session-minutes-help">
+  <option value="75">75 minutes · 32 points</option><option value="60">60 minutes · 24 points</option>
+</select><p id="session-minutes-help" class="fine">Both formats include the fact sheet, company analysis, audit choice, team vote and board recommendation.</p></div>
+<div id="team-numbers-field" hidden><label class="check-label"><input id="team-numbers" type="checkbox"> Give teams different sample numbers</label><p class="fine">Same contracts, test types and scoring. Each team keeps its sample after refresh or reconnection. Turn on before creating the section.</p></div>
+<div id="create-passcode-field"><label for="passcode">Instructor passcode</label><input id="passcode" type="password" autocomplete="current-password" required></div>
+<div class="controls"><button id="start-session">Start session and create team links</button><button type="button" id="cancel-section" class="secondary" hidden>Cancel</button></div></form>
+<details id="resume-details"><summary>Resume with a session code</summary><form id="resume-form"><label for="resume-code">Session code</label><input id="resume-code" required maxlength="6" autocomplete="off"><label for="resume-passcode">Instructor passcode</label><input id="resume-passcode" type="password" required autocomplete="current-password"><button>Resume session</button></form><p class="fine">Use the six-character code in your saved record. Signing in here renews the instructor access credential for that session.</p></details>
+</section>
+<section id="join" hidden><h1>Join your team</h1><p>One team leader submits for the team. Open your assigned team link, or enter the access code from the instructor.</p>
+<p><a id="return-to-lobby" href="lobby.html" hidden>Return to your team page</a></p>
+<form id="join-form"><label for="access">Team access code</label><input id="access" required autocomplete="off" spellcheck="false" placeholder="ABCDEF-123456abcdef"><button>Join team</button></form>
+<p class="fine">Your answers and roster are visible to your instructor. Other teams see team names and points after rounds close. In Mizan Market, the end-of-class leaderboard also recognizes members and roles. Student IDs and answers stay private.</p></section>
+<section id="host" hidden><div class="heading host-heading"><div><h1 id="host-title" tabindex="-1"></h1><p id="host-meta" class="fine"></p></div><div class="section-actions"><button id="leave-host" class="secondary">Switch session</button><button id="close-host-section" class="secondary" hidden>Close session</button><button id="new-host-section" hidden>New section</button></div></div>
+<div id="host-legacy">
+<div id="session-notice" class="rules" hidden></div><div class="rules"><strong>Winning-team bonus · +1 course percentage point per verified member</strong><p id="host-rules">Score six common criteria from 0 to 2. Tied top teams are joint winners, with the full bonus for each verified member. Close all checkpoints, verify rosters and review each eligible team before finalizing.</p></div>
+<details><summary>How to run this</summary><ol id="host-instructions"><li>Add teams and privately give each team leader their access code or link.</li><li>Team leaders enter members’ names and IDs. Open the matching checkpoint when the class reaches it.</li><li>Close each checkpoint at the deadline. Team leaders can revise while it is open, and every saved version is recorded.</li><li>After all checkpoints close, review each team’s answers, verify attendance and roster, and score the rubric.</li><li>Finalize the bonus record, then save the bonus CSV and full answer record.</li></ol><p class="fine">The records remain accessible for 14 days, unless you clear the session. The downloaded files preserve them for grading.</p></details>
+</div><p id="dashboard-message" role="status" aria-live="polite"></p><div id="host-body"></div></section>
+<section id="student" hidden><div class="heading"><div><h1 id="team-title"></h1><p id="team-session" class="fine"></p></div><button id="leave-team" class="secondary">Change access code</button></div><div id="team-body"></div></section>
+<p id="message" role="status" aria-live="polite"></p>
+<p id="archive-completion" class="rules" hidden></p>
+</main><dialog id="board-dialog"><h1>QBA201 · Team leaderboard</h1><div id="projected-board"></div><form method="dialog"><button class="secondary">Back to instructor controls</button></form></dialog>
+<dialog id="join-qr-dialog" aria-labelledby="join-qr-title">
+<h2 id="join-qr-title">Student check-in</h2><p id="join-qr-code"></p><img id="join-qr-image" alt="Scan to open the student lobby">
+<form method="dialog" class="controls"><a class="button-link" id="join-qr-download" download>Download QR code</a><button class="secondary" autofocus>Close</button></form>
+</dialog>
+<dialog id="clear-dialog"><h2>Clear the saved session?</h2><p>This deletes teams, answers and scores from the server. Download the full answer record first.</p><form method="dialog"><button value="cancel" class="secondary">Keep session</button><button value="clear">Download and clear</button></form></dialog>
+<dialog id="archive-dialog" aria-labelledby="archive-title">
+<div class="heading"><h2 id="archive-title">Past games &amp; results</h2><form method="dialog"><button class="secondary" value="close">Close</button></form></div>
+<p>Completed games are saved separately from live sessions for 14 days after completion. Download before the expiry shown below. Downloads contain student records: keep them private.</p>
+<form id="archive-form"><label for="archive-passcode">Instructor or archive passcode</label><input id="archive-passcode" type="password" required autocomplete="off"><button id="archive-load">Load completed games</button></form>
+<p id="archive-status" role="status" aria-live="polite"></p><div id="archive-list"></div>
+</dialog>
+</body></html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="config.js"></script><script src="runtime.js"></script><title>Join a team · QBA201</title>
+  <link rel="stylesheet" href="assets/challenge.css">
+  <link rel="stylesheet" href="assets/lobby.css">
+  <link rel="stylesheet" href="assets/workspace.css">
+  <link rel="stylesheet" href="assets/case-copy.css">
+  <script src="assets/case-copy.js" defer></script>
+  <script src="assets/mizan-clock.js" defer></script><script src="assets/team-fields.js" defer></script>
+  <script src="assets/workspace.js" defer></script>
+  <script src="assets/leaderboard.js" defer></script>
+  <script src="assets/mizan-qr.js" defer></script>
+  <script src="assets/mizan-check-in.js" defer></script>
+  <script src="assets/lobby.js" defer></script>
+<link rel="stylesheet" href="assets/collaboration.css"></head>
+<body data-mizan-page="student">
+  <a class="skip-link" href="#lobby-title">Skip to content</a>
+  <header class="lobby-header"><strong><span class="lobby-mark" aria-hidden="true">M</span> QBA201 <span>Team workspace</span></strong><span id="class-code"></span></header>
+  <main class="lobby">
+    <h1 id="lobby-title">Join a team</h1>
+    <p id="case-title">Enter the class code your instructor shares.</p>
+    <section id="classroom-intro" class="panel" hidden aria-labelledby="brief-title" data-case-copy>
+      <h2 id="brief-title">Should Mizan Market buy the software?</h2>
+      <p aria-hidden="true">Mizan Market sells groceries online. The owner must decide whether new software can save enough to cover its cost and still get orders out on time.</p>
+      <p><strong>Check in on your own device and join your team.</strong> Choose one person to save the team’s answers. Then pick a role and read the case brief. Working alone? You cover all roles.</p>
+    </section>
+    <section class="panel student-join-qr" data-current-check-in hidden aria-labelledby="current-check-in-heading">
+      <img data-current-qr alt="QR code for the open Mizan Market section" width="144" height="144">
+      <div><h2 id="current-check-in-heading">Check-in is open</h2><p>Scan with your phone camera.</p><a data-current-link>Check in on this device</a></div>
+    </section>
+    <form id="room-form" class="panel">
+      <label for="room-code">Class code</label>
+      <input id="room-code" name="room" maxlength="6" required autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <div class="controls"><button>Open team lobby</button></div>
+    </form>
+    <p id="lobby-message" role="status" aria-live="polite"></p>
+    <section id="student-join-qr" class="panel student-join-qr" hidden aria-labelledby="student-qr-heading">
+      <img id="student-qr-image" alt="QR code for Mizan Market check-in" width="144" height="144">
+      <div>
+        <h2 id="student-qr-heading">Open on your phone</h2>
+        <p>Scan to open this section and check in on your phone.</p>
+        <p id="student-qr-class-code" class="fine"></p>
+      </div>
+    </section>
+    <section id="room" hidden>
+      <p id="room-status" class="rules"></p>
+      <details id="reconnect" class="panel" hidden>
+        <summary>Reconnect to your team</summary>
+        <p class="fine">Enter your student ID and the private recovery code from your original workspace.</p>
+        <form id="reconnect-form">
+          <div class="setup-fields">
+            <label>Student ID<input name="studentId" required maxlength="24" autocomplete="off"></label>
+            <label>Recovery code<input name="recovery" type="password" required maxlength="45" autocomplete="off" spellcheck="false"></label>
+          </div>
+          <button>Reconnect</button>
+          <p id="reconnect-status" role="status"></p>
+        </form>
+      </details>
+      <section id="your-team" class="panel" hidden>
+        <h2 id="your-team-name"></h2>
+        <p id="captain-status"></p>
+        <div class="controls">
+          <button id="become-captain" type="button" hidden>Become team leader</button>
+          <a id="captain-workspace" class="lobby-link" hidden>Continue to team workspace →</a>
+          <button id="step-down" type="button" class="secondary" hidden>Step down as team leader</button>
+          <button id="leave-team" type="button" class="secondary">Leave team</button>
+          <button type="button" class="secondary" data-recovery-code>Recovery code</button>
+        </div>
+        <details id="team-members" open><summary>Team members</summary><ul id="teammates" class="teammates"></ul></details>
+      </section>
+      <form id="team-work" class="panel" hidden>
+        <h2>Your task</h2>
+        <p id="task-text"></p>
+        <label for="task-note">Your work or notes for the team leader</label>
+        <textarea id="task-note" maxlength="800"></textarea>
+        <div class="controls"><button>Send to team leader</button><span id="task-message" role="status" aria-live="polite"></span></div>
+      </form>
+      <section id="analysis-panel" class="panel" aria-label="Current round" hidden></section>
+      <section id="team-progress" class="panel" hidden>
+        <h2>Team progress</h2>
+        <ol id="round-progress"></ol>
+      </section>
+      <section id="class-leaderboard" class="panel" hidden aria-label="End-of-class leaderboard"></section>
+      <section id="analysis-feedback" class="panel" hidden></section>
+      <form id="join-team">
+        <section id="member-fields" class="panel">
+          <h2>Your details</h2>
+          <p id="registration-privacy" class="fine">Your teammates will see your name. At the end of class, the class leaderboard shows each team’s names and roles. Only your instructor can see your student ID.</p>
+          <div class="setup-fields">
+            <label>Full name<input id="student-name" maxlength="80" autocomplete="name" required></label>
+            <label>Student ID<input id="student-id" maxlength="24" pattern="[A-Za-z0-9\-]{3,24}" autocomplete="off" spellcheck="false" required></label>
+          </div>
+        </section>
+        <h2 id="teams-heading">Choose a team</h2>
+        <div id="team-list" class="team-list"></div>
+      </form>
+    </section>
+  </main>
+  <dialog id="recovery-dialog" aria-labelledby="recovery-title">
+    <h2 id="recovery-title">Your private recovery code</h2>
+    <p>Keep this code for this section. You can use it with your student ID to return to your team on another browser or device.</p>
+    <label for="recovery-code">Recovery code</label>
+    <input id="recovery-code" readonly autocomplete="off" spellcheck="false">
+    <div class="controls">
+      <button id="copy-recovery" type="button">Copy recovery code</button>
+      <form method="dialog"><button class="secondary">Close</button></form>
+    </div>
+    <p id="recovery-copy-status" role="status"></p>
+  </dialog>
+</body>
+</html>
