@@ -70,3 +70,68 @@ body:has(.lesson-player){padding-bottom:165px}.lesson-bar>a{font:16px Arial,sans
   color: var(--muted);
   margin: 4px 0;
 }
+
+/* Optional activities in the lesson player and worked practice. */
+.dag-explorer .graph-stage{min-height:0}
+[data-dag-node],[data-plot-target="drag"]{cursor:grab;touch-action:none;user-select:none}
+[data-dag-node]:active,[data-plot-target="drag"]:active{cursor:grabbing}
+[data-dag-select]{cursor:pointer}
+[data-dag-select]:hover rect,[data-dag-select]:focus-visible rect{stroke:var(--teal);stroke-width:3}
+[data-dag-select]:focus-visible{outline:none}
+[data-plot-target="pick"]{cursor:crosshair}
+.dag-drop{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding:6px 10px;border:1px dashed #8198a5;border-radius:4px;background:#f5f9fb;font-size:14px}
+.dag-drop.drop-ready{background:#fff3d8;border-color:#94630e}
+.dag-controls{gap:6px 14px}
+.dag-controls .dag-check{min-height:30px;cursor:pointer}
+.dag-hint,.plot-action{font:14px/1.4 Arial,sans-serif;color:var(--muted);margin:7px 0}
+.plot-action{color:var(--teal)}
+.dag-diagnosis{font:14px/1.45 Arial,sans-serif;margin:9px 0;padding:6px 10px;border-left:3px solid #8090a2;background:#f6f8fa}
+.dag-diagnosis[data-tone="pass"]{border-color:#087e83;background:#eef7f6}
+.dag-diagnosis[data-tone="caution"]{border-color:#b64e3a;background:#fcf3ef}
+.dag-paths{list-style:none;padding:0!important}
+.dag-paths li+li{margin-top:6px}
+.dag-paths button{max-width:100%;text-align:left;padding:6px 9px;font-size:14px;line-height:1.6;border-color:var(--line)}
+.dag-paths button[aria-pressed="true"]{background:#f1f6f9;border-color:#899dac}
+.dag-paths li>p{margin:4px 0 9px 12px;font:14px/1.45 Arial,sans-serif;color:var(--muted)}
+.dag-swatch,.experiment-legend i.reference{display:inline-block;width:19px;vertical-align:middle;margin-right:6px;border-top:3px solid #087e83}
+.dag-swatch.alternative{border-color:#b64e3a;border-top-style:dashed}
+.dag-swatch.blocked{border-color:#657387;border-top-style:dotted}
+.dag-drag-ghost{position:fixed;z-index:40;pointer-events:none;transform:translate(-50%,-50%);background:#fff3d8;border:1px solid #94630e;border-radius:4px;padding:8px 12px;box-shadow:0 3px 10px #15324d25;font:600 14px Arial,sans-serif;white-space:nowrap}
+.activity-button{color:#07676c;border-color:#a8c4c6;background:#f0f8f8;font-size:14px;margin:5px 0 8px;padding:8px 12px;min-height:36px}
+.activity-button:hover,.activity-button:focus-visible{background:#dbefee}
+.transcript-activity{border-left:3px solid var(--teal);padding-left:12px}
+.experiment-dialog{width:min(890px,calc(100% - 28px));max-height:90dvh;overflow:auto;overscroll-behavior:contain}
+.experiment-dialog h2{font-size:29px}
+.experiment-dialog p{font:15px/1.5 Arial,sans-serif;margin:10px 0}
+.experiment-dialog .experiment-prompt{color:var(--ink);font-weight:600}
+.experiment-controls{display:flex;flex-wrap:wrap;align-items:end;gap:10px 20px;padding:12px 0;border-block:1px solid var(--line);font:14px/1.4 Arial,sans-serif}
+.experiment-controls label{display:block;font-weight:600}
+.experiment-controls label.experiment-toggle{display:flex;align-items:center;gap:6px;min-height:34px}
+.experiment-controls input[type="range"]{display:block;width:min(215px,65vw);margin:4px 0 0;accent-color:var(--teal)}
+.experiment-controls input[type="checkbox"]{height:18px;width:18px;accent-color:var(--teal)}
+.experiment-controls output{margin-left:6px;color:var(--teal);font-variant-numeric:tabular-nums}
+.experiment-controls button,.experiment-close{font-size:14px;min-height:38px;white-space:nowrap}
+.experiment-dialog .experiment-axis{color:var(--muted);font-size:13px}
+.experiment-plot svg{display:block;width:100%;height:auto;max-height:287px}
+.experiment-table{width:100%;border-collapse:collapse;font:14px/1.4 Arial,sans-serif;font-variant-numeric:tabular-nums}
+.experiment-table th,.experiment-table td{padding:8px;text-align:left;border-bottom:1px solid var(--line)}
+.experiment-table thead th{border-bottom:1px solid #8298a5}
+.experiment-legend{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:0 0 10px;font:13px Arial,sans-serif}
+.experiment-legend i{display:inline-block;background:var(--swatch);height:10px;width:12px;margin-right:6px}
+.experiment-legend i.reference{border-color:var(--ink);border-top-style:dashed;height:0}
+.experiment-announcement{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:720px){
+ .dag-controls .dag-check,.activity-button{min-height:42px}
+ .dag-diagnosis,.dag-hint,.plot-action{font-size:14px}
+ .experiment-dialog{padding:14px}
+ .experiment-dialog h2{font-size:22px}
+ .experiment-table{font-size:12px}
+ .experiment-table th,.experiment-table td{padding:6px 3px;overflow-wrap:anywhere}
+ .experiment-plot svg{overflow:visible}
+}
+.dag-legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:0;margin:8px 0;list-style:none;font:13px Arial,sans-serif}
+.dag-legend[hidden]{display:none}
+/* Pointer gestures start on the drawing, with ordinary scrolling outside it. */
+.dag-explorer svg,.graph-stage:has([data-plot-target="drag"]) svg{touch-action:none}
+@media(prefers-reduced-motion:reduce){.dag-stage svg path{transition:none}}
+@media(min-width:721px) and (max-width:1799px){.dag-explorer .graph-stage:not(.zoomed) svg{max-height:min(300px,36dvh)}}

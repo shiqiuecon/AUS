@@ -52,6 +52,8 @@ Law of large numbers: sample averages approach population means under stated con
 
 Consistent estimator: concentrates near its target as the sample grows.
 
+[Try the coin tosses](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=4&v=de9d5ab0eb6b). Double the number of tosses. Where does the share of heads end up? Draw a new sequence and see whether it settles in the same place.
+
 ### 05. Measure co-movement before calculating the limit
 
 Covariance records whether centered variables tend to move together.
@@ -83,6 +85,8 @@ Concentration alone is not evidence of a correct target.
 The graph uses 300 Stata-generated replications at each sample size, 100 and 1,000. Each replication draws a new sample from the same constructed population and estimates the short and controlled slopes. A replication is one repetition of the entire sampling-and-estimation process.
 
 Select the larger sample size. Both collections should become less spread out, but they need not move toward the same centre. The short estimates concentrate near 1.5, while the controlled estimates concentrate near one. These are simulation results, not observed labour-market effects. They illustrate the specific assumptions we built into the experiment.
+
+[Run new samples](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=7&v=de9d5ab0eb6b). Compare the two regressions at 100 and 1,000 districts. Which estimate gets more precise? Which stays centered on the known effect?
 
 ### 08. Read one large generated sample
 
@@ -117,6 +121,8 @@ The second formula shows the analogous result for a coefficient under suitable s
 Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=0.5/\sqrt n\)
 
 Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(0,\Omega)\)
+
+[Explore the sampling distribution](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=9&v=de9d5ab0eb6b). Increase the sample size with the raw share on screen. Then switch to the scaled difference and try the same sizes. What happens to the spread in each view?
 
 ### 10. Square-root sample-size gains require a comparable sampling model
 

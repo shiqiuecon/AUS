@@ -48,6 +48,8 @@ Trace the route from the current unexpected cause to current accidents and then 
 
 Policy at the next date can respond to an unexpected outcome now.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=09&slide=4&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+
 ### 05. Contemporaneous exogeneity concerns the current regressor vector
 
 Current means the variables included for the same date.
@@ -320,6 +322,8 @@ Current unexpected accident causes can affect current accidents and hence next m
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=09&slide=25&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+
 **Practice:** Current unexpected accident causes can affect current accidents and hence next month’s policy. Trace that dated route. Why can it challenge strict exogeneity without requiring a future policy to cause an earlier accident?
 
 ### 26. DAG practice: dated policy feedback: explanation
@@ -360,6 +364,8 @@ For the accident application, describe dated unemployment associations rather th
 
 The dated-input DAG adapts the earlier ECO603 distributed-lag diagram. An earlier input can change the outcome directly and through later input values. Holding the later inputs fixed isolates a different route from allowing the input process to propagate naturally. An innovation means a new unpredictable input change here. If that change also moves future inputs, trace its entire input path rather than reading one partial lag coefficient as its total response.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=09&slide=29&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 30. DAG practice: partial lag effect or propagated input change?
 
 Trace the routes before choosing a control.
@@ -367,6 +373,8 @@ Trace the routes before choosing a control.
 An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=09&slide=30&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 **Practice:** An earlier input influences the outcome directly and by changing later input values. Which routes remain if the later inputs are held fixed? Why can the response to a naturally propagated input innovation differ from the coefficient on that earlier input?
 

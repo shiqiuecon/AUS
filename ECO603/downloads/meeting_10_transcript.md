@@ -188,6 +188,8 @@ Look at the diagram for a proposed explanation. Earlier accidents and economic c
 
 To report a causal result, say what would have happened to accidents without the law and what evidence supports that path. In some settings, a comparable region or a credible rule determining adoption gives more information than a longer series from one region.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=10&slide=11&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 12. A linear trend does not remove every nonstationary process
 
 A straight calendar pattern need not describe accumulated random changes.

@@ -70,6 +70,8 @@ Mean model: which variables predict the outcome?
 
 SE calculation: how much uncertainty remains?
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=12&slide=5&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+
 ### 06. Why dependence changes uncertainty
 
 Related errors add covariance terms to the variance calculation.

@@ -1,4 +1,4 @@
-import {dagSVG} from './dag.mjs?v=50e65922206d';
+import {dagSVG} from './dag.mjs?v=c5daa317b81c';
 import {data,escapeHTML as e} from './common.mjs?v=28599d1f2c26';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;

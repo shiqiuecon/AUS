@@ -174,6 +174,8 @@ Directed: arrows have a direction. Acyclic: no directed loop.
 
 Missing arrows and independent background inputs are assumptions.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=11&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+
 ### 12. Trace a path one connection at a time
 
 A causal route follows arrows; a general path need not.
@@ -185,6 +187,8 @@ The second route begins with an arrow pointing into X. We call a path with that 
 Causal route: \(X\rightarrow Y\)
 
 Backdoor route: \(X\leftarrow C\rightarrow Y\)
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=12&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 13. A common cause creates a backdoor comparison
 
@@ -198,6 +202,8 @@ Compare at fixed \(C\): block \(X\leftarrow C\rightarrow Y\)
 
 Conditioning selects comparisons; intervention changes a mechanism.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=13&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 14. An intermediate mechanism is a mediator
 
 A variable caused by staffing can carry part of its effect.
@@ -209,6 +215,8 @@ The total effect allows attention to respond to the staffing policy. Select atte
 Mediated route: \(X\rightarrow M\rightarrow Y\)
 
 Total effect allows the mediator to respond.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=14&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 15. Selection can create a relationship
 
@@ -238,6 +246,8 @@ Collider: \(P\rightarrow S\leftarrow N\)
 
 Unconditioned collider blocks; selecting recipients opens the path.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=16&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 17. Selecting a consequence can also open the route
 
 A descendant is reached by following arrows forward.
@@ -249,6 +259,8 @@ Select the record indicator rather than scholarship status. Information about a 
 \(P\rightarrow S\leftarrow N\), with \(S\rightarrow R\)
 
 Conditioning on a collider descendant can open its path.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=17&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 18. Why the observed groups might differ
 
@@ -280,6 +292,8 @@ Target: \(\text{conviction probability}\rightarrow\text{criminal time}\)
 
 Ask which variable closes every backdoor route.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=19&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 20. Changing the target can change the required controls
 
 The arrest comparison still has an unobserved route.
@@ -293,6 +307,8 @@ Compare the two diagrams and explain the remaining route in words. We will use t
 Remaining route: \(A\leftarrow U\rightarrow Y\)
 
 A control plan is specific to the chosen explanatory variable.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=20&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 21. Before estimating, state what the data can answer
 
@@ -348,6 +364,8 @@ Intervention: replace the assignment mechanism.
 
 Conditioning: compare within an observed subgroup.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=24&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 25. Would the result apply in a new setting?
 
 Check credibility in the original setting and relevance to the new one.
@@ -395,6 +413,8 @@ Trace the routes before choosing a control.
 In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=01&slide=28&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 **Practice:** In the law-and-order model, hold enforcement fixed. Which backdoor route from arrest probability to criminal time remains open? Explain why the same enforcement adjustment can be enough for the drawn conviction comparison but insufficient for arrest.
 

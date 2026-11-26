@@ -133,6 +133,8 @@ Year effects: common date shifts. State effects: stable additive state differenc
 
 A location common cause is not removed by a common calendar control.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=10&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 11. Check whether fixed effects absorb a regressor
 
 A time-only variable cannot survive unrestricted time indicators.
@@ -198,6 +200,8 @@ Eligibility: policy conditions; access: an available place; participation: actua
 Define the expansion comparison before interpreting a coefficient as an attendance effect.
 
 A causal diagram does not establish parallel untreated trends.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=15&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 16. Parallel trends is about unobserved untreated changes
 
@@ -483,6 +487,8 @@ Relevance: \(\pi_1\ne0\)
 
 \(Z\): real cents per pack; \(X=\log P\)
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=34&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+
 ### 35. Exogeneity and exclusion justify the comparison
 
 A strong first stage does not establish either condition.
@@ -498,6 +504,8 @@ Exogeneity: no instrument relationship with omitted structural demand causes.
 Exclusion: no causal instrument-to-quantity channel bypassing price.
 
 Required IV moment: \(\operatorname{Cov}(Z,u)=0\)
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=35&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
 
 ### 36. Derive the simple IV ratio
 
@@ -720,6 +728,8 @@ Weak first stage → denominator uncertainty can dominate the ratio.
 Strength and validity are different requirements.
 
 The displayed robust F tests the excluded tax slope with the included controls in the regression.
+
+[Simulate a weaker first stage](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=47&v=de9d5ab0eb6b). Hold the sample size fixed and reduce the first-stage slope. Compare the spread of IV and OLS estimates and count the extreme estimates outside the plot.
 
 ```text
 . estat firststage
@@ -983,6 +993,8 @@ In the incinerator example, common time conditions affect prices while stable lo
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=65&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 **Practice:** In the incinerator example, common time conditions affect prices while stable location quality affects proximity and prices. Do year indicators close the location route? If proximity never changes, what happens to its level coefficient under unit fixed effects, and what extra comparison could support a DiD question?
 
 ### 66. DAG practice: pooling is not within-location identification: explanation
@@ -1130,6 +1142,8 @@ Trace the routes before choosing a control.
 The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=14&slide=79&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
 
 **Practice:** The tax instrument predicts cigarette price. Add a direct tax-to-quantity arrow that bypasses price. Could the first stage stay strong? Why would dividing the reduced form by the first stage then fail to isolate the intended price elasticity?
 

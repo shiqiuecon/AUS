@@ -229,6 +229,8 @@ New application: training → earnings.
 
 Prior education is a proposed common cause; motivation remains unmeasured.
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=17&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 18. Adjustment changes a comparison; it does not guarantee identification
 
 A richer model can still leave an important factor out.
@@ -363,6 +365,8 @@ Confounder: a prior common influence
 
 Mediator: part of the effect pathway
 
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=27&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+
 ### 28. Why a collider can be a bad control
 
 Selection into a shared consequence can create a relationship.
@@ -374,6 +378,8 @@ In a regression study, controlling for a similar shared consequence can open an 
 The graph makes scholarship selection the common consequence of preparation and financial need. Without selection, the proposed path between those two roots is blocked. Conditioning on scholarship selection opens it. A collider is defined relative to the particular path being traced; it is the meeting point of two arrowheads on that path.
 
 \(\text{Preparation}\rightarrow\text{Selection}\leftarrow\text{Need}\)
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=28&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 ### 29. Confounder or mediator?
 
@@ -490,6 +496,8 @@ Trace the routes before choosing a control.
 Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
+
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=39&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
 
 **Practice:** Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
 

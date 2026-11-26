@@ -1,6 +1,9 @@
-import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e65922206d';
+import {dagInitialState} from './dag.mjs?v=c5daa317b81c';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=dedc55da7e1c';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=ffe2e7d7bd19';
+import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=109bb0ccee05';
+import {openExperiment} from './experiment-view.mjs?v=609d71bf8319';
+import {bindPlotControls,plotAction} from './plot-controls.mjs?v=3ea9e9e08689';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
 const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];
@@ -9,6 +12,7 @@ const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requ
 const $=s=>document.querySelector(s);
 let index=Math.max(0,Math.min(lesson.slides.length-1,(Math.trunc(Number(params.get('slide')))||1)-1));
 let step=0,value=0,initialGraphValue=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,speed=1,timer=0,following=true,highlights=true,ended=false;
+let dagExplorer=null,paintPlotControl=null;
 const current=()=>lesson.slides[index];
 const coreCount=lesson.delivery.core;
 const inAppendix=()=>index>=coreCount;
@@ -32,8 +36,6 @@ function seekAudio(relative,defer=false){
 function setGraphValue(next){
  if(current().kind==='causal'){
   value={conditioned:[...next.conditioned],extra:next.extra};
-  $('#visual').querySelectorAll('[data-condition]').forEach(el=>el.checked=value.conditioned.includes(el.dataset.condition));
-  const extra=$('#visual [data-dag-extra]');if(extra)extra.checked=value.extra;
  }else{
   value=next;
   const control=$('#graph-input');if(control)control.value=value;
@@ -108,29 +110,64 @@ function stopAnimation(){cancelAnimationFrame(frame);animating=false;const p=$('
 function stopReading(){audioRequest++;clearTimeout(timer);cancelAnimationFrame(audioFrame);audio?.pause();reading=false;$('#play').textContent=ended?'Play again':voiceMode()?'Play':'Read along';$('#play').setAttribute('aria-pressed','false');}
 function updateGraph(){
  const s=current(),stage=$('.graph-stage');if(!stage)return;
- stage.innerHTML=graph(s.kind,step,value,progress,s.graph);
- if(s.kind==='causal'){const paths=$('#dag-paths');if(paths){paths.innerHTML=dagPathHTML(data.dags[s.graph.id],value);typeset(paths);}}
+ if(dagExplorer)dagExplorer.render(value,step);
+ else{
+  stage.innerHTML=graph(s.kind,step,value,progress,s.graph);
+  paintPlotControl?.(value,step);
+ }
  const out=$('#control-value');
  if(out)out.textContent=s.kind==='chart'?(s.graph.scenario==='sampling'?`n = ${value<.5?100:1000}`:s.graph.scenario==='panel'?`State ${[...new Set(data.datasets.panel.map(r=>r.state))][value]}`:String(value)):s.kind==='fit'?`Slope ${Number(value).toFixed(2)}`:s.kind==='residual'?`District ${value}`:s.kind==='arsim'?`Persistence ${Number(value).toFixed(2)}`:`L = ${value}`;
  focusParagraph(paragraph,false);
 }
 function showVisual(){
- const s=current();
- if(s.kind==='output'){$('#visual').innerHTML=`<pre class="stata" tabindex="0" aria-label="Actual Stata output">${s.output.split("\n").map(line=>`<span class="stata-row">${e(line)}</span>`).join("")}</pre>${s.output_note?`<p class="graph-caption">${e(s.output_note)}</p>`:''}`;return;}
- if(!graphKinds.has(s.kind)){$('#visual').innerHTML='';return;}
+ const s=current(),visual=$('#visual'),activity=data.activities?.[key]?.[index+1];
+ dagExplorer?.dispose();dagExplorer=null;paintPlotControl=null;
+ if(s.kind==='output')visual.innerHTML=`<pre class="stata" tabindex="0" aria-label="Actual Stata output">${s.output.split("\n").map(line=>`<span class="stata-row">${e(line)}</span>`).join("")}</pre>${s.output_note?`<p class="graph-caption">${e(s.output_note)}</p>`:''}`;
+ else if(!graphKinds.has(s.kind))visual.innerHTML='';
+ else buildGraph(s,visual);
+ if(activity){
+  const button=document.createElement('button');
+  button.type='button';button.className='activity-button';button.textContent=activity.label;
+  button.addEventListener('click',()=>{
+   stopReading();stopAnimation();
+   const context=activity.kind==='ols'?{spec:data.dags.fork,state:{conditioned:['C'],extra:false}}:{};
+   openExperiment(activity.kind,activity.prompt,context);
+  });
+  visual.append(button);
+ }
+}
+function buildGraph(s,visual){
  value=s.kind==='causal'?dagInitialState(data.dags[s.graph.id]):0;
+ const scenario=s.graph?.scenario||s.kind;
  let controls='<button id="zoom-graph" type="button" aria-pressed="false">Enlarge graph</button>';
  const config={fit:['Candidate slope',-5,1,.01,data.stats.school_simple.slope],residual:['Choose district',1,420,1,40],arsim:['Error persistence',-.9,.95,.05,.65],hac:['Maximum covariance lag',0,12,1,4]}[s.kind]||chartControls[s.graph?.scenario]||(s.graph?.scenario==='arsim'?['Error persistence',-.9,.95,.05,.65]:null);
  if(config){value=config[4];controls+=`<label for="graph-input">${config[0]}</label><input id="graph-input" type="range" min="${config[1]}" max="${config[2]}" step="${config[3]}" value="${value}"><output id="control-value" for="graph-input"></output>`;}
  initialGraphValue=value;
  if(['schools','serial','traffic'].includes(s.kind)||['ovb','fwl','retail','ivfirst','traffic'].includes(s.graph?.scenario))controls+='<button id="animate" type="button">Animate reveal</button>';
- if(s.kind==='causal')controls+=dagControlHTML(data.dags[s.graph.id],value,'lesson-dag');
  controls+='<button id="reset-graph" type="button">Reset graph</button>';
- $('#visual').innerHTML=`<div class="graph-stage"></div><p class="graph-caption">${e(s.kind==='chart'?(scenarioCaptions[s.graph.scenario]||captions[s.graph.scenario]):captions[s.kind])}</p><div class="graph-control">${controls}</div>${s.kind==='causal'?'<details class="path-analysis"><summary>Trace the paths</summary><ul id="dag-paths"></ul></details>':''}`;
- $('#visual').querySelectorAll('[data-condition],[data-dag-extra]').forEach(el=>el.onchange=()=>{stopReading();eventSignature='';value={conditioned:[...$('#visual').querySelectorAll('[data-condition]:checked')].map(n=>n.dataset.condition),extra:!!$('#visual [data-dag-extra]')?.checked};step=2;updateGraph();fitSlide();});
- const controlStep={ovb:1,didHeadStart:2,didConditional:2}[s.graph?.scenario]??0;
- $('#graph-input')?.addEventListener('input',ev=>{stopReading();stopAnimation();step=Math.max(step,controlStep);progress=1;setGraphValue(Number(ev.target.value));updateGraph();});
- $('#reset-graph').onclick=()=>{stopReading();stopAnimation();step=0;progress=1;setGraphValue(initialGraphValue);updateGraph();};
+ const spec=s.kind==='causal'?data.dags[s.graph.id]:null;
+ const caption=s.kind==='chart'?(scenarioCaptions[scenario]||captions[scenario]):captions[s.kind];
+ const hint=plotAction(scenario);
+ visual.innerHTML=`${spec?dagExplorerHTML(spec,s.graph.id,value,'lesson-dag'):`<div class="graph-stage"></div><p class="graph-caption">${e(caption)}</p>${hint?`<p class="plot-action">${e(hint)}</p>`:''}`}<div class="graph-control">${controls}</div>`;
+ const pauseGraph=()=>{stopReading();stopAnimation();eventSignature='';};
+ if(spec)dagExplorer=bindDAGExplorer(visual,{
+  spec,id:s.graph.id,prefix:'lesson-dag',initial:value,step,
+  onChange:next=>{pauseGraph();value=next;step=2;focusParagraph(paragraph,false);},
+  onInteract:pauseGraph,onResize:fitSlide
+ });
+ const controlStep={ovb:1,didHeadStart:2,didConditional:2,residual:1,penalty:1}[scenario]??0;
+ function choose(value,byPlot=false){
+  pauseGraph();
+  step=byPlot&&scenario==='validation'?0:Math.max(step,controlStep);
+  progress=1;setGraphValue(value);updateGraph();
+ }
+ const input=$('#graph-input');
+ input?.addEventListener('input',ev=>choose(Number(ev.target.value)));
+ paintPlotControl=bindPlotControls($('.graph-stage'),scenario,input,v=>choose(v,true));
+ $('#reset-graph').onclick=()=>{
+  pauseGraph();step=0;progress=1;setGraphValue(initialGraphValue);
+  dagExplorer?.reset(step);updateGraph();
+ };
  $('#animate')?.addEventListener('click',()=>{
   stopReading();
   if(animating){stopAnimation();return;}
@@ -210,7 +247,8 @@ function fitSlide(){
  const view=$('#slide-viewport'),slide=view.querySelector('.slide'),z=Number($('#zoom').value),mobile=innerWidth<=720;
  slide.style.zoom='1';slide.style.width=`${view.clientWidth-6}px`;slide.style.marginLeft='0';
  const available=Math.max(300,innerHeight-355),natural=slide.scrollHeight;
- const fit=mobile?1:Math.min(1,available/natural),scale=fit*z;
+ const readable=dagExplorer?.85:0;
+ const fit=mobile?1:Math.max(readable,Math.min(1,available/natural)),scale=fit*z;
  slide.style.zoom=String(scale);slide.style.marginLeft=z===1?`${Math.max(0,(view.clientWidth-(view.clientWidth-6)*scale)/2/scale)}px`:'0';
  view.classList.toggle('slide-zoomed',z>1);view.dataset.fitScale=String(fit);
 }
@@ -248,10 +286,10 @@ $('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await docum
 document.addEventListener('fullscreenchange',()=>{$('#fullscreen').textContent=document.fullscreenElement?'Exit full screen':'Full screen';});
 $('#read-transcript').onclick=()=>{stopReading();$('#transcript-title').textContent=`${index+1}. ${current().title}`;$('#transcript-text').innerHTML=current().script.split('\n\n').map(p=>`<p>${e(p)}</p>`).join('');typeset($('#transcript-text'));$('#transcript-dialog').showModal();};$('#close-transcript').onclick=()=>$('#transcript-dialog').close();
 const viewport=$('#slide-viewport');let drag=null;
-viewport.addEventListener('pointerdown',ev=>{if(!viewport.classList.contains('slide-zoomed')||ev.target.closest('input,select,button,a,summary,textarea'))return;drag={x:ev.clientX,y:ev.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(ev.pointerId);viewport.classList.add('panning');});
+viewport.addEventListener('pointerdown',ev=>{if(!viewport.classList.contains('slide-zoomed')||ev.target.closest('input,select,button,a,summary,textarea,[data-dag-node],[data-plot-target]'))return;drag={x:ev.clientX,y:ev.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(ev.pointerId);viewport.classList.add('panning');});
 viewport.addEventListener('pointermove',ev=>{if(!drag)return;viewport.scrollLeft=drag.left+drag.x-ev.clientX;viewport.scrollTop=drag.top+drag.y-ev.clientY;});
 const release=()=>{drag=null;viewport.classList.remove('panning');};viewport.addEventListener('pointerup',release);viewport.addEventListener('pointercancel',release);
-document.addEventListener('keydown',ev=>{if(document.querySelector('dialog[open]')||ev.target.closest('input,textarea,select,button,summary,a'))return;if(ev.code==='Space'){ev.preventDefault();readAlong();}if(ev.key==='ArrowRight'||ev.key==='PageDown'){ev.preventDefault();moveWithinRoute(1);}if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ev.preventDefault();moveWithinRoute(-1);}if(ev.key==='Home'){ev.preventDefault();goTo(routeStart());}if(ev.key==='End'){ev.preventDefault();goTo(routeEnd());}if(ev.key==='ArrowDown'){ev.preventDefault();nextStep();}});
+document.addEventListener('keydown',ev=>{if(document.querySelector('dialog[open]')||ev.target.closest('input,textarea,select,button,summary,a,[role="button"]'))return;if(ev.code==='Space'){ev.preventDefault();readAlong();}if(ev.key==='ArrowRight'||ev.key==='PageDown'){ev.preventDefault();moveWithinRoute(1);}if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ev.preventDefault();moveWithinRoute(-1);}if(ev.key==='Home'){ev.preventDefault();goTo(routeStart());}if(ev.key==='End'){ev.preventDefault();goTo(routeEnd());}if(ev.key==='ArrowDown'){ev.preventDefault();nextStep();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopReading();stopAnimation();}});
 window.ECODeck=Object.freeze({getState:()=>({index,step,paragraph,playing:reading,speed,slides:lesson.slides.length,mode:voiceMode()?'audio':'reading',audioTime:audio?Math.max(0,(deferredSeek?desiredTime:audio.currentTime)-(current().narration?.offset||0)):0,audioDuration:current().narration?.duration||0,audioStatus:audio?{ready:audio.readyState,seeking:audio.seeking,paused:audio.paused,seekable:[...Array(audio.seekable.length)].map((_,i)=>[audio.seekable.start(i),audio.seekable.end(i)])}:null,dagState:current().kind==='causal'?value:null}),goTo:(i)=>goTo(i),play:readAlong,pause:stopReading,focusParagraph,metadata:()=>lesson.slides.map(s=>({title:s.title,script:s.script,kind:s.kind}))});
 render();
