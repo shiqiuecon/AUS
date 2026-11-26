@@ -92,13 +92,17 @@ Start with the numerator. Subtract the average ratio from each district's ratio 
 
 The denominator adds the squared ratio deviations. Divide the numerator by this denominator to obtain the slope. Negative products dominating the numerator give a downward slope.
 
-Now get the intercept. Subtract the slope times the average ratio from the average score. This puts the line through the two sample averages. Finally check the available variation. Without variation in the ratio the denominator is zero, and the data cannot determine a separate slope. The next slide derives these calculations from the loss we minimise.
+Now get the intercept. Subtract the slope times the average ratio from the average score. This puts the line through the two sample averages. Finally check the available variation. Without variation in the ratio the denominator is zero, and the data cannot determine a separate slope.
+
+The same formula applies to a binary regressor, a variable coded zero or one. In a simple regression with an intercept and both groups present, the fitted slope equals the observed average outcome in group one minus the observed average in group zero. The study design determines whether that gap measures a causal effect. The next slide derives these calculations from the loss we minimise.
 
 \(b_1=\dfrac{\sum_i(X_i-\overline X)(Y_i-\overline Y)}{\sum_i(X_i-\overline X)^2}\)
 
 \(b_0=\overline Y-b_1\overline X\)
 
 Without regressor variation, the slope cannot be separately estimated.
+
+For binary \(X\in\{0,1\}\), with an intercept and both groups present, \(b_1=\overline Y_{X=1}-\overline Y_{X=0}\).
 
 ### 08. The normal equations explain the slope formula
 

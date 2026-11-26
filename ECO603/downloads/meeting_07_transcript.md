@@ -465,7 +465,13 @@ The school grouping is based on observed language composition. Its members can d
 
 For a causal heterogeneity claim, explain how staffing variation is identified within each relevant group and whether the assumptions support comparing those effects. Also consider whether the group characteristic is measured before treatment. Interacting an endogenous variable with a group indicator generally does not remove the underlying endogeneity.
 
+Suppose we want to evaluate a separate policy that offers teacher hiring to some districts. First use the design conditions from Week One to justify a causal comparison at the same prior characteristics. Fit one outcome equation for districts with the policy and another for districts without it. Then make both predictions for each target district, using that district's own prior characteristics in both equations. Average the prediction differences across the target districts. This is one way to estimate an average effect using regression adjustment.
+
 Let X indicate programme participation, M post-programme skills, Y earnings and U prior ability. Skills can be a mediator between participation and earnings. If prior ability affects both skills and earnings, skills are also a collider on the programme-to-skills-to-ability-to-earnings alternative route. Conditioning on skills can both remove part of the programme mechanism and open selection through ability. The interaction coefficient describes functional-form heterogeneity; the DAG supplies the separate causal control argument.
+
+Teacher-hiring example. With a credible design, fit outcome means with and without the policy.
+
+Use each target district’s prior characteristics for both predictions. Average the differences.
 
 ### 32. Turn an interaction into two policy contrasts
 

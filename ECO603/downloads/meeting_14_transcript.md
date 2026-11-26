@@ -713,11 +713,13 @@ A near-zero first stage magnifies uncertainty.
 
 An instrument is weak when the first stage supplies little information about the endogenous regressor after controls. A ratio with a denominator near zero becomes sensitive to small estimation changes. For illustration, dividing minus 0.09 by 0.30 gives minus 0.30. If both population relationships are ten times smaller, sampling changes of 0.02 in the first-stage slope can move a denominator of 0.03 to 0.01 or 0.05, giving very different ratios.
 
-In such cases, the usual normal approximation for IV can be poor and conventional intervals misleading. A first-stage F statistic can be informative about strength in a specified setting, but a universal cutoff is not a theorem and strong prediction does not establish exclusion. Evaluate strength using diagnostics and inference suited to the actual number of instruments, covariance structure and target.
+In such cases, the usual normal approximation for IV can be poor and conventional intervals misleading. In the first stage, test the coefficients on the excluded instruments, the variables used as instruments that do not enter the demand equation directly. Leave the included control coefficients unrestricted. With one excluded instrument, the usual first-stage F statistic for that test is its t statistic squared. A rule of thumb for a conventional F statistic has a particular setting. Strength, exclusion and exogeneity each need their own evidence. Evaluate strength using diagnostics and inference suited to the actual number of instruments, covariance structure and target.
 
 Weak first stage → denominator uncertainty can dominate the ratio.
 
 Strength and validity are different requirements.
+
+The displayed robust F tests the excluded tax slope with the included controls in the regression.
 
 ```text
 . estat firststage

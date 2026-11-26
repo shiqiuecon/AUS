@@ -248,11 +248,15 @@ Let S equal one when an observation is included in the analysed file. For the st
 
 This does not guarantee representativeness or support for every population prediction. Selecting districts by observed enrolment can remove part of the input range. Selection related to an outcome or an unobserved cause can instead alter the conditional error mean. The reason for missingness, the functional form and the target population all matter; a label such as complete cases alone does not establish validity.
 
+Suppose some districts have missing income records. You could enter zero for a missing value and add an indicator to mark the missing entries. That keeps those districts in the fit. The indicator still leaves the differences in their true incomes unaccounted for. If income and staffing are related, the staffing slope can be biased even when the income entries go missing by chance. A complete-case fit uses the districts with all required variables. Use the selection argument above to assess that fit.
+
 \(S=1\): included observation; key mean condition: \(E[u\mid X,S=1]=0\).
 
 One sufficient restriction: \(P(S=1\mid X,u)=P(S=1\mid X)\), with \(E[u\mid X]=0\).
 
 Preserved conditional coefficients do not imply population representativeness.
+
+Filling missing inputs with zeros and adding an indicator can bias another slope, even if entries go missing by chance.
 
 ### 15. Leverage and influence are different
 
