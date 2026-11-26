@@ -52,7 +52,7 @@ Law of large numbers: sample averages approach population means under stated con
 
 Consistent estimator: concentrates near its target as the sample grows.
 
-[Try the coin tosses](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=4&v=cc8124fcbfdb). Follow the running share as the tosses accumulate. Try a longer sequence and compare where the share ends up.
+[Try the coin tosses](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=4&v=0e83c7863fef). Follow the running share as the tosses accumulate. Try a longer sequence and compare where the share ends up.
 
 ### 05. Measure co-movement before calculating the limit
 
@@ -86,7 +86,7 @@ The graph uses 300 Stata-generated replications at each sample size, 100 and 1,0
 
 Select the larger sample size. Both collections should become less spread out, but they need not move toward the same centre. The short estimates concentrate near 1.5, while the controlled estimates concentrate near one. These are simulation results, not observed labour-market effects. They illustrate the specific assumptions we built into the experiment.
 
-[Run new samples](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=7&v=cc8124fcbfdb). Compare the two regressions at 100 and 1,000 districts. Which estimate gets more precise? Which stays centered on the known effect?
+[Run new samples](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=7&v=0e83c7863fef). Compare the two regressions at 100 and 1,000 districts. Which estimate gets more precise? Which stays centered on the known effect?
 
 ### 08. Read one large generated sample
 
@@ -122,7 +122,7 @@ Average of independent zero-or-one draws, each with mean 1/2: \(SD(\overline Y)=
 
 Coefficient analogue: \(\sqrt n(\widehat\beta-\beta)\overset d\longrightarrow N(0,\Omega)\)
 
-[Explore the sampling distribution](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=9&v=cc8124fcbfdb). Increase the sample size with the raw share on screen. Then switch to the scaled difference and try the same sizes. What happens to the spread in each view?
+[Explore the sampling distribution](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=06&slide=9&v=0e83c7863fef). Increase the sample size with the raw share on screen. Then switch to the scaled difference and try the same sizes. What happens to the spread in each view?
 
 ### 10. Square-root sample-size gains require a comparable sampling model
 

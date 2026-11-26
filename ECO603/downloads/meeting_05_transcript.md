@@ -165,7 +165,7 @@ Select prior education as a control in the training diagram. Which alternative r
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=05&slide=12&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=05&slide=12&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 **Practice:** Select prior education as a control in the training diagram. Which alternative route remains? If the analyst changes conventional SEs to heteroskedasticity-robust SEs, does that close the route or change the training coefficient on an identical specification and sample?
 

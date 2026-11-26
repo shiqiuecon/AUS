@@ -1,10 +1,10 @@
-import {dagInitialState} from './dag.mjs?v=bf505102fb5d';
+import {dagInitialState} from './dag.mjs?v=cf000bedae04';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=955b879eba40';
-import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=eb60886c7a34';
-import {openExperiment} from './experiment-view.mjs?v=73a5648358c2';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=d0670c9ab2d9';
+import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=f221e0b5f131';
+import {openExperiment} from './experiment-view.mjs?v=90d8d15bbfde';
 import {bindPlotControls,plotAction} from './plot-controls.mjs?v=d7dada50761d';
-import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=67f857b36df0';
+import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=73e3f1f37c3d';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
 const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];

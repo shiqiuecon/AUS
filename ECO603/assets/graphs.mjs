@@ -1,6 +1,6 @@
-import {dagSVG} from './dag.mjs?v=bf505102fb5d';
+import {dagSVG} from './dag.mjs?v=cf000bedae04';
 import {data,escapeHTML as e} from './common.mjs?v=28599d1f2c26';
-import {visualLayer} from './visual-reveals.mjs?v=67f857b36df0';
+import {visualLayer} from './visual-reveals.mjs?v=73e3f1f37c3d';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
 const X=(v,lo,hi)=>85+(v-lo)/(hi-lo)*765;

@@ -241,7 +241,7 @@ If the research question is causal, specify the intervention and identify a cred
 
 The selection node S means applying for a mortgage; every observed application has S equal to one. In this possible graph, payment burden and unmeasured financial readiness both affect applying, while readiness also affects denial. Selecting applicants can open the shared-consequence route. Predicting denial within the observed applicant population is still a meaningful task; a causal burden effect or a claim about all potential borrowers needs additional selection and identification arguments.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=15&slide=15&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=15&slide=15&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 ### 16. Write a compact applied research memo
 
@@ -387,7 +387,7 @@ All observed records are mortgage applicants. In the diagram, payment burden and
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=15&slide=28&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=15&slide=28&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 **Practice:** All observed records are mortgage applicants. In the diagram, payment burden and unmeasured readiness affect applying, while readiness also affects denial. Trace the route opened by selecting applicants. Does this make within-applicant prediction meaningless, or does it change the causal claim that needs defending?
 

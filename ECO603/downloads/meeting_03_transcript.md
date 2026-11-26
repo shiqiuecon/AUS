@@ -229,7 +229,7 @@ New application: training → earnings.
 
 Prior education is a proposed common cause; motivation remains unmeasured.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=17&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=17&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 ### 18. Adjustment changes a comparison; it does not guarantee identification
 
@@ -365,7 +365,7 @@ Confounder: a prior common influence
 
 Mediator: part of the effect pathway
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=27&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=27&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 ### 28. Why a collider can be a bad control
 
@@ -379,7 +379,7 @@ The graph makes scholarship selection the common consequence of preparation and 
 
 \(\text{Preparation}\rightarrow\text{Selection}\leftarrow\text{Need}\)
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=28&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=28&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 ### 29. Confounder or mediator?
 
@@ -497,7 +497,7 @@ Training can affect earnings directly and through acquired skills. The target is
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=39&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=03&slide=39&v=0e83c7863fef). Try an available control and trace which routes open or close.
 
 **Practice:** Training can affect earnings directly and through acquired skills. The target is the total effect of training. Use the diagram to explain what conditioning on acquired skills removes. Does the graph alone guarantee that an adjusted regression identifies a direct effect?
 

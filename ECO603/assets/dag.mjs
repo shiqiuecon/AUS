@@ -1,5 +1,5 @@
 /* Pure graph logic: path blocking is independent of the DOM and rendering. */
-import {visualLayer} from './visual-reveals.mjs?v=67f857b36df0';
+import {visualLayer} from './visual-reveals.mjs?v=73e3f1f37c3d';
 
 const DAG_COLORS={ink:'#15324d',causal:'#087e83',alternative:'#b64e3a',condition:'#ba8a3c',blocked:'#657387',line:'#d2dce2'};
 const dagEscape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

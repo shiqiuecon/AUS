@@ -10,18 +10,15 @@ export function visualSnapshot(stage) {
 }
 
 function revealFrames(layer) {
- if (layer.dataset.effect !== 'trace' || !CSS.supports('clip-path','inset(0 100% 0 0)')) {
+ // Use the marks' own box so a resized slide clips its first and last
+ // frames in the same coordinates as the plotted line and endpoint labels.
+ const end='inset(-18px -18px -18px -20px) fill-box';
+ if (layer.dataset.effect !== 'trace' || !CSS.supports('clip-path',end) || layer.getBBox().width<1) {
   return [{opacity:.28},{opacity:1}];
  }
- const box = layer.getBBox();
- const view = layer.ownerSVGElement.viewBox.baseVal;
- if (!view.width || box.width < 1) return [{opacity:.28},{opacity:1}];
- const edge = x => Math.max(0,100*(1-(x-view.x)/view.width));
- const from = edge(box.x-8);
- const to = edge(box.x+box.width+8);
  return [
-  {clipPath:`inset(-16px ${from}% -16px -16px)`},
-  {clipPath:`inset(-16px ${to}% -16px -16px)`}
+  {clipPath:'inset(-18px calc(100% + 10px) -18px -20px) fill-box'},
+  {clipPath:end}
  ];
 }
 

@@ -1,8 +1,8 @@
 import {escapeHTML,typeset} from './common.mjs?v=28599d1f2c26';
-import {analyseDAG,dagControlHTML,dagInitialState,dagSVG} from './dag.mjs?v=bf505102fb5d';
-import {dagExperimentIds} from './experiments.mjs?v=7bf398ef0f4e';
-import {openExperiment} from './experiment-view.mjs?v=73a5648358c2';
-import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=67f857b36df0';
+import {analyseDAG,dagControlHTML,dagInitialState,dagSVG} from './dag.mjs?v=cf000bedae04';
+import {dagExperimentIds} from './experiments.mjs?v=81c9cd16191a';
+import {openExperiment} from './experiment-view.mjs?v=90d8d15bbfde';
+import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=73e3f1f37c3d';
 
 const dagSpecial = {
  iv: analysis => analysis.openCausal.length>1
