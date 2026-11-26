@@ -1,6 +1,6 @@
 import {dagInitialState,dagControlHTML,dagPathHTML} from './dag.mjs?v=50e65922206d';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=4d2768d6287f';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=dedc55da7e1c';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
 const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];
@@ -8,7 +8,7 @@ if(legacy){params.set('meeting',legacy.meeting);params.set('slide',legacy.slide)
 const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
 let index=Math.max(0,Math.min(lesson.slides.length-1,(Math.trunc(Number(params.get('slide')))||1)-1));
-let step=0,value=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,speed=1,timer=0,following=true,highlights=true,ended=false;
+let step=0,value=0,initialGraphValue=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,speed=1,timer=0,following=true,highlights=true,ended=false;
 const current=()=>lesson.slides[index];
 const coreCount=lesson.delivery.core;
 const inAppendix=()=>index>=coreCount;
@@ -17,15 +17,27 @@ const routeEnd=()=>inAppendix()?lesson.slides.length-1:coreCount-1;
 const routeName=()=>inAppendix()?'Appendix':'Core lesson';
 const practiceStatus=()=>index===routeEnd()?'Work through the practice to finish this section.':'Work through the practice, then select Next.';
 const audio=lesson.narration?new Audio():null;
-let audioFrame=0,audioRequest=0,desiredTime=0,eventSignature='',finishing=false;
+let audioFrame=0,audioRequest=0,desiredTime=0,deferredSeek=false,eventSignature='',finishing=false;
 if(audio){audio.preload='metadata';audio.src=/^(data:|blob:)/.test(lesson.narration.src)?lesson.narration.src:url(`${lesson.narration.src}?v=${data.revision}`);audio.preservesPitch=true;}
 const voiceMode=()=>!!audio&&!!current().narration&&!!$('#voice-enabled')?.checked;
 const clock=t=>`${Math.floor(Math.max(0,t)/60)}:${String(Math.floor(Math.max(0,t)%60)).padStart(2,'0')}`;
-function seekAudio(relative){
+function seekAudio(relative,defer=false){
  if(!audio||!current().narration)return;
  const c=current().narration;desiredTime=c.offset+Math.max(0,Math.min(c.duration,relative));
- if(audio.readyState)audio.currentTime=desiredTime;
- updateAudio(relative);
+ deferredSeek=defer;
+ if(audio.readyState&&!defer&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;
+ eventSignature='';
+ updateAudio(desiredTime-c.offset);
+}
+function setGraphValue(next){
+ if(current().kind==='causal'){
+  value={conditioned:[...next.conditioned],extra:next.extra};
+  $('#visual').querySelectorAll('[data-condition]').forEach(el=>el.checked=value.conditioned.includes(el.dataset.condition));
+  const extra=$('#visual [data-dag-extra]');if(extra)extra.checked=value.extra;
+ }else{
+  value=next;
+  const control=$('#graph-input');if(control)control.value=value;
+ }
 }
 function updateAudio(relative){
  const c=current().narration;if(!c)return;
@@ -34,17 +46,20 @@ function updateAudio(relative){
  $('#audio-time').textContent=`${clock(time)} / ${clock(c.duration)}`;
  $('#audio-seek').setAttribute('aria-valuetext',`${clock(time)} of ${clock(c.duration)}`);
  let part=0;for(const cue of c.cues)if(cue.time<=time+.02)part=cue.paragraph;
- if(part!==paragraph)focusParagraph(part);
+ const newParagraph=part!==paragraph;
+ if(newParagraph)focusParagraph(part);
  const active=(c.events||[]).filter(ev=>ev.time<=time+.02);
- const signature=JSON.stringify(active);if(signature===eventSignature)return;eventSignature=signature;
+ const signature=JSON.stringify(active);if(signature===eventSignature&&!newParagraph)return;
+ const cuesChanged=signature!==eventSignature;eventSignature=signature;
  const graphEvent=[...active].reverse().find(ev=>ev.dag||ev.step!==undefined);
- if(graphEvent){
-  const limit=stepLimit();step=Math.min(limit,graphEvent.dag?.step??graphEvent.step);
-  if(graphEvent.dag){value={conditioned:[...graphEvent.dag.conditioned],extra:graphEvent.dag.extra};$('#visual').querySelectorAll('[data-condition]').forEach(n=>n.checked=value.conditioned.includes(n.dataset.condition));const extra=$('#visual [data-dag-extra]');if(extra)extra.checked=value.extra;}
-  else if(Number.isFinite(graphEvent.value)){value=graphEvent.value;const control=$('#graph-input');if(control)control.value=value;}
+ if(cuesChanged&&graphKinds.has(current().kind)){
+  const valueEvent=[...active].reverse().find(ev=>Number.isFinite(ev.value));
+  step=Math.min(stepLimit(),graphEvent?.dag?.step??graphEvent?.step??0);
+  setGraphValue(graphEvent?.dag??valueEvent?.value??initialGraphValue);
+  progress=1;
   updateGraph();
  }
- const point=[...active].reverse().find(ev=>ev.target==='point');
+ const point=[...active].reverse().find(ev=>ev.target==='point'&&ev.time>=c.cues[part].time-.03);
  if(point&&highlights){document.querySelectorAll('.point-current').forEach(n=>n.classList.remove('point-current'));document.querySelectorAll('#slide-body .concept-line')[point.part]?.classList.add('point-current');}
  document.querySelectorAll('.spoken-row').forEach(n=>n.classList.remove('spoken-row'));
  const row=[...active].reverse().find(ev=>ev.target==='row');
@@ -71,16 +86,19 @@ function tickAudio(){
 async function startAudio(){
  if(!voiceMode())return;
  const c=current().narration,request=++audioRequest,slideIndex=index;
- const position=audio.seeking?desiredTime:audio.currentTime;
+ const position=deferredSeek||audio.seeking?desiredTime:audio.currentTime;
+ stopAnimation();
  if(position<c.offset-.05||position>=c.offset+c.duration-.05)seekAudio(0);
+ else if(deferredSeek)seekAudio(position-c.offset);
+ else{eventSignature='';updateAudio(Math.max(0,position-c.offset));}
  reading=true;$('#play').textContent='Pause';$('#play').setAttribute('aria-pressed','true');audio.playbackRate=speed;
  try{await audio.play();if(request!==audioRequest||!reading||slideIndex!==index)return;cancelAnimationFrame(audioFrame);audioFrame=requestAnimationFrame(tickAudio);}
  catch{if(request!==audioRequest)return;stopReading();$('#reading-status').textContent='Audio could not play. Select Play to retry, or turn Narration off to read along.';}
 }
 if(audio){
- audio.addEventListener('loadedmetadata',()=>{audio.currentTime=desiredTime;});
- audio.addEventListener('timeupdate',()=>{if(voiceMode()&&!audio.seeking){updateAudio();if(reading&&audio.currentTime>=current().narration.offset+current().narration.duration-.025)finishAudioSlide();}});
- audio.addEventListener('seeked',()=>{if(voiceMode())updateAudio();});
+ audio.addEventListener('loadedmetadata',()=>{if(!deferredSeek&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;});
+ audio.addEventListener('timeupdate',()=>{if(reading&&voiceMode()&&!audio.seeking){updateAudio();if(audio.currentTime>=current().narration.offset+current().narration.duration-.025)finishAudioSlide();}});
+ audio.addEventListener('seeked',()=>{if(voiceMode()&&!deferredSeek)updateAudio();});
  audio.addEventListener('ended',finishAudioSlide);
  audio.addEventListener('error',()=>{if(reading){stopReading();$('#reading-status').textContent='Audio could not load. Select Play to retry.';}});
 }
@@ -100,17 +118,19 @@ function showVisual(){
  const s=current();
  if(s.kind==='output'){$('#visual').innerHTML=`<pre class="stata" tabindex="0" aria-label="Actual Stata output">${s.output.split("\n").map(line=>`<span class="stata-row">${e(line)}</span>`).join("")}</pre>${s.output_note?`<p class="graph-caption">${e(s.output_note)}</p>`:''}`;return;}
  if(!graphKinds.has(s.kind)){$('#visual').innerHTML='';return;}
- if(s.kind==='causal')value=dagInitialState(data.dags[s.graph.id]);
+ value=s.kind==='causal'?dagInitialState(data.dags[s.graph.id]):0;
  let controls='<button id="zoom-graph" type="button" aria-pressed="false">Enlarge graph</button>';
  const config={fit:['Candidate slope',-5,1,.01,data.stats.school_simple.slope],residual:['Choose district',1,420,1,40],arsim:['Error persistence',-.9,.95,.05,.65],hac:['Maximum covariance lag',0,12,1,4]}[s.kind]||chartControls[s.graph?.scenario]||(s.graph?.scenario==='arsim'?['Error persistence',-.9,.95,.05,.65]:null);
  if(config){value=config[4];controls+=`<label for="graph-input">${config[0]}</label><input id="graph-input" type="range" min="${config[1]}" max="${config[2]}" step="${config[3]}" value="${value}"><output id="control-value" for="graph-input"></output>`;}
+ initialGraphValue=value;
  if(['schools','serial','traffic'].includes(s.kind)||['ovb','fwl','retail','ivfirst','traffic'].includes(s.graph?.scenario))controls+='<button id="animate" type="button">Animate reveal</button>';
  if(s.kind==='causal')controls+=dagControlHTML(data.dags[s.graph.id],value,'lesson-dag');
  controls+='<button id="reset-graph" type="button">Reset graph</button>';
  $('#visual').innerHTML=`<div class="graph-stage"></div><p class="graph-caption">${e(s.kind==='chart'?(scenarioCaptions[s.graph.scenario]||captions[s.graph.scenario]):captions[s.kind])}</p><div class="graph-control">${controls}</div>${s.kind==='causal'?'<details class="path-analysis"><summary>Trace the paths</summary><ul id="dag-paths"></ul></details>':''}`;
  $('#visual').querySelectorAll('[data-condition],[data-dag-extra]').forEach(el=>el.onchange=()=>{stopReading();eventSignature='';value={conditioned:[...$('#visual').querySelectorAll('[data-condition]:checked')].map(n=>n.dataset.condition),extra:!!$('#visual [data-dag-extra]')?.checked};step=2;updateGraph();fitSlide();});
- $('#graph-input')?.addEventListener('input',ev=>{stopReading();stopAnimation();value=Number(ev.target.value);updateGraph();});
- $('#reset-graph').onclick=()=>{stopReading();eventSignature='';stopAnimation();step=0;progress=1;if(s.kind==='causal'){value=dagInitialState(data.dags[s.graph.id]);$('#visual').querySelectorAll('[data-condition]').forEach(el=>el.checked=value.conditioned.includes(el.dataset.condition));const extra=$('#visual [data-dag-extra]');if(extra)extra.checked=value.extra;}updateGraph();};
+ const controlStep={ovb:1,didHeadStart:2,didConditional:2}[s.graph?.scenario]??0;
+ $('#graph-input')?.addEventListener('input',ev=>{stopReading();stopAnimation();step=Math.max(step,controlStep);progress=1;setGraphValue(Number(ev.target.value));updateGraph();});
+ $('#reset-graph').onclick=()=>{stopReading();stopAnimation();step=0;progress=1;setGraphValue(initialGraphValue);updateGraph();};
  $('#animate')?.addEventListener('click',()=>{
   stopReading();
   if(animating){stopAnimation();return;}
@@ -182,7 +202,8 @@ function render(){
  $('#voice-enabled').disabled=!audio;$('#audio-seek').disabled=!voiceMode();
  $('.audio-progress').hidden=!voiceMode();
  $('#audio-download').hidden=!audio;if(audio){$('#audio-download').href=audio.src;$('#audio-download').download=`ECO603_${key}.m4a`;}
- if(voiceMode())seekAudio(0);
+ // Reset visual cues without requesting audio while browsing paused slides.
+ if(voiceMode())seekAudio(0,true);
  $('#slide-viewport').scrollTo(0,0);fitSlide();document.fonts.ready.then(fitSlide);
 }
 function fitSlide(){
@@ -212,8 +233,8 @@ $('#class-practice').href=url(`practice.html?week=${Number(key)}&v=${data.revisi
 $('#class-plan').onclick=()=>{stopReading();plan.showModal();};
 $('#close-plan').onclick=()=>plan.close();
 $('#speed').onchange=()=>{speed=Number($('#speed').value);if(audio)audio.playbackRate=speed;if(reading&&!voiceMode())scheduleReading();};
-$('#audio-seek').oninput=()=>seekAudio(Number($('#audio-seek').value));
-$('#voice-enabled').onchange=()=>{stopReading();$('.audio-progress').hidden=!voiceMode();$('#audio-seek').disabled=!voiceMode();if(voiceMode())seekAudio(current().narration.cues[paragraph].time);stopReading();};
+$('#audio-seek').oninput=()=>seekAudio(Number($('#audio-seek').value),!reading);
+$('#voice-enabled').onchange=()=>{stopReading();$('.audio-progress').hidden=!voiceMode();$('#audio-seek').disabled=!voiceMode();if(voiceMode())seekAudio(current().narration.cues[paragraph].time,true);stopReading();};
 const slideOptions=lesson.slides.map((s,i)=>`<option value="${i}">${i+1}. ${e(s.title)}</option>`);
 $('#slide-picker').innerHTML=`<optgroup label="Core lesson">${slideOptions.slice(0,coreCount).join('')}</optgroup><optgroup label="Appendix">${slideOptions.slice(coreCount).join('')}</optgroup>`;
 $('#slide-picker').onchange=()=>goTo(Number($('#slide-picker').value));
@@ -232,5 +253,5 @@ viewport.addEventListener('pointermove',ev=>{if(!drag)return;viewport.scrollLeft
 const release=()=>{drag=null;viewport.classList.remove('panning');};viewport.addEventListener('pointerup',release);viewport.addEventListener('pointercancel',release);
 document.addEventListener('keydown',ev=>{if(document.querySelector('dialog[open]')||ev.target.closest('input,textarea,select,button,summary,a'))return;if(ev.code==='Space'){ev.preventDefault();readAlong();}if(ev.key==='ArrowRight'||ev.key==='PageDown'){ev.preventDefault();moveWithinRoute(1);}if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ev.preventDefault();moveWithinRoute(-1);}if(ev.key==='Home'){ev.preventDefault();goTo(routeStart());}if(ev.key==='End'){ev.preventDefault();goTo(routeEnd());}if(ev.key==='ArrowDown'){ev.preventDefault();nextStep();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopReading();stopAnimation();}});
-window.ECODeck=Object.freeze({getState:()=>({index,step,paragraph,playing:reading,speed,slides:lesson.slides.length,mode:voiceMode()?'audio':'reading',audioTime:audio?Math.max(0,audio.currentTime-(current().narration?.offset||0)):0,audioDuration:current().narration?.duration||0,audioStatus:audio?{ready:audio.readyState,seeking:audio.seeking,paused:audio.paused,seekable:[...Array(audio.seekable.length)].map((_,i)=>[audio.seekable.start(i),audio.seekable.end(i)])}:null,dagState:current().kind==='causal'?value:null}),goTo:(i)=>goTo(i),play:readAlong,pause:stopReading,focusParagraph,metadata:()=>lesson.slides.map(s=>({title:s.title,script:s.script,kind:s.kind}))});
+window.ECODeck=Object.freeze({getState:()=>({index,step,paragraph,playing:reading,speed,slides:lesson.slides.length,mode:voiceMode()?'audio':'reading',audioTime:audio?Math.max(0,(deferredSeek?desiredTime:audio.currentTime)-(current().narration?.offset||0)):0,audioDuration:current().narration?.duration||0,audioStatus:audio?{ready:audio.readyState,seeking:audio.seeking,paused:audio.paused,seekable:[...Array(audio.seekable.length)].map((_,i)=>[audio.seekable.start(i),audio.seekable.end(i)])}:null,dagState:current().kind==='causal'?value:null}),goTo:(i)=>goTo(i),play:readAlong,pause:stopReading,focusParagraph,metadata:()=>lesson.slides.map(s=>({title:s.title,script:s.script,kind:s.kind}))});
 render();

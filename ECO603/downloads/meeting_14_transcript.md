@@ -215,6 +215,8 @@ Assumed untreated eligible post rate: \(40+(63-60)=43\%\).
 
 Parallel trends concerns the missing no-expansion change, not equal starting levels.
 
+Move the slider to vary the assumed untreated path. The four observed rates and the raw five-point DiD stay fixed.
+
 ### 17. No anticipation and stable comparison units also matter
 
 Define when treatment can begin to affect behaviour.
@@ -603,7 +605,7 @@ Two-stage least squares, 2SLS, first extracts regressor variation predicted by t
 
 Its ordinary SE formula does not provide the appropriate IV covariance calculation. Use a dedicated estimator such as ivregress 2sls with a justified covariance option. The command recognises the structural residual and the generated-regressor calculation. This distinction separates a helpful coefficient demonstration from a valid inferential procedure.
 
-\(\texttt{ivregress 2sls logq (logp = salestax), vce(robust)}\)
+ivregress 2sls logq (logp = salestax), vce(robust)
 
 ### 42. Compare the actual IV coefficient with its ratio
 
@@ -681,11 +683,11 @@ A binary encouragement example introduces the treatment-response groups.
 
 For a separate constructed example, randomly assign an offer of a training place. Z is the zero-or-one offer and D is zero-or-one attendance. A complier attends if offered but does not attend without the offer. An always-taker attends either way; a never-taker attends neither way. A defier would attend only without the offer.
 
-Monotonicity rules out defiers for this direction of encouragement: the offer cannot make anyone less likely to attend in the individual potential-attendance comparison. It does not require everyone to attend or every effect to be positive. Suppose the offer raises attendance from 0.30 to 0.60 and raises average scores by 0.90 points. We next explain whose causal effect the ratio three can represent under the additional assumptions.
+Monotonicity rules out defiers for this direction of encouragement. It does not require everyone to attend or every effect to be positive. Suppose the offer raises attendance from 0.30 to 0.60 and raises average scores by 0.90 points. We next explain whose causal effect the ratio three can represent under the additional assumptions.
 
 Compliers: attend only if offered. Always-takers/never-takers: unchanged attendance.
 
-Monotonicity: the offer does not reduce any individual’s attendance.
+Let \(D(z)\) be the person’s attendance under offer status \(z\). Monotonicity requires \(D(1)\ge D(0)\) for every person.
 
 Constructed ratio: \(0.90/(0.60-0.30)=3\) score points.
 

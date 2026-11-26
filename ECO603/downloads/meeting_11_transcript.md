@@ -96,11 +96,11 @@ Now add a current input to the autoregression, with input coefficient 0.2 and rh
 
 As the path settles, the same long-run difference appears on both sides of the recursion. Call it delta Y. Then delta Y equals 0.6 times delta Y plus 0.2. Solving gives 0.5. More generally, the stable long-run multiplier is beta divided by one minus rho. This argument needs stability and a permanent input path. It is different from summing only the directly included input-lag coefficients.
 
-\(\Delta Y_h=0.6\Delta Y_{h-1}+0.2:\quad0.20,0.32,0.392,\ldots\)
+At horizon \(h\), \(\Delta Y_h\) is the gap between the policy path and the baseline path. Both start at the same value.
 
-\(\Delta Y=0.6\Delta Y+0.2\Rightarrow\Delta Y=0.5\)
+\(\Delta Y_h=0.6\Delta Y_{h-1}+0.2:\quad 0.20,0.32,0.392,\ldots\)
 
-Long-run multiplier: \(\beta/(1-\rho)\) for a stable recursion.
+Long-run gap: \(\Delta Y=0.6\Delta Y+0.2\Rightarrow\Delta Y=0.5\), using \(\beta/(1-\rho)\) in the stable model.
 
 ### 08. Inspect persistence in the accident model
 

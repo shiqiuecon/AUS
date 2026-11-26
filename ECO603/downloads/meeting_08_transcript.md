@@ -66,11 +66,11 @@ Use the fitted residuals as information about the errors. Square them, then regr
 
 With the I I D option, Stata multiplies that R squared by the sample size. Under the constant-variance null, a correct mean model and suitable independent sampling and moment conditions, compare the result with a chi-squared distribution with two degrees of freedom. The actual statistic is 29.50 and the p-value is below 0.001. That is evidence of unequal spread in this model. The test addresses variance, so it cannot tell us whether staffing is a credible causal comparison.
 
-\(H_0:\operatorname{Var}(u_i\mid X_i)=\sigma^2\): constant variance; \(X_i\) denotes the included regressors.
+\(H_0:\operatorname{Var}(u_i\mid X_i)=\sigma^2\), where \(X_i\) lists the included regressors.
 
-Regress \(\widehat u_i^2\) on a constant, staffing and language share.
+Regress \(\widehat u_i^2\) on an intercept, staffing and language share.
 
-Test statistic: \(nR^2_{\mathrm{aux}}\), compared with \(\chi^2_2\).
+The iid option uses the studentised statistic \(nR^2_{\mathrm{aux}}\) and compares it with a \(\chi^2_2\) reference.
 
 ```text
 . estat hettest str el, iid
@@ -502,7 +502,7 @@ Run lab_06.do. Identify the known true coefficient in the first experiment, the 
 
 Then use the actual schools.csv data. Fit score on staffing, language share and income; identify the largest Cook distance and compare the staffing slope with and without that district. Cook distance summarises how much omitting a case changes the fitted regression. Report this as sensitivity, not an instruction to delete it. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-**Practice:** Then use the actual schools.csv data. Fit score on staffing, language share and income; identify the largest Cook distance and compare the staffing slope with and without that district. Cook distance summarises how much omitting a case changes the fitted regression. Report this as sensitivity, not an instruction to delete it. Keep your commands, log, output and interpretation.
+**Practice:** Run lab_06.do. Identify the true coefficient, the short slope's probability limit and the two fits from 4,000 observations. Compare the two sampling distributions as sample size grows. Explain the separate measurement-error result. In schools.csv, regress score on staffing, language share and income. Identify the largest Cook distance and compare the staffing slope with and without that district. Report the result as sensitivity analysis. Retain your commands, log and interpretation.
 
 ### 37. Separate simulation truth from estimated evidence: explanation
 

@@ -78,11 +78,11 @@ Substitute the supporting equation for Z in the longer score equation. Beta two 
 
 The short slope includes the longer staffing slope and the extra product. Delta one tells us how language share moves with staffing. Beta two tells us how score moves with language share in the longer model. We need both signs to predict how omitting Z changes the slope.
 
-\(Z=\delta_0+\delta_1X+v\)
+Auxiliary mean model: \(E(Z\mid X)=\delta_0+\delta_1X\); its remainder is \(v=Z-E(Z\mid X)\).
 
-\(Y=(\beta_0+\beta_2\delta_0)+(\beta_1+\beta_2\delta_1)X+(\beta_2v+u)\)
+Substitute: \(Y=(\beta_0+\beta_2\delta_0)+(\beta_1+\beta_2\delta_1)X+(\beta_2v+u)\).
 
-Short slope minus longer slope: \(\beta_2\delta_1\)
+Population short slope minus population long slope: \(\beta_2\delta_1\).
 
 ### 08. Predict the direction before seeing the estimate
 
@@ -389,9 +389,11 @@ Locate the variable in time. Ask whether it precedes the policy and helps determ
 
 Follow the calculation and interpret its units.
 
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want. A direct-effect interpretation needs additional assumptions, not merely an added control.
 
-No. Skill is a mediator on a causal path from training to earnings. Holding it fixed changes the estimand, meaning the population quantity we want and may introduce other bias. A direct-effect interpretation needs additional assumptions, not merely an added control.
+Skill lies on the pathway from training to earnings. Holding it fixed removes a mechanism in the total-effect question.
+
+A direct-effect interpretation requires assumptions about assignment and about common causes of skill and earnings.
 
 ### 31. Keep the sample fixed
 

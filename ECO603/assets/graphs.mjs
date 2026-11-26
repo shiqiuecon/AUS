@@ -167,10 +167,21 @@ export const scenarioCaptions={
  ivfirst:'Actual 1995 state price and tax data. The first stage describes relevance; it cannot establish the exclusion restriction.',
  binary:'Actual fitted LPM, probit and logit predictions from the same 2,380 applications. Payment-to-income is a fraction; these are descriptive fits.'
 };
-export const chartControls={ovb:['Contribution of omitted factor',0,1,.05,1],test:['Hypothesised staffing slope',-3,1,.05,0],sampling:['Sample size (100 or 1,000)',0,1,1,0],panel:['Selected state',0,47,1,0],lp:['Response horizon (quarters)',0,8,1,4],binary:['Payment-to-income ratio',0,1.5,.01,.4]};
+export const chartControls={ovb:['Illustrative weight on omitted contribution',0,1,.05,1],test:['Hypothesised staffing slope',-3,1,.05,0],sampling:['Sample size (100 or 1,000)',0,1,1,0],panel:['Selected state',0,47,1,0],lp:['Response horizon (quarters)',0,8,1,4],binary:['Payment-to-income ratio',0,1.5,.01,.4],arResponse:['Autoregressive coefficient rho',-.9,1,.05,.6]};
 function extendedChart(scenario,step,value,progress){
  const extra=appliedExtension(scenario,step,value,progress);if(extra)return extra;
  const ds=data.datasets,est=data.estimates;
+ if(scenario==='arResponse'){
+  const rho=Number(value),lo=-1,hi=1.2;
+  let s=axes(0,8,lo,hi,[0,2,4,6,8],[-1,-.5,0,.5,1],'Periods after the innovation','Outcome difference');
+  s+=line(85,Y(0,lo,hi),850,Y(0,lo,hi),ink,1,'4 4');
+  if(step>0)s+=line(85,Y(1,lo,hi),850,Y(1,lo,hi),gold,2,'6 5')+
+    text(835,Y(1,lo,hi)-10,'Unit-root benchmark: rho = 1',17,'end',gold);
+  const response=Array.from({length:9},(_,h)=>[X(h,0,8),Y(rho**h,lo,hi)]);
+  s+=pathLine(response,teal,3)+response.map(([x,y])=>circle(x,y,5,teal,1)).join('');
+  s+=text(835,28,'One-unit innovation · rho = '+rho.toFixed(2),19,'end');
+  return svg(s,'AR(1) response to a one-time unit innovation. Each point is rho raised to the horizon power.');
+ }
  if(scenario==='ovb'){
   const b=est['02'].short.b+(1-Number(value))*(est['02'].long.b-est['02'].short.b);
   const r=scatter(ds.fwl,'str','score',b,`Short ${est['02'].short.b.toFixed(2)} · adjusted ${est['02'].long.b.toFixed(2)}`,{step,progress,xlabel:'Students per teacher',ylabel:'Test score (points)'});
@@ -250,6 +261,7 @@ function extendedChart(scenario,step,value,progress){
 }
 
 Object.assign(scenarioCaptions,{
+ arResponse:'Difference between two outcome paths from the same initial state. The innovation differs by one unit at horizon zero. All later inputs are identical.',
  headstartTime:'Constructed time-allocation diagram adapted from Qiu’s Head Start lesson. Points illustrate feasible choices, not estimated responses.',
  didHeadStart:'Constructed Head Start employment-rate example using the original A/B/C/D sequence. Dashed untreated paths are assumptions; these are not estimates from the reading.',
  didConditional:'Constructed two-location comparison adapted from the Overleaf lesson. Within-location trends and effects are specified for the illustration.',

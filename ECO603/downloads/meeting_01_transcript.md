@@ -192,7 +192,7 @@ Compare districts with similar prior background.
 
 Suppose we compare districts at the same prior-support value. This is conditioning on C: restrict the comparison to a fixed value or account for it in a model. It changes which districts are compared; it does not set anyone's staffing by intervention. Using C as a control means holding its observed value fixed in the comparison. A regression is a statistical model relating an average outcome to stated explanatory variables; it can represent such a conditional comparison. Select C in the graph. The common-cause route through C closes, while the staffing-to-score arrow remains.
 
-On this path, C is a non-collider because its two neighboring arrows do not both point into it. Conditioning on a non-collider blocks that path. In the simple graph, holding support fixed closes the only drawn backdoor. A regression that correctly represents the conditional relationship could use that comparison, provided the needed staffing values occur at the support levels being compared. This availability is called overlap or support. The conclusion depends on the graph being adequate, on measuring C appropriately and on the comparison being available in the data.
+In the simple graph, holding support fixed closes the only drawn backdoor. A regression that correctly represents the conditional relationship could use that comparison, provided the needed staffing values occur at the support levels being compared. This availability is called overlap or support. The conclusion depends on the graph being adequate, on measuring C appropriately and on the comparison being available in the data.
 
 Compare at fixed \(C\): block \(X\leftarrow C\rightarrow Y\)
 

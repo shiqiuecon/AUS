@@ -110,7 +110,7 @@ For a finite change, divide the new input by the old input, then raise the ratio
 
 \(\widehat{\log Y}=a+b\log X\)
 
-\(\%\Delta\widehat Y=100\{(X_1/X_0)^b-1\}\)
+The finite percentage difference between the exponentiated fits is \(100\{(X_1/X_0)^b-1\}\).
 
 ### 09. Read the actual price–income elasticity
 

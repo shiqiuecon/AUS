@@ -174,6 +174,8 @@ Null: added residual-lag coefficients are jointly zero.
 
 Chi-square reference degrees of freedom: number of tested lag restrictions.
 
+Stata’s test regression uses zeros for lagged residuals before the observed sample starts.
+
 ```text
 . estimates restore conventional
 (results conventional are active now)

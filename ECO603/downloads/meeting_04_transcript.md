@@ -152,7 +152,7 @@ For the three equally likely numbers zero, one and two, the mean is one. Their s
 
 The same calculation can describe scores across districts or coefficient estimates across repeated samples. These are different distributions. A standard error estimates the standard deviation of an estimator, not the standard deviation of individual outcomes. We do not observe all repeated samples, so we use a formula justified by assumptions about sampling and the errors. Degrees of freedom count independent residual directions left after fitting parameters; a regression with n observations and p nonredundant fitted coefficients, including the intercept, has n minus p residual degrees of freedom.
 
-\(\operatorname{Var}(0,1,2)=(1+0+1)/3=2/3\)
+For equally likely values \(0,1,2\), the mean is 1 and the variance is \((1+0+1)/3=2/3\).
 
 Standard deviation: \(\sqrt{2/3}\approx0.816\)
 

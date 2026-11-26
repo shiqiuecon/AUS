@@ -170,7 +170,7 @@ For a constructed logit with index equal to X, take two applicants at X equal to
 
 \(AME=\dfrac1n\sum_i\left.\dfrac{\partial p(X)}{\partial X_j}\right|_{X=X_i}\)
 
-Constructed logit: \(X=(-2,2)\Rightarrow AME\approx0.105\)
+Constructed logit with \(z=X\): \(X=(-2,2)\Rightarrow AME\approx0.105\).
 
 At mean \(X=0\), slope \(=0.25\).
 
@@ -193,7 +193,7 @@ dy/dx wrt:  pir
 
 ### 12. A partial effect at average inputs is a different object
 
-A nonlinear transformation does not commute with averaging.
+These formulas use a continuous predictor that enters the index once, as a linear term.
 
 Call applicant i's fitted index z i. G turns that index into a probability and g gives the slope of that curve. If a continuous input enters linearly with coefficient b j and no interaction, its local probability slope is g at the applicant's index times b j.
 

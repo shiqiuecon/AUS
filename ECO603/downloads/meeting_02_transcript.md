@@ -225,11 +225,11 @@ The natural logarithm of a positive value is the power of e, about 2.718, that p
 
 In a log-level model the coefficient b is the fitted log-outcome change for a one-unit increase in X, so 100 times b is a small-change percentage approximation. In a log-log model b relates proportional changes on both sides and is called an elasticity. These translations concern the fitted log relationship. Later we examine arithmetic mean prediction, zeros and finite changes in detail using the same retail data.
 
-\(\log Y_1-\log Y_0=\log(Y_1/Y_0)\); exact proportional change: \(\exp(d)-1\).
+\(\log Y_1-\log Y_0=\log(Y_1/Y_0)\). The proportional change is \(\exp(d)-1\), where \(d\) is the log difference.
 
-Log-level: \(\log Y=b_0+b_1X\); one-unit fitted change: \(100[\exp(b_1)-1]\%\).
+Log-level: \(\widehat{\log Y}=b_0+b_1X\). A one-unit rise in \(X\) changes the exponentiated fit by \(100[\exp(b_1)-1]\%\).
 
-Log-log: \(\log Y=b_0+b_1\log X\); \(b_1\) is a local elasticity.
+Log-log: \(\widehat{\log Y}=b_0+b_1\log X\). The local elasticity of the exponentiated fit is \(b_1\).
 
 ### 16. Check the normal equations and fit decomposition
 

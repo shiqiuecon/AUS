@@ -78,7 +78,7 @@ Start at the estimate, 0.30 in this constructed example. The standard error is 0
 
 Think of drawing another comparable sample. Its estimate and its standard error can change, so its interval can change too. A 95 percent confidence procedure aims to produce intervals that cover the same fixed population coefficient about 95 percent of the time. Read the endpoints as magnitudes to discuss under the stated model and uncertainty calculation. If the comparison is biased, changing the interval width does not correct that comparison.
 
-\(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\)
+Approximate 95% interval with a justified normal reference: \(\widehat\beta\pm1.96\operatorname{SE}(\widehat\beta)\).
 
 ### 07. One-sided alternatives must express a prior scientific question
 

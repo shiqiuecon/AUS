@@ -234,7 +234,7 @@ In the finite distributed-lag model, let beta zero through beta q be the current
 
 Positive early and negative later coefficients can sum to zero even though there is a substantial temporary response. A scalar sum needs its covariance-based standard error; the joint restriction needs the covariance of the entire coefficient vector. Use the same sample and the uncertainty procedure justified for the dated observations. Neither test independently establishes that the input change was an exogenous intervention.
 
-Any included response: \(H_0:\beta_0=\cdots=\beta_q=0\).
+No response at any included lag: \(H_0:\beta_0=\cdots=\beta_q=0\).
 
 Zero long-run propensity: \(H_0:\sum_{j=0}^q\beta_j=0\).
 

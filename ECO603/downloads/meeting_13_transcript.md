@@ -38,7 +38,9 @@ A large error yesterday might tell us to expect a larger spread today. It may st
 
 To check that pattern, regress squared fitted residuals on an intercept and lagged squared residuals. With one lag, the null sets alpha one to zero. The actual statistic is about 0.350 and the p-value about 0.554. Under the reference conditions, the data do not give strong evidence for that particular variance pattern. Other forms of changing variance and other threats to the comparison require their own evidence.
 
-\(E[u_t\mid I_{t-1}]=0\), \(E[u_t^2\mid I_{t-1}]=\alpha_0+\alpha_1u_{t-1}^2\), \(\alpha_0>0,\alpha_1\ge0\).
+\(I_{t-1}\): information available through the previous period. \(E[u_t\mid I_{t-1}]=0\).
+
+ARCH(1): \(\operatorname{Var}(u_t\mid I_{t-1})=\alpha_0+\alpha_1u_{t-1}^2\), with \(\alpha_0>0,\ \alpha_1\ge0\).
 
 Conventional diagnostic: regress residual squares on a constant and their selected lags.
 
@@ -363,7 +365,7 @@ Run lab_12.do. In its explicitly constructed quarterly experiment, calculate the
 
 Then use actual traffic.csv. Add one lag of log accidents to the monthly mean model, retain the calendar and policy controls, and use four-month HAC inference. Report the law coefficient and the stable-model long-run contrast. Explain why this observed application has no known historical causal truth supplied by the simulation. Write and run your own commands, then save the code, execution log and an explanation in your own words. The independent practice file is a worked reference.
 
-**Practice:** Then use actual traffic.csv. Add one lag of log accidents to the monthly mean model, retain the calendar and policy controls, and use four-month HAC inference. Report the law coefficient and the stable-model long-run contrast. Explain why this observed application has no known historical causal truth supplied by the simulation. Keep your commands, log, output and interpretation.
+**Practice:** Use lab_12.do to calculate the known quarterly response at horizon four. Compare it with the estimated response and its approximate interval. Then use traffic.csv to add lagged log accidents to the monthly mean equation with the original controls and four-month HAC inference. Report the law coefficient and stable-model long-run contrast. Explain what can be identified in each study. Retain your commands, log and interpretation.
 
 ### 23. Compare a known response with a noisy estimate: explanation
 
@@ -401,7 +403,9 @@ For a time-series regression, define the regressor-error product vector s t as t
 
 A Newey–West estimate uses fitted residuals, a finite lag window and weights that taper with lag distance. Here bandwidth means the number of lagged cross-products kept in that window. Its consistency requires suitable exogeneity, moments, dependence and bandwidth conditions. Changing the lag choice changes which empirical cross-date products contribute. It does not remove an omitted cause or automatically guarantee accurate inference in a short persistent sample.
 
-\(s_t=x_tu_t\), \(S=\sum_{h=-\infty}^{\infty}E[s_ts_{t-h}\prime]\), when the sum and limits are justified.
+\(s_t=x_tu_t\) is the regressor-error product and \(Q=E[x_tx_t\prime]\) in the stationary setup.
+
+\(S=\sum_{h=-\infty}^\infty\operatorname{Cov}(s_t,s_{t-h})\), when this long-run covariance exists.
 
 Approximate coefficient covariance: \(Q^{-1}SQ^{-1}/T\).
 
@@ -419,7 +423,7 @@ Move L in the graph and watch which weights remain positive. A larger window inc
 
 \(w_k=1-\dfrac{k}{L+1},\quad k=0,\ldots,L\)
 
-Bartlett weights taper the contribution of later error covariances.
+Bartlett weights taper cross-date products of regressor remainders and residuals.
 
 **Practice:** For quarterly data, what calendar window is lag(12)? Does that option add twelve regressors?
 
