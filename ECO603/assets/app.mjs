@@ -1,17 +1,14 @@
 import {dagInitialState} from './dag.mjs?v=cf000bedae04';
-import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=d0670c9ab2d9';
-import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=f221e0b5f131';
-import {openExperiment} from './experiment-view.mjs?v=90d8d15bbfde';
-import {bindPlotControls,plotAction} from './plot-controls.mjs?v=d7dada50761d';
+import {data,escapeHTML as e,typeset,url} from './common.mjs?v=82d1f092741c';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls,schoolOverlay} from './graphs.mjs?v=1c3647611397';
+import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=9f5239def987';
+import {openExperiment} from './experiment-view.mjs?v=603b840f3bb6';
+import {bindPlotControls,plotAction} from './plot-controls.mjs?v=d9f4538d6c10';
 import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=73e3f1f37c3d';
-const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
-const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
-const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];
-if(legacy){params.set('meeting',legacy.meeting);params.set('slide',legacy.slide);params.set('v',data.revision);history.replaceState(null,'',`?${params}`);}
-const requested=params.get('meeting')||first,key=Object.hasOwn(data.lessons,requested)?requested:first,lesson=data.lessons[key];
+import {courseLocation} from './course-location.mjs?v=776a6a7a44ca';
+const {params,key,previous}=courseLocation(data,location.search),lesson=data.lessons[key];
 const $=s=>document.querySelector(s);
-let index=Math.max(0,Math.min(lesson.slides.length-1,(Math.trunc(Number(params.get('slide')))||1)-1));
+let index=Math.max(0,Math.min(lesson.slides.length-1,(Math.trunc(Number(previous?.slide??params.get('slide')))||1)-1));
 let step=0,value=0,initialGraphValue=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,speed=1,timer=0,following=true,highlights=true,ended=false;
 let dagExplorer=null,paintPlotControl=null;
 let graphCue=null,graphReveal=null;
@@ -23,17 +20,46 @@ const routeEnd=()=>inAppendix()?lesson.slides.length-1:coreCount-1;
 const routeName=()=>inAppendix()?'Appendix':'Core lesson';
 const practiceStatus=()=>index===routeEnd()?'Work through the practice to finish this section.':'Work through the practice, then select Next.';
 const audio=lesson.narration?new Audio():null;
-let audioFrame=0,audioRequest=0,desiredTime=0,deferredSeek=false,eventSignature='',finishing=false;
-if(audio){audio.preload='metadata';audio.src=/^(data:|blob:)/.test(lesson.narration.src)?lesson.narration.src:url(`${lesson.narration.src}?v=${data.revision}`);audio.preservesPitch=true;}
+let audioFrame=0,audioRequest=0,desiredTime=0,deferredSeek=false,seenEvents=-1,finishing=false;
+const track=lesson.narration?.src;
+const storedTrack=track==='__INLINE_AUDIO__'?null:track&&url(/^(blob:|data:)/.test(track)?track:`${track}?v=${data.revision}`);
+const seekControl=$('#audio-seek'),timeLabel=$('#audio-time');
+let displayedClip,displayedTick=-1,displayedSecond=-1;
+if(audio){
+ audio.preload='none';audio.preservesPitch=true;
+ const download=$('#audio-download');
+ download.download=`ECO603_${key}.m4a`;
+ if(storedTrack)download.href=storedTrack;
+ else{
+  download.href='#';
+  download.addEventListener('click',()=>download.href=window.ECO603_AUDIO(),{once:true});
+ }
+}
 const voiceMode=()=>!!audio&&!!current().narration&&!!$('#voice-enabled')?.checked;
 const clock=t=>`${Math.floor(Math.max(0,t)/60)}:${String(Math.floor(Math.max(0,t)%60)).padStart(2,'0')}`;
+const audioPosition=()=>deferredSeek||!audio.readyState||audio.seeking?desiredTime:audio.currentTime;
 function seekAudio(relative,defer=false){
  if(!audio||!current().narration)return;
  const c=current().narration;desiredTime=c.offset+Math.max(0,Math.min(c.duration,relative));
  deferredSeek=defer;
- if(audio.readyState&&!defer&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;
+ if(audio.hasAttribute('src')&&!defer&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;
+ displayedTick=-1;
  invalidateGraphCue();
  updateAudio(desiredTime-c.offset,false);
+}
+function paintAudioTime(clip,time){
+ if(displayedClip!==clip){
+  displayedClip=clip;displayedTick=-1;displayedSecond=-1;
+  seekControl.max=clip.duration;
+ }
+ const tick=Math.round(time*10),second=Math.floor(time);
+ if(tick!==displayedTick){seekControl.value=time;displayedTick=tick;}
+ if(second!==displayedSecond){
+  const elapsed=clock(time),total=clock(clip.duration);
+  timeLabel.textContent=`${elapsed} / ${total}`;
+  seekControl.setAttribute('aria-valuetext',`${elapsed} of ${total}`);
+  displayedSecond=second;
+ }
 }
 function setGraphValue(next){
  if(current().kind==='causal'){
@@ -47,16 +73,17 @@ function updateAudio(relative,animate=relative===undefined&&reading&&!audio?.pau
  const c=current().narration;if(!c)return;
  const time=relative??Math.max(0,Math.min(c.duration,audio.currentTime-c.offset));
  graphReveal?.advance(time);
- $('#audio-seek').max=c.duration;$('#audio-seek').value=time;
- $('#audio-time').textContent=`${clock(time)} / ${clock(c.duration)}`;
- $('#audio-seek').setAttribute('aria-valuetext',`${clock(time)} of ${clock(c.duration)}`);
- let part=0;for(const cue of c.cues)if(cue.time<=time+.02)part=cue.paragraph;
- const newParagraph=part!==paragraph;
- if(newParagraph)focusParagraph(part);
- const active=(c.events||[]).filter(ev=>ev.time<=time+.02);
- const signature=JSON.stringify(active);if(signature===eventSignature&&!newParagraph)return;
- eventSignature=signature;
- const latest=[...active].reverse();
+ paintAudioTime(c,time);
+ const threshold=time+.02;
+ let part=0;
+ for(const cue of c.cues){if(cue.time>threshold)break;part=cue.paragraph;}
+ const events=c.events||[];
+ let count=0;
+ while(count<events.length&&events[count].time<=threshold)count++;
+ if(count===seenEvents&&part===paragraph)return;
+ seenEvents=count;
+ focusParagraph(part,part!==paragraph);
+ const latest=events.slice(0,count).reverse();
  const cue=latest.find(ev=>ev.target==='graph')||null;
  if(cue!==graphCue&&graphKinds.has(current().kind)){
   graphCue=cue;
@@ -70,10 +97,13 @@ function updateAudio(relative,animate=relative===undefined&&reading&&!audio?.pau
   const transition=animate&&cue?.time>0?{time,start:cue.time,duration:cue.duration,replay:cue.replay}:null;
   updateGraph(transition);
  }
- const point=[...active].reverse().find(ev=>ev.target==='point'&&ev.time>=c.cues[part].time-.03);
+ paintSpokenHighlights(c,part,latest);
+}
+function paintSpokenHighlights(clip,part,latest){
+ const point=latest.find(ev=>ev.target==='point'&&ev.time>=clip.cues[part].time-.03);
  if(point&&highlights){document.querySelectorAll('.point-current').forEach(n=>n.classList.remove('point-current'));document.querySelectorAll('#slide-body .concept-line')[point.part]?.classList.add('point-current');}
  document.querySelectorAll('.spoken-row').forEach(n=>n.classList.remove('spoken-row'));
- const row=[...active].reverse().find(ev=>ev.target==='row');
+ const row=latest.find(ev=>ev.target==='row');
  if(row&&highlights)document.querySelectorAll('.stata-row').forEach(n=>{if(n.textContent.trim().startsWith(row.row))n.classList.add('spoken-row');});
 }
 function finishAudioSlide(){
@@ -97,13 +127,18 @@ function tickAudio(){
 async function startAudio(){
  if(!voiceMode())return;
  const c=current().narration,request=++audioRequest,slideIndex=index;
- const position=deferredSeek||audio.seeking?desiredTime:audio.currentTime;
+ const position=audioPosition();
  stopAnimation();
- if(position<c.offset-.05||position>=c.offset+c.duration-.05)seekAudio(0);
- else if(deferredSeek)seekAudio(position-c.offset);
- else updateAudio(Math.max(0,position-c.offset),false);
- reading=true;$('#play').textContent='Pause';$('#play').setAttribute('aria-pressed','true');audio.playbackRate=speed;
- try{await audio.play();if(request!==audioRequest||!reading||slideIndex!==index)return;cancelAnimationFrame(audioFrame);audioFrame=requestAnimationFrame(tickAudio);}
+ try{
+  if(!audio.hasAttribute('src'))audio.src=storedTrack||window.ECO603_AUDIO();
+  if(position<c.offset-.05||position>=c.offset+c.duration-.05)seekAudio(0);
+  else if(deferredSeek||!audio.readyState)seekAudio(position-c.offset);
+  else updateAudio(Math.max(0,position-c.offset),false);
+  reading=true;$('#play').textContent='Pause';$('#play').setAttribute('aria-pressed','true');audio.playbackRate=speed;
+  await audio.play();
+  if(request!==audioRequest||!reading||slideIndex!==index)return;
+  cancelAnimationFrame(audioFrame);audioFrame=requestAnimationFrame(tickAudio);
+ }
  catch{if(request!==audioRequest)return;stopReading();$('#reading-status').textContent='Audio could not play. Select Play to retry, or turn Narration off to read along.';}
 }
 if(audio){
@@ -116,22 +151,23 @@ if(audio){
 
 const stepLimit=()=>current().steps??({schools:1,dag:2,counterfactual:2,adjustment:1,residual:1,serial:1,traffic:1}[current().kind]||0);
 function stopAnimation(){cancelAnimationFrame(frame);animating=false;const p=$('#animate');if(p)p.textContent='Animate reveal';}
-function stopReading(){audioRequest++;clearTimeout(timer);cancelAnimationFrame(audioFrame);audio?.pause();reading=false;$('#play').textContent=ended?'Play again':voiceMode()?'Play':'Read along';$('#play').setAttribute('aria-pressed','false');}
+function stopReading(){audioRequest++;clearTimeout(timer);cancelAnimationFrame(audioFrame);if(audio&&!audio.paused)audio.pause();reading=false;$('#play').textContent=ended?'Play again':voiceMode()?'Play':'Read along';$('#play').setAttribute('aria-pressed','false');}
 function clearGraphReveal(){graphReveal?.stop();graphReveal=null;}
-function invalidateGraphCue(){eventSignature='';graphCue=null;clearGraphReveal();}
+function invalidateGraphCue(){seenEvents=-1;graphCue=null;clearGraphReveal();}
 function updateGraph(transition){
  const s=current(),stage=$('.graph-stage');if(!stage)return;
  clearGraphReveal();
  const previous=transition?visualSnapshot(stage):null;
  if(dagExplorer)dagExplorer.render(value,step,undefined,undefined,graphCue?.edges);
  else{
-  stage.innerHTML=graph(s.kind,step,value,progress,s.graph);
+  const overlay=progress===1&&stage.querySelector('[data-school-overlay][data-complete="true"]');
+  if(overlay)overlay.innerHTML=schoolOverlay(overlay.dataset.schoolOverlay,step,value);
+  else stage.innerHTML=graph(s.kind,step,value,progress,s.graph);
   paintPlotControl?.(value,step);
  }
  if(previous)graphReveal=playVisualChanges(stage,previous,transition);
  const out=$('#control-value');
  if(out)out.textContent=s.kind==='chart'?(s.graph.scenario==='sampling'?`n = ${value<.5?100:1000}`:s.graph.scenario==='panel'?`State ${[...new Set(data.datasets.panel.map(r=>r.state))][value]}`:String(value)):s.kind==='fit'?`Slope ${Number(value).toFixed(2)}`:s.kind==='residual'?`District ${value}`:s.kind==='arsim'?`Persistence ${Number(value).toFixed(2)}`:`L = ${value}`;
- focusParagraph(paragraph,false);
 }
 function showVisual(){
  const s=current(),visual=$('#visual'),activity=data.activities?.[key]?.[index+1];
@@ -163,17 +199,23 @@ function buildGraph(s,visual){
  const caption=s.kind==='chart'?(scenarioCaptions[scenario]||captions[scenario]):captions[s.kind];
  const hint=plotAction(scenario);
  visual.innerHTML=`${spec?dagExplorerHTML(spec,s.graph.id,value,'lesson-dag'):`<div class="graph-stage"></div><p class="graph-caption">${e(caption)}</p>${hint?`<p class="plot-action">${e(hint)}</p>`:''}`}<div class="graph-control">${controls}</div>`;
- const pauseGraph=()=>{stopReading();stopAnimation();invalidateGraphCue();};
+ const pauseGraph=()=>{
+  if(reading)stopReading();
+  if(animating)stopAnimation();
+  invalidateGraphCue();
+ };
  if(spec)dagExplorer=bindDAGExplorer(visual,{
   spec,id:s.graph.id,prefix:'lesson-dag',initial:value,step,
   onChange:next=>{pauseGraph();value=next;step=2;focusParagraph(paragraph,false);},
   onInteract:pauseGraph,onResize:fitSlide
  });
  const controlStep={ovb:1,didHeadStart:4,didConditional:2,residual:1,penalty:1}[scenario]??0;
- function choose(value,byPlot=false){
+ function choose(nextValue,byPlot=false){
   pauseGraph();
-  step=byPlot&&scenario==='validation'?0:Math.max(step,controlStep);
-  progress=1;setGraphValue(value);updateGraph();
+  const nextStep=byPlot&&scenario==='validation'?0:Math.max(step,controlStep);
+  if(value===nextValue&&step===nextStep&&progress===1)return;
+  step=nextStep;
+  progress=1;setGraphValue(nextValue);updateGraph();
  }
  const input=$('#graph-input');
  input?.addEventListener('input',ev=>choose(Number(ev.target.value)));
@@ -249,10 +291,9 @@ function render(){
  try{history.replaceState(null,'',`?meeting=${key}&slide=${index+1}&v=${data.revision}`);}catch{}
  document.title=`${key} · ${index+1}. ${s.title} · ECO 603`;
  showVisual();typeset(document.querySelector('.workspace'));focusParagraph(0,false);
- eventSignature='';
- $('#voice-enabled').disabled=!audio;$('#audio-seek').disabled=!voiceMode();
+ $('#voice-enabled').disabled=!audio;seekControl.disabled=!voiceMode();
  $('.audio-progress').hidden=!voiceMode();
- $('#audio-download').hidden=!audio;if(audio){$('#audio-download').href=audio.src;$('#audio-download').download=`ECO603_${key}.m4a`;}
+ $('#audio-download').hidden=!audio;
  // Reset visual cues without requesting audio while browsing paused slides.
  if(voiceMode())seekAudio(0,true);
  $('#slide-viewport').scrollTo(0,0);fitSlide();document.fonts.ready.then(fitSlide);
@@ -307,7 +348,14 @@ $('#slide-picker').onchange=()=>goTo(Number($('#slide-picker').value));
 $('#slide-seek').oninput=()=>goTo(Number($('#slide-seek').value)-1);
 $('#lesson-picker').innerHTML=data.course.map(c=>`<option value="${String(c.week).padStart(2,'0')}">${String(c.week).padStart(2,'0')}. ${e(c.title)}</option>`).join('');$('#lesson-picker').value=key;$('#lesson-picker').onchange=()=>{location.href=url(`lesson.html?meeting=${$('#lesson-picker').value}&v=${data.revision}`);};
 $('#toggle-script').onclick=()=>showScript(document.body.classList.contains('focus'));$('#transcript-toggle').onclick=$('#toggle-script').onclick;$('#close-script').onclick=()=>showScript(false);
-$('#follow-script').onchange=()=>{following=$('#follow-script').checked;focusParagraph(paragraph);};$('#point-highlights').onchange=()=>{highlights=$('#point-highlights').checked;focusParagraph(paragraph,false);};
+$('#follow-script').onchange=()=>{following=$('#follow-script').checked;focusParagraph(paragraph);};
+$('#point-highlights').onchange=()=>{
+ highlights=$('#point-highlights').checked;
+ focusParagraph(paragraph,false);
+ const clip=current().narration;
+ const latest=voiceMode()?clip.events.filter(event=>event.time<=audioPosition()-clip.offset+.02).reverse():[];
+ if(clip)paintSpokenHighlights(clip,paragraph,latest);
+};
 $('#zoom').onchange=()=>{fitSlide();$('#slide-viewport').scrollTo(0,0);};
 window.addEventListener('resize',fitSlide);
 $('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('#reading-status').textContent='Use your browser’s full-screen command to expand this view.';}};
@@ -319,5 +367,5 @@ viewport.addEventListener('pointermove',ev=>{if(!drag)return;viewport.scrollLeft
 const release=()=>{drag=null;viewport.classList.remove('panning');};viewport.addEventListener('pointerup',release);viewport.addEventListener('pointercancel',release);
 document.addEventListener('keydown',ev=>{if(document.querySelector('dialog[open]')||ev.target.closest('input,textarea,select,button,summary,a,[role="button"]'))return;if(ev.code==='Space'){ev.preventDefault();readAlong();}if(ev.key==='ArrowRight'||ev.key==='PageDown'){ev.preventDefault();moveWithinRoute(1);}if(ev.key==='ArrowLeft'||ev.key==='PageUp'){ev.preventDefault();moveWithinRoute(-1);}if(ev.key==='Home'){ev.preventDefault();goTo(routeStart());}if(ev.key==='End'){ev.preventDefault();goTo(routeEnd());}if(ev.key==='ArrowDown'){ev.preventDefault();nextStep();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopReading();stopAnimation();}});
-window.ECODeck=Object.freeze({getState:()=>({index,step,paragraph,playing:reading,speed,slides:lesson.slides.length,mode:voiceMode()?'audio':'reading',audioTime:audio?Math.max(0,(deferredSeek?desiredTime:audio.currentTime)-(current().narration?.offset||0)):0,audioDuration:current().narration?.duration||0,audioStatus:audio?{ready:audio.readyState,seeking:audio.seeking,paused:audio.paused,seekable:[...Array(audio.seekable.length)].map((_,i)=>[audio.seekable.start(i),audio.seekable.end(i)])}:null,dagState:current().kind==='causal'?value:null}),goTo:(i)=>goTo(i),play:readAlong,pause:stopReading,focusParagraph,metadata:()=>lesson.slides.map(s=>({title:s.title,script:s.script,kind:s.kind}))});
+window.ECODeck=Object.freeze({getState:()=>({index,step,paragraph,playing:reading,speed,slides:lesson.slides.length,mode:voiceMode()?'audio':'reading',audioTime:audio?Math.max(0,audioPosition()-(current().narration?.offset||0)):0,audioDuration:current().narration?.duration||0,audioStatus:audio?{ready:audio.readyState,seeking:audio.seeking,paused:audio.paused,seekable:[...Array(audio.seekable.length)].map((_,i)=>[audio.seekable.start(i),audio.seekable.end(i)])}:null,dagState:current().kind==='causal'?value:null}),goTo:(i)=>goTo(i),play:readAlong,pause:stopReading,focusParagraph,metadata:()=>lesson.slides.map(s=>({title:s.title,script:s.script,kind:s.kind}))});
 render();

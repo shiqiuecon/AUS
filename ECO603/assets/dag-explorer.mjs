@@ -1,7 +1,7 @@
-import {escapeHTML,typeset} from './common.mjs?v=28599d1f2c26';
+import {escapeHTML,typeset} from './common.mjs?v=82d1f092741c';
 import {analyseDAG,dagControlHTML,dagInitialState,dagSVG} from './dag.mjs?v=cf000bedae04';
 import {dagExperimentIds} from './experiments.mjs?v=81c9cd16191a';
-import {openExperiment} from './experiment-view.mjs?v=90d8d15bbfde';
+import {openExperiment} from './experiment-view.mjs?v=603b840f3bb6';
 import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=73e3f1f37c3d';
 
 const dagSpecial = {

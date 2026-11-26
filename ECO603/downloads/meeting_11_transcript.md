@@ -162,7 +162,7 @@ Weak dependence: sufficiently distant information becomes weak enough for the st
 
 Stationarity alone does not guarantee that time averages behave like independent draws.
 
-[Simulate dependent observations](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=11&slide=11&v=0e83c7863fef). Keep the sample size fixed and raise persistence. Observe how the distribution of the sample mean changes. Then try a longer series at the same persistence.
+[Simulate dependent observations](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=11&slide=11&v=179c0e2b5948). Keep the sample size fixed and raise persistence. Observe how the distribution of the sample mean changes. Then try a longer series at the same persistence.
 
 ### 12. Dynamic completeness is a conditional-mean claim
 

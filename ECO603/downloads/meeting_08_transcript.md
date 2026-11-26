@@ -230,7 +230,7 @@ Trace a path from X to U after selecting observed records. The selection rule us
 
 The sample can still contain a different mix of districts. Record who was lost and how the range of inputs changed. If the question concerns all districts, explain how your observed comparisons represent the ones that are missing. On the next slide, selection depends on the outcome and the causal argument changes.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=12&v=0e83c7863fef). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=12&v=179c0e2b5948). Try an available control and trace which routes open or close.
 
 ### 13. A missing-data assumption should be stated in context
 
@@ -242,7 +242,7 @@ Select observed cases. Conditioning on S can open the path through Y, even thoug
 
 Compare this with the previous slide, where selection depended only on X. In your own work, report which records are absent and what could explain it. A claim about the observed sample and a claim about all eligible units need different evidence.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=13&v=0e83c7863fef). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=13&v=179c0e2b5948). Try an available control and trace which routes open or close.
 
 ### 14. Selection on observed inputs needs a conditional-mean argument
 
@@ -368,7 +368,7 @@ Compare this with a diagram containing an unmeasured common cause of X and the o
 
 \(E(u\mid X)=0,\quad\operatorname{Var}(u\mid X)=\sigma(X)^2\)
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=22&v=0e83c7863fef). Trace the paths and explain why each one is open or blocked.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=22&v=179c0e2b5948). Trace the paths and explain why each one is open or blocked.
 
 ### 23. Do not choose an SE by the resulting significance
 
@@ -380,7 +380,7 @@ District-level independent sampling suggests one set of methods; repeated observ
 
 Here X is training, Y is earnings, C is prior education and U is unmeasured motivation. Changing the covariance formula leaves the common-cause arrows unchanged. Conditioning on prior education can close its route, but unmeasured motivation still connects training and earnings. Use the DAG to discuss identification and the SE calculation to discuss uncertainty under the stated comparison. A preferred p-value cannot substitute for either argument.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=23&v=0e83c7863fef). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=23&v=179c0e2b5948). Try an available control and trace which routes open or close.
 
 ### 24. Robust does what?
 
@@ -494,7 +494,7 @@ Suppose X and the outcome disturbance U are independent before selection, both a
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=34&v=0e83c7863fef). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=08&slide=34&v=179c0e2b5948). Try an available control and trace which routes open or close.
 
 **Practice:** Suppose X and the outcome disturbance U are independent before selection, both affect Y, and a record is observed depending on Y. Why can restricting attention to observed records create an X–U association? Compare this with selection depending only on included X.
 

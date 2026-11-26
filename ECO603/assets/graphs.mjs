@@ -1,5 +1,5 @@
 import {dagSVG} from './dag.mjs?v=cf000bedae04';
-import {data,escapeHTML as e} from './common.mjs?v=28599d1f2c26';
+import {data,escapeHTML as e} from './common.mjs?v=82d1f092741c';
 import {visualLayer} from './visual-reveals.mjs?v=73e3f1f37c3d';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
@@ -17,11 +17,22 @@ function axes(xmin,xmax,ymin,ymax,xticks,yticks,xlabel,ylabel){
  return s;
 }
 const average=(rows,key)=>rows.reduce((a,b)=>a+b[key],0)/rows.length;
-function schoolplot({mode='schools',step=0,value=0,progress=1}){
+let schoolMarks;
+function schoolMoments(){
+ if(schoolMarks)return schoolMarks;
  const mx=average(data.schools,'str'),my=average(data.schools,'score');
- let s=axes(14,26,600,720,[15,20,25],[600,650,700],'Students per teacher','Test score (points)');
- const n=Math.floor(data.schools.length*progress);
- for(const d of data.schools.slice(0,n))s+=circle(X(d.str,14,26),Y(d.score,600,720));
+ let xx=0,xy=0,yy=0;
+ const marks=data.schools.map(row=>{
+  const dx=row.str-mx,dy=row.score-my;
+  xx+=dx*dx;xy+=dx*dy;yy+=dy*dy;
+  return circle(X(row.str,14,26),Y(row.score,600,720));
+ });
+ schoolMarks={mx,my,xx,xy,yy,marks};
+ return schoolMarks;
+}
+export function schoolOverlay(mode,step,value){
+ const {mx,my,xx,xy,yy}=schoolMoments();
+ let s='';
  const simple=data.stats.school_simple;
  let slope=simple.slope;
  if(mode==='fit')slope=Number(value);
@@ -33,7 +44,7 @@ function schoolplot({mode='schools',step=0,value=0,progress=1}){
    s+=visualLayer('fitted-line','trace',line(X(14,14,26),Y(intercept+slope*14,600,720),X(26,14,26),Y(intercept+slope*26,600,720),ink,3));
  }
  if(mode==='fit'){
-   const loss=data.schools.reduce((sum,d)=>sum+(d.score-intercept-slope*d.str)**2,0);
+   const loss=yy-2*slope*xy+slope*slope*xx;
    s+=text(835,34,`Slope ${slope.toFixed(2)} · SSE ${Math.round(loss).toLocaleString('en-US')}`,19,'end');
    s+=circle(X(mx,14,26),Y(my,600,720),5,gold,1);
  }
@@ -47,7 +58,14 @@ function schoolplot({mode='schools',step=0,value=0,progress=1}){
      s+=text(835,34,`District ${Math.round(value)} · residual ${r.toFixed(2)} score points`,18,'end');
    }else s+=text(835,34,'Predict the residual sign. Select Next step.',18,'end');
  }
- return svg(s,'Actual California school district scores and student–teacher ratios. Each dot is a district.');
+ return s;
+}
+function schoolplot({mode='schools',step=0,value=0,progress=1}){
+ const s=axes(14,26,600,720,[15,20,25],[600,650,700],'Students per teacher','Test score (points)');
+ const {marks}=schoolMoments();
+ const observed=marks.slice(0,Math.floor(marks.length*progress)).join('');
+ const annotation=`<g data-school-overlay="${mode}" data-complete="${progress===1}">${schoolOverlay(mode,step,value)}</g>`;
+ return svg(s+observed+annotation,'Actual California school district scores and student–teacher ratios. Each dot is a district.');
 }
 function node(x,y,w,title,sub=''){
  return `<rect x="${x}" y="${y}" width="${w}" height="80" rx="2" fill="white" stroke="${rule}" stroke-width="1.5"/>`+text(x+w/2,y+33,title,23)+text(x+w/2,y+60,sub,17);

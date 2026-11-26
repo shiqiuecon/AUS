@@ -70,7 +70,7 @@ Mean model: which variables predict the outcome?
 
 SE calculation: how much uncertainty remains?
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=12&slide=5&v=0e83c7863fef). Trace the paths and explain why each one is open or blocked.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=12&slide=5&v=179c0e2b5948). Trace the paths and explain why each one is open or blocked.
 
 ### 06. Why dependence changes uncertainty
 

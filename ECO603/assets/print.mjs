@@ -1,6 +1,7 @@
-import {data,escapeHTML as e,typeset} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,scenarioCaptions,captions,chartControls} from './graphs.mjs?v=d0670c9ab2d9';
-const key=new URLSearchParams(location.search).get('meeting')||'01',lesson=data.lessons[key];
+import {data,escapeHTML as e,typeset} from './common.mjs?v=82d1f092741c';
+import {graph,graphKinds,scenarioCaptions,captions,chartControls} from './graphs.mjs?v=1c3647611397';
+import {courseLocation} from './course-location.mjs?v=776a6a7a44ca';
+const {key}=courseLocation(data,location.search,{mapLegacy:false}),lesson=data.lessons[key];
 if(!lesson)throw Error('Unknown meeting');
 const initial={fit:data.stats.school_simple.slope,residual:40,arsim:.65,hac:4};
 document.querySelector('#main').innerHTML=lesson.slides.map((s,i)=>{

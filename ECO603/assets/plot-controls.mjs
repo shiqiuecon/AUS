@@ -1,4 +1,4 @@
-import {data} from './common.mjs?v=28599d1f2c26';
+import {data} from './common.mjs?v=82d1f092741c';
 
 const plotActions = {
  fit:'Drag the handle to rotate the line. Watch the sum of squared errors change.',
@@ -85,10 +85,17 @@ export function bindPlotControls(stage,scenario,input,change) {
  return (value,step)=>{
   const svg=stage.querySelector('svg');
   if(!svg)return;
+  let layer=svg.querySelector('[data-plot-controls]');
+  if(layer)layer.replaceChildren();
+  else{
+   layer=document.createElementNS(plotSVG,'g');
+   layer.setAttribute('data-plot-controls','');
+   svg.append(layer);
+  }
   function append(tag,attrs) {
    const object=document.createElementNS(plotSVG,tag);
    for(const [key,v] of Object.entries(attrs))object.setAttribute(key,v);
-   svg.append(object);
+   layer.append(object);
   }
   function box(x,y,width,height) {
    append('rect',{x,y,width,height,fill:'transparent','data-plot-target':canDrag?'drag':'pick'});
