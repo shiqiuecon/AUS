@@ -106,7 +106,7 @@ export function bindPlotControls(stage,scenario,input,change) {
    return;
   }
   if(scenario==='didHeadStart'){
-   handle(850,plotY(43+value,30,75),step>=2);
+   handle(850,plotY(43+value,30,75),step>=3);
    return;
   }
   if(scenario==='validation'){

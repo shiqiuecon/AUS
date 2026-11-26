@@ -275,7 +275,7 @@ Functional form chooses the scale and shape.
 
 Identification addresses the alternative causal explanations.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=17&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=17&v=cc8124fcbfdb). Trace the paths and explain why each one is open or blocked.
 
 ### 18. Translate retail coefficients into a useful contrast
 
@@ -475,7 +475,7 @@ Teacher-hiring example. With a credible design, fit outcome means with and witho
 
 Use each target district’s prior characteristics for both predictions. Average the differences.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=31&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=31&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 ### 32. Turn an interaction into two policy contrasts
 
@@ -793,7 +793,7 @@ Neighbourhood characteristics influence local income and retail prices. Would re
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=56&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=56&v=cc8124fcbfdb). Trace the paths and explain why each one is open or blocked.
 
 **Practice:** Neighbourhood characteristics influence local income and retail prices. Would replacing prices and income by their logarithms close the common-cause route? Explain the distinct roles of the graph and the functional form.
 
@@ -895,7 +895,7 @@ Programme participation affects post-programme skills and earnings. Prior abilit
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=66&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=07&slide=66&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 **Practice:** Programme participation affects post-programme skills and earnings. Prior ability affects skills and earnings. If the programme is initially independent of ability, what two changes can occur when skills are held fixed? Would adding a group interaction automatically resolve them?
 

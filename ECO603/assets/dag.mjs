@@ -1,4 +1,6 @@
 /* Pure graph logic: path blocking is independent of the DOM and rendering. */
+import {visualLayer} from './visual-reveals.mjs?v=67f857b36df0';
+
 const DAG_COLORS={ink:'#15324d',causal:'#087e83',alternative:'#b64e3a',condition:'#ba8a3c',blocked:'#657387',line:'#d2dce2'};
 const dagEscape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function activeEdges(spec,state={}){return [...spec.edges,...((state.extra??spec.extraEnabled)?spec.extra?.edges||[]:[])];}
@@ -63,14 +65,18 @@ export function dagSVG(spec,step=2,state={},view){
   }
   const dash=view&&({blocked:'3 5',alternative:'10 5'}[type]);
   const d=control?`M${start.x},${start.y} Q${control.x},${control.y} ${end.x},${end.y}`:`M${start.x},${start.y} L${end.x},${end.y}`;
-  body+=`<path d="${d}" fill="none" stroke="white" stroke-width="7"/><path d="${d}" fill="none" stroke="${DAG_COLORS[type]}" stroke-width="${type==='ink'?2:3.5}" opacity="${opacity}" ${dash?`stroke-dasharray="${dash}"`:''} marker-end="url(#${markerPrefix}-${type})"/>`;
+  const part=`dag-edge-${arrow.a}-${arrow.b}`;
+  const spoken=view?.spoken?.includes(part);
+  const backing=spoken?'#f2d79d':'white';
+  const edge=`<path d="${d}" fill="none" stroke="${backing}" stroke-width="${spoken?10:7}"${spoken?' data-spoken-arrow=""':''}/><path d="${d}" fill="none" stroke="${DAG_COLORS[type]}" stroke-width="${spoken?4:type==='ink'?2:3.5}" opacity="${spoken?1:opacity}" ${dash?`stroke-dasharray="${dash}"`:''} marker-end="url(#${markerPrefix}-${type})"/>`;
+  body+=view?visualLayer(part,'emphasize',edge):edge;
  }
  for(const n of nodes.values()){
   const selected=conditioned.has(n.id);
   const label=view?dagDisplayLabel(n.label):n.label.length>20?n.label.split(/ (?=[^ ]+$)/):[n.label];
   const size=view?Math.min(24,Math.floor(325/Math.max(...label.map(s=>s.length)))):18;
   const eligible=view&&spec.controls?.includes(n.id);
-  const attributes=view?` data-dag-node="${n.id}"${eligible?` data-dag-select tabindex="0" role="button" aria-pressed="${selected}" aria-label="Control for ${dagEscape(n.label)}"`:''}`:'';
+  const attributes=view?` data-reveal="dag-node-${n.id}" data-effect="emphasize" data-dag-node="${n.id}"${eligible?` data-dag-select tabindex="0" role="button" aria-pressed="${selected}" aria-label="Control for ${dagEscape(n.label)}"`:''}`:'';
   body+=`<g${attributes}><rect x="${n.x-92}" y="${n.y-32}" width="184" height="64" rx="3" fill="${selected?'#fff3d8':'white'}" stroke="${selected?DAG_COLORS.condition:DAG_COLORS.ink}" stroke-width="${selected?2.5:1.4}" ${n.observed===false?'stroke-dasharray="6 4"':''}/>`;
   label.forEach((s,i)=>{body+=`<text x="${n.x}" y="${n.y+(label.length===1?0:-10)+i*19}" text-anchor="middle" font-family="Georgia,serif" font-size="${size}" fill="${DAG_COLORS.ink}">${dagEscape(s)}</text>`;});
   body+=`<text x="${n.x}" y="${n.y+27}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${view?14:12}" fill="${selected?'#90691d':'#506374'}">${selected?'Conditioned on':n.observed===false?dagEscape(n.tex===n.id?n.id+' · unobserved':'Unobserved'):dagEscape(n.tex===n.id?n.id:'Observed')}</text></g>`;

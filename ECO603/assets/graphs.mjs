@@ -1,5 +1,6 @@
-import {dagSVG} from './dag.mjs?v=c5daa317b81c';
+import {dagSVG} from './dag.mjs?v=bf505102fb5d';
 import {data,escapeHTML as e} from './common.mjs?v=28599d1f2c26';
+import {visualLayer} from './visual-reveals.mjs?v=67f857b36df0';
 const ink='#15324d',teal='#087e83',gold='#ba8a3c',rule='#d2dce2';
 const W=900,H=420;
 const X=(v,lo,hi)=>85+(v-lo)/(hi-lo)*765;
@@ -28,8 +29,8 @@ function schoolplot({mode='schools',step=0,value=0,progress=1}){
  const intercept=my-slope*mx;
  const show=mode!=='schools'||step>0;
  if(show){
-   if(mode==='adjustment'&&step>0)s+=line(X(14,14,26),Y(simple.intercept+simple.slope*14,600,720),X(26,14,26),Y(simple.intercept+simple.slope*26,600,720),gold,2,'8 6');
-   s+=line(X(14,14,26),Y(intercept+slope*14,600,720),X(26,14,26),Y(intercept+slope*26,600,720),ink,3);
+   if(mode==='adjustment'&&step>0)s+=visualLayer('unadjusted-fit','trace',line(X(14,14,26),Y(simple.intercept+simple.slope*14,600,720),X(26,14,26),Y(simple.intercept+simple.slope*26,600,720),gold,2,'8 6'));
+   s+=visualLayer('fitted-line','trace',line(X(14,14,26),Y(intercept+slope*14,600,720),X(26,14,26),Y(intercept+slope*26,600,720),ink,3));
  }
  if(mode==='fit'){
    const loss=data.schools.reduce((sum,d)=>sum+(d.score-intercept-slope*d.str)**2,0);
@@ -42,7 +43,7 @@ function schoolplot({mode='schools',step=0,value=0,progress=1}){
    const fitted=intercept+slope*d.str,r=d.score-fitted;
    s+=circle(X(d.str,14,26),Y(d.score,600,720),7,gold,1);
    if(step>0){
-     s+=line(X(d.str,14,26),Y(d.score,600,720),X(d.str,14,26),Y(fitted,600,720),gold,4);
+     s+=visualLayer('residual-gap','emphasize',line(X(d.str,14,26),Y(d.score,600,720),X(d.str,14,26),Y(fitted,600,720),gold,4));
      s+=text(835,34,`District ${Math.round(value)} · residual ${r.toFixed(2)} score points`,18,'end');
    }else s+=text(835,34,'Predict the residual sign. Select Next step.',18,'end');
  }
@@ -54,8 +55,8 @@ function node(x,y,w,title,sub=''){
 function arrow(x1,y1,x2,y2,color=ink){return `<path d="M${x1},${y1} L${x2},${y2}" stroke="${color}" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>`;}
 function dag(step){
  let s=node(325,45,250,'Language composition','Z: pre-policy characteristic')+node(75,250,290,'Student–teacher ratio','X: staffing comparison')+node(545,250,280,'Test score','Y: average outcome');
- if(step>0)s+=arrow(365,290,535,290)+text(450,325,'Target effect?',19);
- if(step>1)s+=arrow(350,128,235,240,gold)+arrow(550,128,680,240,gold)+text(455,198,'Alternative path: X ← Z → Y',22,'middle',gold);
+ if(step>0)s+=visualLayer('staffing-effect','trace',arrow(365,290,535,290)+text(450,325,'Target effect?',19));
+ if(step>1)s+=visualLayer('staffing-backdoor','emphasize',arrow(350,128,235,240,gold)+arrow(550,128,680,240,gold)+text(455,198,'Alternative path: X ← Z → Y',22,'middle',gold));
  s+=text(450,397,'Proposed causal structure, not a relationship proved by the scatterplot.',18);
  return svg(s,'Confounding diagram with staffing X, language composition Z and score Y.');
 }
@@ -63,8 +64,8 @@ function counterfactual(step){
  let s=node(295,25,310,'One target district','Same population, two policy states');
  s+=arrow(365,108,245,185)+arrow(535,108,660,185);
  s+=node(70,200,330,'Ratio of 20','Potential score under ratio 20')+node(500,200,330,'Ratio of 22','Potential score under ratio 22');
- if(step>0)s+=text(450,330,'Score under 20 minus score under 22',28);
- if(step>1)s+=text(450,382,'Only one state is observed for a district in this period.',21,'middle',gold);
+ if(step>0)s+=visualLayer('policy-contrast','emphasize',text(450,330,'Score under 20 minus score under 22',28));
+ if(step>1)s+=visualLayer('observed-state','emphasize',text(450,382,'Only one state is observed for a district in this period.',21,'middle',gold));
  return svg(s,'Two potential outcomes for the same district. Only one staffing state can be observed.');
 }
 function timepath(kind,step=0,progress=1){
@@ -75,8 +76,11 @@ function timepath(kind,step=0,progress=1){
  if(residual)s+=line(85,Y(0,lo,hi),850,Y(0,lo,hi),ink,1,'4 4');
  const n=Math.max(1,Math.round(rows.length*progress));
  let points=rows.slice(0,n).map((d,i)=>`${X(i,0,107)},${Y(d[residual?'residual':'totacc'],lo,hi)}`).join(' ');
- s+=`<polyline points="${points}" fill="none" stroke="${teal}" stroke-width="2.2"/>`;
- if(step>0)for(let i=0;i<n;i++)s+=circle(X(i,0,107),Y(rows[i][residual?'residual':'totacc'],lo,hi),2.5);
+ s+=visualLayer('monthly-path','trace',`<polyline points="${points}" fill="none" stroke="${teal}" stroke-width="2.2"/>`);
+ if(step>0){
+  const dots=rows.slice(0,n).map((d,i)=>circle(X(i,0,107),Y(d[residual?'residual':'totacc'],lo,hi),2.5)).join('');
+  s+=visualLayer('monthly-points','trace',dots);
+ }
  s+=text(835,30,'Observed monthly data · January 1981–December 1989',18,'end');
  return svg(s,residual?'Actual residuals from the traffic regression over 108 months.':'Actual total reported traffic accidents over 108 months.');
 }
@@ -104,14 +108,16 @@ function arsim(rho){
 }
 function hac(L){
  let s=axes(0,12,0,1.05,[0,2,4,6,8,10,12],[0,.5,1],'Lag k (observation periods)','Bartlett weight');
+ let marks='';
  for(let k=0;k<=12;k++){
    const w=k<=L?1-k/(L+1):0;
-   if(w>0)s+=`<rect x="${X(k,0,12)-16}" y="${Y(w,0,1.05)}" width="32" height="${345-Y(w,0,1.05)}" fill="${k===0?ink:teal}"/>`;
+   if(w>0)marks+=`<rect x="${X(k,0,12)-16}" y="${Y(w,0,1.05)}" width="32" height="${345-Y(w,0,1.05)}" fill="${k===0?ink:teal}"/>`;
  }
+ s+=visualLayer('lag-weights','trace',marks);
  s+=text(835,30,`Maximum lag ${L} · later covariances receive less weight`,20,'end');
  return svg(s,'Illustrative Bartlett weights in a Newey–West lag window. This is not a recalculation of the covariance matrix.');
 }
-function intervals(){
+function intervals(step){
  const rows=data.stats.traffic;
  let s=line(180,330,850,330);
  const xx=v=>180+(v-.04)/.12*660;
@@ -119,8 +125,9 @@ function intervals(){
  rows.forEach((r,i)=>{
    const y=95+i*90,c=i===2?teal:ink;
    s+=text(160,y+6,['Conventional','Robust','HAC, 4 lags'][i],20,'end');
-   s+=line(xx(r.coefficient-1.96*r.se),y,xx(r.coefficient+1.96*r.se),y,c,4)+circle(xx(r.coefficient),y,6,c,1);
-   s+=text(850,y+30,`SE ${r.se.toFixed(5)}`,17,'end');
+   if(step>0)s+=visualLayer('interval-'+i,'emphasize',line(xx(r.coefficient-1.96*r.se),y,xx(r.coefficient+1.96*r.se),y,c,4));
+   s+=circle(xx(r.coefficient),y,6,c,1);
+   if(step>0)s+=visualLayer('se-'+i,'emphasize',text(850,y+30,`SE ${r.se.toFixed(5)}`,17,'end'));
  });
  s+=text(510,404,'Law coefficient (log-accident units) · approximate 95% intervals',20);
  s+=text(835,32,'Same OLS coefficient; different uncertainty estimates',20,'end');
@@ -137,7 +144,7 @@ export function graph(kind,step,value,progress=1,spec={}){
  if(kind==='lagplot')return lagplot();
  if(kind==='arsim')return arsim(Number(value));
  if(kind==='hac')return hac(Number(value));
- if(kind==='intervals')return intervals();
+ if(kind==='intervals')return intervals(step);
  return '';
 }
 export const captions={causal:'Assumed causal structure · dashed boxes: unobserved · gold boxes: conditioned on',schools:'California school districts · 420 observed districts',fit:'Rotate around the mean point. The loss uses all 420 observed districts.',residual:'Vertical distance from the observed score to the fitted line · actual district data',adjustment:'Adjusted line fixes English-learner share at its sample mean. Both fits use the same 420 districts.',dag:'Arrows show the proposed explanation. The scatterplot alone does not establish it.',counterfactual:'Conceptual policy comparison · no numerical effect is assumed',traffic:'Historical California traffic data · monthly observations',serial:'Residuals from the actual log-accident regression · 108 months',lagplot:'Actual residual pairs · one initial observation lost to lagging',arsim:'Illustrative simulation · fixed innovations · vertical range adapts to the selected persistence',hac:'Declining lag weights only. The slider does not recalculate the Stata standard errors.',intervals:'Actual Stata estimates and SEs · approximate intervals = b ± 1.96 × SE. Exact software intervals are in the output.'};
@@ -149,7 +156,7 @@ function scatter(rows,xkey,ykey,slope,label,{step=2,progress=1,intercept=null,xl
  const [xl,xh]=extent(rows.map(r=>r[xkey])),[yl,yh]=extent(rows.map(r=>r[ykey]));
  let s=axes(xl,xh,yl,yh,ticks(xl,xh),ticks(yl,yh),xlabel,ylabel);
  for(const r of rows.slice(0,Math.ceil(rows.length*progress)))s+=circle(X(r[xkey],xl,xh),Y(r[ykey],yl,yh),3,teal,.5);
- if(step>0&&slope!==null){const a=intercept??average(rows,ykey)-slope*average(rows,xkey);s+=line(X(xl,xl,xh),Y(a+slope*xl,yl,yh),X(xh,xl,xh),Y(a+slope*xh,yl,yh),ink,3);}
+ if(step>0&&slope!==null){const a=intercept??average(rows,ykey)-slope*average(rows,xkey);s+=visualLayer('fitted-line','trace',line(X(xl,xl,xh),Y(a+slope*xl,yl,yh),X(xh,xl,xh),Y(a+slope*xh,yl,yh),ink,3));}
  s+=text(840,29,label,18,'end');
  return {s,xl,xh,yl,yh};
 }
@@ -175,8 +182,8 @@ function extendedChart(scenario,step,value,progress){
   const rho=Number(value),lo=-1,hi=1.2;
   let s=axes(0,8,lo,hi,[0,2,4,6,8],[-1,-.5,0,.5,1],'Periods after the innovation','Outcome difference');
   s+=line(85,Y(0,lo,hi),850,Y(0,lo,hi),ink,1,'4 4');
-  if(step>0)s+=line(85,Y(1,lo,hi),850,Y(1,lo,hi),gold,2,'6 5')+
-    text(835,Y(1,lo,hi)-10,'Unit-root benchmark: rho = 1',17,'end',gold);
+  if(step>0)s+=visualLayer('unit-root','trace',line(85,Y(1,lo,hi),850,Y(1,lo,hi),gold,2,'6 5')+
+    text(835,Y(1,lo,hi)-10,'Unit-root benchmark: rho = 1',17,'end',gold));
   const response=Array.from({length:9},(_,h)=>[X(h,0,8),Y(rho**h,lo,hi)]);
   s+=pathLine(response,teal,3)+response.map(([x,y])=>circle(x,y,5,teal,1)).join('');
   s+=text(835,28,'One-unit innovation · rho = '+rho.toFixed(2),19,'end');
@@ -196,22 +203,24 @@ function extendedChart(scenario,step,value,progress){
   const b=est['04'].robust.b,se=est['04'].robust.se;let s=axes(-3.1,1.1,0,1.05,[-3,-2,-1,0,1],[0,.5,1],'Staffing slope (score points per student/teacher)','Relative density');
   s+=pathLine(Array.from({length:150},(_,i)=>{const x=-3.1+i*4.2/149;return[X(x,-3.1,1.1),Y(Math.exp(-.5*((x-b)/se)**2),0,1.05)];}),teal);
   const h=Number(value);s+=line(X(h,-3.1,1.1),55,X(h,-3.1,1.1),345,gold,3,'7 5');
-  if(step>0)s+=line(X(b-1.96*se,-3.1,1.1),320,X(b+1.96*se,-3.1,1.1),320,ink,5);
+  if(step>0)s+=visualLayer('reference-interval','emphasize',line(X(b-1.96*se,-3.1,1.1),320,X(b+1.96*se,-3.1,1.1),320,ink,5));
   s+=text(840,29,`Estimate ${b.toFixed(3)} · SE ${se.toFixed(3)} · t = ${((b-h)/se).toFixed(2)}`,19,'end');return svg(s,'Approximate sampling-density illustration, actual robust interval and chosen null value.');
  }
  if(scenario==='retail'){
   const r=scatter(ds.retail,'inc10','sprice',est['05'].levels.b,'Navy: linear · Gold: quadratic',{step,progress,xlabel:'Local income (ten-thousand-dollar units)',ylabel:'Retail price (dollars)'});
   if(step>1){const b=est['05'].linear.b,c=est['05'].squared.b,a=average(ds.retail,'sprice')-b*average(ds.retail,'inc10')-c*ds.retail.reduce((s,d)=>s+d.inc10**2,0)/ds.retail.length;
-   r.s+=pathLine(Array.from({length:100},(_,i)=>{const x=r.xl+(r.xh-r.xl)*i/99;return[X(x,r.xl,r.xh),Y(a+b*x+c*x*x,r.yl,r.yh)];}),gold);}
+   r.s+=visualLayer('quadratic-fit','trace',pathLine(Array.from({length:100},(_,i)=>{const x=r.xl+(r.xh-r.xl)*i/99;return[X(x,r.xl,r.xh),Y(a+b*x+c*x*x,r.yl,r.yh)];}),gold));}
   return svg(r.s,'Observed retail prices and local income with fitted level and quadratic relationships.');
  }
  if(scenario==='sampling'){
   const n=Number(value)<.5?100:1000,rs=ds.sampling.filter(r=>r.n===n),lo=.4,hi=2.1,bins=34;
   let s=axes(lo,hi,0,150,[.5,1,1.5,2],[0,50,100,150],'Estimated coefficient','Repetitions');
+  let bars='';
   for(const [field,c] of [['b_short',gold],['b_adjusted',teal]]){
    const counts=Array(bins).fill(0);for(const r of rs){const j=Math.floor((r[field]-lo)/(hi-lo)*bins);if(j>=0&&j<bins)counts[j]++;}
-   counts.forEach((v,j)=>{const x=lo+j*(hi-lo)/bins;s+=`<rect x="${X(x,lo,hi)}" y="${Y(v,0,150)}" width="${765/bins-1}" height="${345-Y(v,0,150)}" fill="${c}" opacity=".65"/>`;});
+   counts.forEach((v,j)=>{const x=lo+j*(hi-lo)/bins;bars+=`<rect x="${X(x,lo,hi)}" y="${Y(v,0,150)}" width="${765/bins-1}" height="${345-Y(v,0,150)}" fill="${c}" opacity=".65"/>`;});
   }
+  s+=visualLayer('sampling-distributions','emphasize',bars);
   for(const [x,c] of [[1,teal],[1.5,gold]])s+=line(X(x,lo,hi),55,X(x,lo,hi),345,c,2,'6 5');
   s+=text(840,29,`n = ${n} · Teal: controlled · Gold: omitted factor`,20,'end');return svg(s,'Monte Carlo distributions at the selected sample size, centred on different population targets.');
  }
@@ -219,22 +228,24 @@ function extendedChart(scenario,step,value,progress){
   const rs=ds.interaction,meanIncome=average(rs,'income'),a=est['07'].base.b+est['07'].income.b*meanIncome,b=est['07'].low.b,c=est['07'].intercept_difference.b,d=est['07'].difference.b;
   let s=axes(14,26,610,710,[14,18,22,26],[620,650,680,710],'Students per teacher','Fitted score at mean income');
   s+=line(X(14,14,26),Y(a+b*14,610,710),X(26,14,26),Y(a+b*26,610,710),teal,3);
-  if(step>0)s+=line(X(14,14,26),Y(a+c+(b+d)*14,610,710),X(26,14,26),Y(a+c+(b+d)*26,610,710),gold,3);
+  if(step>0)s+=visualLayer('second-group-fit','trace',line(X(14,14,26),Y(a+c+(b+d)*14,610,710),X(26,14,26),Y(a+c+(b+d)*26,610,710),gold,3));
   s+=text(840,29,`Teal: lower share (${b.toFixed(2)}) · Gold: higher share (${(b+d).toFixed(2)})`,19,'end');return svg(s,'Actual interaction-model fitted group slopes with income fixed at the same sample mean.');
  }
  if(scenario==='lagbars'){
   const vals=['impact','lag1','lag2'].map(k=>est['10'][k].b);let s=axes(-.5,2.5,-.03,.01,[0,1,2],[-.03,-.02,-.01,0,.01],'Unemployment lag (months)','Log-accident coefficient');
   vals.forEach((v,i)=>{const y=Y(Math.max(0,v),-.03,.01),h=Math.abs(Y(v,-.03,.01)-Y(0,-.03,.01));s+=`<rect x="${X(i,-.5,2.5)-55}" y="${y}" width="110" height="${h}" fill="${i===0?ink:teal}"/>`;});
-  if(step>0)s+=pathLine(vals.map((_,i)=>[X(i,-.5,2.5),Y(vals.slice(0,i+1).reduce((a,b)=>a+b,0),-.03,.01)]),gold);
+  if(step>0)s+=visualLayer('lag-sum','trace',pathLine(vals.map((_,i)=>[X(i,-.5,2.5),Y(vals.slice(0,i+1).reduce((a,b)=>a+b,0),-.03,.01)]),gold));
   s+=text(840,29,`Gold: cumulative coefficient · total ${vals.reduce((a,b)=>a+b,0).toFixed(4)}`,20,'end');return svg(s,'Actual impact and lag coefficients and their cumulative sum.');
  }
  if(scenario==='lp'){
   const rows=ds.lp;let s=axes(0,8,-.5,1.1,[0,2,4,6,8],[-.4,0,.4,.8],'Horizon (quarters)','Response per unit shock');
   s+=line(85,Y(0,-.5,1.1),850,Y(0,-.5,1.1),rule,2);
-  if(step>0)for(const r of rows){const x=X(r.horizon,0,8);s+=line(x,Y(r.coefficient-1.96*r.se,-.5,1.1),x,Y(r.coefficient+1.96*r.se,-.5,1.1),teal,2);}
+  if(step>0)s+=visualLayer('response-intervals','trace',rows.map(r=>{const x=X(r.horizon,0,8);return line(x,Y(r.coefficient-1.96*r.se,-.5,1.1),x,Y(r.coefficient+1.96*r.se,-.5,1.1),teal,2);}).join(''));
   s+=pathLine(rows.map(r=>[X(r.horizon,0,8),Y(r.coefficient,-.5,1.1)]),teal);
-  if(step>1)s+=pathLine(rows.map(r=>[X(r.horizon,0,8),Y(.8*.6**r.horizon,-.5,1.1)]),gold,3,'8 5');
-  const r=rows[Math.max(0,Math.min(8,Math.round(Number(value))))];s+=circle(X(r.horizon,0,8),Y(r.coefficient,-.5,1.1),7,ink,1)+text(840,29,`h = ${r.horizon} · estimate ${r.coefficient.toFixed(3)} · truth ${(.8*.6**r.horizon).toFixed(3)}`,19,'end');
+  if(step>1)s+=visualLayer('known-response','trace',pathLine(rows.map(r=>[X(r.horizon,0,8),Y(.8*.6**r.horizon,-.5,1.1)]),gold,3,'8 5'));
+  const r=rows[Math.max(0,Math.min(8,Math.round(Number(value))))];
+  s+=visualLayer('selected-horizon','emphasize',circle(X(r.horizon,0,8),Y(r.coefficient,-.5,1.1),7,ink,1));
+  s+=text(840,29,`h = ${r.horizon} · estimate ${r.coefficient.toFixed(3)}${step>1?` · truth ${(.8*.6**r.horizon).toFixed(3)}`:''}`,19,'end');
   return svg(s,'Estimated and known quarterly responses. Some finite-sample estimates can have the opposite sign from the true response.');
  }
  if(scenario==='panel'){
@@ -253,7 +264,7 @@ function extendedChart(scenario,step,value,progress){
  if(scenario==='ivfirst')return svg(scatter(ds.iv,'salestax','logp',est['14'].first.b,'First-stage slope: '+est['14'].first.b.toFixed(4),{step,progress,xlabel:'Sales-tax component (real cents per pack)',ylabel:'Log real cigarette price'}).s,'Actual state first-stage relationship between the proposed tax instrument and cigarette price.');
  if(scenario==='binary'){
   const rs=ds.binary;let s=axes(0,1.5,-.1,1.05,[0,.3,.6,.9,1.2,1.5],[0,.25,.5,.75,1],'Payment-to-income ratio (fraction)','Fitted probability of denial');
-  for(const [field,c] of [['lpm',gold],['probit',teal],...(step>0?[['logit',ink]]:[])])s+=pathLine(rs.map(r=>[X(r.pir,0,1.5),Y(r[field],-.1,1.05)]),c,3);
+  for(const [field,c] of [['lpm',gold],['probit',teal],...(step>0?[['logit',ink]]:[])])s+=visualLayer(field+'-curve','trace',pathLine(rs.map(r=>[X(r.pir,0,1.5),Y(r[field],-.1,1.05)]),c,3));
   const r=rs[Math.max(0,Math.min(150,Math.round(Number(value)*100)))];s+=line(X(r.pir,0,1.5),55,X(r.pir,0,1.5),345,rule,2,'6 5');
   s+=text(840,29,`At ${r.pir.toFixed(2)}: LPM ${r.lpm.toFixed(3)} · Probit ${r.probit.toFixed(3)} · Logit ${r.logit.toFixed(3)}`,18,'end');return svg(s,'Actual probability curves. Gold LPM can leave the zero-to-one range; probit and logit remain bounded.');
  }
@@ -287,8 +298,8 @@ function appliedExtension(scenario,step,value,progress){
  if(scenario==='headstartTime'){
   let s=axes(0,7,0,7,[0,1,3,6],[0,2,3,5,6],'Home and other non-market time (hours)','Paid-work time (hours)');
   s+=line(X(0,0,7),Y(3,0,7),X(3,0,7),Y(0,0,7),ink,3,'7 5')+circle(X(1,0,7),Y(2,0,7),6,ink,1)+text(X(1,0,7)+12,Y(2,0,7)-12,'E1',19,'start');
-  if(step>0)s+=line(X(0,0,7),Y(6,0,7),X(6,0,7),Y(0,0,7),teal,4)+circle(X(1,0,7),Y(5,0,7),6,teal,1)+text(X(1,0,7)+12,Y(5,0,7)-12,'E2',19,'start');
-  if(step>1)s+=circle(X(4,0,7),Y(2,0,7),6,gold,1)+text(X(4,0,7)+12,Y(2,0,7)-12,'E3',19,'start');
+  if(step>0)s+=visualLayer('expanded-choice-set','trace',line(X(0,0,7),Y(6,0,7),X(6,0,7),Y(0,0,7),teal,4)+circle(X(1,0,7),Y(5,0,7),6,teal,1)+text(X(1,0,7)+12,Y(5,0,7)-12,'E2',19,'start'));
+  if(step>1)s+=visualLayer('alternative-choice','emphasize',circle(X(4,0,7),Y(2,0,7),6,gold,1)+text(X(4,0,7)+12,Y(2,0,7)-12,'E3',19,'start'));
   s+=text(840,29,'Three released hours can be allocated in different ways',18,'end');
   return svg(s,'Time-allocation schematic: preschool releases care time, allowing more work or other activity.');
  }
@@ -297,9 +308,12 @@ function appliedExtension(scenario,step,value,progress){
   let s=axes(0,1,30,75,[],[30,40,50,60,70],'Period','Maternal employment rate (percent)');
   s+=text(85,377,'Before',19)+text(850,377,'After',19)+circle(...pos(0,40),6,ink,1)+circle(...pos(0,60),6,teal,1);
   s+=text(101,Y(40,30,75)-10,'A: 40',18,'start',ink)+text(101,Y(60,30,75)-10,'C: 60',18,'start',teal);
-  if(step>0){s+=pathLine([pos(0,40),pos(1,48)],ink,4)+pathLine([pos(0,60),pos(1,63)],teal,4)+circle(...pos(1,48),6,ink,1)+circle(...pos(1,63),6,teal,1)+text(832,Y(48,30,75)-12,'B: 48',18,'end',ink)+text(832,Y(63,30,75)-12,'D: 63',18,'end',teal);}
-  if(step>1){s+=pathLine([pos(0,40),pos(1,43)],gold,3,'7 5')+line(825,Y(43,30,75),825,Y(48,30,75),gold,5)+text(810,Y(45.5,30,75),'DiD: 5 pp',18,'end',gold);
-   if(Math.abs(delta)>.001)s+=pathLine([pos(0,40),pos(1,43+delta)],ink,2,'3 5')+text(840,322,`Alternative assumed effect: ${(5-delta).toFixed(1)} pp`,18,'end');
+  if(step>0)s+=visualLayer('eligible-observed','trace',pathLine([pos(0,40),pos(1,48)],ink,4)+circle(...pos(1,48),6,ink,1)+text(832,Y(48,30,75)-12,'B: 48',18,'end',ink));
+  if(step>1)s+=visualLayer('comparison-observed','trace',pathLine([pos(0,60),pos(1,63)],teal,4)+circle(...pos(1,63),6,teal,1)+text(832,Y(63,30,75)-12,'D: 63',18,'end',teal));
+  if(step>2)s+=visualLayer('untreated-counterfactual','trace',pathLine([pos(0,40),pos(1,43)],gold,3,'7 5'));
+  if(step>3){
+   s+=visualLayer('did-gap','emphasize',line(825,Y(43,30,75),825,Y(48,30,75),gold,5)+text(810,Y(45.5,30,75),'DiD: 5 pp',18,'end',gold));
+   if(Math.abs(delta)>.001)s+=visualLayer('alternative-counterfactual','trace',pathLine([pos(0,40),pos(1,43+delta)],ink,2,'3 5'))+text(840,322,`Alternative assumed effect: ${(5-delta).toFixed(1)} pp`,18,'end');
   }
   s+=text(840,29,'Eligible: navy · Comparison: teal · Assumed untreated: dashed',17,'end');
   return svg(s,'Head Start teaching diagram with A, B, C and D employment rates and an assumption-based untreated path.');
@@ -313,8 +327,8 @@ function appliedExtension(scenario,step,value,progress){
    z+=line(px(0),py(g0),px(1),py(g1),ink,4)+line(px(0),py(c0),px(1),py(c1),teal,4);
    z+=text(left+190,385,`Within-location DiD: ${(g1-g0)-(c1-c0)} pp`,18);
    return z;};
-  s+=panel(10,'Location A',[40,43,50,52]);if(step>0)s+=panel(455,'Location B',[55,64,60,66]);
-  if(step>1){const w=Number(value);s+=text(450,412,`Eligible-weighted ATT: ${(3-2*w).toFixed(2)} pp · Naive aggregate DiD: ${(4-6*w).toFixed(2)} pp`,19);}
+  s+=panel(10,'Location A',[40,43,50,52]);if(step>0)s+=visualLayer('location-b','emphasize',panel(455,'Location B',[55,64,60,66]));
+  if(step>1){const w=Number(value);s+=visualLayer('weighted-comparisons','emphasize',text(450,412,`Eligible-weighted ATT: ${(3-2*w).toFixed(2)} pp · Naive aggregate DiD: ${(4-6*w).toFixed(2)} pp`,19));}
   return svg(s,'Two illustrative within-location DiD comparisons and averages for a selected eligible-group location distribution.');
  }
  if(scenario==='didSupport'){
@@ -322,7 +336,7 @@ function appliedExtension(scenario,step,value,progress){
   let s=axes(lo,hi,0,1.2,ticks(lo,hi),[0,1],'Baseline income (constructed units)','Group (1: targeted, 0: comparison)');
   for(const r of rs.slice(0,Math.ceil(rs.length*progress)))s+=circle(X(r.baseline_income,lo,hi),Y(r.group,0,1.2),3,r.group?ink:teal,.5);
   const cutoff=Math.max(...rs.filter(r=>r.group===1).map(r=>r.baseline_income));
-  if(step>0)s+=line(X(cutoff,lo,hi),55,X(cutoff,lo,hi),345,gold,3,'6 5');
+  if(step>0)s+=visualLayer('income-cutoff','emphasize',line(X(cutoff,lo,hi),55,X(cutoff,lo,hi),345,gold,3,'6 5'));
   s+=text(840,29,'Targeted: lowest-income 75 of 300 people',19,'end');
   return svg(s,'Generated baseline incomes and deterministic assignment, showing the lack of untreated observations below the cutoff.');
  }
@@ -340,10 +354,12 @@ function appliedExtension(scenario,step,value,progress){
   s+=line(85,Y(.8,0,.9),850,Y(.8,0,.9),ink,2,'6 5');
   const path=f=>Array.from({length:100},(_,i)=>{const l=1.2*i/99;return[X(l,0,1.2),Y(f(l),0,.9)];});
   s+=pathLine(path(l=>.8/(1+l)),teal,4);
-  if(showLasso&&step>0)s+=pathLine(path(l=>Math.max(.8-l,0)),gold,4);
-  const l=Number(value);s+=line(X(l,0,1.2),55,X(l,0,1.2),345,rule,2,'4 4')+circle(X(l,0,1.2),Y(.8/(1+l),0,.9),6,teal,1);
-  if(showLasso&&step>0)s+=circle(X(l,0,1.2),Y(Math.max(.8-l,0),0,.9),6,gold,1);
-  s+=text(840,29,`Ridge ${(.8/(1+l)).toFixed(3)}${showLasso?` · Lasso ${Math.max(.8-l,0).toFixed(3)}`:''} · OLS 0.8`,18,'end');
+  if(showLasso&&step>0)s+=visualLayer('lasso-path','trace',pathLine(path(l=>Math.max(.8-l,0)),gold,4));
+  const l=Number(value);
+  const ridgePoint=circle(X(l,0,1.2),Y(.8/(1+l),0,.9),6,teal,1);
+  const lassoPoint=showLasso&&step>0?circle(X(l,0,1.2),Y(Math.max(.8-l,0),0,.9),6,gold,1):'';
+  s+=visualLayer('penalty-location','emphasize',line(X(l,0,1.2),55,X(l,0,1.2),345,rule,2,'4 4')+ridgePoint+lassoPoint);
+  s+=text(840,29,`Ridge ${(.8/(1+l)).toFixed(3)}${showLasso&&step>0?` · Lasso ${Math.max(.8-l,0).toFixed(3)}`:''} · OLS 0.8`,18,'end');
   return svg(s,showLasso?'Single-standardised-predictor ridge and lasso paths; navy dashed line is the unpenalised slope.':'Single-standardised-predictor ridge path; navy dashed line is the unpenalised slope.');
  }
  if(scenario==='validation'){
@@ -351,18 +367,18 @@ function appliedExtension(scenario,step,value,progress){
   const selected=(Math.round(Number(value))-1+(step===1?1:0))%5;
   for(let i=0;i<5;i++){
    const x=45+i*162,held=step<2&&i===selected;
-   s+=`<rect x="${x}" y="95" width="145" height="95" fill="${held?gold:teal}" opacity=".16" stroke="${held?gold:teal}" stroke-width="3"/>`;
-   s+=text(x+72,133,`Fold ${i+1}`,21)+text(x+72,168,held?'Validate':'Fit',18);
+   s+=visualLayer('training-fold-'+i,'emphasize',`<rect x="${x}" y="95" width="145" height="95" fill="${held?gold:teal}" opacity=".16" stroke="${held?gold:teal}" stroke-width="3"/>`+
+    text(x+72,133,`Fold ${i+1}`,21)+text(x+72,168,held?'Validate':'Fit',18));
   }
   s+=arrow(450,211,450,250)+text(450,280,step<2?'Rotate folds; compare training-validation errors':'Freeze the fitted models before seeing test errors',21);
-  s+=`<rect x="205" y="315" width="490" height="65" fill="white" stroke="${step<2?rule:gold}" stroke-width="3"/>`;
-  s+=text(450,356,step<2?'140 test districts remain untouched':'140 test districts: score frozen predictions',20);
+  s+=visualLayer('final-test','emphasize',`<rect x="205" y="315" width="490" height="65" fill="white" stroke="${step<2?rule:gold}" stroke-width="3"/>`+
+    text(450,356,step<2?'140 test districts remain untouched':'140 test districts: score frozen predictions',20));
   return svg(s,'Five-fold validation inside training, followed by a separate held-out test evaluation.');
  }
  if(scenario==='prediction'){
   const names=['OLS 3','OLS 9','Ridge','Lasso'];let s=axes(-.5,3.5,0,12,[],[0,3,6,9,12],'Model fitted on the same training districts','Held-out RMSE (score points)');
   ds.prediction.forEach((r,i)=>{const c=i===2?gold:teal,x=X(i,-.5,3.5),top=Y(r.test_rmse,0,12);
-   if(step>0||i===0)s+=`<rect x="${x-55}" y="${top}" width="110" height="${345-top}" fill="${c}" opacity=".8"/>`+text(x,top-12,Number(r.test_rmse).toFixed(3),20);
+   if(step>=i)s+=visualLayer('prediction-error-'+i,'emphasize',`<rect x="${x-55}" y="${top}" width="110" height="${345-top}" fill="${c}" opacity=".8"/>`+text(x,top-12,Number(r.test_rmse).toFixed(3),20));
    s+=text(x,377,names[i],20);
   });
   s+=text(840,29,'One fixed split · 140 held-out districts',19,'end');

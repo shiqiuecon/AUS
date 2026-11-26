@@ -1,7 +1,8 @@
 import {escapeHTML,typeset} from './common.mjs?v=28599d1f2c26';
-import {analyseDAG,dagControlHTML,dagInitialState,dagSVG} from './dag.mjs?v=c5daa317b81c';
-import {dagExperimentIds} from './experiments.mjs?v=a34d8bd948fd';
-import {openExperiment} from './experiment-view.mjs?v=609d71bf8319';
+import {analyseDAG,dagControlHTML,dagInitialState,dagSVG} from './dag.mjs?v=bf505102fb5d';
+import {dagExperimentIds} from './experiments.mjs?v=7bf398ef0f4e';
+import {openExperiment} from './experiment-view.mjs?v=73a5648358c2';
+import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=67f857b36df0';
 
 const dagSpecial = {
  iv: analysis => analysis.openCausal.length>1
@@ -75,22 +76,24 @@ export function bindDAGExplorer(root,{spec,id,prefix,initial,step=2,onChange,onI
  const inputs=[...root.querySelectorAll('[data-condition]')], extra=root.querySelector('[data-dag-extra]');
  const eligible=new Set(spec.controls||[]), names=new Map(spec.nodes.map(node=>[node.id,node]));
  const positions=new Map();
- let state=initial, stageStep=step, route=null, gesture=null;
+ let state=initial, stageStep=step, route=null, gesture=null, spoken=[];
+ const displayStep=()=>id==='reading'?(stageStep>=4?2:0):stageStep;
 
  function paint(viewPositions=positions) {
-  stage.innerHTML=dagSVG(spec,stageStep,state,{positions:viewPositions,route,prefix});
+  stage.innerHTML=dagSVG(spec,displayStep(),state,{positions:viewPositions,route,prefix,spoken});
  }
- function render(next=state,nextStep=stageStep,focusId,focusRoute) {
-  state=next;stageStep=nextStep;
+ function render(next=state,nextStep=stageStep,focusId,focusRoute,spokenEdges=[]) {
+  state=next;stageStep=nextStep;spoken=spokenEdges;
   for(const input of inputs)input.checked=state.conditioned.includes(input.dataset.condition);
   if(extra)extra.checked=state.extra;
   paint();
   const analysis=analyseDAG(spec,state);
   const counts=[analysis.openCausal.length,analysis.openAlternative.length,analysis.paths.filter(p=>!p.open).length];
-  legend.hidden=stageStep<2&&!route;
+  const shown=displayStep();
+  legend.hidden=shown<2&&!route;
   legend.innerHTML=['Open directed','Open alternative','Blocked'].map((label,i)=>`<li><i class="dag-swatch ${['directed','alternative','blocked'][i]}"></i>${label} ${counts[i]}</li>`).join('');
-  const result=stageStep<2
-   ? {tone:'neutral',text:stageStep===1?'Teal highlights the directed routes. Trace the other paths.':'Predict which paths are open, then use Next step to check.'}
+  const result=shown<2
+   ? {tone:'neutral',text:spoken.length?'Follow the highlighted arrow.':shown===1?'Teal highlights the directed routes. Trace the other paths.':'Use Next step to follow the arrows and trace the paths.'}
    : dagVerdict(spec,analysis,id);
   if(diagnosis.textContent!==result.text)diagnosis.textContent=result.text;
   diagnosis.dataset.tone=result.tone;
@@ -100,9 +103,11 @@ export function bindDAGExplorer(root,{spec,id,prefix,initial,step=2,onChange,onI
   if(focusRoute)pathList.querySelector(`[data-dag-route="${focusRoute}"]`)?.focus({preventScroll:true});
  }
  function change(next,focusId) {
+  const previous=visualSnapshot(stage);
   route=null;
   onChange?.(next);
   render(next,2,focusId);
+  playVisualChanges(stage,previous);
   onResize?.();
  }
  function toggle(id,force,focusId) {
@@ -119,9 +124,11 @@ export function bindDAGExplorer(root,{spec,id,prefix,initial,step=2,onChange,onI
   const button=event.target.closest('[data-dag-route]');
   if(!button)return;
   onInteract?.();
+  const previous=visualSnapshot(stage);
   const key=button.dataset.dagRoute;
   route=route===key?null:key;
   render(state,stageStep,undefined,key);
+  playVisualChanges(stage,previous);
   onResize?.();
  });
  root.querySelector('[data-dag-simulate]')?.addEventListener('click',()=>{

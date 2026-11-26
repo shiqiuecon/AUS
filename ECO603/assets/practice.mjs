@@ -1,7 +1,7 @@
-import {dagSVG,dagInitialState} from './dag.mjs?v=c5daa317b81c';
+import {dagSVG,dagInitialState} from './dag.mjs?v=bf505102fb5d';
 import {data,escapeHTML as e,typeset} from './common.mjs?v=28599d1f2c26';
-import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=109bb0ccee05';
-import {openExperiment} from './experiment-view.mjs?v=609d71bf8319';
+import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=eb60886c7a34';
+import {openExperiment} from './experiment-view.mjs?v=73a5648358c2';
 const $=s=>document.querySelector(s),select=$('#week-filter'),initial=new URLSearchParams(location.search).get('week'),storageKey='eco603-practice-v1';
 if([...select.options].some(o=>o.value===initial))select.value=initial;
 let notes={},reviewed={},index=0,migrationApplied=false;

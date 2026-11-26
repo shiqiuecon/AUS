@@ -333,7 +333,7 @@ New application: expectations mediate a shock and also respond to other news.
 
 Post-shock controls can change the target and create selection.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=19&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=19&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 ### 20. Distinguish an estimated shock from a known innovation
 
@@ -463,7 +463,7 @@ The earlier disturbance affects the current disturbance, but the input nodes hav
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=29&v=de9d5ab0eb6b). Trace the paths and explain why each one is open or blocked.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=29&v=cc8124fcbfdb). Trace the paths and explain why each one is open or blocked.
 
 **Practice:** The earlier disturbance affects the current disturbance, but the input nodes have no common-cause connection to these disturbances in the stated graph. Does disturbance persistence alone create regressor endogeneity? What does HAC change, and which arrows does it remove?
 
@@ -635,7 +635,7 @@ A shock changes expectations and future inflation. Other news affects expectatio
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=44&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=13&slide=44&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 **Practice:** A shock changes expectations and future inflation. Other news affects expectations and future inflation. Explain why adding current expectations can remove a mechanism and also create an alternative route, even if the shock initially had no common cause with the news.
 

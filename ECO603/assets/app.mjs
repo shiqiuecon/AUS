@@ -1,9 +1,10 @@
-import {dagInitialState} from './dag.mjs?v=c5daa317b81c';
+import {dagInitialState} from './dag.mjs?v=bf505102fb5d';
 import {data,escapeHTML as e,typeset,url} from './common.mjs?v=28599d1f2c26';
-import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=ffe2e7d7bd19';
-import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=109bb0ccee05';
-import {openExperiment} from './experiment-view.mjs?v=609d71bf8319';
-import {bindPlotControls,plotAction} from './plot-controls.mjs?v=3ea9e9e08689';
+import {graph,graphKinds,captions,scenarioCaptions,chartControls} from './graphs.mjs?v=955b879eba40';
+import {bindDAGExplorer,dagExplorerHTML} from './dag-explorer.mjs?v=eb60886c7a34';
+import {openExperiment} from './experiment-view.mjs?v=73a5648358c2';
+import {bindPlotControls,plotAction} from './plot-controls.mjs?v=d7dada50761d';
+import {playVisualChanges,visualSnapshot} from './visual-reveals.mjs?v=67f857b36df0';
 const params=new URLSearchParams(location.search),first=String(data.course.find(c=>Object.hasOwn(data.lessons,String(c.week).padStart(2,'0'))).week).padStart(2,'0');
 const bookmarkMap=data.bookmarksByRevision?.[params.get('v')]||(data.previousRevision===params.get('v')?data.bookmarks:null);
 const legacy=bookmarkMap?.[`${params.get('meeting')||first}:${params.get('slide')||1}`];
@@ -13,6 +14,7 @@ const $=s=>document.querySelector(s);
 let index=Math.max(0,Math.min(lesson.slides.length-1,(Math.trunc(Number(params.get('slide')))||1)-1));
 let step=0,value=0,initialGraphValue=0,frame=0,animating=false,progress=1,paragraph=0,reading=false,speed=1,timer=0,following=true,highlights=true,ended=false;
 let dagExplorer=null,paintPlotControl=null;
+let graphCue=null,graphReveal=null;
 const current=()=>lesson.slides[index];
 const coreCount=lesson.delivery.core;
 const inAppendix=()=>index>=coreCount;
@@ -30,8 +32,8 @@ function seekAudio(relative,defer=false){
  const c=current().narration;desiredTime=c.offset+Math.max(0,Math.min(c.duration,relative));
  deferredSeek=defer;
  if(audio.readyState&&!defer&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;
- eventSignature='';
- updateAudio(desiredTime-c.offset);
+ invalidateGraphCue();
+ updateAudio(desiredTime-c.offset,false);
 }
 function setGraphValue(next){
  if(current().kind==='causal'){
@@ -41,9 +43,10 @@ function setGraphValue(next){
   const control=$('#graph-input');if(control)control.value=value;
  }
 }
-function updateAudio(relative){
+function updateAudio(relative,animate=relative===undefined&&reading&&!audio?.paused){
  const c=current().narration;if(!c)return;
  const time=relative??Math.max(0,Math.min(c.duration,audio.currentTime-c.offset));
+ graphReveal?.advance(time);
  $('#audio-seek').max=c.duration;$('#audio-seek').value=time;
  $('#audio-time').textContent=`${clock(time)} / ${clock(c.duration)}`;
  $('#audio-seek').setAttribute('aria-valuetext',`${clock(time)} of ${clock(c.duration)}`);
@@ -52,14 +55,20 @@ function updateAudio(relative){
  if(newParagraph)focusParagraph(part);
  const active=(c.events||[]).filter(ev=>ev.time<=time+.02);
  const signature=JSON.stringify(active);if(signature===eventSignature&&!newParagraph)return;
- const cuesChanged=signature!==eventSignature;eventSignature=signature;
- const graphEvent=[...active].reverse().find(ev=>ev.dag||ev.step!==undefined);
- if(cuesChanged&&graphKinds.has(current().kind)){
-  const valueEvent=[...active].reverse().find(ev=>Number.isFinite(ev.value));
-  step=Math.min(stepLimit(),graphEvent?.dag?.step??graphEvent?.step??0);
-  setGraphValue(graphEvent?.dag??valueEvent?.value??initialGraphValue);
+ eventSignature=signature;
+ const latest=[...active].reverse();
+ const cue=latest.find(ev=>ev.target==='graph')||null;
+ if(cue!==graphCue&&graphKinds.has(current().kind)){
+  graphCue=cue;
+  const stepEvent=latest.find(ev=>ev.dag||ev.step!==undefined);
+  const valueEvent=latest.find(ev=>Number.isFinite(ev.value));
+  step=Math.min(stepLimit(),stepEvent?.dag?.step??stepEvent?.step??0);
+  setGraphValue(stepEvent?.dag??valueEvent?.value??initialGraphValue);
   progress=1;
-  updateGraph();
+  // Normal playback follows measured word onsets. A seek displays the
+  // complete state at the new position, including in a paused recording.
+  const transition=animate&&cue?.time>0?{time,start:cue.time,duration:cue.duration,replay:cue.replay}:null;
+  updateGraph(transition);
  }
  const point=[...active].reverse().find(ev=>ev.target==='point'&&ev.time>=c.cues[part].time-.03);
  if(point&&highlights){document.querySelectorAll('.point-current').forEach(n=>n.classList.remove('point-current'));document.querySelectorAll('#slide-body .concept-line')[point.part]?.classList.add('point-current');}
@@ -92,7 +101,7 @@ async function startAudio(){
  stopAnimation();
  if(position<c.offset-.05||position>=c.offset+c.duration-.05)seekAudio(0);
  else if(deferredSeek)seekAudio(position-c.offset);
- else{eventSignature='';updateAudio(Math.max(0,position-c.offset));}
+ else updateAudio(Math.max(0,position-c.offset),false);
  reading=true;$('#play').textContent='Pause';$('#play').setAttribute('aria-pressed','true');audio.playbackRate=speed;
  try{await audio.play();if(request!==audioRequest||!reading||slideIndex!==index)return;cancelAnimationFrame(audioFrame);audioFrame=requestAnimationFrame(tickAudio);}
  catch{if(request!==audioRequest)return;stopReading();$('#reading-status').textContent='Audio could not play. Select Play to retry, or turn Narration off to read along.';}
@@ -100,7 +109,7 @@ async function startAudio(){
 if(audio){
  audio.addEventListener('loadedmetadata',()=>{if(!deferredSeek&&Math.abs(audio.currentTime-desiredTime)>.002)audio.currentTime=desiredTime;});
  audio.addEventListener('timeupdate',()=>{if(reading&&voiceMode()&&!audio.seeking){updateAudio();if(audio.currentTime>=current().narration.offset+current().narration.duration-.025)finishAudioSlide();}});
- audio.addEventListener('seeked',()=>{if(voiceMode()&&!deferredSeek)updateAudio();});
+ audio.addEventListener('seeked',()=>{if(voiceMode()&&!deferredSeek)updateAudio(undefined,false);});
  audio.addEventListener('ended',finishAudioSlide);
  audio.addEventListener('error',()=>{if(reading){stopReading();$('#reading-status').textContent='Audio could not load. Select Play to retry.';}});
 }
@@ -108,13 +117,18 @@ if(audio){
 const stepLimit=()=>current().steps??({schools:1,dag:2,counterfactual:2,adjustment:1,residual:1,serial:1,traffic:1}[current().kind]||0);
 function stopAnimation(){cancelAnimationFrame(frame);animating=false;const p=$('#animate');if(p)p.textContent='Animate reveal';}
 function stopReading(){audioRequest++;clearTimeout(timer);cancelAnimationFrame(audioFrame);audio?.pause();reading=false;$('#play').textContent=ended?'Play again':voiceMode()?'Play':'Read along';$('#play').setAttribute('aria-pressed','false');}
-function updateGraph(){
+function clearGraphReveal(){graphReveal?.stop();graphReveal=null;}
+function invalidateGraphCue(){eventSignature='';graphCue=null;clearGraphReveal();}
+function updateGraph(transition){
  const s=current(),stage=$('.graph-stage');if(!stage)return;
- if(dagExplorer)dagExplorer.render(value,step);
+ clearGraphReveal();
+ const previous=transition?visualSnapshot(stage):null;
+ if(dagExplorer)dagExplorer.render(value,step,undefined,undefined,graphCue?.edges);
  else{
   stage.innerHTML=graph(s.kind,step,value,progress,s.graph);
   paintPlotControl?.(value,step);
  }
+ if(previous)graphReveal=playVisualChanges(stage,previous,transition);
  const out=$('#control-value');
  if(out)out.textContent=s.kind==='chart'?(s.graph.scenario==='sampling'?`n = ${value<.5?100:1000}`:s.graph.scenario==='panel'?`State ${[...new Set(data.datasets.panel.map(r=>r.state))][value]}`:String(value)):s.kind==='fit'?`Slope ${Number(value).toFixed(2)}`:s.kind==='residual'?`District ${value}`:s.kind==='arsim'?`Persistence ${Number(value).toFixed(2)}`:`L = ${value}`;
  focusParagraph(paragraph,false);
@@ -129,7 +143,7 @@ function showVisual(){
   const button=document.createElement('button');
   button.type='button';button.className='activity-button';button.textContent=activity.label;
   button.addEventListener('click',()=>{
-   stopReading();stopAnimation();
+   stopReading();stopAnimation();clearGraphReveal();
    const context=activity.kind==='ols'?{spec:data.dags.fork,state:{conditioned:['C'],extra:false}}:{};
    openExperiment(activity.kind,activity.prompt,context);
   });
@@ -149,13 +163,13 @@ function buildGraph(s,visual){
  const caption=s.kind==='chart'?(scenarioCaptions[scenario]||captions[scenario]):captions[s.kind];
  const hint=plotAction(scenario);
  visual.innerHTML=`${spec?dagExplorerHTML(spec,s.graph.id,value,'lesson-dag'):`<div class="graph-stage"></div><p class="graph-caption">${e(caption)}</p>${hint?`<p class="plot-action">${e(hint)}</p>`:''}`}<div class="graph-control">${controls}</div>`;
- const pauseGraph=()=>{stopReading();stopAnimation();eventSignature='';};
+ const pauseGraph=()=>{stopReading();stopAnimation();invalidateGraphCue();};
  if(spec)dagExplorer=bindDAGExplorer(visual,{
   spec,id:s.graph.id,prefix:'lesson-dag',initial:value,step,
   onChange:next=>{pauseGraph();value=next;step=2;focusParagraph(paragraph,false);},
   onInteract:pauseGraph,onResize:fitSlide
  });
- const controlStep={ovb:1,didHeadStart:2,didConditional:2,residual:1,penalty:1}[scenario]??0;
+ const controlStep={ovb:1,didHeadStart:4,didConditional:2,residual:1,penalty:1}[scenario]??0;
  function choose(value,byPlot=false){
   pauseGraph();
   step=byPlot&&scenario==='validation'?0:Math.max(step,controlStep);
@@ -169,7 +183,7 @@ function buildGraph(s,visual){
   dagExplorer?.reset(step);updateGraph();
  };
  $('#animate')?.addEventListener('click',()=>{
-  stopReading();
+  stopReading();invalidateGraphCue();
   if(animating){stopAnimation();return;}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){progress=1;step=1;updateGraph();return;}
   animating=true;$('#animate').textContent='Pause animation';const began=performance.now();
@@ -208,7 +222,7 @@ function scheduleReading(){
 }
 function readAlong(){if(reading){stopReading();return;}if(ended){ended=false;goTo(routeStart(),false);}if(voiceMode()){startAudio();return;}reading=true;$('#play').textContent='Pause';$('#play').setAttribute('aria-pressed','true');focusParagraph(paragraph);scheduleReading();}
 function render(){
- stopAnimation();step=0;progress=1;paragraph=0;
+ stopAnimation();invalidateGraphCue();step=0;progress=1;paragraph=0;
  const s=current();
  $('#meeting-label').textContent=`${key}. ${lesson.title}`;
  $('#slide-title').textContent=s.title;$('#lead').textContent=s.lead;
@@ -247,14 +261,28 @@ function fitSlide(){
  const view=$('#slide-viewport'),slide=view.querySelector('.slide'),z=Number($('#zoom').value),mobile=innerWidth<=720;
  slide.style.zoom='1';slide.style.width=`${view.clientWidth-6}px`;slide.style.marginLeft='0';
  const available=Math.max(300,innerHeight-355),natural=slide.scrollHeight;
- const readable=dagExplorer?.85:0;
+ const readable=dagExplorer ? .85 : 0;
  const fit=mobile?1:Math.max(readable,Math.min(1,available/natural)),scale=fit*z;
  slide.style.zoom=String(scale);slide.style.marginLeft=z===1?`${Math.max(0,(view.clientWidth-(view.clientWidth-6)*scale)/2/scale)}px`:'0';
  view.classList.toggle('slide-zoomed',z>1);view.dataset.fitScale=String(fit);
 }
 function goTo(n,focus=true){ended=false;stopReading();index=Math.max(0,Math.min(lesson.slides.length-1,n));render();if(focus)$('#slide-title').focus({preventScroll:true});}
 function moveWithinRoute(offset){const target=index+offset;if(target>=routeStart()&&target<=routeEnd())goTo(target);}
-function nextStep(){stopReading();if(step<stepLimit()){stopAnimation();step++;updateGraph();return;}const d=$('#slide-exercise details');if(d&&!d.open){d.open=true;return;}moveWithinRoute(1);}
+function nextStep(){
+ stopReading();
+ if(step<stepLimit()){
+  stopAnimation();invalidateGraphCue();step++;
+  const cue=current().narration?.events.find(ev=>ev.manual&&(ev.dag?.step??ev.step)===step);
+  if(cue){
+   graphCue=cue;
+   if(cue.dag||Number.isFinite(cue.value))setGraphValue(cue.dag??cue.value);
+  }
+  updateGraph({duration:cue?.duration,replay:cue?.replay});return;
+ }
+ const practice=$('#slide-exercise details');
+ if(practice&&!practice.open){practice.open=true;return;}
+ moveWithinRoute(1);
+}
 function showScript(visible){document.body.classList.toggle('focus',!visible);$('#toggle-script').textContent=visible?'Hide script':'Show script';$('#toggle-script').setAttribute('aria-expanded',String(visible));$('#transcript-toggle').setAttribute('aria-expanded',String(visible));requestAnimationFrame(fitSlide);}
 $('#previous').onclick=()=>moveWithinRoute(-1);$('#next').onclick=()=>moveWithinRoute(1);$('#step').onclick=nextStep;
 $('#play').onclick=readAlong;$('#restart').onclick=()=>goTo(routeStart());
@@ -272,7 +300,7 @@ $('#class-plan').onclick=()=>{stopReading();plan.showModal();};
 $('#close-plan').onclick=()=>plan.close();
 $('#speed').onchange=()=>{speed=Number($('#speed').value);if(audio)audio.playbackRate=speed;if(reading&&!voiceMode())scheduleReading();};
 $('#audio-seek').oninput=()=>seekAudio(Number($('#audio-seek').value),!reading);
-$('#voice-enabled').onchange=()=>{stopReading();$('.audio-progress').hidden=!voiceMode();$('#audio-seek').disabled=!voiceMode();if(voiceMode())seekAudio(current().narration.cues[paragraph].time,true);stopReading();};
+$('#voice-enabled').onchange=()=>{stopReading();clearGraphReveal();$('.audio-progress').hidden=!voiceMode();$('#audio-seek').disabled=!voiceMode();if(voiceMode())seekAudio(current().narration.cues[paragraph].time,true);stopReading();};
 const slideOptions=lesson.slides.map((s,i)=>`<option value="${i}">${i+1}. ${e(s.title)}</option>`);
 $('#slide-picker').innerHTML=`<optgroup label="Core lesson">${slideOptions.slice(0,coreCount).join('')}</optgroup><optgroup label="Appendix">${slideOptions.slice(coreCount).join('')}</optgroup>`;
 $('#slide-picker').onchange=()=>goTo(Number($('#slide-picker').value));

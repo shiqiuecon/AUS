@@ -1,5 +1,5 @@
 /* The models are independent of the plots and controls. A seed fixes the draws for a fair comparison. */
-import {activeEdges} from './dag.mjs?v=c5daa317b81c';
+import {activeEdges} from './dag.mjs?v=bf505102fb5d';
 
 export const dagExperimentIds = new Set([
  'fork','chain','staffing_chain','collider','scholarship','scholarship_descendant','group_mediation','headstart'

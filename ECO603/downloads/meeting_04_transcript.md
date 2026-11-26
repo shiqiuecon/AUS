@@ -288,7 +288,7 @@ Return to the control-selection discussion. First decide which comparison is jus
 
 In this separate diagram, R is an observed staffing-allocation rule, while unmeasured learning needs U influence staffing and scores. Removing the fitted R component does not block the route through U. Residualisation is a calculation on the observed variables; it does not certify that the remaining variation is unrelated to every omitted outcome determinant.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=04&slide=21&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=04&slide=21&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 ### 22. Explain what the estimate uses
 
@@ -468,7 +468,7 @@ The observed allocation rule R helps explain staffing. Unmeasured needs U affect
 
 Name the target comparison first. Trace each route through the relevant variables and say whether it is directed, blocked or open under the stated conditioning. Use the diagram controls to test your proposed explanation before opening the worked reasoning.
 
-[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=04&slide=36&v=de9d5ab0eb6b). Try an available control and trace which routes open or close.
+[Open the DAG](https://shiqiuecon.github.io/AUS/ECO603/lesson.html?meeting=04&slide=36&v=cc8124fcbfdb). Try an available control and trace which routes open or close.
 
 **Practice:** The observed allocation rule R helps explain staffing. Unmeasured needs U affect both staffing and scores. After residualising staffing and scores on R, has the graph-based identification problem necessarily disappeared? State the route and distinguish the calculation from the assumption.
 

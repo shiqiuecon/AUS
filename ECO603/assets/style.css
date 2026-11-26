@@ -135,3 +135,4 @@ body:has(.lesson-player){padding-bottom:165px}.lesson-bar>a{font:16px Arial,sans
 .dag-explorer svg,.graph-stage:has([data-plot-target="drag"]) svg{touch-action:none}
 @media(prefers-reduced-motion:reduce){.dag-stage svg path{transition:none}}
 @media(min-width:721px) and (max-width:1799px){.dag-explorer .graph-stage:not(.zoomed) svg{max-height:min(300px,36dvh)}}
+@media(prefers-reduced-motion:reduce){.experiment-trace{display:none}}

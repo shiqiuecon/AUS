@@ -1,5 +1,6 @@
 import {escapeHTML} from './common.mjs?v=28599d1f2c26';
-import {OLSExperiment,coinExperiment,dependenceExperiment,instrumentExperiment} from './experiments.mjs?v=a34d8bd948fd';
+import {OLSExperiment,coinExperiment,dependenceExperiment,instrumentExperiment} from './experiments.mjs?v=7bf398ef0f4e';
+import {playVisualChanges,visualLayer,visualSnapshot} from './visual-reveals.mjs?v=67f857b36df0';
 
 const experimentSizes = [16,32,64,100,200,400,800,1000,1600];
 const experimentRuns = 240;
@@ -83,7 +84,8 @@ function experimentBins({series,min,max,reference,label}) {
 function experimentLine(running) {
  const coords=running.map((v,i)=>[i+1,v]);
  return experimentAxes({min:0,max:running.length,ceiling:1,label:'Share of heads as each toss is added. The dashed reference line is one half.',
-  draw:(x,y)=>`<path d="M${x(0)} ${y(.5)}H${x(running.length)}" stroke="#15324d" stroke-width="2" stroke-dasharray="6 5"/><polyline points="${coords.map(([i,v])=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="${experimentPalette[0]}" stroke-width="2.5"/><circle cx="${x(running.length)}" cy="${y(running.at(-1))}" r="4" fill="${experimentPalette[0]}"/>`
+  draw:(x,y)=>`<path d="M${x(0)} ${y(.5)}H${x(running.length)}" stroke="#15324d" stroke-width="2" stroke-dasharray="6 5"/>`+
+   visualLayer('running-share','trace',`<polyline points="${coords.map(([i,v])=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="${experimentPalette[0]}" stroke-width="2.5"/><circle cx="${x(running.length)}" cy="${y(running.at(-1))}" r="4" fill="${experimentPalette[0]}"/>`)
  });
 }
 
@@ -156,15 +158,19 @@ export function openExperiment(kind,description,context={}) {
  dialog.innerHTML=`<div class="dialog-head"><h2 id="experiment-title">${config.title}</h2><button type="button" class="experiment-close">Close</button></div>
   <p class="experiment-prompt">${escapeHTML(description)}</p><p>${config.setup}</p>
   <div class="experiment-controls"><div><label for="experiment-size">${kind==='lln'?'Tosses':'Sample size'} <output for="experiment-size"></output></label><input id="experiment-size" type="range" min="0" max="${experimentSizes.length-1}" value="${experimentSizes.indexOf(config.n)}"></div>
-  ${extra?`<div>${extra}</div>`:''}<button type="button" class="experiment-new">${kind==='lln'?'Toss again':'Draw new samples'}</button></div>
+  ${extra?`<div>${extra}</div>`:''}<button type="button" class="experiment-new">${kind==='lln'?'Toss again':'Draw new samples'}</button>
+  ${kind==='lln'?'<button type="button" class="experiment-trace">Play the tosses</button>':''}</div>
   <div class="experiment-result"></div><p class="experiment-announcement" role="status"></p>`;
  const opener=document.activeElement;
  document.body.append(dialog);
  const size=dialog.querySelector('#experiment-size'), extraInput=dialog.querySelector('#experiment-extra');
  const redraw=dialog.querySelector('.experiment-new');
+ const trace=dialog.querySelector('.experiment-trace');
+ let runningReveal=null;
  let seed=603, pending=0;
  function updateExperiment() {
   pending=0;
+  runningReveal?.stop();
   const n=experimentSizes[Number(size.value)], v=Number(extraInput?.value);
   const scaled=!!dialog.querySelector('#experiment-scaled')?.checked;
   dialog.querySelector('output[for="experiment-size"]').textContent=n;
@@ -178,9 +184,15 @@ export function openExperiment(kind,description,context={}) {
  }
  dialog.addEventListener('input',queueExperiment);
  redraw.onclick=()=>{seed++;queueExperiment();};
+ trace?.addEventListener('click',()=>{
+  runningReveal?.stop();
+  const plot=dialog.querySelector('.experiment-plot');
+  runningReveal=playVisualChanges(plot,visualSnapshot(plot),{replay:['running-share'],duration:2.25});
+ });
  dialog.querySelector('.experiment-close').onclick=()=>dialog.close();
  dialog.addEventListener('close',()=>{
   cancelAnimationFrame(pending);
+  runningReveal?.stop();
   dialog.remove();
   opener?.focus({preventScroll:true});
  },{once:true});
